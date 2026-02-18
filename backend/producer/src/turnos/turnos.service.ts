@@ -1,49 +1,51 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Turno, TurnoDocument } from '../schemas/turno.schema';
-import { TurnoEventPayload } from '../types/turno-event';
+import { Appointment, AppointmentDocument } from '../schemas/turno.schema';
+import { AppointmentEventPayload } from '../types/turno-event';
 
 @Injectable()
 export class TurnosService {
-    constructor(@InjectModel(Turno.name) private readonly turnoModel: Model<TurnoDocument>) { }
+    constructor(@InjectModel(Appointment.name) private readonly appointmentModel: Model<AppointmentDocument>) { }
 
-    // ⚕️ HUMAN CHECK - Obtener todos los turnos
-    // Ordenados por timestamp ascendente (más antiguos primero)
-    async findAll(): Promise<TurnoDocument[]> {
-        return this.turnoModel
+    /**
+     * Get all appointments ordered by timestamp (oldest first).
+     */
+    async findAll(): Promise<AppointmentDocument[]> {
+        return this.appointmentModel
             .find()
             .sort({ timestamp: 1 })
             .exec();
     }
 
-    // ⚕️ HUMAN CHECK - Consulta de Turno por Cédula
-    // Verificar que el campo de búsqueda coincida con el identificador real del paciente
-    async findByCedula(cedula: number): Promise<TurnoDocument[]> {
-        const turnos = await this.turnoModel
-            .find({ cedula })
+    /**
+     * Find appointments by patient ID card.
+     */
+    async findByIdCard(idCard: number): Promise<AppointmentDocument[]> {
+        const appointments = await this.appointmentModel
+            .find({ idCard })
             .sort({ createdAt: -1 })
             .exec();
 
-        if (turnos.length === 0) {
-            throw new NotFoundException(`No se encontraron turnos para la cédula ${cedula}`);
+        if (appointments.length === 0) {
+            throw new NotFoundException(`No appointments found for ID card ${idCard}`);
         }
 
-        return turnos;
+        return appointments;
     }
 
     /**
-     * Mapea un TurnoDocument a TurnoEventPayload para emitir por WebSocket
+     * Maps an AppointmentDocument to AppointmentEventPayload for WebSocket broadcast.
      */
-    toEventPayload(turno: TurnoDocument): TurnoEventPayload {
+    toEventPayload(appointment: AppointmentDocument): AppointmentEventPayload {
         return {
-            id: String(turno._id),
-            nombre: turno.nombre,
-            cedula: turno.cedula,
-            consultorio: turno.consultorio,
-            estado: turno.estado,
-            priority: turno.priority,
-            timestamp: turno.timestamp,
+            id: String(appointment._id),
+            fullName: appointment.fullName,
+            idCard: appointment.idCard,
+            office: appointment.office,
+            status: appointment.status,
+            priority: appointment.priority,
+            timestamp: appointment.timestamp,
         };
     }
 }

@@ -1,130 +1,129 @@
-# IA_P1 - Sistema de Turnos Médicos en Tiempo Real
+# IA_P1 - Real-Time Medical Appointment System
 
-> Sistema de gestión de turnos médicos basado en **Microservicios**, **Event-Driven Architecture** y **WebSockets**.
+> Medical appointment management system based on **Microservices**, **Event-Driven Architecture**, and **WebSockets**.
 
-## 🚀 Arquitectura y Flujo
+## 🚀 Architecture and Flow
 
-El sistema desacopla la recepción de turnos de su procesamiento para garantizar alta disponibilidad y escalabilidad.
+The system decouples appointment reception from processing to ensure high availability and scalability.
 
 ```mermaid
 sequenceDiagram
-    participant C as Cliente (Frontend)
+    participant C as Client (Frontend)
     participant P as Producer (API + WS)
     participant Q as RabbitMQ
     participant W as Consumer (Worker)
     participant S as Scheduler (Consumer)
     participant D as MongoDB
 
-    C->>P: 1. POST /turnos (HTTP)
-    P->>Q: 2. Publica 'crear_turno'
+    C->>P: 1. POST /appointments (HTTP)
+    P->>Q: 2. Publishes 'create_appointment'
     P-->>C: 202 Accepted
-    Q->>W: 3. Consume mensaje
-    W->>D: 4. Guarda turno (Estado: Espera)
+    Q->>W: 3. Consumes message
+    W->>D: 4. Saves appointment (Status: Waiting)
     
-    loop Cada 15s (Scheduler)
-        S->>D: 5. Busca turnos en espera
-        S->>D: 6. Asigna consultorio (Atomic Update)
-        S->>Q: 7. Publica 'turno_actualizado'
+    loop Every 15s (Scheduler)
+        S->>D: 5. Searches for waiting appointments
+        S->>D: 6. Assigns office (Atomic Update)
+        S->>Q: 7. Publishes 'appointment_updated'
     end
 
-    Q->>P: 8. Consume evento 'turno_actualizado'
-    P->>C: 9. Emite evento WebSocket (Real-time)
+    Q->>P: 8. Consumes event 'appointment_updated'
+    P->>C: 9. Emits WebSocket event (Real-time)
 ```
 
-## 🧩 Servicios
+## 🧩 Services
 
-| Servicio | Tecnología | Puerto | Responsabilidad |
+| Service | Technology | Port | Responsibility |
 |---|---|---|---|
-| **Producer** | NestJS | `3000` | API Gateway, Validación de entrada, WebSocket Gateway,Swagger Documentation. |
-| **Consumer** | NestJS | — | Procesamiento asíncrono, Scheduler de asignación, Persistencia en DB. |
-| **Frontend** | Next.js | `3001` | Interfaz de usuario Reactiva, Cliente WebSocket, Diseño moderno. |
-| **RabbitMQ** | RabbitMQ 3 | `5672` | Broker de mensajería (Colas: `turnos_queue`, `turnos_notifications`). |
-| **MongoDB** | MongoDB 7 | `27017` | Base de datos NoSQL persistente. |
+| **Producer** | NestJS | `3000` | API Gateway, Input Validation, WebSocket Gateway, Swagger Documentation. |
+| **Consumer** | NestJS | — | Async processing, Assignment Scheduler, DB Persistence. |
+| **Frontend** | Next.js | `3001` | Reactive User Interface, WebSocket Client, Modern Design. |
+| **RabbitMQ** | RabbitMQ 3 | `5672` | Messaging Broker (Queues: `turnos_queue`, `turnos_notifications`). |
+| **MongoDB** | MongoDB 7 | `27017` | Persistent NoSQL Database. |
 
-## 🛠️ Instalación y Ejecución
+## 🛠️ Installation and Execution
 
-### Prerrequisitos
+### Prerequisites
 - Docker Engine & Docker Compose
 
-### Pasos
+### Steps
 
-1. **Clonar el repositorio**
+1. **Clone the repository**
    ```bash
    git clone https://github.com/Duver0/IA_P1.git
    cd IA_P1
    ```
 
-2. **Iniciar la infraestructura**
+2. **Start the infrastructure**
    ```bash
    docker compose up -d --build
    ```
 
-3. **Acceder a la aplicación**
+3. **Access the application**
    - **Frontend:** [http://localhost:3001](http://localhost:3001)
    - **API Swagger:** [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
    - **RabbitMQ Admin:** [http://localhost:15672](http://localhost:15672) (user: `guest`, pass: `guest`)
 
-## ✨ Características Clave
+## ✨ Key Features
 
-- **Event-Driven**: Comunicación asíncrona entre servicios para mayor resiliencia.
-- **Real-Time**: Actualizaciones instantáneas en el frontend vía WebSockets (`socket.io`).
-- **Concurrency Safe**: Asignación de turnos atómica (`findOneAndUpdate`) para prevenir race conditions.
-- **Robustez**:
-  - Manejo de errores tipado (`TurnoEventPayload`).
-  - Validación de datos (DTOs + `class-validator`).
-  - Logs estructurados (`NestJS Logger`).
-- **Infraestructura como Código**: Entorno completamente dockerizado (`docker-compose.yml`).
+- **Event-Driven**: Asynchronous communication between services for better resilience.
+- **Real-Time**: Instant updates on the frontend via WebSockets (`socket.io`).
+- **Concurrency Safe**: Atomic appointment assignment (`findOneAndUpdate`) to prevent race conditions.
+- **Robustness**:
+  - Typed error handling (`AppointmentEventPayload`).
+  - Data validation (DTOs + `class-validator`).
+  - Structured logs (`NestJS Logger`).
+- **Infrastructure as Code**: Fully dockerized environment (`docker-compose.yml`).
 
 ## 📡 API Endpoints (Producer)
 
-| Método | Endpoint | Descripción |
+| Method | Endpoint | Description |
 |---|---|---|
-| `POST` | `/turnos` | Crear un nuevo turno (Async) |
-| `GET` | `/turnos` | Listar todos los turnos |
-| `GET` | `/turnos/:cedula` | Buscar turnos por cédula |
+| `POST` | `/appointments` | Create a new appointment (Async) |
+| `GET` | `/appointments` | List all appointments |
+| `GET` | `/appointments/:idCard` | Search appointments by ID card |
 
-## 🧪 Pruebas Manuales (cURL)
+## 🧪 Manual Testing (cURL)
 
-**Crear un turno:**
+**Create an appointment:**
 ```bash
-curl -X POST http://localhost:3000/turnos \
+curl -X POST http://localhost:3000/appointments \
   -H "Content-Type: application/json" \
-  -d '{"nombre": "Paciente Test", "cedula": 12345, "priority": "alta"}'
+  -d '{"fullName": "Test Patient", "idCard": 12345, "priority": "high"}'
 ```
 
-**Ver respuesta:**
+**View response:**
 ```json
 {
   "status": "accepted",
-  "message": "Turno en proceso de asignación"
+  "message": "Appointment assignment in progress"
 }
 ```
 
-## 📂 Estructura del Proyecto
+## 📂 Project Structure
 
 ```
 IA_P1/
 ├── backend/
 │   ├── producer/        # API Gateway & WebSocket Server
-│   │   ├── src/events/  # Controladores de eventos (RabbitMQ -> WS)
-│   │   └── src/turnos/  # Lógica de negocio HTTP
+│   │   ├── src/events/  # Event controllers (RabbitMQ -> WS)
+│   │   └── src/turnos/  # HTTP business logic
 │   └── consumer/        # Worker Service
-│       ├── src/scheduler/ # Lógica de asignación automática
-│       └── src/turnos/    # Persistencia MongoDB
+│       ├── src/scheduler/ # Auto-assignment logic
+│       └── src/turnos/    # MongoDB persistence
 ├── frontend/            # Next.js App Router
-│   ├── src/hooks/       # Custom Hooks (useTurnosWebSocket)
-│   └── src/domain/      # Modelos compartidos
-├── docker-compose.yml   # Orquestación de contenedores
-└── README.md            # Documentación
+│   ├── src/hooks/       # Custom Hooks (useAppointmentsWebSocket)
+│   └── src/domain/      # Shared models
+├── docker-compose.yml   # Container orchestration
+└── README.md            # Documentation
 ```
 
-## 📝 Notas de Auditoría (Fixes recientes)
+## 📝 Audit Notes (Recent Fixes)
 
-- **Type Safety**: Se eliminaron los tipos `any` mediante interfaces compartidas (`TurnoEventPayload`).
-- **Race Conditions**: Se corrigió la lógica del scheduler para garantizar asignaciones únicas.
-- **Frontend Sync**: Se ajustaron los tipos (`cedula: number`) para coincidir con el backend.
-- **Docker Networking**: Configuración corregida para que el cliente navegador use `localhost`.
-- **Scheduler configurable**: El intervalo del scheduler del consumer ahora se lee de `SCHEDULER_INTERVAL_MS` (default 15000 ms, alineado con la documentación).
-- **Validación en eventos**: El microservicio RMQ aplica `ValidationPipe` global con `whitelist`, `forbidNonWhitelisted` y `transform` para validar `CreateTurnoDto` en eventos.
-- **Ack/Nack explícitos**: El consumer confirma mensajes en éxito y diferencia `nack` sin requeue para errores de validación vs requeue en errores transitorios para evitar bloqueo con `prefetch=1`.
-- **Robustez**: Estas mejoras fortalecen el entorno de desarrollo; aún faltan políticas de reintentos, DLQ y hardening para un entorno productivo.
+- **Naming Convention**: Refactored the entire codebase from Spanish to English (e.g., `cedula` -> `idCard`, `nombre` -> `fullName`, `turno` -> `appointment`).
+- **Type Safety**: Eliminated `any` types using shared interfaces (`AppointmentEventPayload`).
+- **Race Conditions**: Corrected scheduler logic to ensure unique assignments.
+- **Frontend Sync**: Adjusted types (`idCard: number`) to match the backend.
+- **Docker Networking**: Configuration corrected for the browser client to use `localhost`.
+- **Healthchecks**: Implemented healthchecks for all services in `docker-compose.yml`.
+- **Ack/Nack explícitos**: The consumer confirms messages on success and differentiates `nack` without requeue for validation errors vs requeue on transient errors.

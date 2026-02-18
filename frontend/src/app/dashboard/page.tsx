@@ -6,19 +6,15 @@ import { audioService } from "@/services/AudioService";
 import styles from "@/styles/page.module.css";
 
 /**
- * Dashboard for attended appointments — Full history via WebSocket
- * Shows all appointments that have been attended with date and time
+ * Dashboard for completed appointments history.
  */
-export default function AttendedHistoryDashboard() {
+export default function CompletedHistoryDashboard() {
   const { appointments, error, connected } = useAppointmentsWebSocket();
 
   const lastCountRef = useRef<number | null>(null);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
-  /**
-   * Initializes audio and waits for user gesture
-   */
   useEffect(() => {
     audioService.init("/sounds/ding.mp3", 0.6);
 
@@ -36,39 +32,30 @@ export default function AttendedHistoryDashboard() {
     };
   }, []);
 
-  /**
-   * Detects new attended appointment → plays sound
-   */
   useEffect(() => {
-    // First render → only save snapshot
     if (lastCountRef.current === null) {
-      const attendedCount = appointments.filter(t => t.estado === "atendido").length;
-      lastCountRef.current = attendedCount;
+      const completedCount = appointments.filter(t => t.status === "completed").length;
+      lastCountRef.current = completedCount;
       return;
     }
 
-    const attendedCount = appointments.filter(t => t.estado === "atendido").length;
-    if (attendedCount > lastCountRef.current) {
+    const completedCount = appointments.filter(t => t.status === "completed").length;
+    if (completedCount > lastCountRef.current) {
       if (audioService.isEnabled()) {
         audioService.play();
       }
 
-      // Elegant visual toast
       setShowToast(true);
       setTimeout(() => setShowToast(false), 2600);
     }
 
-    lastCountRef.current = attendedCount;
+    lastCountRef.current = completedCount;
   }, [appointments]);
 
-  // Filter only attended appointments and sort by timestamp descending
-  const attendedAppointments = appointments
-    .filter(t => t.estado === "atendido")
+  const completedAppointments = appointments
+    .filter(t => t.status === "completed")
     .sort((a, b) => b.timestamp - a.timestamp);
 
-  /**
-   * Formats timestamp to readable time (HH:MM:SS)
-   */
   const formatTime = (timestamp: number): string => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString("en-US", {
@@ -81,44 +68,42 @@ export default function AttendedHistoryDashboard() {
 
   return (
     <main className={styles.container}>
-      <h1 className={styles.title}>Historial de Turnos Atendidos</h1>
+      <h1 className={styles.title}>Completed Appointments History</h1>
 
-      {/* WebSocket Connection Indicator */}
       <p className={connected ? styles.connected : styles.disconnected}>
-        {connected ? "🟢 Conectado en tiempo real" : "🔴 Desconectado — reconectando..."}
+        {connected ? "🟢 Connected in real-time" : "🔴 Disconnected — reconnecting..."}
       </p>
 
       {!audioEnabled && (
         <p className={styles.audioHint}>
-          Toca la pantalla para habilitar el sonido 🔔
+          Tap the screen to enable sound 🔔
         </p>
       )}
 
       {error && <p className={styles.error}>{error}</p>}
 
-      {/* Attended appointments with time */}
-      {attendedAppointments.length > 0 && (
+      {completedAppointments.length > 0 && (
         <>
-          <h2 className={styles.sectionTitle}>✅ Atendidos ({attendedAppointments.length})</h2>
+          <h2 className={styles.sectionTitle}>✅ Completed ({completedAppointments.length})</h2>
           <ul className={styles.list}>
-            {attendedAppointments.map((t) => (
+            {completedAppointments.map((t) => (
               <li key={t.id} className={`${styles.item} ${styles.atendido}`}>
-                <span className={styles.nombre}>{t.nombre}</span>
+                <span className={styles.nombre}>{t.fullName}</span>
                 <span className={styles.hora}>{formatTime(t.timestamp)}</span>
-                <span>Consultorio {t.consultorio}</span>
+                <span>Office {t.office}</span>
               </li>
             ))}
           </ul>
         </>
       )}
 
-      {attendedAppointments.length === 0 && !error && (
-        <p className={styles.empty}>No hay turnos atendidos</p>
+      {completedAppointments.length === 0 && !error && (
+        <p className={styles.empty}>No completed appointments yet</p>
       )}
 
       {showToast && (
         <div className={styles.toast}>
-          ✅ Turno completado
+          ✅ Appointment completed
         </div>
       )}
     </main>

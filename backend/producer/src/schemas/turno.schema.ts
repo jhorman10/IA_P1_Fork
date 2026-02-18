@@ -1,41 +1,37 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { TurnoEstado, TurnoPriority } from '../types/turno-event';
+import { AppointmentStatus, AppointmentPriority } from '../types/turno-event';
 
-export type TurnoDocument = HydratedDocument<Turno>;
+export type AppointmentDocument = HydratedDocument<Appointment>;
 
-// ⚕️ HUMAN CHECK - Schema de Turno (Producer - lectura)
-// Debe estar sincronizado con el schema del Consumer
+// ⚕️ HUMAN CHECK - Appointment Schema (Producer - read-only)
+// Must be synced with the Consumer schema.
 @Schema({ timestamps: true })
-export class Turno {
-    // ⚕️ HUMAN CHECK - Persistencia
-    // Guardado como Number, campo renombrado a 'cedula'
+export class Appointment {
     @Prop({ required: true })
-    cedula: number;
+    idCard: number;
 
     @Prop({ required: true })
-    nombre: string;
+    fullName: string;
 
-    // ⚕️ HUMAN CHECK - Consultorio nullable
-    // null cuando el paciente está en espera
+    // ⚕️ HUMAN CHECK - Nullable office
+    // null when the patient is waiting
     @Prop({ default: null })
-    consultorio: string | null;
+    office: string | null;
 
-    // ⚕️ HUMAN CHECK - Estados del turno
-    @Prop({ default: 'espera', enum: ['espera', 'llamado', 'atendido'] })
-    estado: TurnoEstado;
+    @Prop({ default: 'waiting', enum: ['waiting', 'called', 'completed'] })
+    status: AppointmentStatus;
 
-    // ⚕️ HUMAN CHECK - Prioridad del turno
-    @Prop({ default: 'media', enum: ['alta', 'media', 'baja'] })
-    priority: TurnoPriority;
+    @Prop({ default: 'medium', enum: ['high', 'medium', 'low'] })
+    priority: AppointmentPriority;
 
-    // ⚕️ HUMAN CHECK - Timestamp de creación (epoch ms)
+    // ⚕️ HUMAN CHECK - Creation timestamp (epoch ms)
     @Prop({ default: () => Date.now() })
     timestamp: number;
 
-    // ⚕️ HUMAN CHECK - Timestamp de fin de atención
+    // ⚕️ HUMAN CHECK - Completion timestamp
     @Prop({ default: null })
-    finAtencionAt: number | null;
+    completedAt: number | null;
 }
 
-export const TurnoSchema = SchemaFactory.createForClass(Turno);
+export const AppointmentSchema = SchemaFactory.createForClass(Appointment);

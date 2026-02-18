@@ -30,12 +30,19 @@ services:
       - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq:5672
       - RABBITMQ_QUEUE=${RABBITMQ_QUEUE:-turnos_queue}
       # ⚕️ HUMAN CHECK - Cola de notificaciones (WebSocket bridge)
-      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE:-turnos_notifications}
+      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE}
       # ⚕️ HUMAN CHECK - Credenciales de conexión MongoDB (Lectura)
-      - MONGODB_URI=mongodb://${MONGO_USER:-admin}:${MONGO_PASS:-admin123}@mongodb:27017/turnos_db?authSource=admin
+      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/turnos_db?authSource=admin
     depends_on:
-      - rabbitmq
-      - mongodb
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => { if (res.statusCode === 200) process.exit(0); else process.exit(1); }).on('error', () => process.exit(1))" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - app-network
 
@@ -64,15 +71,23 @@ services:
       # ⚕️ HUMAN CHECK - Cola de notificaciones (WebSocket bridge)
       - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE:-turnos_notifications}
       # ⚕️ HUMAN CHECK - Configuración del Scheduler
-      - SCHEDULER_INTERVAL=1000
+      - SCHEDULER_INTERVAL_MS=1000
       - CONSULTORIOS_TOTAL=5
       # ⚕️ HUMAN CHECK - Credenciales de conexión MongoDB
       # No usar credenciales por defecto en producción.
-      - MONGODB_URI=mongodb://${MONGO_USER:-admin}:${MONGO_PASS:-admin123}@mongodb:27017/turnos_db?authSource=admin
+      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/turnos_db?authSource=admin
     depends_on:
-      - rabbitmq
-      - producer
-      - mongodb
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      producer:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => { if (res.statusCode === 200) process.exit(0); else process.exit(1); }).on('error', () => process.exit(1))" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - app-network
 
@@ -110,16 +125,21 @@ services:
     # ⚕️ HUMAN CHECK - Puertos Expuestos de RabbitMQ
     # El puerto 15672 (Management UI) NO debe exponerse en producción
     ports:
-      - "${RABBITMQ_PORT:-5672}:5672"
-      - "${RABBITMQ_MGMT_PORT:-15672}:15672"
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_MGMT_PORT}:15672"
     # ⚕️ HUMAN CHECK - Credenciales por defecto de RabbitMQ
     # Las credenciales guest/guest solo deben usarse en desarrollo local.
     # Usar secretos o variables de entorno seguras en producción.
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-guest}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS:-guest}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
     networks:
       - app-network
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "check_running" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # ⚕️ HUMAN CHECK - Configuración de MongoDB
   # Cambiar credenciales por defecto antes de ir a producción
@@ -127,17 +147,22 @@ services:
     container_name: P1_mongodb
     image: mongo:7
     ports:
-      - "${MONGODB_PORT:-27017}:27017"
+      - "${MONGODB_PORT}:27017"
     # ⚕️ HUMAN CHECK - Credenciales por defecto de MongoDB
     # Las credenciales admin/admin123 solo deben usarse en desarrollo local.
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER:-admin}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS:-admin123}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}
       - MONGO_INITDB_DATABASE=turnos_db
     volumes:
       - mongodb_data:/data/db
     networks:
       - app-network
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   mongodb_data:

@@ -7,8 +7,6 @@ import styles from "@/styles/page.module.css";
 
 /**
  * Main Appointments Screen — Real-time via WebSocket
- * ⚕️ HUMAN CHECK - Migrated from polling to WebSocket
- * Integrated visual optimizations from 'develop'
  */
 export default function AppointmentsScreen() {
   const { appointments, error, connected } = useAppointmentsWebSocket();
@@ -17,9 +15,6 @@ export default function AppointmentsScreen() {
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
-  /**
-   * Initializes audio and waits for user gesture
-   */
   useEffect(() => {
     audioService.init("/sounds/ding.mp3", 0.6);
 
@@ -37,11 +32,7 @@ export default function AppointmentsScreen() {
     };
   }, []);
 
-  /**
-   * Detects new appointment or state change → plays sound
-   */
   useEffect(() => {
-    // First render → only save snapshot
     if (lastCountRef.current === null) {
       lastCountRef.current = appointments.length;
       return;
@@ -52,7 +43,6 @@ export default function AppointmentsScreen() {
         audioService.play();
       }
 
-      // Elegant visual toast (from develop)
       setShowToast(true);
       setTimeout(() => setShowToast(false), 2600);
     }
@@ -60,38 +50,35 @@ export default function AppointmentsScreen() {
     lastCountRef.current = appointments.length;
   }, [appointments]);
 
-  // Separate appointments by status for better visualization
-  const calledAppointments = appointments.filter(t => t.estado === "llamado");
-  const waitingAppointments = appointments.filter(t => t.estado === "espera");
+  const calledAppointments = appointments.filter(t => t.status === "called");
+  const waitingAppointments = appointments.filter(t => t.status === "waiting");
 
   return (
     <main className={styles.container}>
-      <h1 className={styles.title}>Turnos Habilitados</h1>
+      <h1 className={styles.title}>Available Appointments</h1>
 
-      {/* WebSocket Connection Indicator */}
       <p className={connected ? styles.connected : styles.disconnected}>
-        {connected ? "🟢 Conectado en tiempo real" : "🔴 Desconectado — reconectando..."}
+        {connected ? "🟢 Connected in real-time" : "🔴 Disconnected — reconnecting..."}
       </p>
 
       {!audioEnabled && (
         <p className={styles.audioHint}>
-          Toca la pantalla para habilitar el sonido 🔔
+          Tap the screen to enable sound 🔔
         </p>
       )}
 
       {error && <p className={styles.error}>{error}</p>}
 
-      {/* Called appointments (assigned to a consultorio) */}
       {calledAppointments.length > 0 && (
         <>
           <h2 className={styles.sectionTitle}>📢 Called</h2>
           <ul className={styles.list}>
             {calledAppointments.map((t) => (
               <li key={t.id} className={`${styles.item} ${styles.highlight}`}>
-                <span className={styles.nombre}>{t.nombre}</span>
-                <span>Consultorio {t.consultorio}</span>
+                <span className={styles.nombre}>{t.fullName}</span>
+                <span>Office {t.office}</span>
                 <span className={styles.badge}>
-                  {t.priority === "alta" ? "🔴" : t.priority === "media" ? "🟡" : "🟢"} {t.priority}
+                  {t.priority === "high" ? "🔴" : t.priority === "medium" ? "🟡" : "🟢"} {t.priority}
                 </span>
               </li>
             ))}
@@ -99,17 +86,16 @@ export default function AppointmentsScreen() {
         </>
       )}
 
-      {/* Waiting appointments */}
       {waitingAppointments.length > 0 && (
         <>
           <h2 className={styles.sectionTitle}>⏳ Waiting</h2>
           <ul className={styles.list}>
             {waitingAppointments.map((t) => (
               <li key={t.id} className={styles.item}>
-                <span className={styles.nombre}>{t.nombre}</span>
-                <span>Consultorio no asignado</span>
+                <span className={styles.nombre}>{t.fullName}</span>
+                <span>Office not assigned</span>
                 <span className={styles.badge}>
-                  {t.priority === "alta" ? "🔴" : t.priority === "media" ? "🟡" : "🟢"} {t.priority}
+                  {t.priority === "high" ? "🔴" : t.priority === "medium" ? "🟡" : "🟢"} {t.priority}
                 </span>
               </li>
             ))}
@@ -118,12 +104,12 @@ export default function AppointmentsScreen() {
       )}
 
       {appointments.length === 0 && !error && (
-        <p className={styles.empty}>No hay turnos registrados</p>
+        <p className={styles.empty}>No appointments registered</p>
       )}
 
       {showToast && (
         <div className={styles.toast}>
-          🔔 Nuevo turno llamado
+          🔔 New appointment called
         </div>
       )}
     </main>

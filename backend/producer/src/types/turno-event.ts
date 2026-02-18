@@ -1,28 +1,28 @@
-// ⚕️ HUMAN CHECK - Tipos compartidos del dominio Turno
-// Estos tipos centralizan la definición de estados, prioridades y payloads
-// para evitar duplicación y garantizar type safety entre servicios
+// ⚕️ HUMAN CHECK - Domain types for Appointment
+// These types centralize definitions for states, priorities, and payloads
+// to ensure type safety and consistency across services.
 
 /**
- * Estados válidos del ciclo de vida de un turno
+ * Valid states for the appointment lifecycle
  */
-export type TurnoEstado = 'espera' | 'llamado' | 'atendido';
+export type AppointmentStatus = 'waiting' | 'called' | 'completed';
 
 /**
- * Prioridades válidas para la asignación de consultorios
+ * Valid priorities for office assignment
  */
-export type TurnoPriority = 'alta' | 'media' | 'baja';
+export type AppointmentPriority = 'high' | 'medium' | 'low';
 
 /**
- * Payload estandarizado para eventos RabbitMQ y WebSocket.
- * Usado por: Consumer (emit), Producer (receive + broadcast), Frontend (receive).
+ * Standardized payload for RabbitMQ and WebSocket events.
+ * Used by: Consumer (emit), Producer (receive + broadcast), Frontend (receive).
  */
-export interface TurnoEventPayload {
+export interface AppointmentEventPayload {
     id: string;
-    nombre: string;
-    cedula: number;
-    consultorio: string | null;
-    estado: TurnoEstado;
-    priority: TurnoPriority;
+    fullName: string;
+    idCard: number;
+    office: string | null;
+    status: AppointmentStatus;
+    priority: AppointmentPriority;
     timestamp: number;
-    finAtencionAt?: number;
+    completedAt?: number;
 }

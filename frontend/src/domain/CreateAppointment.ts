@@ -1,13 +1,11 @@
-// ⚕️ HUMAN CHECK - DTO frontend sincronizado con backend
-// cedula era string pero el backend lo espera como number. Corregido.
+// ⚕️ HUMAN CHECK - Frontend DTO synced with backend
 export interface CreateAppointmentDTO {
-    nombre: string;
-    cedula: number;
-    priority?: "alta" | "media" | "baja";
+    fullName: string;
+    idCard: number;
+    priority?: "high" | "medium" | "low";
 }
 
-// ⚕️ HUMAN CHECK - Respuesta sincronizada con backend (ProducerService)
-// El backend retorna status:'accepted', no 'queued'
+// ⚕️ HUMAN CHECK - Response synced with backend (ProducerService)
 export interface CreateAppointmentResponse {
     status: "accepted" | "error";
     message: string;

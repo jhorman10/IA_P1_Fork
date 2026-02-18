@@ -8,7 +8,7 @@ describe('SchedulerService', () => {
     let service: SchedulerService;
     let turnosService: TurnosService;
 
-    const mockTurnosService = {
+    const mockAppointmentsService = {
         finalizarTurnosLlamados: jest.fn(),
         getConsultoriosOcupados: jest.fn(),
         findPacientesEnEspera: jest.fn(),
@@ -24,8 +24,8 @@ describe('SchedulerService', () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 SchedulerService,
-                { provide: TurnosService, useValue: mockTurnosService },
-                { provide: 'TURNOS_NOTIFICATIONS', useValue: mockNotificationsClient },
+                { provide: TurnosService, useValue: mockAppointmentsService },
+                { provide: 'APPOINTMENT_NOTIFICATIONS', useValue: mockNotificationsClient },
             ],
         }).compile();
 
@@ -44,34 +44,34 @@ describe('SchedulerService', () => {
     describe('handleSchedulerTick', () => {
         it('should assign a consultorio if there are waiting patients and free consultorios', async () => {
             // Setup
-            mockTurnosService.finalizarTurnosLlamados.mockResolvedValue([]);
-            mockTurnosService.getConsultoriosOcupados.mockResolvedValue(['1', '2']); // 5 total, 3 free
-            mockTurnosService.findPacientesEnEspera.mockResolvedValue([{ _id: 'turno1', nombre: 'Test' }]);
-            mockTurnosService.asignarConsultorio.mockResolvedValue({ 
-                _id: 'turno1', 
-                nombre: 'Test', 
-                consultorio: '3' 
+            mockAppointmentsService.finalizarTurnosLlamados.mockResolvedValue([]);
+            mockAppointmentsService.getConsultoriosOcupados.mockResolvedValue(['1', '2']); // 5 total, 3 free
+            mockAppointmentsService.findPacientesEnEspera.mockResolvedValue([{ _id: 'appointment1', fullName: 'Test' }]);
+            mockAppointmentsService.asignarConsultorio.mockResolvedValue({
+                _id: 'appointment1',
+                fullName: 'Test',
+                consultorio: '3'
             });
 
             // Execute
             await service.handleSchedulerTick();
 
             // Verify
-            expect(mockTurnosService.asignarConsultorio).toHaveBeenCalledWith('turno1', '3');
-            expect(mockNotificationsClient.emit).toHaveBeenCalledWith('turno_actualizado', expect.anything());
+            expect(mockAppointmentsService.asignarConsultorio).toHaveBeenCalledWith('appointment1', '3');
+            expect(mockNotificationsClient.emit).toHaveBeenCalledWith('appointment_updated', expect.anything());
         });
 
         it('should do nothing if no consultorios are free', async () => {
             // Setup
-            mockTurnosService.finalizarTurnosLlamados.mockResolvedValue([]);
-            mockTurnosService.getConsultoriosOcupados.mockResolvedValue(['1', '2', '3', '4', '5']); // All 5 occupied
+            mockAppointmentsService.finalizarTurnosLlamados.mockResolvedValue([]);
+            mockAppointmentsService.getConsultoriosOcupados.mockResolvedValue(['1', '2', '3', '4', '5']); // All 5 occupied
 
             // Execute
             await service.handleSchedulerTick();
 
             // Verify
-            expect(mockTurnosService.findPacientesEnEspera).not.toHaveBeenCalled();
-            expect(mockTurnosService.asignarConsultorio).not.toHaveBeenCalled();
+            expect(mockAppointmentsService.findPacientesEnEspera).not.toHaveBeenCalled();
+            expect(mockAppointmentsService.asignarConsultorio).not.toHaveBeenCalled();
         });
     });
 });

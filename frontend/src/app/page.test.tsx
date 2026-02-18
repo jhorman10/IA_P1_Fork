@@ -2,16 +2,14 @@
  * @jest-environment jsdom
  */
 import { render, screen } from '@testing-library/react';
-import Home from '../app/page';
-
-// 📂 SHOULD BE LOCATED AT: frontend/src/app/page.test.tsx
+import Home from './page';
 
 // Mock del hook personalizado
-jest.mock('../hooks/useTurnosWebSocket', () => ({
-    useTurnosWebSocket: () => ({
-        turnos: [
-            { id: '1', nombre: 'Test Patient', estado: 'espera', consultorio: null },
-            { id: '2', nombre: 'Active Patient', estado: 'llamado', consultorio: '1' }
+jest.mock('../hooks/useAppointmentsWebSocket', () => ({
+    useAppointmentsWebSocket: () => ({
+        appointments: [
+            { id: '1', fullName: 'Test Patient', status: 'waiting', office: null },
+            { id: '2', fullName: 'Active Patient', status: 'called', office: '1' }
         ],
         error: null,
         connected: true
@@ -21,17 +19,17 @@ jest.mock('../hooks/useTurnosWebSocket', () => ({
 describe('Home Page', () => {
     it('renders the title', () => {
         render(<Home />);
-        const title = screen.getByText(/Turnos Médicos/i);
+        const title = screen.getByText(/Appointments/i);
         expect(title).toBeInTheDocument();
     });
 
     it('displays connected status', () => {
         render(<Home />);
-        const status = screen.getByText(/Conectado/i);
+        const status = screen.getByText(/Connected/i);
         expect(status).toBeInTheDocument();
     });
 
-    it('renders list of turnos', () => {
+    it('renders list of appointments', () => {
         render(<Home />);
         expect(screen.getByText('Test Patient')).toBeInTheDocument();
         expect(screen.getByText('Active Patient')).toBeInTheDocument();

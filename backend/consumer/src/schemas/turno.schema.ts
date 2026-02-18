@@ -1,47 +1,40 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { TurnoEstado, TurnoPriority } from '../types/turno-event';
+import { AppointmentStatus, AppointmentPriority } from '../types/turno-event';
 
-export type TurnoDocument = HydratedDocument<Turno>;
+export type AppointmentDocument = HydratedDocument<Appointment>;
 
-// ⚕️ HUMAN CHECK - Schema de Turno
-// Verificar que los campos y tipos sean suficientes para las necesidades del negocio
+// ⚕️ HUMAN CHECK - Appointment Schema
+// Ensuring fields and types meet business needs.
 @Schema({ timestamps: true })
-export class Turno {
-    // ⚕️ HUMAN CHECK - Persistencia
-    // Guardado como Number, campo renombrado a 'cedula'
+export class Appointment {
     @Prop({ required: true })
-    cedula: number;
+    idCard: number;
 
     @Prop({ required: true })
-    nombre: string;
+    fullName: string;
 
-    // ⚕️ HUMAN CHECK - Consultorio nullable
-    // null cuando el paciente está en espera, se asigna por el scheduler
+    // ⚕️ HUMAN CHECK - Nullable office
+    // null when waiting, assigned by the scheduler
     @Prop({ default: null })
-    consultorio: string | null;
+    office: string | null;
 
-    // ⚕️ HUMAN CHECK - Estados del turno
-    // espera: recién creado, sin consultorio
-    // llamado: consultorio asignado por el scheduler
-    // atendido: paciente ya fue atendido
-    @Prop({ default: 'espera', enum: ['espera', 'llamado', 'atendido'] })
-    estado: TurnoEstado;
+    // ⚕️ HUMAN CHECK - Appointment states
+    @Prop({ default: 'waiting', enum: ['waiting', 'called', 'completed'] })
+    status: AppointmentStatus;
 
-    // ⚕️ HUMAN CHECK - Prioridad del turno
-    // Determina el orden de asignación en el scheduler
-    @Prop({ default: 'media', enum: ['alta', 'media', 'baja'] })
-    priority: TurnoPriority;
+    // ⚕️ HUMAN CHECK - Appointment priority
+    // Determines assignment order in the scheduler
+    @Prop({ default: 'medium', enum: ['high', 'medium', 'low'] })
+    priority: AppointmentPriority;
 
-    // ⚕️ HUMAN CHECK - Timestamp de creación (epoch ms)
-    // Usado para ordenar turnos dentro de la misma prioridad
+    // ⚕️ HUMAN CHECK - Creation timestamp (epoch ms)
     @Prop({ default: () => Date.now() })
     timestamp: number;
 
-    // ⚕️ HUMAN CHECK - Timestamp de fin de atención
-    // Calculado aleatoriamente (8-15s) al asignar consultorio
+    // ⚕️ HUMAN CHECK - Completion timestamp
     @Prop({ default: null })
-    finAtencionAt: number | null;
+    completedAt: number | null;
 }
 
-export const TurnoSchema = SchemaFactory.createForClass(Turno);
+export const AppointmentSchema = SchemaFactory.createForClass(Appointment);

@@ -1,6 +1,6 @@
 import { BadRequestException, Controller, Inject, Logger } from '@nestjs/common';
 import { ClientProxy, Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
-import { CreateTurnoDto } from './dto/create-turno.dto';
+import { CreateAppointmentDto } from './dto/create-turno.dto';
 import { TurnosService } from './turnos/turnos.service';
 import { NotificationsService } from './notifications/notifications.service';
 
@@ -14,49 +14,39 @@ export class ConsumerController {
         @Inject('TURNOS_NOTIFICATIONS') private readonly notificationsClient: ClientProxy,
     ) { }
 
-    @EventPattern('crear_turno')
-    async handleCrearTurno(@Payload() data: CreateTurnoDto, @Ctx() context: RmqContext): Promise<void> {
+    @EventPattern('create_appointment')
+    async handleCreateAppointment(@Payload() data: CreateAppointmentDto, @Ctx() context: RmqContext): Promise<void> {
         const channel = context.getChannelRef();
         const originalMsg = context.getMessage();
 
-        // ⚕️ HUMAN CHECK - Lógica de Procesamiento de Mensajes
-        // Verificar que los datos recibidos tengan la estructura esperada
-        this.logger.log(`Recibido mensaje: ${JSON.stringify(data)}`);
+        this.logger.log(`Received message: ${JSON.stringify(data)}`);
 
         try {
-            // ⚕️ HUMAN CHECK - Validación explícita post-transform
-            if (typeof data.cedula !== 'number' || Number.isNaN(data.cedula)) {
-                throw new BadRequestException('cedula debe ser numérica');
+            if (typeof data.idCard !== 'number' || Number.isNaN(data.idCard)) {
+                throw new BadRequestException('idCard must be numeric');
             }
 
-            // Persistir turno en MongoDB (estado: espera, sin consultorio)
-            const turno = await this.turnosService.crearTurno(data);
+            // Persist appointment in MongoDB (status: waiting, no office)
+            const appointment = await this.turnosService.createAppointment(data);
             this.logger.log(
-                `Turno creado en espera para paciente ${turno.cedula} — ID: ${turno._id}`,
+                `Appointment created for patient ${appointment.idCard} — ID: ${appointment._id}`,
             );
 
-            // Enviar notificación (log)
-            await this.notificationsService.sendNotification(String(turno.cedula), turno.consultorio);
+            // Send notification (log)
+            await this.notificationsService.sendNotification(String(appointment.idCard), appointment.office);
 
-            // ⚕️ HUMAN CHECK - Emitir evento turno_creado al Producer
-            // El Producer recibirá este evento y hará broadcast por WebSocket
-            // Usa toEventPayload() para garantizar type safety
+            // Emit appointment_created event to Producer
             this.notificationsClient.emit(
-                'turno_creado',
-                this.turnosService.toEventPayload(turno),
+                'appointment_created',
+                this.turnosService.toEventPayload(appointment),
             );
 
-            // ⚕️ HUMAN CHECK - Confirmación Manual (Ack)
-            // Solo confirmar si el procesamiento fue exitoso para evitar bloqueo por prefetch=1
+            // Manual Acknowledgement
             channel.ack(originalMsg);
         } catch (error: unknown) {
-            // ⚕️ HUMAN CHECK - Error tipado (eliminado any implícito en catch)
             const message = error instanceof Error ? error.message : String(error);
-            this.logger.error(`Error procesando mensaje: ${message}`);
+            this.logger.error(`Error processing message: ${message}`);
 
-            // ⚕️ HUMAN CHECK - Manejo de errores con nack controlado
-            // - Errores de validación: no requeue para evitar loops infinitos
-            // - Errores transitorios (otros): requeue=true para reintentar
             if (error instanceof BadRequestException) {
                 channel.nack(originalMsg, false, false);
             } else {

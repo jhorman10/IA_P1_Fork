@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConsumerController } from './consumer.controller';
+import { HealthController } from './health.controller';
 import { TurnosModule } from './turnos/turnos.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
@@ -33,7 +34,7 @@ import { SchedulerModule } from './scheduler/scheduler.module';
         SchedulerModule,
         TurnosModule,
     ],
-    controllers: [ConsumerController],
+    controllers: [ConsumerController, HealthController],
     providers: [],
 })
 export class AppModule { }

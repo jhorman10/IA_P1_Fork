@@ -1,10 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateTurnoDto } from './dto/create-turno.dto';
+import { CreateAppointmentDto } from './dto/create-turno.dto';
 
-// ⚕️ HUMAN CHECK - Respuesta tipada del endpoint POST /turnos
-// Coincide con el schema de Swagger en producer.controller.ts
-export interface CreateTurnoResponse {
+export interface CreateAppointmentResponse {
     status: 'accepted';
     message: string;
 }
@@ -15,17 +13,13 @@ export class ProducerService {
 
     constructor(@Inject('TURNOS_SERVICE') private readonly client: ClientProxy) { }
 
-    // ⚕️ HUMAN CHECK - Tipo de retorno explícito (eliminado any implícito)
-    async createTurno(createTurnoDto: CreateTurnoDto): Promise<CreateTurnoResponse> {
-        // ⚕️ HUMAN CHECK - Manejo de errores de publicación
-        // Verificar si se requiere una estrategia de reintento o confirmación (confirmChannel)
+    async createAppointment(createAppointmentDto: CreateAppointmentDto): Promise<CreateAppointmentResponse> {
         try {
-            this.client.emit('crear_turno', createTurnoDto);
-            return { status: 'accepted', message: 'Turno en proceso de asignación' };
+            this.client.emit('create_appointment', createAppointmentDto);
+            return { status: 'accepted', message: 'Appointment assignment in progress' };
         } catch (error: unknown) {
-            // ⚕️ HUMAN CHECK - Reemplazado console.error por Logger (consistencia con el resto del proyecto)
             const message = error instanceof Error ? error.message : String(error);
-            this.logger.error(`Error publicando mensaje: ${message}`);
+            this.logger.error(`Error publishing message: ${message}`);
             throw error;
         }
     }

@@ -4,20 +4,20 @@ export async function GET() {
     const data = [
         {
             id: "1",
-            nombre: "Demo Patient",
-            consultorio: "101",
+            fullName: "Demo Patient",
+            office: "101",
             timestamp: Date.now(),
         },
         {
             id: "2",
-            nombre: "Demo Patient 2",
-            consultorio: "102",
+            fullName: "Demo Patient 2",
+            office: "102",
             timestamp: Date.now(),
         },
         {
             id: "3",
-            nombre: "Demo Patient 3",
-            consultorio: "103",
+            fullName: "Demo Patient 3",
+            office: "103",
             timestamp: Date.now(),
         },
     ];
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     try {
         const body = await req.json();
 
-        if (!body?.nombre || !body?.cedula) {
+        if (!body?.fullName || !body?.idCard) {
             return NextResponse.json(
                 {
                     status: "error",
@@ -40,7 +40,6 @@ export async function POST(req: Request) {
             );
         }
 
-        // Mocking queue (RabbitMQ in the future)
         return NextResponse.json({
             status: "accepted",
             message: "Appointment registered successfully",
@@ -57,4 +56,3 @@ export async function POST(req: Request) {
         );
     }
 }
-

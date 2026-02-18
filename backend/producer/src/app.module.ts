@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProducerController } from './producer.controller';
+import { HealthController } from './health.controller';
 import { ProducerService } from './producer.service';
 import { TurnosModule } from './turnos/turnos.module';
 import { EventsModule } from './events/events.module';
@@ -45,7 +46,7 @@ import { EventsModule } from './events/events.module';
         // ⚕️ HUMAN CHECK - Módulo de Eventos (WebSocket + RabbitMQ listener)
         EventsModule,
     ],
-    controllers: [ProducerController],
+    controllers: [ProducerController, HealthController],
     providers: [ProducerService],
 })
 export class AppModule { }

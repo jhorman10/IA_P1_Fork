@@ -4,18 +4,16 @@ import { ClientProxy } from '@nestjs/microservices';
 import { TurnosService } from '../turnos/turnos.service';
 import { ConfigService } from '@nestjs/config';
 
-// ⚕️ HUMAN CHECK - Scheduler de asignación de consultorios
-// Ahora el intervalo se lee desde ConfigService: SCHEDULER_INTERVAL_MS (default 15000ms, alineado con README)
-
-// ⚕️ HUMAN CHECK - Número total de consultorios
-// Configurable vía CONSULTORIOS_TOTAL. Reducido a 5 por requerimiento.
-const DEFAULT_CONSULTORIOS = 5;
+// ⚕️ HUMAN CHECK - Office assignment scheduler
+// Interval read from ConfigService: SCHEDULER_INTERVAL_MS
+const DEFAULT_OFFICES = 5;
 
 @Injectable()
 export class SchedulerService {
     private readonly logger = new Logger(SchedulerService.name);
-    private readonly totalConsultorios: number;
+    private readonly totalOffices: number;
     private readonly intervalMs: number;
+    private readonly allOffices: string[];
 
     constructor(
         private readonly turnosService: TurnosService,
@@ -23,87 +21,83 @@ export class SchedulerService {
         private readonly schedulerRegistry: SchedulerRegistry,
         @Inject('TURNOS_NOTIFICATIONS') private readonly notificationsClient: ClientProxy,
     ) {
-        // ⚕️ HUMAN CHECK - Configuración vía ConfigService
-        // SCHEDULER_INTERVAL_MS configurable (default 15000ms) alineado con README
         this.intervalMs = Number(this.configService.get('SCHEDULER_INTERVAL_MS')) || 15000;
-        this.totalConsultorios = Number(this.configService.get('CONSULTORIOS_TOTAL')) || DEFAULT_CONSULTORIOS;
-        this.logger.log(
-            `Scheduler iniciado — ${this.totalConsultorios} consultorios, intervalo: ${this.intervalMs}ms`,
+        this.totalOffices = Number(this.configService.get('CONSULTORIOS_TOTAL')) || DEFAULT_OFFICES;
+
+        // Precalculate offices array
+        this.allOffices = Array.from(
+            { length: this.totalOffices },
+            (_, i) => String(i + 1),
         );
 
-        // ⚕️ HUMAN CHECK - Registro dinámico en SchedulerRegistry
-        // Se mantiene la arquitectura de scheduler, pero con intervalo configurable en tiempo de arranque.
+        this.logger.log(
+            `Scheduler started — ${this.totalOffices} offices, interval: ${this.intervalMs}ms`,
+        );
+
         const interval = setInterval(() => {
             void this.handleSchedulerTick();
         }, this.intervalMs);
-        this.schedulerRegistry.addInterval('scheduler-asignacion-turnos', interval);
+        this.schedulerRegistry.addInterval('appointment-assignment-scheduler', interval);
     }
 
-    // ⚕️ HUMAN CHECK - Scheduler de asignación de consultorios
-    // Se ejecuta cada intervalo configurado (default 15000ms)
-    // 1. Finaliza turnos llamados (llamado -> atendido)
-    // 2. Asigna consultorios libres a pacientes en espera
     async handleSchedulerTick(): Promise<void> {
         try {
-            // ⚕️ HUMAN CHECK - Paso 0: Finalizar turnos anteriores
-            // Antes de asignar nuevos consultorios, liberamos los que ya fueron llamados
-            // para que el flujo sea rápido (cada 5s hay una rotación completa si hay gente)
-            const finalizados = await this.turnosService.finalizarTurnosLlamados();
-            for (const t of finalizados) {
+            // Step 0: Complete previous appointments
+            const completed = await this.turnosService.completeCalledAppointments();
+            for (const t of completed) {
                 this.notificationsClient.emit(
-                    'turno_actualizado',
+                    'appointment_updated',
                     this.turnosService.toEventPayload(t),
                 );
             }
 
-            // 1. Obtener consultorios ocupados (en este punto deberían ser 0 tras finalizarTurnosLlamados)
-            const ocupados = await this.turnosService.getConsultoriosOcupados();
-            this.logger.debug(`Consultorios ocupados: [${ocupados.join(', ')}]`);
+            // 1. Get occupied offices
+            const occupied = await this.turnosService.getOccupiedOffices();
+            this.logger.debug(`Occupied offices: [${occupied.join(', ')}]`);
 
-            // 2. Calcular consultorios libres
-            const todosConsultorios = Array.from(
-                { length: this.totalConsultorios },
-                (_, i) => String(i + 1),
-            );
-            const libres = todosConsultorios.filter(c => !ocupados.includes(c));
+            // 2. Filter free offices
+            const freeOffices = this.allOffices.filter(c => !occupied.includes(c));
 
-            if (libres.length === 0) {
-                this.logger.debug('No hay consultorios libres — esperando...');
+            if (freeOffices.length === 0) {
+                this.logger.debug('No free offices — waiting...');
                 return;
             }
 
-            // 3. Obtener pacientes en espera (ordenados por prioridad + timestamp)
-            const enEspera = await this.turnosService.findPacientesEnEspera();
+            // 3. Get waiting appointments
+            const waiting = await this.turnosService.findWaitingAppointments();
 
-            if (enEspera.length === 0) {
-                this.logger.debug('No hay pacientes en espera');
+            if (waiting.length === 0) {
+                this.logger.debug('No waiting appointments');
                 return;
             }
 
-            // 4. Asignar el primer consultorio libre al primer paciente en espera
-            const paciente = enEspera[0];
-            const consultorio = libres[0];
+            // 4. Batch Assignment
+            const possibleAssignments = Math.min(freeOffices.length, waiting.length);
+            this.logger.log(`Processing batch of ${possibleAssignments} assignments...`);
 
-            // ⚕️ HUMAN CHECK - Asignación atómica
-            const turnoActualizado = await this.turnosService.asignarConsultorio(
-                String(paciente._id),
-                consultorio,
-            );
+            for (let i = 0; i < possibleAssignments; i++) {
+                const pending = waiting[i];
+                const office = freeOffices[i];
 
-            if (turnoActualizado) {
-                this.logger.log(
-                    `✅ Consultorio ${consultorio} asignado a ${turnoActualizado.nombre} (cédula: ${turnoActualizado.cedula})`,
+                const updatedAppointment = await this.turnosService.assignOffice(
+                    String(pending._id),
+                    office,
                 );
 
-                // 5. Emitir evento tipado para que el Producer haga broadcast por WebSocket
-                this.notificationsClient.emit(
-                    'turno_actualizado',
-                    this.turnosService.toEventPayload(turnoActualizado),
-                );
+                if (updatedAppointment) {
+                    this.logger.log(
+                        `✅ [Batch] Office ${office} assigned to ${updatedAppointment.fullName}`,
+                    );
+
+                    this.notificationsClient.emit(
+                        'appointment_updated',
+                        this.turnosService.toEventPayload(updatedAppointment),
+                    );
+                }
             }
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
-            this.logger.error(`Error en scheduler de asignación: ${message}`);
+            this.logger.error(`Error in assignment scheduler: ${message}`);
         }
     }
 }

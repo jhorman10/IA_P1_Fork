@@ -17,37 +17,31 @@ This project uses an **AI-First** methodology where the AI acts as a "Junior Dev
 3. **Refinement**: The code is adjusted according to best practices and project-specific requirements.
 4. **Validation**: Tests are run and the correct functioning of the system is verified.
 
-## Sentinel Comments
+## Sentinel Comments & Traceability
 
-`// ⚕️ HUMAN CHECK` comments are used in the following critical areas:
+This project uses `// ⚕️ HUMAN CHECK` to mark points where human intervention was required.
 
-- Docker Compose configuration (ports, networks, volumes)
-- Dockerfiles (base image versions)
-- Environment variables (credentials and sensitive configuration)
-- RabbitMQ configuration (queues, exchanges, credentials)
-- API endpoints (validation and security)
+### Examples of Evidence:
+- **`docker-compose.yml`**: Configured healthchecks and memory limits.
+- **`backend/producer/src/dto/create-appointment.dto.ts`**: Added specific validations for `idCard` range.
+- **`backend/consumer/src/scheduler/scheduler.service.ts`**: Optimized hot path for performance.
 
-## What the AI Got Wrong
+## Prompts Used (Real Examples)
 
-- The AI tends to generate configurations with default credentials (e.g., `guest/guest` in RabbitMQ) that must be changed in production.
-- In some cases, the AI does not include adequate input validations in the endpoints.
-- The Docker configurations initially generated do not always optimize the use of cache layers.
-- The AI may generate dependencies with outdated or mutually incompatible versions.
+1. **Initial Refactor**: *"Refactorizar nomenclatura de español a inglés en todo el proyecto."* (Iteración 1: Falló en WebSocket interfaces -> Iteración 2: Corregido con Shared Types).
+2. **Docker Orchestration**: *"Añadir healthchecks y asegurar que consumer espere a rabbitmq realmente."* (Resultado: Implementación de HealthControllers).
 
-## CSS Guidelines
+## What the AI Got Wrong (Anti-Pattern Log)
 
-- **No external CSS frameworks**: Use only the existing `page.module.css` file.
-- Avoid installing Tailwind, Bootstrap, or any external CSS library.
-- All styles must be added to the existing CSS modules in the project.
+| Problema | Cómo se detectó | Fix aplicado | Prevención |
+| :--- | :--- | :--- | :--- |
+| **Credenciales Hardcodeadas** | Auditoría manual en `docker-compose.yml` | Uso de `.env` y variables de entorno | Checklist de pre-deployment |
+| **Race Conditions** | Stress testing en la asignación de turnos | Bloqueo lógico y validación de estado previo | Tests unitarios concurrentes |
+| **Nomenclatura inconsistente** | Code Review manual | Refactor total a idioma inglés | Guía de estilos en `agent.md` |
+| **Falta de Validaciones** | Errores 500 en el backend al enviar tipos incorrectos | Decoradores `class-validator` en DTOs | Middleware de validación global |
 
-## Interaction Dynamics
+## Recent Architectural Updates
 
-- **Boilerplate**: The AI generates the entire initial project structure without manual code writing.
-- **Peer review**: Each PR is reviewed by at least one team member before merging.
-- **Continuous iteration**: The team iterates on the generated code, progressively improving quality.
-
-## Mandatory Correction Protocol
-
-Every time a fix or correction is applied, the following comment format must be used:
-`// ⚕️ HUMAN CHECK - <Correction Description>`
-This rule must be followed in every iteration where code is corrected.
+- **English Naming Convention**: The project has undergone a complete refactor (e.g., `Appointment` instead of `Turno`).
+- **Shared Types**: Use `AppointmentEventPayload` for all RabbitMQ and WebSocket events.
+- **Automated Tests**: Moved critical tests to `src` directories for continuous validation.
