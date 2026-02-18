@@ -10,6 +10,8 @@
 > 3. **AUTOINVOCACIÓN DE SKILLS:** Identifica los triggers en la solicitud del usuario y carga las skills correspondientes definidas en la sección Skill References.
 > 4. **GESTIÓN DE HIGIENE DE CONTEXTO:** Al concluir una tarea delegada, exige al Sub-agente un "Resumen de Acción" usando `skills/action-summary-template.md`. Integra únicamente este resumen en tu historial, descartando los pasos intermedios.
 > 5. **NAVEGACIÓN JERÁRQUICA:** Si la información en este root es insuficiente, navega hacia archivos `agent.md` de subdirectorios específicos (ej. `/backend/`, `/frontend/`).
+> 6. **TRAZABILIDAD OBLIGATORIA:** Cada interacción, cambio y commit entre humano y máquina DEBE registrarse en `AI_WORKFLOW.md`. Incluir: commit hash, actor (👤/🤖), descripción, y decisiones humanas relevantes.
+> 7. **APROBACIÓN HUMANA PREVIA:** Antes de ejecutar cualquier cambio, el SA DEBE presentar un **Plan de Acción** al humano. El humano puede: ✅ Aprobar, ✏️ Corregir, ❌ Rechazar. Ningún cambio se ejecuta sin aprobación explícita.
 
 ---
 
@@ -75,14 +77,24 @@ Por cada ítem de feedback, instancia un **Sub-agente (SA)** con contexto indepe
 
 #### 3.2 Flujo de trabajo
 ```
-1. LEER    → DEBT_REPORT.md (estado actual)
-2. ELEGIR  → Siguiente ítem pendiente (status: ⬜)
-3. MATCH   → Identificar skill por trigger (ver Skill References)
-4. DELEGAR → Crear SA con contexto: {ítem, skill.md, archivos en scope}
-5. RECIBIR → Resumen de Acción del SA (ver skills/action-summary-template.md)
-6. ACTUALIZAR → Marcar ítem como ✅ en DEBT_REPORT.md
-7. PURGAR  → Descartar razonamiento intermedio del SA, conservar solo el resumen
-8. REPETIR → Siguiente ítem
+ 1. LEER      → DEBT_REPORT.md (estado actual)
+ 2. ELEGIR    → Siguiente ítem pendiente (status: ⬜)
+ 3. MATCH     → Identificar skill por trigger (ver Skill References)
+ 4. PLANIFICAR→ SA presenta Plan de Acción al humano:
+                ├── Archivos a modificar
+                ├── Cambios propuestos (qué y por qué)
+                ├── Patrones/principios aplicados
+                └── Riesgos o breaking changes
+ 5. APROBAR   → El humano valida, corrige o rechaza el plan:
+                ├── ✅ Aprobado → SA procede a ejecutar
+                ├── ✏️ Corregido → SA ajusta plan y vuelve a paso 5
+                └── ❌ Rechazado → SA descarta y vuelve a paso 2
+ 6. EJECUTAR  → SA implementa los cambios aprobados
+ 7. RECIBIR   → Resumen de Acción del SA (ver skills/action-summary-template.md)
+ 8. REGISTRAR → Actualizar AI_WORKFLOW.md con la interacción y commits
+ 9. ACTUALIZAR→ Marcar ítem como ✅ en DEBT_REPORT.md
+10. PURGAR    → Descartar razonamiento intermedio del SA, conservar solo el resumen
+11. REPETIR   → Siguiente ítem
 ```
 
 #### 3.3 Regla de oro
@@ -93,6 +105,12 @@ Si una tarea requiere habilidades no documentadas en `/skills`, usa la skill `sk
 - Tú actualizas `DEBT_REPORT.md` y **purgas** los detalles de implementación del SA.
 - Nunca acumules contexto técnico de múltiples feedback en una sola sesión.
 
+#### 3.5 Trazabilidad en AI_WORKFLOW.md
+- **Cada interacción** (pregunta, corrección, generación de código) se registra.
+- **Cada commit** se registra con: hash, fecha, tipo, descripción, actor (👤 Humano / 🤖 IA).
+- **Cada decisión humana crítica** se documenta con contexto y justificación.
+- Este archivo es la **evidencia auditable** de la colaboración Humano-IA.
+
 ### Anti-patrones
 - ⛔ Acumular contexto técnico de múltiples feedback en una sola sesión
 - ⛔ Modificar archivos sin consultar la skill correspondiente
@@ -100,6 +118,8 @@ Si una tarea requiere habilidades no documentadas en `/skills`, usa la skill `sk
 - ⛔ Usar CSS externo (Tailwind, Bootstrap, etc.)
 - ⛔ Mezclar nomenclatura español/inglés
 - ⛔ Superar 500 líneas en este archivo (crear `agent.md` hijo si es necesario)
+- ⛔ **Ejecutar cambios sin presentar Plan de Acción al humano primero**
+- ⛔ **Omitir el registro de interacciones en AI_WORKFLOW.md**
 
 ---
 
