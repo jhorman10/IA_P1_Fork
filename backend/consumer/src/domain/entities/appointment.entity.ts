@@ -1,4 +1,5 @@
 import { IdCard } from '../value-objects/id-card.value-object';
+import { DomainEvent } from '../events/domain-event.base';
 
 // Pattern: Entity — Domain object without infrastructure dependencies
 // ⚕️ HUMAN CHECK - Pure domain entity
@@ -7,6 +8,8 @@ export type AppointmentStatus = 'waiting' | 'called' | 'completed';
 export type AppointmentPriority = 'high' | 'medium' | 'low';
 
 export class Appointment {
+    private domainEvents: DomainEvent[] = [];
+
     constructor(
         public readonly id: string,
         public readonly idCard: IdCard,
@@ -18,13 +21,23 @@ export class Appointment {
         public completedAt?: number,
     ) { }
 
+    public recordEvent(event: DomainEvent): void {
+        this.domainEvents.push(event);
+    }
+
+    public pullEvents(): DomainEvent[] {
+        const events = [...this.domainEvents];
+        this.domainEvents = [];
+        return events;
+    }
+
     public assignOffice(office: string, durationSeconds: number, now: number): void {
         if (this.status !== 'waiting') {
             throw new Error(`Cannot assign office to appointment in ${this.status} status`);
         }
-        this.office = office;
         this.status = 'called';
-        this.completedAt = now + durationSeconds * 1000;
+        this.office = office;
+        this.completedAt = now + (durationSeconds * 1000);
     }
 
     public complete(): void {

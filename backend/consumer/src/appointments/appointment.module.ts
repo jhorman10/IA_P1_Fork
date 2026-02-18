@@ -11,6 +11,8 @@ import { SystemClockAdapter } from '../infrastructure/utils/system-clock.adapter
 import { RmqNotificationAdapter } from '../infrastructure/adapters/rmq-notification.adapter';
 import { NotificationsService } from '../notifications/notifications.service';
 import { Appointment } from '../domain/entities/appointment.entity';
+import { AppointmentEventsHandler } from '../application/event-handlers/appointment-events.handler';
+import { LocalDomainEventBusAdapter } from '../infrastructure/messaging/local-domain-event-bus.adapter';
 
 @Module({
     imports: [
@@ -49,10 +51,16 @@ import { Appointment } from '../domain/entities/appointment.entity';
             provide: 'NotificationPort',
             useClass: RmqNotificationAdapter,
         },
+        AppointmentEventsHandler,
+        {
+            provide: 'DomainEventBus',
+            inject: [AppointmentEventsHandler],
+            useFactory: (handler: AppointmentEventsHandler) => new LocalDomainEventBusAdapter(handler),
+        },
         {
             provide: 'RegisterAppointmentUseCase',
-            inject: ['AppointmentRepository', 'LoggerPort', 'NotificationPort'],
-            useFactory: (repo, logger, notification) => new RegisterAppointmentUseCaseImpl(repo, logger, notification),
+            inject: ['AppointmentRepository', 'LoggerPort', 'DomainEventBus'],
+            useFactory: (repo, logger, eventBus) => new RegisterAppointmentUseCaseImpl(repo, logger, eventBus),
         },
     ],
     exports: [
@@ -62,6 +70,7 @@ import { Appointment } from '../domain/entities/appointment.entity';
         'LoggerPort',
         'ClockPort',
         'NotificationPort',
+        'DomainEventBus',
         MongooseModule
     ],
 })

@@ -1,16 +1,17 @@
 import { AssignAvailableOfficesUseCase } from '../../domain/ports/inbound/assign-available-offices.use-case';
 import { AppointmentRepository } from '../../domain/ports/outbound/appointment.repository';
-import { NotificationPort } from '../../domain/ports/outbound/notification.port';
 import { ConsultationPolicy } from '../../domain/policies/consultation.policy';
 import { LoggerPort } from '../../domain/ports/outbound/logger.port';
 import { ClockPort } from '../../domain/ports/outbound/clock.port';
+import { DomainEventBus } from '../../domain/ports/outbound/domain-event-bus.port';
+import { AppointmentAssignedEvent } from '../../domain/events/appointment-assigned.event';
 
 export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOfficesUseCase {
     constructor(
         private readonly appointmentRepository: AppointmentRepository,
-        private readonly notificationPort: NotificationPort,
         private readonly logger: LoggerPort,
         private readonly clock: ClockPort,
+        private readonly eventBus: DomainEventBus,
         private readonly totalOffices: number,
     ) { }
 
@@ -38,10 +39,15 @@ export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOffices
 
             appointment.assignOffice(office, randomDuration, this.clock.now());
 
-            await this.appointmentRepository.save(appointment);
-            await this.notificationPort.notifyAppointmentUpdated(appointment);
+            // Record Domain Event
+            appointment.recordEvent(new AppointmentAssignedEvent(appointment));
 
-            this.logger.log(`Assigned office ${office} to appointment ${appointment.idCard}`, 'AssignAvailableOfficesUseCase');
+            await this.appointmentRepository.save(appointment);
+
+            // Dispatch Events (Decoupled Side Effects)
+            await this.eventBus.publish(appointment.pullEvents());
+
+            this.logger.log(`Assigned office ${office} to appointment ${appointment.idCard.toValue()}`, 'AssignAvailableOfficesUseCase');
         }
     }
 }

@@ -18,10 +18,10 @@ import { MaintenanceOrchestratorUseCaseImpl } from '../application/use-cases/mai
         },
         {
             provide: 'AssignAvailableOfficesUseCase',
-            inject: ['AppointmentRepository', 'NotificationPort', 'LoggerPort', 'ClockPort', ConfigService],
-            useFactory: (repo, notifier, logger, clock, config) => {
+            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort', 'DomainEventBus', ConfigService],
+            useFactory: (repo, logger, clock, eventBus, config) => {
                 const totalOffices = Number(config.get('CONSULTORIOS_TOTAL')) || 5;
-                return new AssignAvailableOfficesUseCaseImpl(repo, notifier, logger, clock, totalOffices);
+                return new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, eventBus, totalOffices);
             },
         },
         {

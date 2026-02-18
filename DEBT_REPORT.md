@@ -66,6 +66,7 @@
 | H-10 | Phase 10 | Technical Culture Elevation | `skill-creator` | ✅ |
 | H-11 | Phase 11 | Architectural Excellence (Value Objects & Factories) | `refactor-arch`, `testing-qa` | ✅ |
 | H-12 | Phase 12 | Repository Decoupling & Specification Pattern | `refactor-arch` | ✅ |
+| H-13 | Phase 13 | Domain Event Architecture (Decoupled Side Effects) | `refactor-arch`, `microservices-patterns` | ✅ |
 
 ---
 
@@ -73,7 +74,7 @@
 
 | Status | Count |
 |--------|-------|
-| ✅ Resuelto | 34 |
+| ✅ Resuelto | 35 |
 | ⬜ Pendiente | 0 |
 | 🔄 En progreso | 0 |
 | ⏸️ Bloqueado | 0 |

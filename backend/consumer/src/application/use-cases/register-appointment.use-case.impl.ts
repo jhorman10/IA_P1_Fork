@@ -4,13 +4,14 @@ import { Appointment } from '../../domain/entities/appointment.entity';
 import { RegisterAppointmentUseCase } from '../../domain/ports/inbound/register-appointment.use-case';
 import { AppointmentRepository } from '../../domain/ports/outbound/appointment.repository';
 import { LoggerPort } from '../../domain/ports/outbound/logger.port';
-import { NotificationPort } from '../../domain/ports/outbound/notification.port';
+import { DomainEventBus } from '../../domain/ports/outbound/domain-event-bus.port';
+import { AppointmentRegisteredEvent } from '../../domain/events/appointment-registered.event';
 
 export class RegisterAppointmentUseCaseImpl implements RegisterAppointmentUseCase {
     constructor(
         private readonly appointmentRepository: AppointmentRepository,
         private readonly logger: LoggerPort,
-        private readonly notificationPort: NotificationPort,
+        private readonly eventBus: DomainEventBus,
     ) { }
 
     async execute(data: { idCard: number; fullName: string }): Promise<Appointment> {
@@ -29,11 +30,14 @@ export class RegisterAppointmentUseCaseImpl implements RegisterAppointmentUseCas
         // 3. Domain Factory (Centralized Business Policies)
         const appointment = AppointmentFactory.createNew(idCardVo, data.fullName);
 
+        // Record Domain Event
+        appointment.recordEvent(new AppointmentRegisteredEvent(appointment));
+
         const saved = await this.appointmentRepository.save(appointment);
         this.logger.log(`Appointment registered for patient ${idCardVo.toValue()} with ID ${saved.id}`, 'RegisterAppointmentUseCase');
 
-        // 4. Orchestrate Side Effects (DIP)
-        await this.notificationPort.notifyAppointmentUpdated(saved);
+        // 4. Dispatch Events (Decoupled Side Effects)
+        await this.eventBus.publish(appointment.pullEvents());
 
         return saved;
     }
