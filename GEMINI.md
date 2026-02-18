@@ -12,6 +12,7 @@
 > 5. **NAVEGACIÓN JERÁRQUICA:** Si la información en este root es insuficiente, navega hacia archivos `agent.md` de subdirectorios específicos (ej. `/backend/`, `/frontend/`).
 > 6. **TRAZABILIDAD OBLIGATORIA:** Cada interacción, cambio y commit entre humano y máquina DEBE registrarse en `AI_WORKFLOW.md`. Incluir: commit hash, actor (👤/🤖), descripción, y decisiones humanas relevantes.
 > 7. **APROBACIÓN HUMANA PREVIA:** Antes de ejecutar cualquier cambio, el SA DEBE presentar un **Plan de Acción** al humano. El humano puede: ✅ Aprobar, ✏️ Corregir, ❌ Rechazar. Ningún cambio se ejecuta sin aprobación explícita.
+8. **IDENTIFICACIÓN EXPLÍCITA DE SA:** En cada inicio de delegación, el Orquestador debe nombrar explícitamente al Sub-agente (SA) y la Skill cargada (ej: `SA-Backend` usando `backend-api`) para garantizar la trazabilidad del contexto.
 
 ---
 
