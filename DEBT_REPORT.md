@@ -52,17 +52,19 @@
 
 ## Hardening Progress (Internal Audit - IA)
 
-| ID | Phase | Goal | Status |
-|----|-------|------|--------|
-| H-01 | Phase 1 | Domain Isolation & SRP (Extract entities/uses cases) | ✅ |
-| H-02 | Phase 2 | Dependency Inversion (Ports & Adapters) | ✅ |
-| H-03 | Phase 3 | Total English Sync & Hygiene | ✅ |
-| H-04 | Phase 4 | Resilience & Reliability Patterns (DLQ/Retries) | ✅ |
-| H-05 | Phase 5 | Mirror Testing Structure (1:1 src replica) | ✅ |
-| H-08 | Phase 8 | Smart Controller Decoupling (SRP/DIP Transformation) - Stripped side-effects from adapters. | ✅ |
-| H-09 | Phase 9 | Scheduler Orchestration & DIP Hardening - Pure maintenance orchestration. | ✅ |
-| H-10 | Phase 10 | Technical Culture Elevation - Senior Grade persona and tools upgrade. | ✅ |
-| H-11 | Phase 11 | Architectural Excellence (Value Objects & Factories) - Resolved Primitive Obsession. | ✅ |
+| ID | Phase | Goal | Skill | Status |
+|----|-------|------|-------|--------|
+| H-01 | Phase 1 | Domain Isolation & SRP (Extract entities/uses cases) | `refactor-arch` | ✅ |
+| H-02 | Phase 2 | Dependency Inversion (Ports & Adapters) | `refactor-arch` | ✅ |
+| H-03 | Phase 3 | Total English Sync & Hygiene | `refactor-arch`, `backend-api` | ✅ |
+| H-04 | Phase 4 | Resilience & Reliability Patterns (DLQ/Retries) | `backend-api` | ✅ |
+| H-05 | Phase 5 | Mirror Testing Structure (1:1 src replica) | `testing-qa` | ✅ |
+| H-06 | Phase 6 | Infrastructure Independence (Kafka/SQS Readiness) | `refactor-arch`, `backend-api` | ✅ |
+| H-07 | Phase 7 | SOLID Hardening (Architectural Repentance) | `refactor-arch` | ✅ |
+| H-08 | Phase 8 | Smart Controller Decoupling (SRP/DIP Transformation) | `refactor-arch`, `backend-api` | ✅ |
+| H-09 | Phase 9 | Scheduler Orchestration & DIP Hardening | `refactor-arch`, `testing-qa` | ✅ |
+| H-10 | Phase 10 | Technical Culture Elevation | `skill-creator` | ✅ |
+| H-11 | Phase 11 | Architectural Excellence (Value Objects & Factories) | `refactor-arch`, `testing-qa` | ✅ |
 
 ---
 
