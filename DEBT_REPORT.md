@@ -11,8 +11,8 @@
 
 | ID | Category | Item | Skill | Status |
 |----|----------|------|-------|--------|
-| A-01 | Architecture | Falta de idempotencia en creación de turnos (riesgo de duplicados) | `backend-api` | ⬜ |
-| A-02 | Database | Falta de índices en MongoDB (rendimiento y consistencia) | `backend-api` | ⬜ |
+| A-01 | Architecture | Falta de idempotencia en creación de turnos (riesgo de duplicados) | `backend-api` | ✅ |
+| A-02 | Database | Falta de índices en MongoDB (rendimiento y consistencia) | `backend-api` | ✅ |
 | A-03 | Messaging | Manejo incorrecto de ack/nack en Consumer (bloqueo con prefetch=1) | `backend-api` | ✅ |
 | A-04 | Config | Scheduler inconsistente con documentación (1s vs 15s) | `backend-api` | ✅ |
 | A-05 | Docker | Credenciales por defecto, puertos expuestos, sin healthchecks | `docker-infra` | ✅ |

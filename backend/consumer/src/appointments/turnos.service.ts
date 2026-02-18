@@ -20,8 +20,22 @@ export class TurnosService {
 
     /**
      * Creates an appointment in 'waiting' state.
+     * ⚕️ HUMAN CHECK - Idempotency (A-01): 
+     * Patient cannot have more than one active appointment (waiting or called).
      */
     async createAppointment(data: CreateAppointmentDto): Promise<AppointmentDocument> {
+        // Step 1: Check for existing active appointment
+        const existing = await this.appointmentModel.findOne({
+            idCard: data.idCard,
+            status: { $in: ['waiting', 'called'] }
+        }).exec();
+
+        if (existing) {
+            this.logger.warn(`Duplicate appointment request ignored for patient ${data.idCard} — Active ID: ${existing._id}`);
+            return existing;
+        }
+
+        // Step 2: Create normal appointment if none exists
         const appointment = new this.appointmentModel({
             idCard: data.idCard,
             fullName: data.fullName,

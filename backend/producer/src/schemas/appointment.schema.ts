@@ -6,9 +6,11 @@ export type AppointmentDocument = HydratedDocument<Appointment>;
 
 // ⚕️ HUMAN CHECK - Appointment Schema (Producer - read-only)
 // Must be synced with the Consumer schema.
+// ⚕️ HUMAN CHECK - MongoDB Indexes (A-02)
+// Producer uses these for Dashboard queries and patient history lookup.
 @Schema({ timestamps: true })
 export class Appointment {
-    @Prop({ required: true })
+    @Prop({ required: true, index: true })
     idCard: number;
 
     @Prop({ required: true })
@@ -16,10 +18,10 @@ export class Appointment {
 
     // ⚕️ HUMAN CHECK - Nullable office
     // null when the patient is waiting
-    @Prop({ default: null })
+    @Prop({ default: null, index: true })
     office: string | null;
 
-    @Prop({ default: 'waiting', enum: ['waiting', 'called', 'completed'] })
+    @Prop({ default: 'waiting', enum: ['waiting', 'called', 'completed'], index: true })
     status: AppointmentStatus;
 
     @Prop({ default: 'medium', enum: ['high', 'medium', 'low'] })
@@ -35,3 +37,4 @@ export class Appointment {
 }
 
 export const AppointmentSchema = SchemaFactory.createForClass(Appointment);
+

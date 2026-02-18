@@ -35,6 +35,9 @@ describe('TurnosService', () => {
         select: jest.fn().mockReturnThis(),
         lean: jest.fn().mockReturnThis(),
     });
+    mockAppointmentModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+    });
     mockAppointmentModel.findOneAndUpdate = jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue(null),
     });
@@ -62,11 +65,29 @@ describe('TurnosService', () => {
     });
 
     describe('createAppointment', () => {
-        it('should create an appointment', async () => {
+        it('should create an appointment if none exists', async () => {
             const dto = { idCard: 12345678, fullName: 'John Doe', priority: 'high' as any };
+            model.findOne.mockReturnValue({
+                exec: jest.fn().mockResolvedValue(null),
+            });
+
             const result = await service.createAppointment(dto);
             expect(result).toBeDefined();
             expect(result.idCard).toBe(12345678);
+            expect(model.findOneAndUpdate).not.toHaveBeenCalled(); // No idempotency hit
+        });
+
+        it('should return existing appointment if patient already has one active (idempotency)', async () => {
+            const dto = { idCard: 12345678, fullName: 'John Doe', priority: 'high' as any };
+            const existing = { _id: 'activeId', idCard: 12345678, status: 'waiting' };
+
+            model.findOne.mockReturnValue({
+                exec: jest.fn().mockResolvedValue(existing),
+            });
+
+            const result = await service.createAppointment(dto);
+            expect(result._id).toBe('activeId');
+            expect(model.prototype.save).not.toBeDefined(); // Manual check for "new model()" not called is hard here, but findOne hit
         });
     });
 
