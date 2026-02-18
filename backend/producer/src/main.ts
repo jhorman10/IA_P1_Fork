@@ -51,8 +51,8 @@ async function bootstrap(): Promise<void> {
     // ⚕️ HUMAN CHECK - Hybrid App: HTTP + Microservice (RabbitMQ listener)
     // The Producer listens for events from the Consumer (appointment_created, appointment_updated)
     // to forward them via WebSocket to connected clients
-    const rabbitUrl = configService.get<string>('RABBITMQ_URL') ?? 'amqp://guest:guest@localhost:5672';
-    const notificationsQueue = configService.get<string>('RABBITMQ_NOTIFICATIONS_QUEUE') ?? 'appointment_notifications';
+    const rabbitUrl = configService.getOrThrow<string>('RABBITMQ_URL');
+    const notificationsQueue = configService.getOrThrow<string>('RABBITMQ_NOTIFICATIONS_QUEUE');
 
     app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.RMQ,

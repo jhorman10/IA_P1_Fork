@@ -12,8 +12,8 @@ import { NotificationsService } from './notifications.service';
                 useFactory: async (configService: ConfigService) => ({
                     transport: Transport.RMQ,
                     options: {
-                        urls: [configService.get<string>('RABBITMQ_URL') || 'amqp://guest:guest@localhost:5672'],
-                        queue: configService.get<string>('RABBITMQ_NOTIFICATIONS_QUEUE') || 'appointment_notifications',
+                        urls: [configService.getOrThrow<string>('RABBITMQ_URL')],
+                        queue: configService.getOrThrow<string>('RABBITMQ_NOTIFICATIONS_QUEUE'),
                         queueOptions: {
                             durable: true,
                         },

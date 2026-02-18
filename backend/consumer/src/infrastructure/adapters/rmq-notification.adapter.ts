@@ -15,7 +15,7 @@ export class RmqNotificationAdapter implements NotificationPort {
     async notifyAppointmentUpdated(appointment: Appointment): Promise<void> {
         // 1. Local logging/notification
         await this.localNotifications.sendNotification(
-            appointment.idCard,
+            appointment.idCard.toValue(),
             appointment.office
         );
 
@@ -29,11 +29,11 @@ export class RmqNotificationAdapter implements NotificationPort {
     private mapToPayload(appointment: Appointment): any {
         return {
             id: appointment.id,
-            fullName: appointment.fullName,
-            idCard: appointment.idCard,
+            fullName: appointment.fullName.toValue(),
+            idCard: appointment.idCard.toValue(),
             office: appointment.office,
             status: appointment.status,
-            priority: appointment.priority,
+            priority: appointment.priority.toValue(),
             timestamp: appointment.timestamp,
             completedAt: appointment.completedAt,
         };

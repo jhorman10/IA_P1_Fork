@@ -25,7 +25,7 @@ import { LocalDomainEventBusAdapter } from '../infrastructure/messaging/local-do
                 useFactory: (config: ConfigService) => ({
                     transport: Transport.RMQ,
                     options: {
-                        urls: [config.get<string>('RABBITMQ_URL', 'amqp://guest:guest@localhost:5672')],
+                        urls: [config.getOrThrow<string>('RABBITMQ_URL')],
                         queue: 'appointment_notifications_queue',
                     },
                 }),

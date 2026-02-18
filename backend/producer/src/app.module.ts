@@ -21,7 +21,7 @@ import { RabbitMQPublisherAdapter } from './infrastructure/adapters/outbound/rab
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
-                uri: configService.get<string>('MONGODB_URI') || 'mongodb://admin:admin123@localhost:27017/appointments_db?authSource=admin',
+                uri: configService.getOrThrow<string>('MONGODB_URI'),
             }),
             inject: [ConfigService],
         }),
@@ -32,8 +32,8 @@ import { RabbitMQPublisherAdapter } from './infrastructure/adapters/outbound/rab
                 useFactory: async (configService: ConfigService) => ({
                     transport: Transport.RMQ,
                     options: {
-                        urls: [configService.get<string>('RABBITMQ_URL') || 'amqp://guest:guest@localhost:5672'],
-                        queue: configService.get<string>('RABBITMQ_QUEUE') || 'appointment_queue',
+                        urls: [configService.getOrThrow<string>('RABBITMQ_URL')],
+                        queue: configService.getOrThrow<string>('RABBITMQ_QUEUE'),
                         queueOptions: {
                             durable: true,
                         },

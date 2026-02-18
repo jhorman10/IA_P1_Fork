@@ -23,7 +23,7 @@ import { SchedulerModule } from './scheduler/scheduler.module';
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
-                uri: configService.get<string>('MONGODB_URI') || 'mongodb://admin:admin123@localhost:27017/appointments_db?authSource=admin',
+                uri: configService.getOrThrow<string>('MONGODB_URI'),
             }),
             inject: [ConfigService],
         }),

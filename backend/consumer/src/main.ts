@@ -13,8 +13,8 @@ async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService);
 
-    const rabbitUrl = configService.get<string>('RABBITMQ_URL') ?? 'amqp://guest:guest@localhost:5672';
-    const queueName = configService.get<string>('RABBITMQ_QUEUE') ?? 'appointment_queue';
+    const rabbitUrl = configService.getOrThrow<string>('RABBITMQ_URL');
+    const queueName = configService.getOrThrow<string>('RABBITMQ_QUEUE');
 
     app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.RMQ,

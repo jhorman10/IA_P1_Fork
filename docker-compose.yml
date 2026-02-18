@@ -9,7 +9,7 @@ services:
       target: development
     # ⚕️ HUMAN CHECK - Development Command
     # In production, remove this command to use the Dockerfile's CMD
-    command: npm run start:dev
+    command: npm run start
     # ⚕️ HUMAN CHECK - Exposed Ports
     # Verify that the mapped port doesn't conflict with other host services
     ports:
@@ -54,7 +54,7 @@ services:
       target: development
     # ⚕️ HUMAN CHECK - Development Command
     # In production, remove this command to use the Dockerfile's CMD
-    command: npm run start:dev
+    command: npm run start
     # ⚕️ HUMAN CHECK - Development Volumes (Hot-Reload)
     # These volumes mount the local source code for development with hot-reload.
     # In production, remove these volumes and use the built image.
