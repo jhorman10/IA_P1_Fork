@@ -8,6 +8,6 @@ import { TurnosService } from './turnos.service';
         MongooseModule.forFeature([{ name: Appointment.name, schema: AppointmentSchema }]),
     ],
     providers: [TurnosService],
-    exports: [TurnosService],
+    exports: [TurnosService, MongooseModule],
 })
 export class TurnosModule { }

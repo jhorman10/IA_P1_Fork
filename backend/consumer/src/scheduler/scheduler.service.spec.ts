@@ -91,5 +91,33 @@ describe('SchedulerService', () => {
             expect(mockAppointmentsService.findWaitingAppointments).not.toHaveBeenCalled();
             expect(mockAppointmentsService.assignOffice).not.toHaveBeenCalled();
         });
+
+        it('should do nothing if no appointments are waiting', async () => {
+            mockAppointmentsService.completeCalledAppointments.mockResolvedValue([]);
+            mockAppointmentsService.getOccupiedOffices.mockResolvedValue(['1']);
+            mockAppointmentsService.findWaitingAppointments.mockResolvedValue([]);
+
+            await service.handleSchedulerTick();
+
+            expect(mockAppointmentsService.assignOffice).not.toHaveBeenCalled();
+        });
+
+        it('should continue processing if one assignment fails', async () => {
+            mockAppointmentsService.completeCalledAppointments.mockResolvedValue([]);
+            mockAppointmentsService.getOccupiedOffices.mockResolvedValue([]);
+            mockAppointmentsService.findWaitingAppointments.mockResolvedValue([
+                { _id: 'a1', fullName: 'Fail' },
+                { _id: 'a2', fullName: 'Success' }
+            ]);
+
+            mockAppointmentsService.assignOffice
+                .mockRejectedValueOnce(new Error('DB Error'))
+                .mockResolvedValueOnce({ _id: 'a2', fullName: 'Success', office: '2' });
+
+            await service.handleSchedulerTick();
+
+            expect(mockAppointmentsService.assignOffice).toHaveBeenCalledTimes(2);
+            expect(mockNotificationsClient.emit).toHaveBeenCalledTimes(1);
+        });
     });
 });

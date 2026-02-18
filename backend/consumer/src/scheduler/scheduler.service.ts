@@ -8,30 +8,25 @@ import { ConfigService } from '@nestjs/config';
 // Interval read from ConfigService: SCHEDULER_INTERVAL_MS
 const DEFAULT_OFFICES = 5;
 
+import { AssignAppointmentsUseCase } from '../domain/ports/inbound/assign-appointments.use-case';
+
+// ⚕️ HUMAN CHECK - SRP: This service is now only a TRIGGER for the domain logic
+// Pattern: Trigger — Invokes Use Case on a schedule
+
 @Injectable()
 export class SchedulerService {
     private readonly logger = new Logger(SchedulerService.name);
-    private readonly totalOffices: number;
     private readonly intervalMs: number;
-    private readonly allOffices: string[];
 
     constructor(
-        private readonly turnosService: TurnosService,
         private readonly configService: ConfigService,
         private readonly schedulerRegistry: SchedulerRegistry,
-        @Inject('TURNOS_NOTIFICATIONS') private readonly notificationsClient: ClientProxy,
+        @Inject('AssignAppointmentsUseCase') private readonly useCase: AssignAppointmentsUseCase,
     ) {
         this.intervalMs = Number(this.configService.get('SCHEDULER_INTERVAL_MS')) || 15000;
-        this.totalOffices = Number(this.configService.get('CONSULTORIOS_TOTAL')) || DEFAULT_OFFICES;
-
-        // Precalculate offices array
-        this.allOffices = Array.from(
-            { length: this.totalOffices },
-            (_, i) => String(i + 1),
-        );
 
         this.logger.log(
-            `Scheduler started — ${this.totalOffices} offices, interval: ${this.intervalMs}ms`,
+            `Scheduler started — interval: ${this.intervalMs}ms. Delegating to AssignAppointmentsUseCase.`,
         );
 
         const interval = setInterval(() => {
@@ -42,59 +37,7 @@ export class SchedulerService {
 
     async handleSchedulerTick(): Promise<void> {
         try {
-            // Step 0: Complete previous appointments
-            const completed = await this.turnosService.completeCalledAppointments();
-            for (const t of completed) {
-                this.notificationsClient.emit(
-                    'appointment_updated',
-                    this.turnosService.toEventPayload(t),
-                );
-            }
-
-            // 1. Get occupied offices
-            const occupied = await this.turnosService.getOccupiedOffices();
-            this.logger.debug(`Occupied offices: [${occupied.join(', ')}]`);
-
-            // 2. Filter free offices
-            const freeOffices = this.allOffices.filter(c => !occupied.includes(c));
-
-            if (freeOffices.length === 0) {
-                this.logger.debug('No free offices — waiting...');
-                return;
-            }
-
-            // 3. Get waiting appointments
-            const waiting = await this.turnosService.findWaitingAppointments();
-
-            if (waiting.length === 0) {
-                this.logger.debug('No waiting appointments');
-                return;
-            }
-
-            // 4. Batch Assignment
-            const possibleAssignments = Math.min(freeOffices.length, waiting.length);
-            this.logger.log(`Processing batch of ${possibleAssignments} assignments...`);
-
-            for (let i = 0; i < possibleAssignments; i++) {
-                const pending = waiting[i];
-                const office = freeOffices[i];
-
-                const updatedAppointment = await this.turnosService.assignOffice(
-                    String(pending._id),
-                    office,
-                );
-
-                if (updatedAppointment) {
-                    this.logger.log(
-                        `✅ [Batch] Office ${office} assigned to ${updatedAppointment.fullName}`,
-                    );
-
-                    this.notificationsClient.emit(
-                        'appointment_updated',
-                        this.turnosService.toEventPayload(updatedAppointment),
-                    );
-                }
-            }
+            await this.useCase.execute();
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
             this.logger.error(`Error in assignment scheduler: ${message}`);
