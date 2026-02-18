@@ -156,6 +156,7 @@ Este proyecto utiliza una metodología **AI-First** donde la IA actúa como un *
 | `Phase 6` | 18/Feb | refactor | **Infrastructure Independence**: Full Port-Adapter decoupling (Broker Agnostic) | 🤖 |
 | `Phase 7` | 18/Feb | refactor | **SOLID Hardening**: SRP Split, DIP Loggers/Clock, Domain Policy extraction | 🤖 |
 | `Phase 8` | 18/Feb | refactor | **Smart Controller Decoupling**: Side-effects to Application layer (SRP/DIP) | 🤖 |
+| `Phase 9` | 18/Feb | refactor | **Scheduler Orchestration**: Moved logic to Application layer (Audit Fix) | 🤖 |
 | `Challenge` | 18/Feb | test | **Impossible Mock Defeated**: Finalized pure unit test without any infra | 🤖 |
 
 > **🛡️ Decisión Humana:** El humano aprobó la refactorización de "Controlador Inteligente" para mover las notificaciones a la capa de aplicación y abstraer el transporte de RabbitMQ.
