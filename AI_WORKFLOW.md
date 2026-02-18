@@ -152,6 +152,7 @@ Este proyecto utiliza una metodología **AI-First** donde la IA actúa como un *
 | `a169051` | 18/Feb | refactor | **Hexagonal Hardening (G-07)**: SRP/DIP refactor of Scheduler using Use Cases and Ports | 🤖 IA + 👤 Revisión |
 | `Phase 3` | 18/Feb | refactor | Global English nomenclature sync (Turnos → Appointments) | 🤖 |
 | `Phase 4` | 18/Feb | feat | Resilience Patterns: DLQ, DLX, and Retry logic implementation | 🤖 |
+| `Phase 5` | 18/Feb | refactor | **Mirror Testing Structure (G-07)**: Dedicated `test/` folder with 1:1 `src/` replica | 🤖 |
 
 > **🛡️ Decisión Humana:** El humano aprobó la restricción de idempotencia donde un paciente no puede tener más de un turno activo (`waiting/called`) simultáneamente para evitar duplicados.
 

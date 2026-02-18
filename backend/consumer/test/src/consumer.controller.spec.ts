@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConsumerController } from './consumer.controller';
-import { AppointmentService } from './appointments/appointment.service';
-import { NotificationsService } from './notifications/notifications.service';
+import { ConsumerController } from 'src/consumer.controller';
+import { AppointmentService } from 'src/appointments/appointment.service';
+import { NotificationsService } from 'src/notifications/notifications.service';
 import { RmqContext } from '@nestjs/microservices';
 import { BadRequestException } from '@nestjs/common';
 

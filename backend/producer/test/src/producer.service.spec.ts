@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProducerService } from '../src/producer.service';
+import { ProducerService } from 'src/producer.service';
 import { ClientProxy } from '@nestjs/microservices';
 
 describe('ProducerService', () => {

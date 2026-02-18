@@ -1,6 +1,6 @@
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-import { CreateAppointmentDto } from '../src/dto/create-appointment.dto';
+import { CreateAppointmentDto } from 'src/dto/create-appointment.dto';
 
 describe('CreateAppointmentDto - Validation', () => {
     it('should validate correctly a valid CreateAppointmentDto', async () => {

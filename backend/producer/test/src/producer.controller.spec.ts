@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { ProducerController } from '../src/producer.controller';
-import { ProducerService } from '../src/producer.service';
-import { AppointmentService } from '../src/appointments/appointment.service';
+import { ProducerController } from 'src/producer.controller';
+import { ProducerService } from 'src/producer.service';
+import { AppointmentService } from 'src/appointments/appointment.service';
 import * as request from 'supertest';
 
 describe('ProducerController (Integration Tests)', () => {
