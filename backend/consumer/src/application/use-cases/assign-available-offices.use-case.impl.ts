@@ -1,6 +1,7 @@
 import { AssignAvailableOfficesUseCase } from '../../domain/ports/inbound/assign-available-offices.use-case';
 import { AppointmentRepository } from '../../domain/ports/outbound/appointment.repository';
 import { NotificationPort } from '../../domain/ports/outbound/notification.port';
+import { ConsultationPolicy } from '../../domain/policies/consultation.policy';
 
 export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOfficesUseCase {
     constructor(
@@ -28,8 +29,8 @@ export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOffices
             const appointment = waiting[i];
             const office = freeOffices[i];
 
-            // ⚕️ HUMAN CHECK - Tode: Move this random logic to a Domain Policy in Phase 7.2
-            const randomDuration = Math.floor(Math.random() * (15 - 8 + 1)) + 8;
+            // ⚕️ HUMAN CHECK - DIP: Logic delegated to Domain Policy
+            const randomDuration = ConsultationPolicy.getRandomDurationSeconds();
 
             appointment.assignOffice(office, randomDuration);
 

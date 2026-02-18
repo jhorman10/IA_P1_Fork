@@ -5,7 +5,8 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 
 describe('SchedulerService', () => {
     let service: SchedulerService;
-    let mockUseCase: any;
+    let mockCompleteUseCase: any;
+    let mockAssignUseCase: any;
 
     const mockConfigService = {
         get: jest.fn((key: string) => {
@@ -21,14 +22,14 @@ describe('SchedulerService', () => {
     };
 
     beforeEach(async () => {
-        mockUseCase = {
-            execute: jest.fn(),
-        };
+        mockCompleteUseCase = { execute: jest.fn() };
+        mockAssignUseCase = { execute: jest.fn() };
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 SchedulerService,
-                { provide: 'AssignAppointmentsUseCase', useValue: mockUseCase },
+                { provide: 'CompleteExpiredAppointmentsUseCase', useValue: mockCompleteUseCase },
+                { provide: 'AssignAvailableOfficesUseCase', useValue: mockAssignUseCase },
                 { provide: ConfigService, useValue: mockConfigService },
                 { provide: SchedulerRegistry, useValue: mockSchedulerRegistry },
             ],
@@ -46,17 +47,19 @@ describe('SchedulerService', () => {
     });
 
     describe('handleSchedulerTick', () => {
-        it('should execute the use case', async () => {
+        it('should execute both use cases sequentially', async () => {
             await service.handleSchedulerTick();
-            expect(mockUseCase.execute).toHaveBeenCalled();
+            expect(mockCompleteUseCase.execute).toHaveBeenCalled();
+            expect(mockAssignUseCase.execute).toHaveBeenCalled();
         });
 
-        it('should log error if use case fails', async () => {
-            mockUseCase.execute.mockRejectedValue(new Error('Domain Error'));
-            // Note: We'd need to spy on logger to verify logging, 
-            // but the main goal is ensuring it doesn't throw and crash the tick.
+        it('should log error if orchestration fails', async () => {
+            mockCompleteUseCase.execute.mockRejectedValue(new Error('Cleanup Error'));
+
             await expect(service.handleSchedulerTick()).resolves.not.toThrow();
-            expect(mockUseCase.execute).toHaveBeenCalled();
+            expect(mockCompleteUseCase.execute).toHaveBeenCalled();
+            // In this orchestration, if complete fails, assign shouldn't be called (simple sequential)
+            expect(mockAssignUseCase.execute).not.toHaveBeenCalled();
         });
     });
 });

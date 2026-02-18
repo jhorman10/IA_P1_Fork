@@ -1,4 +1,4 @@
-import { AssignAppointmentsUseCaseImpl } from '../../src/application/use-cases/assign-appointments.use-case.impl';
+import { AssignAvailableOfficesUseCaseImpl } from '../../src/application/use-cases/assign-available-offices.use-case.impl';
 import { Appointment } from '../../src/domain/entities/appointment.entity';
 
 /**
@@ -32,7 +32,7 @@ describe('AssignAppointmentsUseCase (Pure Logic - The Impossible Mock Challenge)
 
         // 2. Inyección de Dependencias PURA (DIP)
         // Instanciamos la clase directamente sin el DI de NestJS
-        const useCase = new AssignAppointmentsUseCaseImpl(
+        const useCase = new AssignAvailableOfficesUseCaseImpl(
             mockRepo as any,
             mockNotifier as any,
             3 // totalOffices

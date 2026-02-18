@@ -1,3 +1,6 @@
+import { Injectable, Logger, Inject } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
+import { ConfigService } from '@nestjs/config';
 import { CompleteExpiredAppointmentsUseCase } from '../domain/ports/inbound/complete-expired-appointments.use-case';
 import { AssignAvailableOfficesUseCase } from '../domain/ports/inbound/assign-available-offices.use-case';
 
