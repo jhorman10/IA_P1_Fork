@@ -132,6 +132,7 @@ Si una tarea requiere habilidades no documentadas en `/skills`, usa la skill `sk
 | Skill | Path | Trigger | Scope |
 |-------|------|---------|-------|
 | `backend-api` | `skills/backend-api/skill.md` | When feedback mentions services, controllers, DTOs, validation, message queues, ack/nack, or business logic in the backend. | `backend/producer/src/, backend/consumer/src/` |
+| `conventional-commits` | `skills/conventional-commits/skill.md` | When creating commits, pushing code, formatting commit messages, or when feedback mentions git history, commit hygiene, or semantic versioning. | `.git/, scripts/` |
 | `docker-infra` | `skills/docker-infra/skill.md` | When feedback mentions Docker, healthchecks, credentials, environment variables, ports, volumes, deployment, or infrastructure security. | `docker-compose.yml, .env, .env.example, backend/producer/Dockerfile, backend/consumer/Dockerfile, frontend/Dockerfile` |
 | `frontend-ui` | `skills/frontend-ui/skill.md` | When feedback mentions UI components, WebSocket, CSS, styling, pages, dashboard, or frontend behavior. | `frontend/src/` |
 | `refactor-arch` | `skills/refactor-arch/skill.md` | When feedback mentions architecture refactoring, hexagonal architecture, SOLID principles, design patterns, ports and adapters, domain isolation, coupling, decoupling, or dependency inversion. | `backend/producer/src/, backend/consumer/src/, frontend/src/` |
