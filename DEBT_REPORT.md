@@ -62,6 +62,7 @@
 | H-06 | Phase 6 | Infrastructure Independence (Kafka/SQS Readiness) | ✅ |
 | H-07 | Phase 7 | SOLID Hardening (Architectural Repentance) - Resolved SRP/DIP violations in Consumer logic. | ✅ |
 | H-08 | Phase 8 | Smart Controller Decoupling (SRP/DIP Transformation) - Stripped side-effects from adapters. | ✅ |
+| H-09 | Phase 11 | Architectural Excellence (Value Objects & Factories) - Resolved Primitive Obsession. | ✅ |
 
 ---
 
@@ -69,7 +70,7 @@
 
 | Status | Count |
 |--------|-------|
-| ✅ Resuelto | 30 |
+| ✅ Resuelto | 31 |
 | ⬜ Pendiente | 0 |
 | 🔄 En progreso | 0 |
 | ⏸️ Bloqueado | 0 |

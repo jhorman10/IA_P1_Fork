@@ -13,6 +13,7 @@
 > 6. **TRAZABILIDAD OBLIGATORIA:** Cada interacción, cambio y commit entre humano y máquina DEBE registrarse en `AI_WORKFLOW.md`. Incluir: commit hash, actor (👤/🤖), descripción, y decisiones humanas relevantes.
 > 7. **APROBACIÓN HUMANA PREVIA:** Antes de ejecutar cualquier cambio, el SA DEBE presentar un **Plan de Acción** al humano. El humano puede: ✅ Aprobar, ✏️ Corregir, ❌ Rechazar. Ningún cambio se ejecuta sin aprobación explícita.
 8. **IDENTIFICACIÓN EXPLÍCITA DE SA:** En cada inicio de delegación, el Orquestador debe nombrar explícitamente al Sub-agente (SA) y la Skill cargada (ej: `SA-Backend` usando `backend-api`) para garantizar la trazabilidad del contexto.
+9. **GESTIÓN DE DEUDA TÉCNICA:** Es obligatorio actualizar `DEBT_REPORT.md` al finalizar cada fase o ítem de feedback para mantener la transparencia del progreso.
 
 ---
 
@@ -122,6 +123,7 @@ Si una tarea requiere habilidades no documentadas en `/skills`, usa la skill `sk
 - ⛔ Superar 500 líneas en este archivo (crear `agent.md` hijo si es necesario)
 - ⛔ **Ejecutar cambios sin presentar Plan de Acción al humano primero**
 - ⛔ **Omitir el registro de interacciones en AI_WORKFLOW.md**
+- ⛔ **Omitir la actualización de DEBT_REPORT.md tras resolver un hallazgo**
 
 ---
 
