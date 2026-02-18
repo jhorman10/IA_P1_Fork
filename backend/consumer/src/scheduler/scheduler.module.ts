@@ -22,15 +22,15 @@ import { AssignAvailableOfficesUseCaseImpl } from '../application/use-cases/assi
         },
         {
             provide: 'CompleteExpiredAppointmentsUseCase',
-            inject: ['AppointmentRepository', 'NotificationPort', 'LoggerPort'],
-            useFactory: (repo, notifier, logger) => new CompleteExpiredAppointmentsUseCaseImpl(repo, notifier, logger),
+            inject: ['AppointmentRepository', 'NotificationPort', 'LoggerPort', 'ClockPort'],
+            useFactory: (repo, notifier, logger, clock) => new CompleteExpiredAppointmentsUseCaseImpl(repo, notifier, logger, clock),
         },
         {
             provide: 'AssignAvailableOfficesUseCase',
-            inject: ['AppointmentRepository', 'NotificationPort', 'LoggerPort', ConfigService],
-            useFactory: (repo, notifier, logger, config) => {
+            inject: ['AppointmentRepository', 'NotificationPort', 'LoggerPort', 'ClockPort', ConfigService],
+            useFactory: (repo, notifier, logger, clock, config) => {
                 const totalOffices = Number(config.get('CONSULTORIOS_TOTAL')) || 5;
-                return new AssignAvailableOfficesUseCaseImpl(repo, notifier, logger, totalOffices);
+                return new AssignAvailableOfficesUseCaseImpl(repo, notifier, logger, clock, totalOffices);
             },
         },
     ],

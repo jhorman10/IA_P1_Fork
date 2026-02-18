@@ -38,12 +38,18 @@ describe('AssignAppointmentsUseCase (Pure Logic - The Impossible Mock Challenge)
             verbose: jest.fn(),
         };
 
+        const mockClock = {
+            now: jest.fn().mockReturnValue(Date.now()),
+            isoNow: jest.fn().mockReturnValue(new Date().toISOString()),
+        };
+
         // 2. Inyección de Dependencias PURA (DIP)
         // Instanciamos la clase directamente sin el DI de NestJS
         const useCase = new AssignAvailableOfficesUseCaseImpl(
             mockRepo as any,
             mockNotifier as any,
             mockLogger as any,
+            mockClock as any,
             3 // totalOffices
         );
 

@@ -3,12 +3,14 @@ import { AppointmentRepository } from '../../domain/ports/outbound/appointment.r
 import { NotificationPort } from '../../domain/ports/outbound/notification.port';
 import { ConsultationPolicy } from '../../domain/policies/consultation.policy';
 import { LoggerPort } from '../../domain/ports/outbound/logger.port';
+import { ClockPort } from '../../domain/ports/outbound/clock.port';
 
 export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOfficesUseCase {
     constructor(
         private readonly appointmentRepository: AppointmentRepository,
         private readonly notificationPort: NotificationPort,
         private readonly logger: LoggerPort,
+        private readonly clock: ClockPort,
         private readonly totalOffices: number,
     ) { }
 
@@ -34,7 +36,7 @@ export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOffices
             // ⚕️ HUMAN CHECK - DIP: Logic delegated to Domain Policy
             const randomDuration = ConsultationPolicy.getRandomDurationSeconds();
 
-            appointment.assignOffice(office, randomDuration);
+            appointment.assignOffice(office, randomDuration, this.clock.now());
 
             await this.appointmentRepository.save(appointment);
             await this.notificationPort.notifyAppointmentUpdated(appointment);

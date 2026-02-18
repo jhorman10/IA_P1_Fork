@@ -16,13 +16,13 @@ export class Appointment {
         public completedAt?: number,
     ) { }
 
-    public assignOffice(office: string, durationSeconds: number): void {
+    public assignOffice(office: string, durationSeconds: number, now: number): void {
         if (this.status !== 'waiting') {
             throw new Error(`Cannot assign office to appointment in ${this.status} status`);
         }
         this.office = office;
         this.status = 'called';
-        this.completedAt = Date.now() + durationSeconds * 1000;
+        this.completedAt = now + durationSeconds * 1000;
     }
 
     public complete(): void {
