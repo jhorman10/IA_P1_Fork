@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AppointmentRegisteredEvent } from '../../domain/events/appointment-registered.event';
 import { AppointmentAssignedEvent } from '../../domain/events/appointment-assigned.event';
 import { NotificationPort } from '../../domain/ports/outbound/notification.port';
@@ -11,7 +11,10 @@ import { NotificationPort } from '../../domain/ports/outbound/notification.port'
 export class AppointmentEventsHandler {
     private readonly logger = new Logger(AppointmentEventsHandler.name);
 
-    constructor(private readonly notificationPort: NotificationPort) { }
+    constructor(
+        @Inject('NotificationPort')
+        private readonly notificationPort: NotificationPort
+    ) { }
 
     /**
      * React to Appointment Registration.

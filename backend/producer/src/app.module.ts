@@ -36,6 +36,10 @@ import { RabbitMQPublisherAdapter } from './infrastructure/adapters/outbound/rab
                         queue: configService.getOrThrow<string>('RABBITMQ_QUEUE'),
                         queueOptions: {
                             durable: true,
+                            arguments: {
+                                'x-dead-letter-exchange': 'appointment_dlx',
+                                'x-dead-letter-routing-key': 'appointment_dlq'
+                            }
                         },
                     },
                 }),
