@@ -42,7 +42,7 @@
 | G-02 | Code | 35 instancias de `HUMAN CHECK` — calidad excelente | — | ✅ |
 | G-03 | Transparency | Sección "Lo que la IA hizo mal" existe pero con título incorrecto | `skill-creator` | ✅ |
 | G-04 | Docker | Faltan healthchecks en producer y consumer | `docker-infra` | ✅ |
-| G-05 | Git | Uso inconsistente de ramas feature/* | — | ⬜ |
+| G-05 | Git | Uso inconsistente de ramas feature/* | — | ✅ |
 | G-06 | Performance | `todosConsultorios` se recrea en cada tick del scheduler | `backend-api` | ✅ |
 | G-07 | Testing | Falta tests unitarios para Consumer (Scheduler) y Frontend | `testing-qa` | ✅ |
 | G-08 | Code | React Warning: setState synchronously within an effect in Dashboard | `frontend-ui` | ✅ |
@@ -68,7 +68,7 @@
 
 | Status | Count |
 |--------|-------|
-| ✅ Resuelto | 28 |
-| ⬜ Pendiente | 1 |
+| ✅ Resuelto | 29 |
+| ⬜ Pendiente | 0 |
 | 🔄 En progreso | 0 |
 | ⏸️ Bloqueado | 0 |
