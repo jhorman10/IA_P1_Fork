@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { TurnosService } from './turnos.service';
+import { AppointmentService } from './appointment.service';
 import { Appointment } from '../schemas/appointment.schema';
 
-describe('TurnosService', () => {
-    let service: TurnosService;
+describe('AppointmentService', () => {
+    let service: AppointmentService;
     let model: any;
 
     const mockAppointment = {
@@ -48,7 +48,7 @@ describe('TurnosService', () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
-                TurnosService,
+                AppointmentService,
                 {
                     provide: getModelToken(Appointment.name),
                     useValue: mockAppointmentModel,
@@ -56,7 +56,7 @@ describe('TurnosService', () => {
             ],
         }).compile();
 
-        service = module.get<TurnosService>(TurnosService);
+        service = module.get<AppointmentService>(AppointmentService);
         model = module.get(getModelToken(Appointment.name));
     });
 

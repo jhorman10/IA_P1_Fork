@@ -7,7 +7,7 @@ export class NotificationsService {
     /**
      * Send notification (currently just logs).
      */
-    async sendNotification(idCard: string, office: string | null): Promise<void> {
+    async sendNotification(idCard: number, office: string | null): Promise<void> {
         const message = office
             ? `Your appointment has been assigned to office ${office}`
             : 'Your appointment has been registered. Waiting for assignment.';

@@ -18,7 +18,7 @@ describe('NotificationsService', () => {
 
     it('should log notification', async () => {
         const loggerSpy = jest.spyOn((service as any).logger, 'log');
-        await service.sendNotification('12345678', '1');
+        await service.sendNotification(12345678, '1');
         expect(loggerSpy).toHaveBeenCalledWith(
             expect.stringContaining('📩 Notification sent to patient 12345678: Your appointment has been assigned to office 1'),
         );

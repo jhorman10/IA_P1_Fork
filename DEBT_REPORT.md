@@ -46,6 +46,18 @@
 | G-06 | Performance | `todosConsultorios` se recrea en cada tick del scheduler | `backend-api` | ✅ |
 | G-07 | Testing | Falta tests unitarios para Consumer (Scheduler) y Frontend | `testing-qa` | ✅ |
 | G-08 | Code | React Warning: setState synchronously within an effect in Dashboard | `frontend-ui` | ✅ |
+| G-09 | Architecture | Violación de SRP/DIP en Scheduler (acoplamiento infra/dominio) | `refactor-arch` | ✅ |
+
+---
+
+## Hardening Progress (Internal Audit - IA)
+
+| ID | Phase | Goal | Status |
+|----|-------|------|--------|
+| H-01 | Phase 1 | Domain Isolation & SRP (Extract entities/uses cases) | ✅ |
+| H-02 | Phase 2 | Dependency Inversion (Ports & Adapters) | ✅ |
+| H-03 | Phase 3 | Total English Sync & Hygiene | ✅ |
+| H-04 | Phase 4 | Resilience & Reliability Patterns (DLQ/Retries) | ✅ |
 
 ---
 
@@ -53,7 +65,7 @@
 
 | Status | Count |
 |--------|-------|
-| ✅ Resuelto | 20 |
+| ✅ Resuelto | 25 |
 | ⬜ Pendiente | 1 |
 | 🔄 En progreso | 0 |
 | ⏸️ Bloqueado | 0 |

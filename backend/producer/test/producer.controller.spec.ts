@@ -2,20 +2,20 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ProducerController } from '../src/producer.controller';
 import { ProducerService } from '../src/producer.service';
-import { TurnosService } from '../src/appointments/turnos.service';
+import { AppointmentService } from '../src/appointments/appointment.service';
 import * as request from 'supertest';
 
 describe('ProducerController (Integration Tests)', () => {
     let app: INestApplication;
     let producerService: jest.Mocked<ProducerService>;
-    let turnosService: jest.Mocked<TurnosService>;
+    let appointmentService: jest.Mocked<AppointmentService>;
 
     beforeEach(async () => {
         const mockProducerService = {
             createAppointment: jest.fn(),
         };
 
-        const mockTurnosService = {
+        const mockAppointmentService = {
             findByIdCard: jest.fn(),
             findAll: jest.fn(),
             toEventPayload: jest.fn(),
@@ -29,8 +29,8 @@ describe('ProducerController (Integration Tests)', () => {
                     useValue: mockProducerService,
                 },
                 {
-                    provide: TurnosService,
-                    useValue: mockTurnosService,
+                    provide: AppointmentService,
+                    useValue: mockAppointmentService,
                 },
             ],
         }).compile();
@@ -45,7 +45,7 @@ describe('ProducerController (Integration Tests)', () => {
         );
 
         producerService = module.get(ProducerService) as jest.Mocked<ProducerService>;
-        turnosService = module.get(TurnosService) as jest.Mocked<TurnosService>;
+        appointmentService = module.get(AppointmentService) as jest.Mocked<AppointmentService>;
 
         await app.init();
     });
@@ -141,14 +141,14 @@ describe('ProducerController (Integration Tests)', () => {
                 },
             ];
 
-            turnosService.findByIdCard.mockResolvedValue(expectedAppointments as any);
+            appointmentService.findByIdCard.mockResolvedValue(expectedAppointments as any);
 
             const response = await request(app.getHttpServer())
                 .get(`/appointments/${idCard}`)
                 .expect(200);
 
             expect(response.body).toEqual(expectedAppointments);
-            expect(turnosService.findByIdCard).toHaveBeenCalledWith(idCard);
+            expect(appointmentService.findByIdCard).toHaveBeenCalledWith(idCard);
         });
 
         it('should return 400 if idCard is not a valid number', async () => {

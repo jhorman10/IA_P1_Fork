@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, Param, Post, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 import { ProducerService, CreateAppointmentResponse } from './producer.service';
-import { TurnosService } from './appointments/turnos.service';
+import { AppointmentService } from './appointments/appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { AppointmentEventPayload } from './types/appointment-event';
 
@@ -10,7 +10,7 @@ import { AppointmentEventPayload } from './types/appointment-event';
 export class ProducerController {
     constructor(
         private readonly producerService: ProducerService,
-        private readonly turnosService: TurnosService,
+        private readonly appointmentService: AppointmentService,
     ) { }
 
     @Post()
@@ -69,8 +69,8 @@ export class ProducerController {
         },
     })
     async getAllAppointments(): Promise<AppointmentEventPayload[]> {
-        const appointments = await this.turnosService.findAll();
-        return appointments.map(t => this.turnosService.toEventPayload(t));
+        const appointments = await this.appointmentService.findAll();
+        return appointments.map(t => this.appointmentService.toEventPayload(t));
     }
 
     @Get(':idCard')
@@ -94,6 +94,6 @@ export class ProducerController {
         description: 'No appointments found for the provided ID card',
     })
     async getAppointmentsByIdCard(@Param('idCard', ParseIntPipe) idCard: number) {
-        return this.turnosService.findByIdCard(idCard);
+        return this.appointmentService.findByIdCard(idCard);
     }
 }

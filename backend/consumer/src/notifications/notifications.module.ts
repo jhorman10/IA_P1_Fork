@@ -7,13 +7,13 @@ import { NotificationsService } from './notifications.service';
     imports: [
         ClientsModule.registerAsync([
             {
-                name: 'TURNOS_NOTIFICATIONS',
+                name: 'APPOINTMENT_NOTIFICATIONS',
                 imports: [ConfigModule],
                 useFactory: async (configService: ConfigService) => ({
                     transport: Transport.RMQ,
                     options: {
                         urls: [configService.get<string>('RABBITMQ_URL') || 'amqp://guest:guest@localhost:5672'],
-                        queue: configService.get<string>('RABBITMQ_NOTIFICATIONS_QUEUE') || 'turnos_notifications',
+                        queue: configService.get<string>('RABBITMQ_NOTIFICATIONS_QUEUE') || 'appointment_notifications',
                         queueOptions: {
                             durable: true,
                         },

@@ -9,7 +9,7 @@ import { Appointment } from '../../domain/entities/appointment.entity';
 @Injectable()
 export class RabbitMQNotificationAdapter implements NotificationPort {
     constructor(
-        @Inject('TURNOS_NOTIFICATIONS') private readonly client: ClientProxy,
+        @Inject('APPOINTMENT_NOTIFICATIONS') private readonly client: ClientProxy,
     ) { }
 
     async notifyAppointmentUpdated(appointment: Appointment): Promise<void> {

@@ -1,5 +1,5 @@
-# ⚕️ HUMAN CHECK - Configuración de Docker Compose
-# Revisar puertos expuestos y variables de entorno antes de desplegar
+# ⚕️ HUMAN CHECK - Docker Compose Configuration
+# Review exposed ports and environment variables before deployment
 services:
   producer:
     container_name: backend-producer
@@ -7,16 +7,16 @@ services:
       context: ./backend/producer
       dockerfile: Dockerfile
       target: development
-    # ⚕️ HUMAN CHECK - Comando de desarrollo
-    # En producción, eliminar este command para usar el CMD del Dockerfile
+    # ⚕️ HUMAN CHECK - Development Command
+    # In production, remove this command to use the Dockerfile's CMD
     command: npm run start:dev
-    # ⚕️ HUMAN CHECK - Puertos Expuestos
-    # Verificar que el puerto mapeado no entre en conflicto con otros servicios del host
+    # ⚕️ HUMAN CHECK - Exposed Ports
+    # Verify that the mapped port doesn't conflict with other host services
     ports:
       - "${PRODUCER_PORT:-3000}:3000"
-    # ⚕️ HUMAN CHECK - Volúmenes de Desarrollo (Hot-Reload)
-    # Estos volúmenes montan el código fuente local para desarrollo con hot-reload.
-    # En producción, eliminar estos volúmenes y usar la imagen construida.
+    # ⚕️ HUMAN CHECK - Development Volumes (Hot-Reload)
+    # These volumes mount the local source code for development with hot-reload.
+    # In production, remove these volumes and use the built image.
     volumes:
       - ./backend/producer:/app
       - /app/node_modules
@@ -24,15 +24,15 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3000
-      # ⚕️ HUMAN CHECK - Credenciales de conexión RabbitMQ
-      # No usar credenciales por defecto (guest/guest) en producción.
-      # Configurar variables seguras en .env
+      # ⚕️ HUMAN CHECK - RabbitMQ connection credentials
+      # Do not use default credentials (guest/guest) in production.
+      # Configure secure variables in .env
       - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq:5672
-      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE:-turnos_queue}
-      # ⚕️ HUMAN CHECK - Cola de notificaciones (WebSocket bridge)
-      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE}
-      # ⚕️ HUMAN CHECK - Credenciales de conexión MongoDB (Lectura)
-      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/turnos_db?authSource=admin
+      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE:-appointment_queue}
+      # ⚕️ HUMAN CHECK - Notifications queue (WebSocket bridge)
+      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE:-appointment_notifications}
+      # ⚕️ HUMAN CHECK - MongoDB connection credentials (Read)
+      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/appointments_db?authSource=admin
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -52,30 +52,30 @@ services:
       context: ./backend/consumer
       dockerfile: Dockerfile
       target: development
-    # ⚕️ HUMAN CHECK - Comando de desarrollo
-    # En producción, eliminar este command para usar el CMD del Dockerfile
+    # ⚕️ HUMAN CHECK - Development Command
+    # In production, remove this command to use the Dockerfile's CMD
     command: npm run start:dev
-    # ⚕️ HUMAN CHECK - Volúmenes de Desarrollo (Hot-Reload)
-    # Estos volúmenes montan el código fuente local para desarrollo con hot-reload.
-    # En producción, eliminar estos volúmenes y usar la imagen construida.
+    # ⚕️ HUMAN CHECK - Development Volumes (Hot-Reload)
+    # These volumes mount the local source code for development with hot-reload.
+    # In production, remove these volumes and use the built image.
     volumes:
       - ./backend/consumer:/app
       - /app/node_modules
       - /app/dist
     environment:
       - NODE_ENV=development
-      # ⚕️ HUMAN CHECK - Credenciales de conexión RabbitMQ
-      # No usar credenciales por defecto (guest/guest) en producción.
+      # ⚕️ HUMAN CHECK - RabbitMQ connection credentials
+      # Do not use default credentials (guest/guest) in production.
       - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq:5672
-      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE:-turnos_queue}
-      # ⚕️ HUMAN CHECK - Cola de notificaciones (WebSocket bridge)
-      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE:-turnos_notifications}
-      # ⚕️ HUMAN CHECK - Configuración del Scheduler
+      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE:-appointment_queue}
+      # ⚕️ HUMAN CHECK - Notifications queue (WebSocket bridge)
+      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE:-appointment_notifications}
+      # ⚕️ HUMAN CHECK - Scheduler configuration
       - SCHEDULER_INTERVAL_MS=1000
       - CONSULTORIOS_TOTAL=5
-      # ⚕️ HUMAN CHECK - Credenciales de conexión MongoDB
-      # No usar credenciales por defecto en producción.
-      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/turnos_db?authSource=admin
+      # ⚕️ HUMAN CHECK - MongoDB connection credentials
+      # Do not use default credentials in production.
+      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/appointments_db?authSource=admin
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -117,19 +117,19 @@ services:
     networks:
       - app-network
 
-  # ⚕️ HUMAN CHECK - Configuración de RabbitMQ
-  # Cambiar credenciales por defecto antes de ir a producción
+  # ⚕️ HUMAN CHECK - RabbitMQ Configuration
+  # Change default credentials before going to production
   rabbitmq:
     container_name: P1_rabbitmq
     image: rabbitmq:3-management-alpine
-    # ⚕️ HUMAN CHECK - Puertos Expuestos de RabbitMQ
-    # El puerto 15672 (Management UI) NO debe exponerse en producción
+    # ⚕️ HUMAN CHECK - RabbitMQ Exposed Ports
+    # Port 15672 (Management UI) SHOULD NOT be exposed in production
     ports:
       - "${RABBITMQ_PORT}:5672"
       - "${RABBITMQ_MGMT_PORT}:15672"
-    # ⚕️ HUMAN CHECK - Credenciales por defecto de RabbitMQ
-    # Las credenciales guest/guest solo deben usarse en desarrollo local.
-    # Usar secretos o variables de entorno seguras en producción.
+    # ⚕️ HUMAN CHECK - RabbitMQ Default Credentials
+    # guest/guest credentials should only be used in local development.
+    # Use secrets or secure environment variables in production.
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
@@ -141,19 +141,19 @@ services:
       timeout: 5s
       retries: 5
 
-  # ⚕️ HUMAN CHECK - Configuración de MongoDB
-  # Cambiar credenciales por defecto antes de ir a producción
+  # ⚕️ HUMAN CHECK - MongoDB Configuration
+  # Change default credentials before going to production
   mongodb:
     container_name: P1_mongodb
     image: mongo:7
     ports:
       - "${MONGODB_PORT}:27017"
-    # ⚕️ HUMAN CHECK - Credenciales por defecto de MongoDB
-    # Las credenciales admin/admin123 solo deben usarse en desarrollo local.
+    # ⚕️ HUMAN CHECK - MongoDB Default Credentials
+    # admin/admin123 credentials should only be used in local development.
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}
-      - MONGO_INITDB_DATABASE=turnos_db
+      - MONGO_INITDB_DATABASE=appointments_db
     volumes:
       - mongodb_data:/data/db
     networks:

@@ -15,7 +15,7 @@ describe('ProducerService', () => {
             providers: [
                 ProducerService,
                 {
-                    provide: 'TURNOS_SERVICE',
+                    provide: 'APPOINTMENTS_SERVICE',
                     useValue: mockClientProxy,
                 },
             ],

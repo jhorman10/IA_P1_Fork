@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Appointment, AppointmentSchema } from '../schemas/appointment.schema';
-import { TurnosService } from './turnos.service';
+import { AppointmentService } from './appointment.service';
 
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: Appointment.name, schema: AppointmentSchema }]),
     ],
-    providers: [TurnosService],
-    exports: [TurnosService],
+    providers: [AppointmentService],
+    exports: [AppointmentService, MongooseModule],
 })
-export class TurnosModule { }
+export class AppointmentModule { }

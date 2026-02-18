@@ -13,8 +13,8 @@ const PRIORITY_ORDER: Record<AppointmentPriority, number> = {
 };
 
 @Injectable()
-export class TurnosService {
-    private readonly logger = new Logger(TurnosService.name);
+export class AppointmentService {
+    private readonly logger = new Logger(AppointmentService.name);
 
     constructor(@InjectModel(Appointment.name) private readonly appointmentModel: Model<AppointmentDocument>) { }
 

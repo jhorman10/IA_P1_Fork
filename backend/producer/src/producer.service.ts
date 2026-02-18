@@ -11,7 +11,7 @@ export interface CreateAppointmentResponse {
 export class ProducerService {
     private readonly logger = new Logger(ProducerService.name);
 
-    constructor(@Inject('TURNOS_SERVICE') private readonly client: ClientProxy) { }
+    constructor(@Inject('APPOINTMENTS_SERVICE') private readonly client: ClientProxy) { }
 
     async createAppointment(createAppointmentDto: CreateAppointmentDto): Promise<CreateAppointmentResponse> {
         try {

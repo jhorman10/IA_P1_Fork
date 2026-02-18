@@ -5,7 +5,7 @@ import { Appointment, AppointmentDocument } from '../schemas/appointment.schema'
 import { AppointmentEventPayload } from '../types/appointment-event';
 
 @Injectable()
-export class TurnosService {
+export class AppointmentService {
     constructor(@InjectModel(Appointment.name) private readonly appointmentModel: Model<AppointmentDocument>) { }
 
     /**

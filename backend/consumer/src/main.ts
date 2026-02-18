@@ -8,13 +8,13 @@ async function bootstrap(): Promise<void> {
     const logger = new Logger('Bootstrap');
 
     // ⚕️ HUMAN CHECK - Hybrid App: HTTP (Health) + Microservice
-    // Se cambia de createMicroservice a create para tener puerto HTTP
-    // y permitir Healthchecks de Docker/K8s.
+    // Switched from createMicroservice to create to have an HTTP port
+    // and allow Docker/K8s Healthchecks.
     const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService);
 
     const rabbitUrl = configService.get<string>('RABBITMQ_URL') ?? 'amqp://guest:guest@localhost:5672';
-    const queueName = configService.get<string>('RABBITMQ_QUEUE') ?? 'turnos_queue';
+    const queueName = configService.get<string>('RABBITMQ_QUEUE') ?? 'appointment_queue';
 
     app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.RMQ,
@@ -24,6 +24,10 @@ async function bootstrap(): Promise<void> {
             noAck: false,
             queueOptions: {
                 durable: true,
+                arguments: {
+                    'x-dead-letter-exchange': 'appointment_dlx',
+                    'x-dead-letter-routing-key': 'appointment_dlq'
+                }
             },
             prefetchCount: 1,
         },
@@ -39,8 +43,8 @@ async function bootstrap(): Promise<void> {
 
     await app.startAllMicroservices();
 
-    // El Consumer ahora escucha en el puerto 3001 (interno al contenedor)
-    // solo para health checks y métricas futuras.
+    // The Consumer now listens on port 3000 (internal to container)
+    // only for health checks and future metrics.
     const port = configService.get<number>('PORT') ?? 3000;
     await app.listen(port);
 

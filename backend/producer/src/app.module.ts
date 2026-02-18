@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ProducerController } from './producer.controller';
 import { HealthController } from './health.controller';
 import { ProducerService } from './producer.service';
-import { TurnosModule } from './appointments/turnos.module';
+import { AppointmentModule } from './appointments/appointment.module';
 import { EventsModule } from './events/events.module';
 
 @Module({
@@ -19,13 +19,13 @@ import { EventsModule } from './events/events.module';
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
-                uri: configService.get<string>('MONGODB_URI') || 'mongodb://admin:admin123@localhost:27017/turnos_db?authSource=admin',
+                uri: configService.get<string>('MONGODB_URI') || 'mongodb://admin:admin123@localhost:27017/appointments_db?authSource=admin',
             }),
             inject: [ConfigService],
         }),
         ClientsModule.registerAsync([
             {
-                name: 'TURNOS_SERVICE',
+                name: 'APPOINTMENTS_SERVICE',
                 imports: [ConfigModule],
                 useFactory: async (configService: ConfigService) => ({
                     transport: Transport.RMQ,
@@ -33,7 +33,7 @@ import { EventsModule } from './events/events.module';
                         // ⚕️ HUMAN CHECK - Configuración de conexión RabbitMQ
                         // Cambiar credenciales default y usar variables de entorno seguras
                         urls: [configService.get<string>('RABBITMQ_URL') || 'amqp://guest:guest@localhost:5672'],
-                        queue: configService.get<string>('RABBITMQ_QUEUE') || 'turnos_queue',
+                        queue: configService.get<string>('RABBITMQ_QUEUE') || 'appointment_queue',
                         queueOptions: {
                             durable: true,
                         },
@@ -42,7 +42,7 @@ import { EventsModule } from './events/events.module';
                 inject: [ConfigService],
             },
         ]),
-        TurnosModule,
+        AppointmentModule,
         // ⚕️ HUMAN CHECK - Módulo de Eventos (WebSocket + RabbitMQ listener)
         EventsModule,
     ],

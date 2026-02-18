@@ -6,7 +6,7 @@ import {
     OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { TurnosService } from '../appointments/turnos.service';
+import { AppointmentService } from '../appointments/appointment.service';
 import { AppointmentEventPayload } from '../types/appointment-event';
 
 // ⚕️ HUMAN CHECK - WebSocket Gateway
@@ -16,21 +16,21 @@ import { AppointmentEventPayload } from '../types/appointment-event';
         origin: '*',
     },
 })
-export class TurnosGateway implements OnGatewayConnection, OnGatewayDisconnect {
-    private readonly logger = new Logger(TurnosGateway.name);
+export class AppointmentsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+    private readonly logger = new Logger(AppointmentsGateway.name);
 
     @WebSocketServer()
     server: Server;
 
-    constructor(private readonly turnosService: TurnosService) { }
+    constructor(private readonly appointmentService: AppointmentService) { }
 
     async handleConnection(client: Socket): Promise<void> {
         this.logger.log(`Client connected: ${client.id}`);
 
         try {
-            const appointments = await this.turnosService.findAll();
+            const appointments = await this.appointmentService.findAll();
             const snapshot: AppointmentEventPayload[] = appointments.map(t =>
-                this.turnosService.toEventPayload(t),
+                this.appointmentService.toEventPayload(t),
             );
 
             client.emit('APPOINTMENTS_SNAPSHOT', {

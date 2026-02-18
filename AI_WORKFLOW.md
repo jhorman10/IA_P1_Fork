@@ -149,6 +149,9 @@ Este proyecto utiliza una metodología **AI-First** donde la IA actúa como un *
 | `a52ee2a` | 18/Feb | fix | **Frontend Testing Setup (G-07)**: Configure Jest, fix types and missing envs | 🤖 IA + 👤 Revisión |
 | `5cb40dd` | 18/Feb | test | **Mirror Testing Structure (G-07)**: Dedicated `test/` folder with Best Practices (Factories/Mocks) | 🤖 IA + 👤 Revisión |
 | `59c7b00` | 18/Feb | test | **Flattened Test Structure (G-07)**: Reorganized `test/` as 1:1 replica of `src/` | 🤖 IA + 👤 Revisión |
+| `a169051` | 18/Feb | refactor | **Hexagonal Hardening (G-07)**: SRP/DIP refactor of Scheduler using Use Cases and Ports | 🤖 IA + 👤 Revisión |
+| `Phase 3` | 18/Feb | refactor | Global English nomenclature sync (Turnos → Appointments) | 🤖 |
+| `Phase 4` | 18/Feb | feat | Resilience Patterns: DLQ, DLX, and Retry logic implementation | 🤖 |
 
 > **🛡️ Decisión Humana:** El humano aprobó la restricción de idempotencia donde un paciente no puede tener más de un turno activo (`waiting/called`) simultáneamente para evitar duplicados.
 

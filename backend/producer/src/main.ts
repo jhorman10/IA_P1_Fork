@@ -19,18 +19,18 @@ async function bootstrap(): Promise<void> {
     // Habilitar validación global (class-validator)
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
 
-    // ⚕️ HUMAN CHECK - Configuración de Swagger
-    // Revisar que la info sea correcta antes de desplegar
+    // ⚕️ HUMAN CHECK - Swagger Configuration
+    // Review info before deployment
     const config = new DocumentBuilder()
-        .setTitle('API de Turnos Médicos')
+        .setTitle('Medical Appointments API')
         .setDescription(
-            'API para la gestión de turnos médicos. ' +
-            'Recibe solicitudes de turno y las envía a una cola RabbitMQ para procesamiento asíncrono. ' +
-            'El turno es asignado a un consultorio por un scheduler cada 15 segundos. ' +
-            'Los cambios se emiten en tiempo real via WebSocket en /ws/turnos.'
+            'API for medical appointment management. ' +
+            'Receives appointment requests and sends them to a RabbitMQ queue for asynchronous processing. ' +
+            'Appointments are assigned to offices by a scheduler every 15 seconds. ' +
+            'Changes are emitted in real-time via WebSocket at /ws/appointments.'
         )
         .setVersion('2.0')
-        .addTag('Turnos', 'Operaciones de gestión de turnos médicos')
+        .addTag('Appointments', 'Management operations for medical appointments')
         .build();
 
     const document = SwaggerModule.createDocument(app, config);
@@ -40,10 +40,10 @@ async function bootstrap(): Promise<void> {
     const port = configService.get<number>('PORT') ?? 3000;
 
     // ⚕️ HUMAN CHECK - Hybrid App: HTTP + Microservice (RabbitMQ listener)
-    // El Producer escucha eventos del Consumer (turno_creado, turno_actualizado)
-    // para reenviarlos por WebSocket a los clientes conectados
+    // The Producer listens for events from the Consumer (appointment_created, appointment_updated)
+    // to forward them via WebSocket to connected clients
     const rabbitUrl = configService.get<string>('RABBITMQ_URL') ?? 'amqp://guest:guest@localhost:5672';
-    const notificationsQueue = configService.get<string>('RABBITMQ_NOTIFICATIONS_QUEUE') ?? 'turnos_notifications';
+    const notificationsQueue = configService.get<string>('RABBITMQ_NOTIFICATIONS_QUEUE') ?? 'appointment_notifications';
 
     app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.RMQ,
@@ -60,10 +60,10 @@ async function bootstrap(): Promise<void> {
     await app.startAllMicroservices();
     await app.listen(port);
 
-    // ⚕️ HUMAN CHECK - Reemplazado console.log por Logger (consistencia)
+    // ⚕️ HUMAN CHECK - Replaced console.log with Logger (consistency)
     logger.log(`Producer running on port ${port}`);
     logger.log(`Swagger docs: http://localhost:${port}/api/docs`);
-    logger.log(`WebSocket: ws://localhost:${port}/ws/turnos`);
+    logger.log(`WebSocket: ws://localhost:${port}/ws/appointments`);
     logger.log(`Listening for notifications on queue: ${notificationsQueue}`);
 }
 bootstrap();
