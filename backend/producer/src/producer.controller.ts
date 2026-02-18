@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, Inject, Param, Post, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
-import { CreateAppointmentUseCase, CreateAppointmentResponse } from './domain/ports/inbound/create-appointment.use-case';
+import { CreateAppointmentUseCase } from './domain/ports/inbound/create-appointment.use-case';
 import { QueryAppointmentsUseCase } from './domain/ports/inbound/query-appointments.use-case';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { AppointmentEventPayload } from './types/appointment-event';
@@ -8,6 +8,11 @@ import { AppointmentEventPayload } from './types/appointment-event';
 // ⚕️ HUMAN CHECK - Hexagonal: Controller depends ONLY on inbound ports (DIP).
 // Commands (POST) → CreateAppointmentUseCase
 // Queries (GET) → QueryAppointmentsUseCase
+
+interface CreateAppointmentResponse {
+    status: string;
+    message: string;
+}
 
 @ApiTags('Appointments')
 @Controller('appointments')
@@ -44,8 +49,22 @@ export class ProducerController {
         status: 400,
         description: 'Invalid data — missing fields, incorrect types, or forbidden properties',
     })
-    async createAppointment(@Body() createAppointmentDto: CreateAppointmentDto): Promise<CreateAppointmentResponse> {
-        return this.createAppointmentUseCase.execute(createAppointmentDto);
+    async createAppointment(@Body() dto: CreateAppointmentDto): Promise<CreateAppointmentResponse> {
+        // 1. Map DTO (HTTP) → Command (Domain)
+        // ⚕️ HUMAN CHECK - SRP: Controller handles data mapping, not the Use Case.
+        const command = {
+            idCard: dto.idCard,
+            fullName: dto.fullName,
+        };
+
+        // 2. Execute Use Case (Business Logic)
+        await this.createAppointmentUseCase.execute(command);
+
+        // 3. Construct Response (Presentation Logic)
+        return {
+            status: 'accepted',
+            message: 'Appointment assignment in progress',
+        };
     }
 
     @Get()

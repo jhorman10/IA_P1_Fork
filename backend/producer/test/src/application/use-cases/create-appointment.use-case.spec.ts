@@ -33,19 +33,14 @@ describe('CreateAppointmentUseCaseImpl', () => {
     });
 
     describe('execute - Success cases', () => {
-        it('should publish appointment and return accepted status', async () => {
-            const createAppointmentDto = {
+        it('should publish appointment and return void (fire-and-forget)', async () => {
+            const command = {
                 idCard: 123456789,
                 fullName: 'John Doe',
             };
 
-            const result = await useCase.execute(createAppointmentDto);
-
-            expect(mockPublisher.publishAppointmentCreated).toHaveBeenCalledWith(createAppointmentDto);
-            expect(result).toEqual({
-                status: 'accepted',
-                message: 'Appointment assignment in progress',
-            });
+            await expect(useCase.execute(command)).resolves.not.toThrow();
+            expect(mockPublisher.publishAppointmentCreated).toHaveBeenCalledWith(command);
         });
     });
 

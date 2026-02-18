@@ -63,10 +63,9 @@ describe('ProducerController (Integration Tests)', () => {
                 fullName: 'John Doe',
             };
 
-            createAppointmentUseCase.execute.mockResolvedValue({
-                status: 'accepted',
-                message: 'Appointment assignment in progress',
-            });
+            // ⚕️ HUMAN CHECK - SRP: Use Case returns void (Command Pattern).
+            // Controller is responsible for constructing the HTTP response.
+            createAppointmentUseCase.execute.mockResolvedValue(undefined);
 
             const response = await request(app.getHttpServer())
                 .post('/appointments')
@@ -77,7 +76,12 @@ describe('ProducerController (Integration Tests)', () => {
                 status: 'accepted',
                 message: 'Appointment assignment in progress',
             });
-            expect(createAppointmentUseCase.execute).toHaveBeenCalledWith(createAppointmentDto);
+
+            // Verify mapping: DTO -> Command
+            expect(createAppointmentUseCase.execute).toHaveBeenCalledWith({
+                idCard: 123456789,
+                fullName: 'John Doe',
+            });
         });
 
         it('should return 400 if idCard is missing', async () => {

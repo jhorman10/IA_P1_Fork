@@ -1,9 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateAppointmentDto } from '../../dto/create-appointment.dto';
 import { AppointmentPublisherPort } from '../../domain/ports/outbound/appointment-publisher.port';
 import {
     CreateAppointmentUseCase,
-    CreateAppointmentResponse,
+    CreateAppointmentCommand,
 } from '../../domain/ports/inbound/create-appointment.use-case';
 
 /**
@@ -18,8 +17,9 @@ export class CreateAppointmentUseCaseImpl implements CreateAppointmentUseCase {
         private readonly publisher: AppointmentPublisherPort,
     ) { }
 
-    async execute(dto: CreateAppointmentDto): Promise<CreateAppointmentResponse> {
-        await this.publisher.publishAppointmentCreated(dto);
-        return { status: 'accepted', message: 'Appointment assignment in progress' };
+    async execute(command: CreateAppointmentCommand): Promise<void> {
+        // ⚕️ HUMAN CHECK - SRP: Use Case only orchestrates business logic.
+        // Returns void. UI response is Controller responsibility.
+        await this.publisher.publishAppointmentCreated(command);
     }
 }
