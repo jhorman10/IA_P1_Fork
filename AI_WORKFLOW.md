@@ -348,4 +348,33 @@ audit completo del proyecto siguiendo OWASP Top 10."
 | Hexagonal Architecture en ambos micros | IA argumentó que Producer es proxy y Hex sería over-engineering. Arquitecto exigió simetría. | Consistencia arquitectónica, todos los controllers dependen de ports. |
 
 ---
-**STATUS: ELITE DDD GRADE + FULL HEXAGONAL + SECURITY HARDENING CERTIFIED** ✅
+
+### Fase 8: Re-Auditoría SOLID Hostil + Remediación Round 2 (2026-02-18)
+
+> **SA-Refactor-Arch** usando skill `refactor-arch`
+
+#### Interacciones
+
+```
+👤 Human: Solicita re-auditoría SOLID hostil del codebase post-Hexagonal. Omitir AI_WORKFLOW.md.
+
+🤖 IA (SA-Refactor-Arch): [Escaneó todos los .ts de ambos microservicios]
+   Resultado: 7 hallazgos (2 críticos, 4 medios, 1 menor).
+
+👤 Human: "Genera un plan de acción para mitigar estos hallazgos"
+
+🤖 IA: [Generó plan de remediación en 3 fases: 3 nuevos + 8 modificados]
+
+👤 Human: ✅ Aprobado.
+
+🤖 IA: [Ejecutó 3 fases — 3 archivos nuevos, 10 modificados]
+   Resultado: Producer 20/20 ✅, Consumer 51/51 ✅ — 71/71 PASS.
+```
+
+| Commit | Hash | Actor | Descripción |
+|--------|------|-------|-------------|
+| `refactor(solid)` | `271e5c6` | 🤖 | 7 findings: EventBroadcasterPort, CORS ConfigService, typed payloads, RmqHeaders, ES import, injectable ConsultationPolicy |
+
+---
+**STATUS: ELITE DDD GRADE + FULL HEXAGONAL + SOLID CERTIFIED + SECURITY HARDENING** ✅
+
