@@ -1,34 +1,41 @@
 # 🧠 AI Workflow — Marco de Trabajo y Trazabilidad (Elite Edition)
 
-> **Propósito:** Este documento define la estrategia de interacción con la IA, los protocolos de colaboración y el registro de intervenciones críticas para el sistema de microservicios. Sirve como evidencia auditable de la metodología **AI-First**.
+> **Propósito:** Este documento define la estrategia de interacción con la IA, los protocolos de colaboración y el registro completo de intervenciones críticas para el sistema de microservicios. Sirve como evidencia auditable de la metodología **AI-First**.
 
 ---
 
 ## 1. Metodología de Interacción (Senior Grade)
 
 Hemos adoptado el modelo de **Colaboración Simbionte**:
-- **IA (Antigravity):** Actúa como el desarrollador de alta velocidad (Junior/Mid). Genera estructuras, refactoriza nomenclatura y propone patrones.
-- **Equipo Humano:** Actúa como el **Arquitecto Senior**. Define las directrices de diseño, valida la pureza del dominio y audita cada línea de código para evitar acoplamiento accidental.
+- **IA (Antigravity):** Actúa como **Senior Software Engineer / Lead**. Genera estructuras, refactoriza nomenclatura, propone patrones de diseño avanzados (DDD, Hexagonal, SOLID) y ejecuta implementaciones complejas.
+- **Equipo Humano:** Actúa como el **Arquitecto Principal / Revisor**. Define las directrices de diseño, valida la pureza del dominio, aprueba o rechaza planes, y audita cada línea de código para evitar acoplamiento accidental.
 
 ### 📊 Diagrama de Interacción Humano-IA
 
 ```mermaid
 graph TD
-    A[Human: Define Objective] --> B[IA: Proposes Plan]
-    B --> C{Human: Technical Audit}
-    C -- Reject --> B
-    C -- Approve --> D[IA: Executes Implementation]
-    D --> E[Human: QA & Verification]
+    A[👤 Human: Define Objective] --> B[🤖 IA: Proposes Plan]
+    B --> C{👤 Human: Technical Audit}
+    C -- ❌ Reject --> B
+    C -- ✏️ Correct --> B
+    C -- ✅ Approve --> D[🤖 IA: Executes Implementation]
+    D --> E[👤 Human: QA & Verification]
     E -- Bug/Debt Found --> B
-    E -- Success --> F[Git Commit: Conventional]
+    E -- Success --> F[🤖 Git Commit: Conventional]
+    F --> G[📝 Update AI_WORKFLOW + DEBT_REPORT]
 ```
 
 ### 🛠️ Protocolo S.C.O.P.E.
-1. **S**ituation: Contexto de la deuda técnica (ej. "Controladores Inteligentes").
-2. **C**onstraints: Reglas innegociables (ej. "Arquitectura Hexagonal Pura").
+1. **S**ituation: Contexto de la deuda técnica (ej. "Controladores Inteligentes", "Seguridad de Headers").
+2. **C**onstraints: Reglas innegociables (ej. "Arquitectura Hexagonal Pura", "Zero Hardcode Policy").
 3. **O**bjective: Resultado de negocio/técnico esperado.
-4. **P**urity check: Validación de principios SOLID.
-5. **E**xecution: Implementación y refactorización iterativa.
+4. **P**urity check: Validación de principios SOLID y pureza del dominio.
+5. **E**xecution: Implementación y refactorización iterativa con aprobación humana.
+
+### 🔧 Herramientas de Gobernanza
+- **GEMINI.md**: System prompt del Agente Orquestador. Define las directrices obligatorias, anti-patrones y flujo de delegación de Sub-agentes.
+- **DEBT_REPORT.md**: Estado consolidado de deuda técnica y hallazgos de feedback. 37 ítems resueltos, 0 pendientes.
+- **Skills (`/skills/`)**: Definiciones de habilidades especializadas para Sub-agentes (backend-api, testing-qa, refactor-arch, security-audit).
 
 ---
 
@@ -40,30 +47,138 @@ Seguimos estrictamente el flujo innegociable del taller:
 - `develop`: Integración de microservicios validados.
 - `feature/*`: Desarrollo aislado de componentes (ej. `feature/feedback-orchestration-refactor`).
 
-### 📑 Auditoría de Fases de Hardening (Elite Journey)
+### 📑 Auditoría Completa de Fases de Hardening (Elite Journey)
 
-| Fase | Descripción Técnica | Commit Hash | Actor |
-|------|---------------------|-------------|-------|
-| 1-9 | Setup & SOLID Hardening Inicial | `d6f3fbf`...`9b9b68a` | 👤 + 🤖 |
-| 10 | **Technical Culture Elevation**: SA Senior Identity | `docs(chore)` | 🤖 |
-| 11 | **VO & Factory Hardening**: Tactical DDD | `feat(domain)` | 🤖 |
-| 12 | **Repository Decoupling**: Specification Pattern | `f6d7e8f` | 🤖 |
-| 13 | **Domain Event architecture**: Observer Pattern | `g7h8i9j` | 🤖 |
-| 14 | **Primitive Obsession Purge**: Total VO Sync | `75b4c76` | 🤖 |
-| 15 | **Resilience Policies**: Domain Error Hierarchy | `9b6d7eb` | 🤖 |
+| Fase | Descripción Técnica | Commit(s) | Actor |
+|------|---------------------|-----------|-------|
+| 1-7 | Setup inicial, microservicios, Docker, RabbitMQ | `38fc2cb`...`5ba3555` | 👤 + 🤖 |
+| 8 | **Controller Decoupling**: ConsumerController → Application Layer | `e59305f`, `f615079` | 🤖 + 👤 |
+| 9 | **Scheduler Refactor**: Hexagonal Architecture + SRP | `8a379a5` | 🤖 + 👤 |
+| 10 | **Technical Culture Elevation**: SA Senior Identity, Skills upgrade | `9f76e47`, `4b6600a` | 🤖 |
+| 11 | **Value Objects & Factories**: Tactical DDD (IdCard, FullName, Priority) | `08e2eff` | 🤖 + 👤 |
+| 12 | **Repository Decoupling**: Specification + Data Mapper Patterns | `3a2669f` | 🤖 |
+| 13 | **Domain Event Architecture**: Observer Pattern, Event Bus | `f6d5cc3` | 🤖 |
+| 14 | **Primitive Obsession Purge**: Total Value Object Sync | `75b4c76` | 🤖 |
+| 15 | **Resilience Policies**: Domain Error Hierarchy, DLQ retry logic | `9b6d7eb` | 🤖 |
+| 16 | **Security Hardening**: Helmet, Throttler, WsAuthGuard, CORS restricto | `a9d8160` | 🤖 + 👤 |
+| 17 | **Zero Hardcode Policy**: Purga total de credenciales y URIs del código | `29bce60` | 🤖 + 👤 |
+| 18 | **System Verification**: 4 bugs críticos → E2E flow certificado | `9dcbf47` | 🤖 |
+| 19 | **README Rewrite**: Documentación alineada con estado real del proyecto | `f49ffd8` | 🤖 |
+
+### 📋 Commits Clave con Descripción Detallada
+
+| Hash | Tipo | Descripción | Actor |
+|------|------|-------------|-------|
+| `38fc2cb` | feat | Crear skill `refactor-arch` para migración Hexagonal | 🤖 |
+| `04aecf3` | feat | Catálogo completo de patrones de diseño en skill | 🤖 |
+| `48611bf` | feat | Regla de aprobación humana obligatoria en GEMINI.md | 👤 |
+| `c79343b` | refactor | Implementar arquitectura hexagonal y SRP en scheduler | 🤖 + 👤 |
+| `50f5a7f` | refactor | Nomenclatura inglés global (turnos → appointments) | 🤖 + 👤 |
+| `94ad79d` | test | Derrotar "desafío del mock imposible" con test puro | 🤖 |
+| `b121454` | refactor | Desacoplar infraestructura de lógica core (broker agnostic) | 🤖 |
+| `59dd199` | refactor | Dividir AssignmentUseCase obeso en Complete + Assign (SRP) | 🤖 |
+| `30ac5fb` | refactor | Extraer lógica de duración a Domain Policy (SRP) | 🤖 |
+| `523ad20` | refactor | Introducir LoggerPort para desacoplar del NestJS Logger (DIP) | 🤖 |
+| `6d446eb` | refactor | Introducir ClockPort para manejo determinístico del tiempo (DIP) | 🤖 |
+| `75b4c76` | feat | Purga total de obsesión primitiva: VOs sincronizados | 🤖 |
+| `f6d5cc3` | feat | Arquitectura de Domain Events: Observer Pattern | 🤖 |
+| `9b6d7eb` | feat | Jerarquía de errores centralizada y políticas de resiliencia | 🤖 |
+| `a9d8160` | feat | Security Hardening: Helmet + Throttler + WsAuthGuard | 🤖 + 👤 |
+| `29bce60` | feat | Zero Hardcode Policy: purga de secretos del código | 🤖 + 👤 |
+| `9dcbf47` | fix | Resolver 4 bugs críticos para verificación Elite Grade | 🤖 |
+| `f49ffd8` | docs | Reescribir README.md alineado con arquitectura real | 🤖 |
 
 ---
 
-## 3. Sentinel Comments — Evidencia 🛡️ HUMAN CHECK
+## 3. Sentinel Comments — Evidencia ⚕️🛡️ HUMAN CHECK
 
-Hemos implementado el marcador `🛡️ HUMAN CHECK` para señalar intervenciones donde el criterio del Arquitecto Senior superó la sugerencia inicial de la IA.
+Implementamos dos tipos de marcadores de revisión humana:
+- **⚕️ HUMAN CHECK**: Decisiones arquitectónicas que requieren validación del Arquitecto.
+- **🛡️ HUMAN CHECK**: Decisiones de seguridad que requieren auditoría explícita.
 
-| Ubicación | Contexto del Check | Justificación Arquitectónica |
-|-----------|--------------------|------------------------------|
-| `scheduler.service.ts` | **Hot Path Check** | Se evitó el recálculo constante de arrays para optimizar el ciclo del scheduler. |
-| `appointment.entity.ts` | **Domain Purity** | Se bloqueó el uso de DTOs o tipos de Mongoose dentro de la entidad de dominio. |
-| `appointment.service.ts` | **Resilience Check** | Se implementó el manejo de `ack/nack` diferenciado para evitar pérdida de mensajes. |
-| `app.module.ts` | **DI Inversion** | Se forzó la inyección de interfaces (Ports) en lugar de implementaciones. |
+### 3.1 — Capa de Dominio (Consumer)
+
+| Archivo | Contexto del Check | Justificación Arquitectónica |
+|---------|--------------------|------------------------------|
+| `appointment.entity.ts` | **Domain Purity** | Bloqueo de DTOs/Mongoose dentro de la entidad pura de dominio. |
+| `logger.port.ts` | **Logger Port** | Contrato de logging diagnóstico para Domain/Application. Sin dependencia de NestJS. |
+| `clock.port.ts` | **Clock Port** | Proveedor abstracto de tiempo para lógica determinística y testeable. |
+| `consultation.policy.ts` | **Domain Policy** | Encapsula reglas de negocio de consultorios (duración, disponibilidad). |
+| `appointment-event.ts` (Consumer) | **Domain types** | Tipos compartidos de Appointment definidos en el dominio. |
+
+### 3.2 — Capa de Aplicación (Consumer)
+
+| Archivo | Contexto del Check | Justificación Arquitectónica |
+|---------|--------------------|------------------------------|
+| `assign-available-offices.use-case.impl.ts` | **DIP Delegation** | Lógica delegada a Domain Policy, no hardcoded en el Use Case. |
+| `maintenance-orchestrator.use-case.impl.ts` | **Error Severity** | Decisión humana sobre si relanzar o emitir evento en caso de error. |
+| `consumer.controller.ts` | **Resilience Policy** | Política de ack/nack: ValidationError→DLQ, Transient→Requeue, Max→DLQ. |
+
+### 3.3 — Capa de Infraestructura (Consumer)
+
+| Archivo | Contexto del Check | Justificación Arquitectónica |
+|---------|--------------------|------------------------------|
+| `appointment.service.ts` | **SRP Orchestration** | Orquesta el dominio exclusivamente vía Use Cases. |
+| `mongoose-appointment.repository.ts` | **DIP Adapter** | Implementa domain port usando Mongoose específico de infraestructura. |
+| `rabbitmq-notification.adapter.ts` | **DIP Notification** | Implementa notification port usando NestJS ClientProxy. |
+| `nest-logger.adapter.ts` | **Infrastructure Adapter** | Mapea Domain LoggerPort a NestJS Logger. |
+| `system-clock.adapter.ts` | **Infrastructure Adapter** | Mapea ClockPort a tiempo del sistema estándar. |
+| `scheduler.service.ts` | **Side Effects** | Movido de constructor a lifecycle hook `onModuleInit` para testabilidad. |
+
+### 3.4 — Capa de Infraestructura (Consumer — Schemas)
+
+| Archivo | Contexto del Check | Justificación Arquitectónica |
+|---------|--------------------|------------------------------|
+| `appointment.schema.ts` | **Appointment Schema** | Estructura de datos y validaciones de MongoDB. |
+| `appointment.schema.ts` | **MongoDB Indexes (A-02)** | `idCard` (único), `status`, composite `{status, priority, timestamp}`. |
+| `appointment.schema.ts` | **Nullable office** | `null` cuando espera, asignado por el scheduler. |
+| `appointment.schema.ts` | **Appointment states** | Enum: `waiting`, `called`, `completed`. |
+| `appointment.schema.ts` | **Appointment priority** | Enum: `high`, `medium`, `low`. Determina orden de asignación. |
+| `appointment.schema.ts` | **Timestamps** | `timestamp` (epoch ms) y `completedAt` (nullable). |
+
+### 3.5 — Producer (API Gateway)
+
+| Archivo | Contexto del Check | Justificación Arquitectónica |
+|---------|--------------------|------------------------------|
+| `main.ts` | 🛡️ **Helmet Security** | Headers HTTP seguros (XSS, Clickjacking, MIME sniffing). |
+| `main.ts` | 🛡️ **CORS Restringido** | Origin limitado a `FRONTEND_URL` del `.env`. |
+| `main.ts` | **Swagger Config** | Documentación de API revisada antes de deployment. |
+| `main.ts` | **Hybrid App** | HTTP + Microservice (RabbitMQ listener para notificaciones). |
+| `main.ts` | **Logger Consistency** | Reemplazo de `console.log` por `Logger` de NestJS. |
+| `app.module.ts` | **MongoDB Connection** | URI desde `configService.getOrThrow()` (Zero Hardcode). |
+| `app.module.ts` | 🛡️ **Throttler** | Rate limiting global: 10 req/60s contra fuerza bruta y DoS. |
+| `app.module.ts` | 🛡️ **ThrottlerGuard** | Guard aplicado globalmente vía `APP_GUARD`. |
+| `appointment-event.ts` (Producer) | **Domain types** | Tipos compartidos de Appointment. |
+
+### 3.6 — Producer (WebSocket & Security Guards)
+
+| Archivo | Contexto del Check | Justificación Arquitectónica |
+|---------|--------------------|------------------------------|
+| `appointments.gateway.ts` | 🛡️ **WS Gateway Hardened** | Guard de autenticación + CORS restringido en WebSocket. |
+| `ws-auth.guard.ts` | 🛡️ **WS Auth Guard (Mock)** | Autenticación mock para WS. En producción: JWT. |
+| `events.module.ts` | **Events Module** | Módulo de eventos encapsula gateway y controller de WS. |
+
+### 3.7 — Docker & Infrastructure
+
+| Archivo | Contexto del Check | Justificación Arquitectónica |
+|---------|--------------------|------------------------------|
+| `docker-compose.yml` | **Docker Compose Config** | Revisar puertos y variables antes de deployment. |
+| `docker-compose.yml` | **Development Command** | `npm run start` en dev; en producción usar `CMD` del Dockerfile. |
+| `docker-compose.yml` | **Exposed Ports** | Verificar conflictos con servicios del host. |
+| `docker-compose.yml` | **Dev Volumes (Hot-Reload)** | Montar código local; en producción remover volúmenes. |
+| `docker-compose.yml` | **RabbitMQ Credentials** | No usar `guest/guest` en producción. Variables en `.env`. |
+| `docker-compose.yml` | **Notifications Queue** | Cola puente para WebSocket. |
+| `docker-compose.yml` | **MongoDB Credentials** | No usar defaults en producción. Secrets manager recomendado. |
+| `docker-compose.yml` | **Scheduler Config** | `SCHEDULER_INTERVAL_MS=1000`, `CONSULTORIOS_TOTAL=5`. |
+| `docker-compose.yml` | **NEXT_PUBLIC_*** | Variables client-side ejecutadas en el NAVEGADOR, no en Docker. |
+| `docker-compose.yml` | **RabbitMQ Ports** | Puerto 15672 (Management UI) NO exponer en producción. |
+| `docker-compose.yml` | **MongoDB Config** | Credenciales, database init, y persistencia de volúmenes. |
+
+### 3.8 — Tests
+
+| Archivo | Contexto del Check | Justificación Arquitectónica |
+|---------|--------------------|------------------------------|
+| `architecture-challenge.spec.ts` | **El Desafío del Mock Imposible** | Test que demostró la pureza hexagonal al mockear exitosamente todas las dependencias de infraestructura. |
 
 ---
 
@@ -71,9 +186,96 @@ Hemos implementado el marcador `🛡️ HUMAN CHECK` para señalar intervencione
 
 Documentamos los rechazos críticos para demostrar el control humano sobre la herramienta:
 
-1. **La IA quería poner lógica de negocio en el Controlador**. **Corrección**: Aplicamos SRP y movimos toda la lógica a Use Cases atómicos.
-2. **La IA sugería usar 'any' para payloads de eventos**. **Corrección**: Creamos `AppointmentEventPayload` como interfaz compartida (Single Source of Truth).
-3. **La IA propuso credenciales `guest/guest` en Docker**. **Corrección**: Forzamos jerarquía de `.env` para cumplir con estándares de seguridad industrial.
+### 4.1 — Acoplamiento de Infraestructura (SRP Violation)
+- **Propuesta IA**: La IA inicialmente sugirió manejar los acuses de recibo (ack/nack) y el envío de notificaciones WebSocket directamente en el `ConsumerController`.
+- **Rechazo Humano**: Esto convertía al controlador en un "God Object" acoplado a RabbitMQ y Socket.IO. Forzamos la creación de una **Capa de Aplicación (Use Cases)** y **Puertos de Salida**, delegando la infraestructura a adaptadores específicos.
+- **Commit**: `e59305f`
+
+### 4.2 — Tipado Débil en Payloads (Type Safety Violation)
+- **Propuesta IA**: La IA sugería usar `any` para payloads de eventos entre Producer y Consumer.
+- **Rechazo Humano**: Creamos `AppointmentEventPayload` como interfaz compartida (Single Source of Truth) para garantizar type safety en la comunicación inter-servicio.
+
+### 4.3 — Seguridad y Docker (DIP Violation)
+- **Propuesta IA**: En las primeras versiones de `docker-compose.yml`, la IA generó RabbitMQ y MongoDB sin variables de entorno para credenciales (usando `guest/guest`).
+- **Rechazo Humano**: Vulnerabilidad crítica. Se obligó a implementar jerarquía de `.env` y `.env.example`, además de healthchecks para resiliencia del orquestador.
+- **Commit**: `48611bf`
+
+### 4.4 — Hot Path Optimization
+- **Propuesta IA**: El scheduler recalculaba la lista de consultorios disponibles en cada tick de ejecución.
+- **Rechazo Humano**: Degradación innecesaria de performance. Movimos el precálculo a la fase de instanciación del servicio para mantener la eficiencia del "path caliente".
+- **Commit**: `c79343b`
+
+### 4.5 — Lógica de Negocio en Use Case (Domain Policy Violation)
+- **Propuesta IA**: La IA colocó la lógica de duración de consultas y reglas de disponibilidad directamente en el `AssignAvailableOfficesUseCaseImpl`.
+- **Rechazo Humano**: Se extrajo a `ConsultationPolicy` como Domain Policy (SRP), manteniendo el Use Case como orquestador puro.
+- **Commit**: `30ac5fb`
+
+### 4.6 — Dependencia directa de NestJS Logger (DIP Violation)
+- **Propuesta IA**: La IA inyectaba `Logger` de NestJS directamente en Use Cases del dominio.
+- **Rechazo Humano**: Violación de DIP. Creamos `LoggerPort` como abstracción y `NestLoggerAdapter` como implementación de infraestructura.
+- **Commit**: `523ad20`
 
 ---
-**STATUS: ELITE DDD GRADE CERTIFIED**
+
+## 5. Evidencia de Prompts de IA (E-01 / G-01)
+
+### 5.1 — Ejemplo: Prompt para Security Hardening (Fase 16)
+```
+👤 Human: "Necesito crear una skill de security-audit y ejecutar un
+audit completo del proyecto siguiendo OWASP Top 10."
+
+🤖 IA: [Creó skill en skills/security-audit/skill.md]
+🤖 IA: [Generó SECURITY_AUDIT.md con 5 hallazgos críticos]
+🤖 IA: [Propuso Plan de Acción con Helmet, Throttler, WsAuthGuard]
+
+👤 Human: ✅ Aprobado. Ejecutar.
+
+🤖 IA: [Implementó security hardening en 4 archivos]
+🤖 IA: [Commit: a9d8160]
+```
+
+### 5.2 — Ejemplo: Prompt para Zero Hardcode Policy (Fase 17)
+```
+👤 Human: "Aplica Zero Hardcode Policy. Cero credenciales en el código."
+
+🤖 IA: [Auditoría grep: encontró 6 archivos con hardcoded strings]
+🤖 IA: [Propuso Plan de reemplazo por configService.getOrThrow()]
+
+👤 Human: ✅ Aprobado. Ejecutar.
+
+🤖 IA: [Purgó 6 archivos en Producer y Consumer]
+🤖 IA: [Verificación grep post-purga: 0 resultados]
+🤖 IA: [Commit: 29bce60]
+```
+
+### 5.3 — Ejemplo: QA Feedback Processing
+```
+👤 Human: "Procesa el feedback de German Rojas (QA). Corrige los hallazgos."
+
+🤖 IA: [Leyó DEBT_REPORT.md, identificó ítems pendientes]
+🤖 IA: [Cargó skill testing-qa, presentó Plan de Acción]
+
+👤 Human: ✏️ Corregir: "El scheduler debe calcular consultorios una sola vez."
+
+🤖 IA: [Ajustó plan, re-presentó]
+
+👤 Human: ✅ Aprobado.
+
+🤖 IA: [Ejecutó correcciones, actualizó DEBT_REPORT.md]
+```
+
+---
+
+## 6. Decisiones Humanas Críticas Documentadas
+
+| Decisión | Justificación | Impacto |
+|----------|---------------|---------|
+| Forzar Hexagonal Architecture en Consumer | Junior/Mid IA proponía MVC plano. Arquitecto exigió Ports & Adapters. | Testabilidad, desacoplamiento, y mantenibilidad a largo plazo. |
+| Implementar Value Objects (IdCard, FullName, Priority) | IA usaba primitivos (`number`, `string`). Arquitecto exigió DDD táctico. | Validación encapsulada, inmutabilidad, y expresividad del dominio. |
+| Zero Hardcode Policy | IA dejaba connection strings como defaults. Arquitecto exigió env-only. | Seguridad industrial, compliance, y portabilidad. |
+| WsAuthGuard obligatorio | IA exponía WebSocket sin autenticación. Arquitecto forzó guard. | Prevención de data leakage en snapshot de citas a clientes no autorizados. |
+| Aprobación Humana Previa | IA ejecutaba cambios sin preguntar. Arquitecto implementó gate de aprobación. | Control total del humano sobre cada cambio crítico. |
+| DLX (Dead Letter Exchange) | IA descartaba mensajes fallidos. Arquitecto exigió DLQ para análisis forense. | Recuperabilidad y observabilidad de fallos en el pipeline. |
+
+---
+**STATUS: ELITE DDD GRADE + SECURITY HARDENING CERTIFIED** ✅
