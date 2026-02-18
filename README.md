@@ -118,12 +118,26 @@ IA_P1/
 └── README.md            # Documentation
 ```
 
-## 📝 Audit Notes (Recent Fixes)
+## 📝 Documentation & AI Strategy
 
-- **Naming Convention**: Refactored the entire codebase from Spanish to English (e.g., `cedula` -> `idCard`, `nombre` -> `fullName`, `turno` -> `appointment`).
-- **Type Safety**: Eliminated `any` types using shared interfaces (`AppointmentEventPayload`).
-- **Race Conditions**: Corrected scheduler logic to ensure unique assignments.
-- **Frontend Sync**: Adjusted types (`idCard: number`) to match the backend.
-- **Docker Networking**: Configuration corrected for the browser client to use `localhost`.
-- **Healthchecks**: Implemented healthchecks for all services in `docker-compose.yml`.
-- **Ack/Nack explícitos**: The consumer confirms messages on success and differentiates `nack` without requeue for validation errors vs requeue on transient errors.
+Este proyecto sigue una metodología **AI-First**. Para entender nuestro marco de trabajo, protocolos de interacción y la trazabilidad completa del desarrollo, consulte:
+👉 [**AI_WORKFLOW.md**](./AI_WORKFLOW.md)
+
+## ⚠️ Lo que la IA hizo mal (Anti-Pattern Log)
+
+Siguiendo las directrices del taller, documentamos casos donde la IA propuso soluciones que fueron corregidas por el equipo humano:
+
+1. **Acoplamiento de Infraestructura (SRP Violation)**:
+   - **Propuesta IA**: La IA inicialmente sugirió manejar los acuses de recibo (ack/nack) y el envío de notificaciones WS directamente en el `ConsumerController`.
+   - **Rechazo Humano**: Esto convertía al controlador en un "God Object" acoplado a RabbitMQ y Socket.IO. Forzamos la creación de una **Capa de Aplicación (Use Cases)** y **Puertos de Salida**, delegando la infraestructura a adaptadores específicos.
+
+2. **Seguridad y Docker (DIP Violation)**:
+   - **Propuesta IA**: En las primeras versiones de `docker-compose.yml`, la IA generó el broker de RabbitMQ y la base de datos MongoDB sin variables de entorno para credenciales (usando `guest/guest`).
+   - **Rechazo Humano**: Vulnerabilidad crítica. Se obligó a la IA a implementar una jerarquía de `.env` y `.env.example`, además de configurar healthchecks para asegurar la resiliencia del orquestador.
+
+3. **Hot Path Optimization**:
+   - **Propuesta IA**: El scheduler recalculaba la lista de consultorios disponibles en cada tick de ejecución.
+   - **Rechazo Humano**: Degradación innecesaria de performance. Movimos el precálculo a la fase de instanciación del servicio para mantener la eficiencia del "path caliente".
+
+---
+**ESTADO: ARQUITECTURA "ELITE DDD" ALCANZADA**
