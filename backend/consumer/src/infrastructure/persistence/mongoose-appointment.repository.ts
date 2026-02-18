@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { AppointmentRepository } from '../../domain/ports/outbound/appointment.repository';
 import { Appointment, AppointmentStatus, AppointmentPriority } from '../../domain/entities/appointment.entity';
 import { Appointment as AppointmentSchema, AppointmentDocument } from '../../schemas/appointment.schema';
+import { IdCard } from '../../domain/value-objects/id-card.value-object';
 
 // Pattern: Adapter + Repository — Bridges Mongoose with the Domain Port
 // ⚕️ HUMAN CHECK - DIP: Implements domain port using infra-specific Mongoose
@@ -18,7 +19,7 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
     async findWaiting(): Promise<Appointment[]> {
         const docs = await this.model
             .find({ status: 'waiting' })
-            .sort({ priority: 1, timestamp: 1 }) // Note: we'll handle priority sorting in domain if complex
+            .sort({ priority: 1, timestamp: 1 })
             .exec();
         return docs.map(doc => this.mapToDomain(doc));
     }
@@ -36,6 +37,9 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
         const updated = await this.model.findByIdAndUpdate(
             appointment.id,
             {
+                idCard: appointment.idCard.toValue(),
+                fullName: appointment.fullName,
+                priority: appointment.priority,
                 status: appointment.status,
                 office: appointment.office,
                 completedAt: appointment.completedAt,
@@ -50,9 +54,9 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
         return doc ? this.mapToDomain(doc) : null;
     }
 
-    async findByIdCardAndActive(idCard: number): Promise<Appointment | null> {
+    async findByIdCardAndActive(idCard: IdCard): Promise<Appointment | null> {
         const doc = await this.model.findOne({
-            idCard,
+            idCard: idCard.toValue(),
             status: { $in: ['waiting', 'called'] }
         }).exec();
         return doc ? this.mapToDomain(doc) : null;
@@ -73,7 +77,7 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
     private mapToDomain(doc: AppointmentDocument): Appointment {
         return new Appointment(
             String(doc._id),
-            doc.idCard,
+            new IdCard(doc.idCard),
             doc.fullName,
             doc.priority as AppointmentPriority,
             doc.status as AppointmentStatus,

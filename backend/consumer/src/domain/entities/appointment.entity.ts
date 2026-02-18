@@ -1,3 +1,5 @@
+import { IdCard } from '../value-objects/id-card.value-object';
+
 // Pattern: Entity — Domain object without infrastructure dependencies
 // ⚕️ HUMAN CHECK - Pure domain entity
 
@@ -7,7 +9,7 @@ export type AppointmentPriority = 'high' | 'medium' | 'low';
 export class Appointment {
     constructor(
         public readonly id: string,
-        public readonly idCard: number,
+        public readonly idCard: IdCard,
         public readonly fullName: string,
         public readonly priority: AppointmentPriority,
         public status: AppointmentStatus,

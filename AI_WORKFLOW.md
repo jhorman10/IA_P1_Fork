@@ -305,3 +305,15 @@ Los siguientes archivos contienen marcadores de intervención humana:
     - Se actualizaron las Skills (`refactor-arch`, `backend-api`, `testing-qa`, `docker-infra`) para exigir pureza de dominio, SOLID estricto y optimización de infraestructura.
 - **Commits:**
     - `docs(chore): elevate technical culture and SA persona to Senior Grade`
+
+### 🔄 Iteración 16: Architectural Excellence (Value Objects & Factories)
+- **Actor:** 🤖 Antigravity (Arquitecto Senior)
+- **Descripción:** Implementación de Patrones de Dominio Táctico (DDD) para erradicar la Obsesión por los Primitivos.
+- **Decisiones clave:**
+    - Se introdujo el Value Object `IdCard` para validación intrínseca de identidad.
+    - Se implementó `AppointmentFactory` para centralizar políticas de creación de entidades.
+    - Se robusteció `ValidationError` con códigos de error de dominio (`INVALID_IDCARD_FORMAT`).
+- **Commits:**
+    - `feat(domain): implement IdCard Value Object and AppointmentFactory (DDD Hardening)`
+    - `refactor(use-case): leverage VOs and Factories in RegisterAppointmentUseCase`
+    - `test(domain): add unit tests for IdCard and AppointmentFactory`
