@@ -376,5 +376,35 @@ audit completo del proyecto siguiendo OWASP Top 10."
 | `refactor(solid)` | `271e5c6` | 🤖 | 7 findings: EventBroadcasterPort, CORS ConfigService, typed payloads, RmqHeaders, ES import, injectable ConsultationPolicy |
 
 ---
+
+### Fase 9: Auditoría Hostil Single File (CreateAppointmentUseCase) (2026-02-18)
+
+> **SA-Refactor-Arch** usando skill `refactor-arch`
+
+#### Interacciones
+
+```
+👤 Human: Solicita auditoría hostil de "create-appointment.use-case.impl.ts".
+
+🤖 IA (SA-Refactor-Arch): [Analizó archivo]
+   Resultado: 2 Hallazgos.
+   1. SRP (Medio): Retorna mensajes de UI.
+   2. DIP (Sutil): Depende de DTOs de capa externa.
+
+👤 Human: "Dame un plan para arreglarlo"
+
+🤖 IA: [Plan de 4 pasos: Domain Command, Void Return, Controller Response Construction]
+
+👤 Human: ✅ Aprobado.
+
+🤖 IA: [Ejecutó refactor + actualizó tests]
+   Resultado: Producer 20/20 ✅.
+```
+
+| Commit | Hash | Actor | Descripción |
+|--------|------|-------|-------------|
+| `refactor(producer)` | `44634f4` | 🤖 | Decouple CreateAppointmentUseCase from DTOs (DIP) and UI logic (SRP). Introduced Command object. |
+
+---
 **STATUS: ELITE DDD GRADE + FULL HEXAGONAL + SOLID CERTIFIED + SECURITY HARDENING** ✅
 
