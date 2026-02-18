@@ -6,7 +6,7 @@
 
 ## Action Summary
 
-- **Item:** `[FEEDBACK_TRACKER ID, ej: A-01]`
+- **Item:** `[DEBT_REPORT ID, ej: A-01]`
 - **Skill:** `[skill utilizada, ej: backend-api]`
 - **Files Changed:**
   - `path/to/file1.ts` — [descripción breve del cambio]

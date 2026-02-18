@@ -24,7 +24,7 @@ Sistema de gestión de turnos médicos en tiempo real. Los pacientes registran c
 ### Estructura de carpetas clave
 ```
 ├── GEMINI.md                ← TÚ (orquestador, leído automáticamente por Antigravity)
-├── FEEDBACK_TRACKER.md      ← Estado consolidado de feedback
+├── DEBT_REPORT.md           ← Estado consolidado de feedback y deuda técnica
 ├── AI_WORKFLOW.md           ← Documentación de metodología para humanos
 ├── skills/                  ← Skills para sub-agentes
 │   ├── backend-api/
@@ -75,12 +75,12 @@ Por cada ítem de feedback, instancia un **Sub-agente (SA)** con contexto indepe
 
 #### 3.2 Flujo de trabajo
 ```
-1. LEER    → FEEDBACK_TRACKER.md (estado actual)
+1. LEER    → DEBT_REPORT.md (estado actual)
 2. ELEGIR  → Siguiente ítem pendiente (status: ⬜)
 3. MATCH   → Identificar skill por trigger (ver Skill References)
 4. DELEGAR → Crear SA con contexto: {ítem, skill.md, archivos en scope}
 5. RECIBIR → Resumen de Acción del SA (ver skills/action-summary-template.md)
-6. ACTUALIZAR → Marcar ítem como ✅ en FEEDBACK_TRACKER.md
+6. ACTUALIZAR → Marcar ítem como ✅ en DEBT_REPORT.md
 7. PURGAR  → Descartar razonamiento intermedio del SA, conservar solo el resumen
 8. REPETIR → Siguiente ítem
 ```
@@ -90,7 +90,7 @@ Si una tarea requiere habilidades no documentadas en `/skills`, usa la skill `sk
 
 #### 3.4 Consolidación e higiene de contexto
 - El SA entrega un **Resumen de Acción** (qué cambió, qué archivos, qué validar).
-- Tú actualizas `FEEDBACK_TRACKER.md` y **purgas** los detalles de implementación del SA.
+- Tú actualizas `DEBT_REPORT.md` y **purgas** los detalles de implementación del SA.
 - Nunca acumules contexto técnico de múltiples feedback en una sola sesión.
 
 ### Anti-patrones

@@ -106,7 +106,7 @@ Este proyecto utiliza una metodología **AI-First** donde la IA actúa como un *
 | `2b3b5b4` | 13/Feb | docs | Archivos de auditoría y calificaciones con correcciones | 👤 Humano |
 | `9b9b68a` | 13/Feb | feat | Mejoras de auditoría backend + feedback AI-First | 🤖 IA + 👤 Humano |
 
-> **Contexto:** Tres auditores externos (Alexis, Esteban, Germán) evaluaron el proyecto y generaron feedback consolidado en `FEEDBACK_TRACKER.md`.
+> **Contexto:** Tres auditores externos (Alexis, Esteban, Germán) evaluaron el proyecto y generaron feedback consolidado en `DEBT_REPORT.md`.
 
 ### Fase 8 — Refactorización AI-Native (17-18/Feb/2026)
 
@@ -126,7 +126,7 @@ Este proyecto utiliza una metodología **AI-First** donde la IA actúa como un *
 | `f1f3516` | 18/Feb | feat | Upgrade `agent.md` a production-grade con System Prompt y Skill References | 🤖 Antigravity + 👤 Aprobación |
 | `a0b06f8` | 18/Feb | feat | 5 skills con metadata enriquecida y assets (templates/ + docs/) | 🤖 Antigravity |
 | `42ad7b9` | 18/Feb | feat | Action Summary template para protocolo Sub-agentes | 🤖 Antigravity |
-| `39fe196` | 18/Feb | feat | `FEEDBACK_TRACKER.md` consolidado con 20 ítems de 3 auditores | 🤖 Antigravity + 👤 Revisión |
+| `39fe196` | 18/Feb | feat | `DEBT_REPORT.md` consolidado con 20 ítems de 3 auditores | 🤖 Antigravity + 👤 Revisión |
 | `dc9ca45` | 18/Feb | feat | Scripts `setup-ai.sh` y `sync.sh` para orquestación multi-AI | 🤖 Antigravity |
 | `14d410b` | 18/Feb | chore | Symlinks para Cursor, Gemini, Claude | 🤖 Antigravity |
 | `0aaaa85` | 18/Feb | refactor | **Consolidar a único orquestador `GEMINI.md`** para Antigravity | 🤖 Antigravity + 👤 Aprobación |
@@ -212,7 +212,7 @@ Los siguientes archivos contienen marcadores de intervención humana:
 | Evidencia | Estado |
 |-----------|--------|
 | `// ⚕️ HUMAN CHECK` en 5+ archivos | Trazabilidad de intervención humana |
-| `FEEDBACK_TRACKER.md` | 20 ítems de 3 auditores con status tracking |
+| `DEBT_REPORT.md` | 20 ítems de 3 auditores con status tracking |
 | `GEMINI.md` como orquestador AI | Sistema de delegación con 5 skills especializadas |
 | Anti-pattern log | 8 errores detectados y documentados con prevención |
 | `AI_WORKFLOW.md` (este archivo) | Registro completo de 60 commits con actor y decisiones |
