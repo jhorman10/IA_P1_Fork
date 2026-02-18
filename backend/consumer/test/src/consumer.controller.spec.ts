@@ -1,119 +1,86 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConsumerController } from 'src/consumer.controller';
-import { NotificationsService } from 'src/notifications/notifications.service';
+import { ConsumerController } from '../../src/consumer.controller';
 import { RmqContext } from '@nestjs/microservices';
-import { BadRequestException, Inject } from '@nestjs/common';
-import { RegisterAppointmentUseCase } from 'src/domain/ports/inbound/register-appointment.use-case';
+import { ValidationError } from '../../src/domain/errors/validation.error';
 
 describe('ConsumerController', () => {
     let controller: ConsumerController;
-    let registerUseCase: RegisterAppointmentUseCase;
-    let notificationsService: NotificationsService;
+    let registerUseCase: any;
 
     const mockRegisterUseCase = {
         execute: jest.fn(),
     };
 
-    const mockNotificationsService = {
-        sendNotification: jest.fn(),
+    const mockChannel = {
+        ack: jest.fn(),
+        nack: jest.fn(),
     };
 
-    const mockNotificationsClient = {
-        emit: jest.fn(),
-    };
-
-    const mockRmqContext = {
-        getChannelRef: jest.fn().mockReturnValue({
-            ack: jest.fn(),
-            nack: jest.fn(),
-        }),
-        getMessage: jest.fn().mockReturnValue({
+    const mockContext = {
+        getChannelRef: () => mockChannel,
+        getMessage: () => ({
             properties: { headers: {} }
         }),
     } as unknown as RmqContext;
 
     beforeEach(async () => {
+        jest.clearAllMocks();
         const module: TestingModule = await Test.createTestingModule({
             controllers: [ConsumerController],
             providers: [
                 { provide: 'RegisterAppointmentUseCase', useValue: mockRegisterUseCase },
-                { provide: NotificationsService, useValue: mockNotificationsService },
-                { provide: 'APPOINTMENT_NOTIFICATIONS', useValue: mockNotificationsClient },
             ],
         }).compile();
 
         controller = module.get<ConsumerController>(ConsumerController);
-        registerUseCase = module.get<RegisterAppointmentUseCase>('RegisterAppointmentUseCase');
-        notificationsService = module.get<NotificationsService>(NotificationsService);
+        registerUseCase = module.get('RegisterAppointmentUseCase');
     });
 
     it('should be defined', () => {
         expect(controller).toBeDefined();
     });
 
-    describe('handleCreateAppointment', () => {
-        it('should process appointment successfully', async () => {
-            const data = { idCard: 12345678, fullName: 'John Doe', priority: 'medium' as any };
-            const appointment = { idCard: 12345678, office: null, _id: 'id' };
-            mockRegisterUseCase.execute.mockResolvedValue(appointment);
+    it('should ack message on success', async () => {
+        mockRegisterUseCase.execute.mockResolvedValue({ id: '123' });
 
-            await controller.handleCreateAppointment(data, mockRmqContext);
+        await controller.handleCreateAppointment({ idCard: 1234, fullName: 'Test' }, mockContext);
 
-            expect(mockRegisterUseCase.execute).toHaveBeenCalledWith(data);
-            expect(mockNotificationsService.sendNotification).toHaveBeenCalled();
-            expect(mockNotificationsClient.emit).toHaveBeenCalled();
-            expect(mockRmqContext.getChannelRef().ack).toHaveBeenCalled();
-        });
+        expect(registerUseCase.execute).toHaveBeenCalled();
+        expect(mockChannel.ack).toHaveBeenCalled();
+    });
 
-        it('should move to DLQ on fatal validation error (idCard not numeric)', async () => {
-            const data = { idCard: NaN as any, fullName: 'John' };
-            mockRegisterUseCase.execute.mockRejectedValue(new Error('idCard must be numeric'));
+    it('should nack and move to DLQ on ValidationError (fatal)', async () => {
+        mockRegisterUseCase.execute.mockRejectedValue(new ValidationError('Invalid data'));
 
-            await controller.handleCreateAppointment(data, mockRmqContext);
+        await controller.handleCreateAppointment({ idCard: 0, fullName: '' }, mockContext);
 
-            expect(mockRmqContext.getChannelRef().nack).toHaveBeenCalledWith(expect.anything(), false, false);
-        });
+        expect(mockChannel.nack).toHaveBeenCalledWith(expect.anything(), false, false);
+    });
 
-        it('should requeue on transient error', async () => {
-            const data = { idCard: 12345678, fullName: 'John Doe' };
-            mockRegisterUseCase.execute.mockRejectedValue(new Error('Transient DB Error'));
+    it('should nack and requeue on transient error', async () => {
+        mockRegisterUseCase.execute.mockRejectedValue(new Error('Transient Error'));
 
-            const mockRmqContextTransient = {
-                getChannelRef: jest.fn().mockReturnValue({
-                    ack: jest.fn(),
-                    nack: jest.fn(),
-                }),
-                getMessage: jest.fn().mockReturnValue({
-                    properties: { headers: {} }
-                }),
-            } as unknown as RmqContext;
+        await controller.handleCreateAppointment({ idCard: 1234, fullName: 'Test' }, mockContext);
 
-            await controller.handleCreateAppointment(data, mockRmqContextTransient);
+        expect(mockChannel.nack).toHaveBeenCalledWith(expect.anything(), false, true);
+    });
 
-            expect(mockRmqContextTransient.getChannelRef().nack).toHaveBeenCalledWith(expect.anything(), false, true);
-        });
-
-        it('should send to DLQ if max retries reached', async () => {
-            const data = { idCard: 12345678, fullName: 'John Doe' };
-            mockRegisterUseCase.execute.mockRejectedValue(new Error('Persistent Error'));
-
-            const mockRmqContextWithRetries = {
-                getChannelRef: jest.fn().mockReturnValue({
-                    ack: jest.fn(),
-                    nack: jest.fn(),
-                }),
-                getMessage: jest.fn().mockReturnValue({
-                    properties: {
-                        headers: {
-                            'x-death': [{ count: 2 }]
-                        }
+    it('should nack and move to DLQ on max retries', async () => {
+        const contextWithRetries = {
+            getChannelRef: () => mockChannel,
+            getMessage: () => ({
+                properties: {
+                    headers: {
+                        'x-death': [{ count: 2 }]
                     }
-                }),
-            } as unknown as RmqContext;
+                }
+            }),
+        } as unknown as RmqContext;
 
-            await controller.handleCreateAppointment(data, mockRmqContextWithRetries);
+        mockRegisterUseCase.execute.mockRejectedValue(new Error('Persistent Error'));
 
-            expect(mockRmqContextWithRetries.getChannelRef().nack).toHaveBeenCalledWith(expect.anything(), false, false);
-        });
+        await controller.handleCreateAppointment({ idCard: 1234, fullName: 'Test' }, contextWithRetries);
+
+        expect(mockChannel.nack).toHaveBeenCalledWith(expect.anything(), false, false);
     });
 });

@@ -1,0 +1,41 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { NotificationPort } from '../../domain/ports/outbound/notification.port';
+import { Appointment } from '../../domain/entities/appointment.entity';
+import { NotificationsService } from '../../notifications/notifications.service';
+
+@Injectable()
+export class RmqNotificationAdapter implements NotificationPort {
+    constructor(
+        private readonly localNotifications: NotificationsService,
+        @Inject('APPOINTMENT_NOTIFICATIONS')
+        private readonly notificationsClient: ClientProxy,
+    ) { }
+
+    async notifyAppointmentUpdated(appointment: Appointment): Promise<void> {
+        // 1. Local logging/notification
+        await this.localNotifications.sendNotification(
+            appointment.idCard,
+            appointment.office
+        );
+
+        // 2. Global event/dashboard update via RMQ
+        this.notificationsClient.emit(
+            'appointment_created',
+            this.mapToPayload(appointment)
+        );
+    }
+
+    private mapToPayload(appointment: Appointment): any {
+        return {
+            id: appointment.id,
+            fullName: appointment.fullName,
+            idCard: appointment.idCard,
+            office: appointment.office,
+            status: appointment.status,
+            priority: appointment.priority,
+            timestamp: appointment.timestamp,
+            completedAt: appointment.completedAt,
+        };
+    }
+}
