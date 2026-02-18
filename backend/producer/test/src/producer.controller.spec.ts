@@ -18,7 +18,6 @@ describe('ProducerController (Integration Tests)', () => {
         const mockAppointmentService = {
             findByIdCard: jest.fn(),
             findAll: jest.fn(),
-            toEventPayload: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({

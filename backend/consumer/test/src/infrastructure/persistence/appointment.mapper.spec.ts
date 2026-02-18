@@ -1,0 +1,128 @@
+import { AppointmentMapper } from '../../../../src/infrastructure/persistence/appointment.mapper';
+import { Appointment } from '../../../../src/domain/entities/appointment.entity';
+import { IdCard } from '../../../../src/domain/value-objects/id-card.value-object';
+import { FullName } from '../../../../src/domain/value-objects/full-name.value-object';
+import { Priority } from '../../../../src/domain/value-objects/priority.value-object';
+import { PersistenceAppointmentData } from '../../../../src/infrastructure/persistence/persistence-appointment.interface';
+
+/**
+ * ⚕️ HUMAN CHECK - Type Safety Verification:
+ * No 'any' types. toPersistence returns PersistenceAppointmentData.
+ */
+describe('AppointmentMapper', () => {
+    const now = Date.now();
+
+    describe('toPersistence', () => {
+        it('should map a domain entity to PersistenceAppointmentData', () => {
+            const entity = new Appointment(
+                'entity-id',
+                new IdCard(12345678),
+                new FullName('John Doe'),
+                new Priority('high'),
+                'waiting',
+                null,
+                now,
+            );
+
+            const result: PersistenceAppointmentData = AppointmentMapper.toPersistence(entity);
+
+            expect(result).toEqual({
+                idCard: 12345678,
+                fullName: 'John Doe',
+                priority: 'high',
+                status: 'waiting',
+                office: null,
+                timestamp: now,
+                completedAt: undefined,
+            });
+        });
+
+        it('should include office and completedAt when present', () => {
+            const entity = new Appointment(
+                'entity-id',
+                new IdCard(99999),
+                new FullName('Jane Smith'),
+                new Priority('low'),
+                'called',
+                '3',
+                now,
+                now + 10000,
+            );
+
+            const result = AppointmentMapper.toPersistence(entity);
+
+            expect(result.office).toBe('3');
+            expect(result.status).toBe('called');
+            expect(result.completedAt).toBe(now + 10000);
+        });
+    });
+
+    describe('toDomain', () => {
+        it('should map a Mongoose document to a domain entity', () => {
+            const mockDoc = {
+                _id: 'mongo-id-123',
+                idCard: 12345678,
+                fullName: 'John Doe',
+                priority: 'medium',
+                status: 'waiting',
+                office: null,
+                timestamp: now,
+                completedAt: undefined,
+            } as any;
+
+            const entity = AppointmentMapper.toDomain(mockDoc);
+
+            expect(entity).toBeInstanceOf(Appointment);
+            expect(entity.id).toBe('mongo-id-123');
+            expect(entity.idCard.toValue()).toBe(12345678);
+            expect(entity.fullName.toValue()).toBe('John Doe');
+            expect(entity.priority.toValue()).toBe('medium');
+            expect(entity.status).toBe('waiting');
+            expect(entity.office).toBeNull();
+        });
+
+        it('should map a called appointment with office', () => {
+            const mockDoc = {
+                _id: 'mongo-id-456',
+                idCard: 87654321,
+                fullName: 'Jane Smith',
+                priority: 'high',
+                status: 'called',
+                office: '5',
+                timestamp: now,
+                completedAt: now + 15000,
+            } as any;
+
+            const entity = AppointmentMapper.toDomain(mockDoc);
+
+            expect(entity.status).toBe('called');
+            expect(entity.office).toBe('5');
+            expect(entity.completedAt).toBe(now + 15000);
+        });
+    });
+
+    describe('Roundtrip (toDomain → toPersistence)', () => {
+        it('should preserve data through a full roundtrip', () => {
+            const originalDoc = {
+                _id: 'roundtrip-id',
+                idCard: 55555555,
+                fullName: 'Roundtrip Test',
+                priority: 'low',
+                status: 'completed',
+                office: '2',
+                timestamp: now,
+                completedAt: now + 8000,
+            } as any;
+
+            const entity = AppointmentMapper.toDomain(originalDoc);
+            const persisted = AppointmentMapper.toPersistence(entity);
+
+            expect(persisted.idCard).toBe(originalDoc.idCard);
+            expect(persisted.fullName).toBe(originalDoc.fullName);
+            expect(persisted.priority).toBe(originalDoc.priority);
+            expect(persisted.status).toBe(originalDoc.status);
+            expect(persisted.office).toBe(originalDoc.office);
+            expect(persisted.completedAt).toBe(originalDoc.completedAt);
+        });
+    });
+});
