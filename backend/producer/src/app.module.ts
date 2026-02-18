@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProducerController } from './producer.controller';
@@ -42,6 +44,11 @@ import { RabbitMQPublisherAdapter } from './infrastructure/adapters/outbound/rab
         ]),
         AppointmentModule,
         EventsModule,
+        // 🛡️ HUMAN CHECK - Proteccion contra ataques de fuerza bruta y DoS
+        ThrottlerModule.forRoot([{
+            ttl: 60000,
+            limit: 10,
+        }]),
     ],
     controllers: [ProducerController, HealthController],
     providers: [
@@ -49,6 +56,11 @@ import { RabbitMQPublisherAdapter } from './infrastructure/adapters/outbound/rab
         {
             provide: 'AppointmentPublisherPort',
             useClass: RabbitMQPublisherAdapter,
+        },
+        // 🛡️ HUMAN CHECK - Aplicar ThrottlerGuard globalmente
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
         },
     ],
 })

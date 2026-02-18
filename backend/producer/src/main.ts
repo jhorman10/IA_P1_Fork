@@ -10,10 +10,20 @@ async function bootstrap(): Promise<void> {
     const logger = new Logger('Bootstrap');
     const app = await NestFactory.create(AppModule);
 
-    // ⚕️ HUMAN CHECK - CORS habilitado para desarrollo
-    // En producción, restringir a los dominios permitidos
+    // 🛡️ HUMAN CHECK - Seguridad de Headers (Helmet)
+    // Reduce la superficie de ataque configurando headers HTTP seguros
+    const helmet = require('helmet');
+    app.use(helmet());
+
+    // 🛡️ HUMAN CHECK - CORS restringido
+    // En producción, solo permitimos el origen del frontend
+    const configService = app.get(ConfigService);
+    const frontendUrl = configService.get<string>('FRONTEND_URL') || 'http://localhost:3001';
+
     app.enableCors({
-        origin: '*',
+        origin: frontendUrl,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true,
     });
 
     // Habilitar validación global (class-validator)
@@ -36,7 +46,6 @@ async function bootstrap(): Promise<void> {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api/docs', app, document);
 
-    const configService = app.get(ConfigService);
     const port = configService.get<number>('PORT') ?? 3000;
 
     // ⚕️ HUMAN CHECK - Hybrid App: HTTP + Microservice (RabbitMQ listener)

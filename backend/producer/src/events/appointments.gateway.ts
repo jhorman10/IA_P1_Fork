@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import {
     WebSocketGateway,
     WebSocketServer,
@@ -8,12 +8,15 @@ import {
 import { Server, Socket } from 'socket.io';
 import { AppointmentService } from '../appointments/appointment.service';
 import { AppointmentEventPayload } from '../types/appointment-event';
+import { WsAuthGuard } from '../common/guards/ws-auth.guard';
 
-// ⚕️ HUMAN CHECK - WebSocket Gateway
+// 🛡️ HUMAN CHECK - WebSocket Gateway Hardened
+@UseGuards(WsAuthGuard)
 @WebSocketGateway({
     namespace: '/ws/appointments',
     cors: {
-        origin: '*',
+        origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+        credentials: true,
     },
 })
 export class AppointmentsGateway implements OnGatewayConnection, OnGatewayDisconnect {
