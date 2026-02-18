@@ -37,8 +37,8 @@ import { RabbitMQPublisherAdapter } from './infrastructure/adapters/outbound/rab
                         queueOptions: {
                             durable: true,
                             arguments: {
-                                'x-dead-letter-exchange': 'appointment_dlx',
-                                'x-dead-letter-routing-key': 'appointment_dlq'
+                                'x-dead-letter-exchange': configService.get<string>('DLX_EXCHANGE', 'appointment_dlx'),
+                                'x-dead-letter-routing-key': configService.get<string>('DLX_ROUTING_KEY', 'appointment_dlq'),
                             }
                         },
                     },

@@ -5,6 +5,10 @@ import { AppointmentService } from './appointments/appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { AppointmentEventPayload } from './types/appointment-event';
 
+// ⚕️ HUMAN CHECK - SRP: Single responsibility per method.
+// Commands (POST) delegate to ProducerService (publish).
+// Queries (GET) delegate to AppointmentService (read facade).
+
 @ApiTags('Appointments')
 @Controller('appointments')
 export class ProducerController {
@@ -20,7 +24,7 @@ export class ProducerController {
         description:
             'Receives patient data, validates payload, and sends message to RabbitMQ queue ' +
             'for asynchronous processing. The Consumer creates the appointment in "waiting" state ' +
-            'and the scheduler assigns an office every 15 seconds. Changes are emitted via WebSocket.',
+            'and the scheduler assigns an office. Changes are emitted via WebSocket.',
     })
     @ApiBody({ type: CreateAppointmentDto })
     @ApiResponse({
@@ -69,8 +73,7 @@ export class ProducerController {
         },
     })
     async getAllAppointments(): Promise<AppointmentEventPayload[]> {
-        const appointments = await this.appointmentService.findAll();
-        return appointments.map(t => this.appointmentService.toEventPayload(t));
+        return this.appointmentService.findAll();
     }
 
     @Get(':idCard')
@@ -93,7 +96,7 @@ export class ProducerController {
         status: 404,
         description: 'No appointments found for the provided ID card',
     })
-    async getAppointmentsByIdCard(@Param('idCard', ParseIntPipe) idCard: number) {
+    async getAppointmentsByIdCard(@Param('idCard', ParseIntPipe) idCard: number): Promise<AppointmentEventPayload[]> {
         return this.appointmentService.findByIdCard(idCard);
     }
 }

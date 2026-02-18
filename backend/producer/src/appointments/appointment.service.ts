@@ -1,51 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Appointment, AppointmentDocument } from '../schemas/appointment.schema';
+import { Inject, Injectable } from '@nestjs/common';
+import { AppointmentReadRepository } from '../domain/ports/outbound/appointment-read.repository';
 import { AppointmentEventPayload } from '../types/appointment-event';
+
+// Pattern: Application Service — Read-only Facade
+// ⚕️ HUMAN CHECK - DIP: Depends on port, not Mongoose
 
 @Injectable()
 export class AppointmentService {
-    constructor(@InjectModel(Appointment.name) private readonly appointmentModel: Model<AppointmentDocument>) { }
+    constructor(
+        @Inject('AppointmentReadRepository')
+        private readonly repository: AppointmentReadRepository,
+    ) { }
 
-    /**
-     * Get all appointments ordered by timestamp (oldest first).
-     */
-    async findAll(): Promise<AppointmentDocument[]> {
-        return this.appointmentModel
-            .find()
-            .sort({ timestamp: 1 })
-            .exec();
+    async findAll(): Promise<AppointmentEventPayload[]> {
+        return this.repository.findAll();
     }
 
-    /**
-     * Find appointments by patient ID card.
-     */
-    async findByIdCard(idCard: number): Promise<AppointmentDocument[]> {
-        const appointments = await this.appointmentModel
-            .find({ idCard })
-            .sort({ createdAt: -1 })
-            .exec();
-
-        if (appointments.length === 0) {
-            throw new NotFoundException(`No appointments found for ID card ${idCard}`);
-        }
-
-        return appointments;
-    }
-
-    /**
-     * Maps an AppointmentDocument to AppointmentEventPayload for WebSocket broadcast.
-     */
-    toEventPayload(appointment: AppointmentDocument): AppointmentEventPayload {
-        return {
-            id: String(appointment._id),
-            fullName: appointment.fullName,
-            idCard: appointment.idCard,
-            office: appointment.office,
-            status: appointment.status,
-            priority: appointment.priority,
-            timestamp: appointment.timestamp,
-        };
+    async findByIdCard(idCard: number): Promise<AppointmentEventPayload[]> {
+        return this.repository.findByIdCard(idCard);
     }
 }

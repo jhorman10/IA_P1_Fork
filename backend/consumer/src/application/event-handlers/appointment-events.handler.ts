@@ -2,32 +2,42 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AppointmentRegisteredEvent } from '../../domain/events/appointment-registered.event';
 import { AppointmentAssignedEvent } from '../../domain/events/appointment-assigned.event';
 import { NotificationPort } from '../../domain/ports/outbound/notification.port';
+import { DomainEventHandler } from '../../domain/ports/outbound/domain-event-handler.port';
 
 /**
- * Pattern: Domain Event Handler / Subscriber
- * Reacts to domain events and coordinates side effects.
+ * Handler: Reacts to AppointmentRegistered events.
+ * ⚕️ HUMAN CHECK - OCP: One handler per event type. No instanceof chains.
  */
 @Injectable()
-export class AppointmentEventsHandler {
-    private readonly logger = new Logger(AppointmentEventsHandler.name);
+export class AppointmentRegisteredHandler implements DomainEventHandler<AppointmentRegisteredEvent> {
+    private readonly logger = new Logger(AppointmentRegisteredHandler.name);
+    readonly eventType = AppointmentRegisteredEvent.name;
 
     constructor(
         @Inject('NotificationPort')
         private readonly notificationPort: NotificationPort
     ) { }
 
-    /**
-     * React to Appointment Registration.
-     */
-    async onAppointmentRegistered(event: AppointmentRegisteredEvent): Promise<void> {
+    async handle(event: AppointmentRegisteredEvent): Promise<void> {
         this.logger.log(`Handling AppointmentRegisteredEvent for ${event.appointment.idCard.toValue()}`);
         await this.notificationPort.notifyAppointmentUpdated(event.appointment);
     }
+}
 
-    /**
-     * React to Appointment Assignment.
-     */
-    async onAppointmentAssigned(event: AppointmentAssignedEvent): Promise<void> {
+/**
+ * Handler: Reacts to AppointmentAssigned events.
+ */
+@Injectable()
+export class AppointmentAssignedHandler implements DomainEventHandler<AppointmentAssignedEvent> {
+    private readonly logger = new Logger(AppointmentAssignedHandler.name);
+    readonly eventType = AppointmentAssignedEvent.name;
+
+    constructor(
+        @Inject('NotificationPort')
+        private readonly notificationPort: NotificationPort
+    ) { }
+
+    async handle(event: AppointmentAssignedEvent): Promise<void> {
         this.logger.log(`Handling AppointmentAssignedEvent for ${event.appointment.idCard.toValue()}`);
         await this.notificationPort.notifyAppointmentUpdated(event.appointment);
     }

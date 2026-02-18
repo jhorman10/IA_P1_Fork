@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppointmentSchema as SchemaDef } from '../schemas/appointment.schema';
 import { AppointmentService } from './appointment.service';
 import { RegisterAppointmentUseCaseImpl } from '../application/use-cases/register-appointment.use-case.impl';
@@ -11,7 +9,7 @@ import { SystemClockAdapter } from '../infrastructure/utils/system-clock.adapter
 import { RmqNotificationAdapter } from '../infrastructure/adapters/rmq-notification.adapter';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { Appointment } from '../domain/entities/appointment.entity';
-import { AppointmentEventsHandler } from '../application/event-handlers/appointment-events.handler';
+import { AppointmentRegisteredHandler, AppointmentAssignedHandler } from '../application/event-handlers/appointment-events.handler';
 import { LocalDomainEventBusAdapter } from '../infrastructure/messaging/local-domain-event-bus.adapter';
 
 @Module({
@@ -37,11 +35,15 @@ import { LocalDomainEventBusAdapter } from '../infrastructure/messaging/local-do
             provide: 'NotificationPort',
             useClass: RmqNotificationAdapter,
         },
-        AppointmentEventsHandler,
+        // ⚕️ HUMAN CHECK - OCP: Individual event handlers registered separately.
+        // Adding new domain events only requires registering new handler classes.
+        AppointmentRegisteredHandler,
+        AppointmentAssignedHandler,
         {
             provide: 'DomainEventBus',
-            inject: [AppointmentEventsHandler],
-            useFactory: (handler: AppointmentEventsHandler) => new LocalDomainEventBusAdapter(handler),
+            inject: [AppointmentRegisteredHandler, AppointmentAssignedHandler],
+            useFactory: (registered: AppointmentRegisteredHandler, assigned: AppointmentAssignedHandler) =>
+                new LocalDomainEventBusAdapter([registered, assigned]),
         },
         {
             provide: 'RegisterAppointmentUseCase',

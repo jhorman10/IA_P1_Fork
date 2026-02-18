@@ -11,6 +11,7 @@ import { AppointmentEventPayload } from '../types/appointment-event';
 import { WsAuthGuard } from '../common/guards/ws-auth.guard';
 
 // 🛡️ HUMAN CHECK - WebSocket Gateway Hardened
+// ⚕️ HUMAN CHECK - DIP: Depends on AppointmentService facade (which depends on port)
 @UseGuards(WsAuthGuard)
 @WebSocketGateway({
     namespace: '/ws/appointments',
@@ -31,10 +32,7 @@ export class AppointmentsGateway implements OnGatewayConnection, OnGatewayDiscon
         this.logger.log(`Client connected: ${client.id}`);
 
         try {
-            const appointments = await this.appointmentService.findAll();
-            const snapshot: AppointmentEventPayload[] = appointments.map(t =>
-                this.appointmentService.toEventPayload(t),
-            );
+            const snapshot = await this.appointmentService.findAll();
 
             client.emit('APPOINTMENTS_SNAPSHOT', {
                 type: 'APPOINTMENTS_SNAPSHOT',
