@@ -145,12 +145,16 @@ Este proyecto utiliza una metodología **AI-First** donde la IA actúa como un *
 | `877d542` | 18/Feb | feat | Skill `conventional-commits` para estandarización de historial | 🤖 Antigravity |
 | `5e3bca2` | 18/Feb | fix | Resolver functional issues, configurar Jest y crear 5 suites en Consumer | 🤖 Antigravity |
 | `9818393` | 18/Feb | feat | **Idempotencia (A-01)** y **Índices MongoDB (A-02)** | 🤖 Antigravity |
+| `a7f2b1d` | 18/Feb | fix | **React Cascading Renders (G-08)**: Refactor WebSocket hook to use onUpdate callback | 🤖 IA + 👤 Revisión |
+| `a52ee2a` | 18/Feb | fix | **Frontend Testing Setup (G-07)**: Configure Jest, fix types and missing envs | 🤖 IA + 👤 Revisión |
+| `5cb40dd` | 18/Feb | test | **Mirror Testing Structure (G-07)**: Dedicated `test/` folder with Best Practices (Factories/Mocks) | 🤖 IA + 👤 Revisión |
+| `59c7b00` | 18/Feb | test | **Flattened Test Structure (G-07)**: Reorganized `test/` as 1:1 replica of `src/` | 🤖 IA + 👤 Revisión |
 
 > **🛡️ Decisión Humana:** El humano aprobó la restricción de idempotencia donde un paciente no puede tener más de un turno activo (`waiting/called`) simultáneamente para evitar duplicados.
 
 ---
 
-## 3. Anti-patrones Detectados por la IA (Lo que la IA Hizo Mal)
+## 3. Lo que la IA hizo mal
 
 | Problema | Cómo se Detectó | Fix Aplicado | Prevención |
 |----------|-----------------|--------------|------------|
@@ -237,9 +241,11 @@ Los siguientes archivos contienen marcadores de intervención humana:
 
 | Fase | Prompt / Objetivo | Resultado |
 |-------|------------------|-----------|
-| **Refactor** | "Renombra `cedula` a `idCard` en todo el proyecto, asegurando que los DTOs y esquemas de Mongoose se mantengan sincronizados." | Refactor exitoso en backend, pero falló en tipos compartidos de WebSocket. |
-| **Fix** | "El dashboard no se actualiza tras el refactor. Revisa si los eventos de Socket.IO usan el nuevo nombre de campo." | Identificación de incoherencia en payloads; creación de `AppointmentEventPayload`. |
-| **Feature** | "Implementa idempotencia en la creación de turnos: si un paciente ya tiene un turno 'waiting', no crees uno nuevo, retorna el existente." | Implementación de lógica de búsqueda previa en `TurnosService`. |
+| **Refactor** | "Renombra `cedula` a `idCard` en todo el proyecto..." | Refactor exitoso en backend (Commit `f35dfc7`). |
+| **Fix** | "El dashboard no se actualiza tras el refactor..." | Creación de `AppointmentEventPayload` (Commit `f35dfc7`). |
+| **Feature** | "Implementa idempotencia en la creación de turnos..." | Lógica en `TurnosService` (Commit `9818393`). |
+| **Fix** | "Explain what this problem is and help me fix it: Error: Calling setState synchronously within an effect..." | Refactor de WebSocket hook y páginas (Commit `a7f2b1d`). |
+| **Fix** | "Explain what this problem is and help me fix it: Cannot find name 'jest'..." | Configuración de Jest en frontend (Commit `a52ee2a`). |
 
 ### 7.2 Log de Errores Críticos de la IA y Correcciones (E-04)
 
@@ -249,6 +255,7 @@ Los siguientes archivos contienen marcadores de intervención humana:
 | **ERR-02** | Sugerencia de Tailwind CSS contra la directriz de Vanilla CSS. | Violación de arquitectura visual. | El humano rechazó la propuesta; se mantuvo `page.module.css`. | `GEMINI.md` actualizado con "Vanilla CSS" como regla de oro. |
 | **ERR-03** | Mocks de tests que hacían hit a infraestructura real. | Tests lentos y dependientes de RabbitMQ externo. | El humano implementó mocks puros con `jest.fn()`. | Skill `testing-qa` incluye ejemplos de mocking de NestJS Microservices. |
 | **ERR-04** | Hot path: Recálculo de array de consultorios en cada ciclo del scheduler. | Degradación de performance bajo carga. | El humano movió la lógica al constructor del servicio. | Directriz de performance agregada al orquestador. |
+| **ERR-05** | Import path incorrecto para `next/jest` en Next.js 15+. | Fallo en la ejecución de tests (Module Not Found). | Se corrigió a `next/jest.js` y se agregó `.env.test`. | Verificar extensiones ESM en configuraciones de herramientas. |
 
 ---
 
@@ -256,7 +263,7 @@ Los siguientes archivos contienen marcadores de intervención humana:
 
 | Métrica | Valor |
 |---------|-------|
-| Total de commits | 65 |
+| Total de commits | 67 |
 | Pull Requests | 16 |
 | Días de desarrollo | 10 (09/Feb - 18/Feb 2026) |
 | Commits generados por IA | ~40 (61%) |
@@ -264,5 +271,5 @@ Los siguientes archivos contienen marcadores de intervención humana:
 | Decisiones humanas críticas documentadas | 10 |
 | Anti-patrones detectados y corregidos | 8 |
 | Skills especializadas | 7 |
-| Test cases unitarios | 49+ (16 producer + 13 consumer + 20+ misc) |
+| Test cases unitarios | 50+ (16 producer + 13 consumer + 21+ misc/front) |
 | Archivos con `// ⚕️ HUMAN CHECK` | 10+ |
