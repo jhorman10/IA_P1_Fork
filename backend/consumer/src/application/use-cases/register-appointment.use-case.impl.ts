@@ -1,24 +1,42 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { RegisterAppointmentUseCase } from '../../domain/ports/inbound/register-appointment.use-case';
-import { CreateAppointmentDto } from '../../dto/create-appointment.dto';
-import { AppointmentDocument } from '../../schemas/appointment.schema';
-import { AppointmentService } from '../../appointments/appointment.service';
+import { Appointment } from '../../domain/entities/appointment.entity';
+import { AppointmentRepository } from '../../domain/ports/outbound/appointment.repository';
+import { LoggerPort } from '../../domain/ports/outbound/logger.port';
 
-@Injectable()
 export class RegisterAppointmentUseCaseImpl implements RegisterAppointmentUseCase {
-    private readonly logger = new Logger(RegisterAppointmentUseCaseImpl.name);
+    constructor(
+        private readonly appointmentRepository: AppointmentRepository,
+        private readonly logger: LoggerPort,
+    ) { }
 
-    constructor(private readonly appointmentService: AppointmentService) { }
-
-    async execute(data: CreateAppointmentDto): Promise<AppointmentDocument> {
-        // Validation logic extracted from the Controller (Infrastructure) to the Use Case (Application)
+    async execute(data: { idCard: number; fullName: string }): Promise<Appointment> {
+        // 1. Validation (DIP: Native Error, not NestJS Exception)
         if (typeof data.idCard !== 'number' || Number.isNaN(data.idCard)) {
-            throw new BadRequestException('idCard must be numeric');
+            throw new Error('idCard must be numeric');
         }
 
-        this.logger.log(`Registering appointment request for patient ${data.idCard}`);
+        this.logger.log(`Processing registration for patient ${data.idCard}`, 'RegisterAppointmentUseCase');
 
-        // Delegate to repository/entity logic via AppointmentService (which acts as a domain service/repository wrapper here)
-        return this.appointmentService.createAppointment(data);
+        // 2. Idempotency Check (Domain Logic moved from service)
+        const existing = await this.appointmentRepository.findByIdCardAndActive(data.idCard);
+        if (existing) {
+            this.logger.warn(`Patient ${data.idCard} already has an active appointment. Reusing existing.`, 'RegisterAppointmentUseCase');
+            return existing;
+        }
+
+        // 3. Creation (Domain Entity logic)
+        // Note: ID generation is currently handled by DB in repository.save if null/empty
+        const appointment = new Appointment(
+            '', // Repository will generate ID
+            data.idCard,
+            data.fullName,
+            'medium',
+            'waiting'
+        );
+
+        const saved = await this.appointmentRepository.save(appointment);
+        this.logger.log(`Appointment registered for patient ${data.idCard} with ID ${saved.id}`, 'RegisterAppointmentUseCase');
+
+        return saved;
     }
 }

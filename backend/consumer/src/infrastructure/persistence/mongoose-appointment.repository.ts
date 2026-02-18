@@ -50,6 +50,14 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
         return doc ? this.mapToDomain(doc) : null;
     }
 
+    async findByIdCardAndActive(idCard: number): Promise<Appointment | null> {
+        const doc = await this.model.findOne({
+            idCard,
+            status: { $in: ['waiting', 'called'] }
+        }).exec();
+        return doc ? this.mapToDomain(doc) : null;
+    }
+
     async findExpiredCalled(now: number): Promise<Appointment[]> {
         const docs = await this.model.find({
             status: 'called',

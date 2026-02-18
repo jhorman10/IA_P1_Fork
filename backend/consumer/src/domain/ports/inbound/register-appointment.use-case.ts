@@ -1,6 +1,5 @@
-import { CreateAppointmentDto } from '../../../dto/create-appointment.dto';
-import { AppointmentDocument } from '../../../schemas/appointment.schema';
+import { Appointment } from '../../entities/appointment.entity';
 
 export interface RegisterAppointmentUseCase {
-    execute(data: CreateAppointmentDto): Promise<AppointmentDocument>;
+    execute(data: { idCard: number; fullName: string }): Promise<Appointment>;
 }

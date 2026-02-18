@@ -2,11 +2,13 @@ import { AssignAvailableOfficesUseCase } from '../../domain/ports/inbound/assign
 import { AppointmentRepository } from '../../domain/ports/outbound/appointment.repository';
 import { NotificationPort } from '../../domain/ports/outbound/notification.port';
 import { ConsultationPolicy } from '../../domain/policies/consultation.policy';
+import { LoggerPort } from '../../domain/ports/outbound/logger.port';
 
 export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOfficesUseCase {
     constructor(
         private readonly appointmentRepository: AppointmentRepository,
         private readonly notificationPort: NotificationPort,
+        private readonly logger: LoggerPort,
         private readonly totalOffices: number,
     ) { }
 
@@ -36,6 +38,8 @@ export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOffices
 
             await this.appointmentRepository.save(appointment);
             await this.notificationPort.notifyAppointmentUpdated(appointment);
+
+            this.logger.log(`Assigned office ${office} to appointment ${appointment.idCard}`, 'AssignAvailableOfficesUseCase');
         }
     }
 }

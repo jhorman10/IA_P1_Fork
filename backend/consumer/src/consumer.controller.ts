@@ -2,8 +2,8 @@ import { BadRequestException, Controller, Inject, Logger } from '@nestjs/common'
 import { ClientProxy, Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { NotificationsService } from './notifications/notifications.service';
+import { Appointment } from './domain/entities/appointment.entity';
 import { RegisterAppointmentUseCase } from './domain/ports/inbound/register-appointment.use-case';
-import { AppointmentDocument } from './schemas/appointment.schema';
 
 @Controller()
 export class ConsumerController {
@@ -17,13 +17,14 @@ export class ConsumerController {
     ) { }
 
     @EventPattern('create_appointment')
-    async handleCreateAppointment(@Payload() data: CreateAppointmentDto, @Ctx() context: RmqContext): Promise<void> {
+    async handleCreateAppointment(
+        @Payload() data: CreateAppointmentDto,
+        @Ctx() context: RmqContext,
+    ): Promise<void> {
         const channel = context.getChannelRef();
         const originalMsg = context.getMessage();
-        const headers = originalMsg.properties?.headers || {};
-        const retryCount = this.getRetryCount(headers);
-
-        this.logger.log(`Received message (Attempt ${retryCount + 1}): ${JSON.stringify(data)}`);
+        const properties = originalMsg.properties;
+        const retryCount = properties.headers['x-retry-count'] || 0; // Assuming x-retry-count is set by a retry mechanism
 
         try {
             // Business Logic delegation
@@ -32,7 +33,7 @@ export class ConsumerController {
             // Side effects (Notifications)
             await this.notificationsService.sendNotification(appointment.idCard, appointment.office);
 
-            // Egress event (Infrastructure)
+            // Send to dashboard via WebSocket (Socket.IO)
             this.notificationsClient.emit(
                 'appointment_created',
                 this.appointmentCreatedPayload(appointment),
@@ -41,12 +42,18 @@ export class ConsumerController {
             channel.ack(originalMsg);
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
+            this.logger.error(`Error processing patient ${data.idCard}: ${message}`);
 
-            if (error instanceof BadRequestException) {
+            // ⚕️ HUMAN CHECK - Error Handling: Move to DLQ if validation fails or max retries reached
+            if (message.includes('must be numeric')) { // Example of a specific fatal validation error
+                this.logger.error(`Fatal validation error for patient ${data.idCard}: ${message}. Moving to DLQ.`);
+                channel.nack(originalMsg, false, false); // No requeue, sends to DLQ
+                return;
+            } else if (error instanceof BadRequestException) {
                 this.logger.error(`Fatal validation error for patient ${data.idCard}: ${message}. Moving to DLQ.`);
                 // Fatal error: No requeue, sends to DLQ because of x-dead-letter-exchange config
                 channel.nack(originalMsg, false, false);
-            } else if (retryCount >= 2) {
+            } else if (retryCount >= 2) { // Assuming max 3 attempts (0, 1, 2)
                 this.logger.error(`Max retries (3) reached for patient ${data.idCard}: ${message}. Moving to DLQ.`);
                 // Max retries reached: No requeue, sends to DLQ
                 channel.nack(originalMsg, false, false);
@@ -62,11 +69,11 @@ export class ConsumerController {
     }
 
     /**
-     * Maps an AppointmentDocument to a transport-agnostic payload.
+     * Maps an Appointment entity to a transport-agnostic payload.
      */
-    private appointmentCreatedPayload(appointment: AppointmentDocument): any {
+    private appointmentCreatedPayload(appointment: Appointment): any {
         return {
-            id: String(appointment._id),
+            id: appointment.id,
             fullName: appointment.fullName,
             idCard: appointment.idCard,
             office: appointment.office,
