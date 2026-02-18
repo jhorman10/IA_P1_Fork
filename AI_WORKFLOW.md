@@ -266,6 +266,75 @@ audit completo del proyecto siguiendo OWASP Top 10."
 
 ---
 
+### Fase 7: Auditoría SOLID Hostil + Remediación Completa (2026-02-18)
+
+> **SA-Refactor-Arch** usando skill `refactor-arch`
+
+#### Interacciones
+
+```
+👤 Human: Solicita auditoría SOLID hostil de todo el codebase.
+
+🤖 IA (SA-Refactor-Arch): [Escaneó todos los archivos fuente de ambos microservicios]
+   Resultado: 12 hallazgos (4 críticos, 5 medios, 3 menores) documentados en solid_audit_report.md.
+
+👤 Human: "Genera un plan para satisfacer al senior"
+
+🤖 IA: [Generó plan de remediación en 5 fases]
+
+👤 Human: ✅ Aprobado.
+
+🤖 IA: [Ejecutó las 5 fases de remediación — 18 archivos (4 nuevos + 14 modificados)]
+```
+
+| Commit | Hash | Actor | Descripción |
+|--------|------|-------|-------------|
+| `refactor(arch)` | `aa471a7` | 🤖 | Remediar 12 hallazgos SOLID: Producer Hexagonal parcial, Consumer type safety, EventBus OCP, Bootstrap decomposition, env vars |
+
+#### Interacciones — SA-QA Verificación
+
+```
+👤 Human: "Ejecuta el SA de QA"
+
+🤖 IA (SA-QA): [Ejecutó npm test en ambos microservicios]
+   Resultado: Producer 15/15 ✅, Consumer 27/27 ✅ — 42/42 PASS.
+
+👤 Human: "¿Se están contemplando todos los escenarios en los tests?"
+
+🤖 IA: [Analizó 11 spec files, identificó 13 escenarios faltantes en módulos nuevos/refactorizados]
+
+👤 Human: "Sí" (aprobó implementar tests faltantes)
+
+🤖 IA (SA-QA): [Creó 5 nuevos spec files + actualizó 2 existentes — 28 tests nuevos]
+```
+
+| Commit | Hash | Actor | Descripción |
+|--------|------|-------|-------------|
+| `test(qa)` | `74bb4e7` | 🤖 | 28 nuevos tests: event bus, handlers, policy, mapper, facades. Total: 17 suites, 70 tests, 0 failures |
+
+#### Interacciones — Producer Hexagonal Completo
+
+```
+👤 Human: "¿Cada micro cumple con arquitectura hexagonal?"
+
+🤖 IA: [Analizó estructuras — Consumer ✅ completo, Producer 🟡 parcial (solo outbound ports)]
+
+👤 Human: "Deseo que ambos cumplan la arquitectura"
+
+🤖 IA: [Generó plan: 4 nuevos archivos, 2 eliminados, 5 modificados]
+
+👤 Human: ✅ Aprobado.
+
+🤖 IA: [Migración completa: inbound ports + use-cases + rewired controller/gateway/modules]
+   Resultado: Producer 20 tests ✅, Consumer 51 tests ✅ — 71/71 PASS.
+```
+
+| Commit | Hash | Actor | Descripción |
+|--------|------|-------|-------------|
+| `refactor(producer)` | `64b54f7` | 🤖 | Hexagonal completo: 2 inbound ports, 2 use-case impls, deleted ProducerService + AppointmentService, rewired controller/gateway |
+
+---
+
 ## 6. Decisiones Humanas Críticas Documentadas
 
 | Decisión | Justificación | Impacto |
@@ -276,6 +345,7 @@ audit completo del proyecto siguiendo OWASP Top 10."
 | WsAuthGuard obligatorio | IA exponía WebSocket sin autenticación. Arquitecto forzó guard. | Prevención de data leakage en snapshot de citas a clientes no autorizados. |
 | Aprobación Humana Previa | IA ejecutaba cambios sin preguntar. Arquitecto implementó gate de aprobación. | Control total del humano sobre cada cambio crítico. |
 | DLX (Dead Letter Exchange) | IA descartaba mensajes fallidos. Arquitecto exigió DLQ para análisis forense. | Recuperabilidad y observabilidad de fallos en el pipeline. |
+| Hexagonal Architecture en ambos micros | IA argumentó que Producer es proxy y Hex sería over-engineering. Arquitecto exigió simetría. | Consistencia arquitectónica, todos los controllers dependen de ports. |
 
 ---
-**STATUS: ELITE DDD GRADE + SECURITY HARDENING CERTIFIED** ✅
+**STATUS: ELITE DDD GRADE + FULL HEXAGONAL + SECURITY HARDENING CERTIFIED** ✅
