@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SchedulerService } from './scheduler.service';
-import { TurnosModule } from '../appointments/turnos.module';
+import { AppointmentModule } from '../appointments/appointment.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -9,7 +9,7 @@ import { RabbitMQNotificationAdapter } from '../infrastructure/messaging/rabbitm
 import { AssignAppointmentsUseCaseImpl } from '../application/use-cases/assign-appointments.use-case.impl';
 
 @Module({
-    imports: [TurnosModule, NotificationsModule, ConfigModule],
+    imports: [AppointmentModule, NotificationsModule, ConfigModule],
     providers: [
         SchedulerService,
         {

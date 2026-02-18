@@ -1,13 +1,6 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
-import { ClientProxy } from '@nestjs/microservices';
-import { TurnosService } from '../appointments/turnos.service';
 import { ConfigService } from '@nestjs/config';
-
-// ⚕️ HUMAN CHECK - Office assignment scheduler
-// Interval read from ConfigService: SCHEDULER_INTERVAL_MS
-const DEFAULT_OFFICES = 5;
-
 import { AssignAppointmentsUseCase } from '../domain/ports/inbound/assign-appointments.use-case';
 
 // ⚕️ HUMAN CHECK - SRP: This service is now only a TRIGGER for the domain logic

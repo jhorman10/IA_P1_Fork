@@ -5,7 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConsumerController } from './consumer.controller';
 import { HealthController } from './health.controller';
-import { TurnosModule } from './appointments/turnos.module';
+import { AppointmentModule } from './appointments/appointment.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
 
@@ -23,7 +23,7 @@ import { SchedulerModule } from './scheduler/scheduler.module';
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
-                uri: configService.get<string>('MONGODB_URI') || 'mongodb://admin:admin123@localhost:27017/turnos_db?authSource=admin',
+                uri: configService.get<string>('MONGODB_URI') || 'mongodb://admin:admin123@localhost:27017/appointments_db?authSource=admin',
             }),
             inject: [ConfigService],
         }),
@@ -32,7 +32,7 @@ import { SchedulerModule } from './scheduler/scheduler.module';
         // que el Producer escucha para hacer broadcast por WebSocket
         NotificationsModule,
         SchedulerModule,
-        TurnosModule,
+        AppointmentModule,
     ],
     controllers: [ConsumerController, HealthController],
     providers: [],
