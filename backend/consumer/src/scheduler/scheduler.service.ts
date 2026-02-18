@@ -1,11 +1,7 @@
-import { Injectable, Logger, Inject } from '@nestjs/common';
-import { SchedulerRegistry } from '@nestjs/schedule';
-import { ConfigService } from '@nestjs/config';
-import { AssignAppointmentsUseCase } from '../domain/ports/inbound/assign-appointments.use-case';
+import { CompleteExpiredAppointmentsUseCase } from '../domain/ports/inbound/complete-expired-appointments.use-case';
+import { AssignAvailableOfficesUseCase } from '../domain/ports/inbound/assign-available-offices.use-case';
 
-// ⚕️ HUMAN CHECK - SRP: This service is now only a TRIGGER for the domain logic
-// Pattern: Trigger — Invokes Use Case on a schedule
-
+// ⚕️ HUMAN CHECK - SRP: Triggered by the scheduler, delegating cleanup and assignment to specialized Use Cases
 @Injectable()
 export class SchedulerService {
     private readonly logger = new Logger(SchedulerService.name);
@@ -14,12 +10,13 @@ export class SchedulerService {
     constructor(
         private readonly configService: ConfigService,
         private readonly schedulerRegistry: SchedulerRegistry,
-        @Inject('AssignAppointmentsUseCase') private readonly useCase: AssignAppointmentsUseCase,
+        @Inject('CompleteExpiredAppointmentsUseCase') private readonly completeUseCase: CompleteExpiredAppointmentsUseCase,
+        @Inject('AssignAvailableOfficesUseCase') private readonly assignUseCase: AssignAvailableOfficesUseCase,
     ) {
         this.intervalMs = Number(this.configService.get('SCHEDULER_INTERVAL_MS')) || 15000;
 
         this.logger.log(
-            `Scheduler started — interval: ${this.intervalMs}ms. Delegating to AssignAppointmentsUseCase.`,
+            `Scheduler started — interval: ${this.intervalMs}ms. Delegating cleanup and assignment.`,
         );
 
         const interval = setInterval(() => {
@@ -30,10 +27,13 @@ export class SchedulerService {
 
     async handleSchedulerTick(): Promise<void> {
         try {
-            await this.useCase.execute();
+            // 1. First, complete what's done
+            await this.completeUseCase.execute();
+            // 2. Then, assign what's free
+            await this.assignUseCase.execute();
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
-            this.logger.error(`Error in assignment scheduler: ${message}`);
+            this.logger.error(`Error in scheduler orchestration: ${message}`);
         }
     }
 }
