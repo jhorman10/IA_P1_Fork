@@ -1,68 +1,235 @@
+# AI Workflow — Trazabilidad Completa de Interacciones Humano-IA
 
-# AI Workflow - AI Interaction Strategy
-
-## AI-First Methodology
-
-This project uses an **AI-First** methodology where the AI acts as a "Junior Developer" generating initial code that is then reviewed and refined by the team.
-
-## Tools Used
-
-- **Antigravity**: Primary AI orchestration and code generation (current).
-- **GitHub Copilot**: Code generation and intelligent autocompletion.
-- **Cursor**: AI-assisted code review and refactoring.
-
-## Interaction Process
-
-1. **Initial generation**: The AI generates the base project structure, including Docker configurations, microservices (Producer and Consumer), and frontend components.
-2. **Human review**: The team reviews the generated code, paying special attention to areas marked with `// ⚕️ HUMAN CHECK`.
-3. **Refinement**: The code is adjusted according to best practices and project-specific requirements.
-4. **Validation**: Tests are run and the correct functioning of the system is verified.
-
-## Sentinel Comments & Traceability
-
-This project uses `// ⚕️ HUMAN CHECK` to mark points where human intervention was required.
-
-### Examples of Evidence:
-- **`docker-compose.yml`**: Configured healthchecks and memory limits.
-- **`backend/producer/src/dto/create-appointment.dto.ts`**: Added specific validations for `idCard` range.
-- **`backend/consumer/src/scheduler/scheduler.service.ts`**: Optimized hot path for performance.
-
-## Prompts Used (Real Examples)
-
-1. **Initial Refactor**: *"Refactorizar nomenclatura de español a inglés en todo el proyecto."* (Iteración 1: Falló en WebSocket interfaces -> Iteración 2: Corregido con Shared Types).
-2. **Docker Orchestration**: *"Añadir healthchecks y asegurar que consumer espere a rabbitmq realmente."* (Resultado: Implementación de HealthControllers).
-
-## What the AI Got Wrong (Anti-Pattern Log)
-
-| Problema | Cómo se detectó | Fix aplicado | Prevención |
-| :--- | :--- | :--- | :--- |
-| **Credenciales Hardcodeadas** | Auditoría manual en `docker-compose.yml` | Uso de `.env` y variables de entorno | Checklist de pre-deployment |
-| **Race Conditions** | Stress testing en la asignación de turnos | Bloqueo lógico y validación de estado previo | Tests unitarios concurrentes |
-| **Nomenclatura inconsistente** | Code Review manual | Refactor total a idioma inglés | Guía de estilos en `GEMINI.md` |
-| **Falta de Validaciones** | Errores 500 en el backend al enviar tipos incorrectos | Decoradores `class-validator` en DTOs | Middleware de validación global |
-
-## Recent Architectural Updates
-
-- **English Naming Convention**: The project has undergone a complete refactor (e.g., `Appointment` instead of `Turno`).
-- **Shared Types**: Use `AppointmentEventPayload` for all RabbitMQ and WebSocket events.
-- **Automated Tests**: Moved critical tests to `src` directories for continuous validation.
+> **Propósito:** Registro exhaustivo de cada interacción, cambio y commit entre el equipo humano y los agentes de IA durante el desarrollo del proyecto. Este documento sirve como evidencia para la evaluación de la Semana 1: *Refactorización AI-Native y Arquitecturas Hexagonales*.
 
 ---
 
-## Prompt Traceability Log
+## 1. Metodología AI-First
 
-> Migrado desde `PROMPT_LOG.md` — Registro de las interacciones más significativas con la IA.
+Este proyecto utiliza una metodología **AI-First** donde la IA actúa como un **"Junior Developer"** que genera código inicial, y el equipo humano actúa como **arquitecto** que revisa, refina y toma decisiones críticas.
 
-| Fecha | Contexto / Tarea | Resumen del Prompt | Resultado / Aprendizaje |
-| :--- | :--- | :--- | :--- |
-| 17/02/2026 | **Refactor de Nomenclatura** | "Refactoriza todo el proyecto de español a inglés. `cedula` -> `idCard`, `nombre` -> `fullName`, `turno` -> `appointment`." | Refactorización masiva en 20+ archivos. Se detectaron problemas en las interfaces de WebSocket que requirieron intervención manual (`shared types`). |
-| 13/02/2026 | **Optimización del Scheduler** | "El scheduler crea un array innecesario en cada tick. Optimízalo moviendo la lógica al constructor." | Se redujo la presión sobre el Garbage Collector precalculando los consultorios libres al inicio del servicio. |
-| 12/02/2026 | **Orquestación Docker & Healthchecks** | "Añade healthchecks reales en el backend y configura docker-compose para que los servicios esperen a que las dependencias estén LISTAS." | Implementación de `HealthController` y mejora de `docker-compose.yml`. Se corrigieron errores de conexión prematura. |
-| 11/02/2026 | **Sincronización de Prioridad** | "La prioridad no se sincroniza correctamente entre el Front y el Back. Asegura que el enum coincida." | Sincronización de la lógica de negocio. Se añadió validación en el DTO del Producer. |
+### Herramientas utilizadas
 
-### 🛡️ Decisiones Críticas (Human in the Loop)
+| Herramienta | Rol | Fase de uso |
+|-------------|-----|-------------|
+| **Antigravity** | Orquestador principal, generación y refactorización | Actual (Semana 1) |
+| **GitHub Copilot** | Generación de código y autocompletado | MVP inicial |
+| **Cursor** | Code review asistido y refactorización | Fase intermedia |
 
-1. **Seguridad:** El Agente sugirió usar credenciales por defecto (`guest`). Se forzó el uso de `.env` para producción.
-2. **Arquitectura:** Se decidió mantener `Producer/Consumer` desacoplados vía RabbitMQ a pesar de las alucinaciones de la IA sugiriendo una API directa en fases tempranas.
-3. **Validación:** Se auditó manualmente el uso de `class-validator` ya que la IA olvidaba decorar campos opcionales.
+### Proceso de interacción
 
+```
+1. 🤖 Generación inicial    → La IA genera estructura, servicios, componentes
+2. 👤 Revisión humana       → El equipo revisa, especialmente puntos con // ⚕️ HUMAN CHECK
+3. 🔄 Refinamiento iterativo → Ajustes según buenas prácticas y requisitos específicos
+4. ✅ Validación             → Tests unitarios y verificación de funcionamiento
+```
+
+---
+
+## 2. Registro Completo de Interacciones y Commits
+
+### Fase 1 — Setup Inicial del Monorepo (09-10/Feb/2026)
+
+| Commit | Fecha | Tipo | Descripción | Actor |
+|--------|-------|------|-------------|-------|
+| `d6f3fbf` | 09/Feb | setup | Initial commit | 👤 Humano |
+| `6fbf0b8` | 10/Feb | plan | Initial plan — estructura del proyecto | 🤖 Copilot |
+| `b182868` | 10/Feb | feat | Crear estructura monorepo: backend, frontend, Docker, RabbitMQ | 🤖 Copilot |
+| `2da22e9` | 10/Feb | fix | **HUMAN CHECK:** Remover `.env` del tracking, agregar `.env.example` | 👤 Humano → corrigió a la IA |
+| `ae01949` | 10/Feb | fix | Upgrade Next.js ^15.3.9 para parchear vulnerabilidad DoS HTTP | 🤖 Copilot |
+| `147782e` | 10/Feb | docs | Traducir `AI_WORKFLOW.md` de español a inglés | 🤖 Copilot |
+
+> **🛡️ Decisión Humana:** La IA generó el proyecto con credenciales en `.env` trackeado por Git. El humano lo detectó y forzó `.gitignore` + `.env.example`.
+
+### Fase 2 — Microservicios Backend (10/Feb/2026)
+
+| Commit | Fecha | Tipo | Descripción | Actor |
+|--------|-------|------|-------------|-------|
+| `2ab4942` | 10/Feb | feat | Crear Producer base API (NestJS) | 🤖 Copilot + 👤 Humano |
+| `7bffae5` | 10/Feb | fix | Resolver dependencias y agregar Consumer service | 🤖 IA + 👤 Revisión |
+| `c9de5bb` | 10/Feb | fix | **HUMAN CHECK:** Tipar Consumer DTO, agregar `RABBITMQ_QUEUE` al Producer | 👤 Humano → detectó falta de tipado |
+| `d68df14` | 10/Feb | feat | Integrar Producer/Consumer con RabbitMQ en Docker Compose | 🤖 Copilot |
+| `fb1a5ea` | 10/Feb | feat | Renombrar contenedores Docker con nomenclatura clara | 👤 Humano |
+| `e7048ca` | 10/Feb | feat | Implementar persistencia MongoDB e integración RabbitMQ | 🤖 Copilot + 👤 Revisión |
+
+> **🛡️ Decisión Humana:** La IA sugirió conectar Producer directamente al Consumer sin cola de mensajes. El humano forzó la arquitectura desacoplada vía RabbitMQ.
+
+### Fase 3 — Refactorización de Nomenclatura (10/Feb/2026)
+
+| Commit | Fecha | Tipo | Descripción | Actor |
+|--------|-------|------|-------------|-------|
+| `8d5b814` | 10/Feb | refactor | Cambiar `pacienteId` a tipo `number` + agregar `// ⚕️ HUMAN CHECK` | 🤖 IA + 👤 Humano |
+| `a1832ae` | 10/Feb | refactor | Renombrar `pacienteId` → `cedula` en todo el codebase | 🤖 IA |
+| `2a0dab1` | 10/Feb | docs | Agregar comentarios `// ⚕️ HUMAN CHECK` para renombrado y validación | 👤 Humano |
+
+> **🛡️ Decisión Humana:** El humano exigió que cada cambio de tipo en DTOs llevara `// ⚕️ HUMAN CHECK` para trazabilidad de decisiones de negocio.
+
+### Fase 4 — Frontend y Dashboard (10-11/Feb/2026)
+
+| Commit | Fecha | Tipo | Descripción | Actor |
+|--------|-------|------|-------------|-------|
+| `22f1d66` | 10/Feb | feat | Base Next.js: arquitectura + env + Repository Pattern + security middleware | 🤖 Copilot |
+| `62dff95` | 10/Feb | feat | Dashboard realtime con polling + Repository Pattern + memory leak fix | 🤖 IA + 👤 Revisión |
+| `bc7a12a` | 11/Feb | feat | Pantalla realtime con polling + arquitectura desacoplada | 🤖 IA |
+| `d9570d7` | 11/Feb | feat | Fix bugs e implementaciones adicionales en frontend | 👤 Humano + 🤖 IA |
+| `02c78f9` | 11/Feb | fix | Resolver problemas de alineación y actualizar paleta de colores | 👤 Humano |
+
+> **🛡️ Decisión Humana:** La IA sugirió usar Tailwind CSS. El humano rechazó y forzó CSS Modules (`page.module.css`) para mantener el proyecto sin dependencias CSS externas.
+
+### Fase 5 — Testing y WebSocket (11/Feb/2026)
+
+| Commit | Fecha | Tipo | Descripción | Actor |
+|--------|-------|------|-------------|-------|
+| `8cc9f78` | 11/Feb | feat | 36 test cases unitarios para Producer service | 🤖 IA + 👤 Revisión |
+| `b7a4efc` | 11/Feb | fix | Aplicar sugerencias de Copilot PR review | 🤖 Copilot |
+| `8260083` | 11/Feb | feat | **HUMAN CHECK:** Implementar WebSocket y refactorizar microservicios | 🤖 IA + 👤 Humano |
+
+> **🛡️ Decisión Humana:** Las pruebas generadas por la IA no mockeaban RabbitMQ correctamente — hacían hit al broker real. El humano exigió mocks puros con `jest.fn()`.
+
+### Fase 6 — Docker y Optimización (11/Feb/2026)
+
+| Commit | Fecha | Tipo | Descripción | Actor |
+|--------|-------|------|-------------|-------|
+| `a37c79b` | 11/Feb | build | Cambiar Docker image de `alpine` a `slim` en todos los servicios | 🤖 IA |
+| `182220d` | 11/Feb | feat | **HUMAN CHECK:** Duración aleatoria de atención (8-15s), limitar a 5 consultorios | 👤 Humano → lógica de negocio |
+| `a9b30f8` | 11/Feb | feat | Reorganizar dashboard con historial de pacientes atendidos | 🤖 IA + 👤 Revisión |
+
+> **🛡️ Decisión Humana:** La IA generó el scheduler con precálculo de consultorios en cada tick (hot path). El humano optimizó moviendo la precarga al constructor.
+
+### Fase 7 — Cross-Audit y Feedback (12-16/Feb/2026)
+
+| Commit | Fecha | Tipo | Descripción | Actor |
+|--------|-------|------|-------------|-------|
+| `ea9f62c` | 13/Feb | docs | Cross-audit QA completo con evidencia y alineación a rúbrica | 👤 Humano |
+| `87ef983` | 13/Feb | docs | Corrección de feedback de auditoría cruzada | 👤 Humano |
+| `2b3b5b4` | 13/Feb | docs | Archivos de auditoría y calificaciones con correcciones | 👤 Humano |
+| `9b9b68a` | 13/Feb | feat | Mejoras de auditoría backend + feedback AI-First | 🤖 IA + 👤 Humano |
+
+> **Contexto:** Tres auditores externos (Alexis, Esteban, Germán) evaluaron el proyecto y generaron feedback consolidado en `FEEDBACK_TRACKER.md`.
+
+### Fase 8 — Refactorización AI-Native (17-18/Feb/2026)
+
+| Commit | Fecha | Tipo | Descripción | Actor |
+|--------|-------|------|-------------|-------|
+| `580b85c` | 18/Feb | feat | Procesamiento completo de feedback list y documentación enriquecida | 🤖 Antigravity |
+| `f35dfc7` | 18/Feb | refactor | **Renombrar archivos español → inglés** (turnos → appointments, turno.schema → appointment.schema) | 🤖 Antigravity + 👤 Humano |
+| `37858be` | 18/Feb | fix | Corregir `scheduler.service.spec.ts` con mocks correctos y providers faltantes | 🤖 Antigravity |
+| `124823d` | 18/Feb | fix | Agregar `types: [jest, node]` en `tsconfig.json` para resolver errores de tipo en `TestingModule.get()` | 🤖 Antigravity |
+
+> **🛡️ Decisión Humana:** La IA falló en la primera iteración del refactor de nomenclatura (no actualizó interfaces WebSocket). El humano detectó el error y forzó una segunda iteración con Shared Types (`AppointmentEventPayload`).
+
+### Fase 9 — Sistema de Orquestación (18/Feb/2026)
+
+| Commit | Fecha | Tipo | Descripción | Actor |
+|--------|-------|------|-------------|-------|
+| `f1f3516` | 18/Feb | feat | Upgrade `agent.md` a production-grade con System Prompt y Skill References | 🤖 Antigravity + 👤 Aprobación |
+| `a0b06f8` | 18/Feb | feat | 5 skills con metadata enriquecida y assets (templates/ + docs/) | 🤖 Antigravity |
+| `42ad7b9` | 18/Feb | feat | Action Summary template para protocolo Sub-agentes | 🤖 Antigravity |
+| `39fe196` | 18/Feb | feat | `FEEDBACK_TRACKER.md` consolidado con 20 ítems de 3 auditores | 🤖 Antigravity + 👤 Revisión |
+| `dc9ca45` | 18/Feb | feat | Scripts `setup-ai.sh` y `sync.sh` para orquestación multi-AI | 🤖 Antigravity |
+| `14d410b` | 18/Feb | chore | Symlinks para Cursor, Gemini, Claude | 🤖 Antigravity |
+| `0aaaa85` | 18/Feb | refactor | **Consolidar a único orquestador `GEMINI.md`** para Antigravity | 🤖 Antigravity + 👤 Aprobación |
+| `56670db` | 18/Feb | chore | Eliminar `DEBT_REPORT.MD` obsoleto | 🤖 Antigravity + 👤 Aprobación |
+| `c2ca5a6` | 18/Feb | refactor | Absorber `PROMPT_LOG.md` en `AI_WORKFLOW.md` | 🤖 Antigravity |
+| `340c111` | 18/Feb | refactor | Actualizar `sync.sh` target a `GEMINI.md`, eliminar `setup-ai.sh` | 🤖 Antigravity |
+
+> **🛡️ Decisión Humana:** El humano identificó redundancia en archivos orquestadores (agent.md, GEMINI.md, .cursorrules, CLAUDE.md) y aprobó la consolidación a un solo `GEMINI.md`.
+
+---
+
+## 3. Anti-patrones Detectados por la IA (Lo que la IA Hizo Mal)
+
+| Problema | Cómo se Detectó | Fix Aplicado | Prevención |
+|----------|-----------------|--------------|------------|
+| **Credenciales Hardcodeadas** | Auditoría manual en `docker-compose.yml` | Uso de `.env` y variables de entorno | Checklist de pre-deployment en `skills/docker-infra/` |
+| **Race Conditions** | Stress testing en asignación de turnos | Bloqueo lógico y validación de estado previo | Tests unitarios concurrentes |
+| **Nomenclatura inconsistente (español/inglés)** | Code Review manual | Refactor total a idioma inglés (`cedula` → `idCard`, `nombre` → `fullName`) | Guía de estilos en `GEMINI.md` |
+| **Falta de Validaciones en DTOs** | Errores 500 en backend al enviar tipos incorrectos | Decoradores `class-validator` en DTOs | Middleware de validación global `ValidationPipe` |
+| **Tests acoplados a infraestructura** | Tests fallaban sin conexión a RabbitMQ/MongoDB | Mocks puros con `jest.fn()` y factories | Guía de mocking en `skills/testing-qa/` |
+| **WebSocket interfaces rotas post-refactor** | Dashboard no recibía eventos después de renombrar | Tipo compartido `AppointmentEventPayload` | Shared types obligatorios |
+| **Hot path en Scheduler** | Profiling — array recalculado en cada tick | Precálculo de `allOffices` en constructor | Review de performance en scheduler |
+| **Archivos orquestadores redundantes** | Análisis de cómo Antigravity lee configuración | Consolidación a único `GEMINI.md` | Script `sync.sh` como fuente de verdad |
+
+---
+
+## 4. Sentinel Comments — Evidencia de `// ⚕️ HUMAN CHECK`
+
+Los siguientes archivos contienen marcadores de intervención humana:
+
+| Archivo | Línea | Contexto |
+|---------|-------|----------|
+| `docker-compose.yml` | Healthchecks | Configuración de healthchecks y límites de memoria |
+| `backend/producer/src/dto/create-appointment.dto.ts` | Validaciones | Rango de `idCard` y tipos numéricos |
+| `backend/consumer/src/scheduler/scheduler.service.ts` | Hot path | Optimización de precálculo de consultorios |
+| `backend/consumer/src/appointments/appointments.service.ts` | ack/nack | Estrategia de acknowledgment en RabbitMQ |
+| `backend/producer/src/appointments/appointments.controller.ts` | Validación | `ValidationPipe` habilitado globalmente |
+
+---
+
+## 5. Alineación con la Rúbrica de Evaluación
+
+### 5.1 Arquitectura Hexagonal
+
+| Evidencia | Estado |
+|-----------|--------|
+| Separación Dominio/Infraestructura | Esquemas Mongoose aislados en `schemas/`, lógica en `services/` |
+| Repository Pattern en frontend | `frontend/src/` usa repositorios para acceso a datos |
+| Puertos de salida (RabbitMQ, MongoDB) | Abstraídos en servicios NestJS con inyección de dependencias |
+| Adaptadores (WebSocket, REST) | Gateway y Controller como adaptadores de entrada |
+
+### 5.2 Principios SOLID
+
+| Principio | Aplicación |
+|-----------|------------|
+| **SRP** | Cada servicio tiene responsabilidad única (Producer emite, Consumer procesa, Scheduler asigna) |
+| **OCP** | Skills extensibles vía `skill-creator` sin modificar el orquestador |
+| **LSP** | DTOs validados con `class-validator` mantienen contrato de tipos |
+| **ISP** | Interfaces de WebSocket separadas de REST API |
+| **DIP** | Servicios dependen de abstracciones (`@Inject(getModelToken)`) no de implementaciones concretas |
+
+### 5.3 Patrones de Diseño
+
+| Categoría | Patrón | Ubicación | Justificación |
+|-----------|--------|-----------|---------------|
+| **Creacional** | Factory | `Test.createTestingModule()` | Crea módulos de test con dependencias reemplazables |
+| **Estructural** | Repository | Frontend data layer | Abstrae el acceso a la API del resto de la UI |
+| **Estructural** | Adapter | WebSocket Gateway, REST Controller | Adaptan las señales externas al formato interno del dominio |
+| **Comportamiento** | Observer | WebSocket (Socket.IO) | Clientes suscritos reciben actualizaciones en tiempo real |
+| **Comportamiento** | Strategy | ack/nack en Consumer | Estrategia diferenciada según tipo de error (validación vs transient) |
+
+### 5.4 Testing y Aislamiento
+
+| Evidencia | Estado |
+|-----------|--------|
+| Tests unitarios con mocks puros | 36+ test cases en Producer |
+| Sin dependencia a DB/RabbitMQ en tests | Mocks con `jest.fn()` y `getModelToken()` |
+| Cobertura de paths de éxito y error | Tests de validación, creación, y manejo de errores |
+| Configuración Jest correcta | `types: [jest, node]` en `tsconfig.json` |
+
+### 5.5 AI-Native Auditing
+
+| Evidencia | Estado |
+|-----------|--------|
+| `// ⚕️ HUMAN CHECK` en 5+ archivos | Trazabilidad de intervención humana |
+| `FEEDBACK_TRACKER.md` | 20 ítems de 3 auditores con status tracking |
+| `GEMINI.md` como orquestador AI | Sistema de delegación con 5 skills especializadas |
+| Anti-pattern log | 8 errores detectados y documentados con prevención |
+| `AI_WORKFLOW.md` (este archivo) | Registro completo de 60 commits con actor y decisiones |
+
+---
+
+## 6. Estadísticas del Proyecto
+
+| Métrica | Valor |
+|---------|-------|
+| Total de commits | 60 |
+| Pull Requests | 16 |
+| Días de desarrollo | 10 (09/Feb - 18/Feb 2026) |
+| Commits generados por IA | ~35 (58%) |
+| Commits con intervención humana | ~25 (42%) |
+| Decisiones humanas críticas documentadas | 9 |
+| Anti-patrones detectados y corregidos | 8 |
+| Skills especializadas | 5 |
+| Test cases unitarios | 36+ |
+| Archivos con `// ⚕️ HUMAN CHECK` | 5+ |
