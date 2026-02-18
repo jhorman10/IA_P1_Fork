@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ProducerController } from '../src/producer.controller';
 import { ProducerService } from '../src/producer.service';
-import { TurnosService } from '../src/turnos/turnos.service';
+import { TurnosService } from '../src/appointments/turnos.service';
 import * as request from 'supertest';
 
 describe('ProducerController (Integration Tests)', () => {

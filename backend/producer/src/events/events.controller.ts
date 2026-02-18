@@ -1,7 +1,7 @@
 import { Controller, Logger } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
-import { TurnosGateway } from './turnos.gateway';
-import { AppointmentEventPayload } from '../types/turno-event';
+import { TurnosGateway } from './appointments.gateway';
+import { AppointmentEventPayload } from '../types/appointment-event';
 
 @Controller()
 export class EventsController {

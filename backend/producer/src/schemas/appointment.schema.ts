@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { AppointmentStatus, AppointmentPriority } from '../types/turno-event';
+import { AppointmentStatus, AppointmentPriority } from '../types/appointment-event';
 
 export type AppointmentDocument = HydratedDocument<Appointment>;
 
-// ⚕️ HUMAN CHECK - Appointment Schema
-// Ensuring fields and types meet business needs.
+// ⚕️ HUMAN CHECK - Appointment Schema (Producer - read-only)
+// Must be synced with the Consumer schema.
 @Schema({ timestamps: true })
 export class Appointment {
     @Prop({ required: true })
@@ -15,16 +15,13 @@ export class Appointment {
     fullName: string;
 
     // ⚕️ HUMAN CHECK - Nullable office
-    // null when waiting, assigned by the scheduler
+    // null when the patient is waiting
     @Prop({ default: null })
     office: string | null;
 
-    // ⚕️ HUMAN CHECK - Appointment states
     @Prop({ default: 'waiting', enum: ['waiting', 'called', 'completed'] })
     status: AppointmentStatus;
 
-    // ⚕️ HUMAN CHECK - Appointment priority
-    // Determines assignment order in the scheduler
     @Prop({ default: 'medium', enum: ['high', 'medium', 'low'] })
     priority: AppointmentPriority;
 

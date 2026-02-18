@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, Inject, Logger } from '@nestjs/common';
 import { ClientProxy, Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
-import { CreateAppointmentDto } from './dto/create-turno.dto';
-import { TurnosService } from './turnos/turnos.service';
+import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { TurnosService } from './appointments/turnos.service';
 import { NotificationsService } from './notifications/notifications.service';
 
 @Controller()

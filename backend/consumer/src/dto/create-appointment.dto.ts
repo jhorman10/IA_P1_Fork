@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, IsNumber, IsOptional, IsIn } from 'class-validator';
-import { AppointmentPriority } from '../types/turno-event';
+import { AppointmentPriority } from '../types/appointment-event';
 
 export class CreateAppointmentDto {
     @IsNotEmpty()

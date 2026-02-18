@@ -1,9 +1,9 @@
 import { Body, Controller, Get, HttpCode, Param, Post, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 import { ProducerService, CreateAppointmentResponse } from './producer.service';
-import { TurnosService } from './turnos/turnos.service';
-import { CreateAppointmentDto } from './dto/create-turno.dto';
-import { AppointmentEventPayload } from './types/turno-event';
+import { TurnosService } from './appointments/turnos.service';
+import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { AppointmentEventPayload } from './types/appointment-event';
 
 @ApiTags('Appointments')
 @Controller('appointments')

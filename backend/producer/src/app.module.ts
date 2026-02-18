@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ProducerController } from './producer.controller';
 import { HealthController } from './health.controller';
 import { ProducerService } from './producer.service';
-import { TurnosModule } from './turnos/turnos.module';
+import { TurnosModule } from './appointments/turnos.module';
 import { EventsModule } from './events/events.module';
 
 @Module({

@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Appointment, AppointmentDocument } from '../schemas/turno.schema';
-import { AppointmentEventPayload } from '../types/turno-event';
+import { Appointment, AppointmentDocument } from '../schemas/appointment.schema';
+import { AppointmentEventPayload } from '../types/appointment-event';
 
 @Injectable()
 export class TurnosService {

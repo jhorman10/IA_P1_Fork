@@ -5,7 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConsumerController } from './consumer.controller';
 import { HealthController } from './health.controller';
-import { TurnosModule } from './turnos/turnos.module';
+import { TurnosModule } from './appointments/turnos.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
 

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SchedulerService } from './scheduler.service';
-import { TurnosService } from '../turnos/turnos.service';
+import { TurnosService } from '../appointments/turnos.service';
 
 // 📂 SHOULD BE LOCATED AT: backend/consumer/src/scheduler/scheduler.service.spec.ts
 

@@ -6,8 +6,8 @@ import {
     OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { TurnosService } from '../turnos/turnos.service';
-import { AppointmentEventPayload } from '../types/turno-event';
+import { TurnosService } from '../appointments/turnos.service';
+import { AppointmentEventPayload } from '../types/appointment-event';
 
 // ⚕️ HUMAN CHECK - WebSocket Gateway
 @WebSocketGateway({

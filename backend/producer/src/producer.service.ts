@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateAppointmentDto } from './dto/create-turno.dto';
+import { CreateAppointmentDto } from './dto/create-appointment.dto';
 
 export interface CreateAppointmentResponse {
     status: 'accepted';

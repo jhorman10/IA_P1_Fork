@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, IsNumber, IsOptional, IsIn, IsPositive, Max } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { AppointmentPriority } from '../types/turno-event';
+import { AppointmentPriority } from '../types/appointment-event';
 
 export class CreateAppointmentDto {
     @ApiProperty({

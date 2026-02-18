@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SchedulerService } from './scheduler.service';
-import { TurnosModule } from '../turnos/turnos.module';
+import { TurnosModule } from '../appointments/turnos.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({

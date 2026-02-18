@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { TurnosGateway } from './turnos.gateway';
+import { TurnosGateway } from './appointments.gateway';
 import { EventsController } from './events.controller';
-import { TurnosModule } from '../turnos/turnos.module';
+import { TurnosModule } from '../appointments/turnos.module';
 
 // ⚕️ HUMAN CHECK - Módulo de Eventos
 // Conecta el WebSocket Gateway con el controlador de eventos RabbitMQ

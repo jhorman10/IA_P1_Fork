@@ -1,7 +1,7 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { ClientProxy } from '@nestjs/microservices';
-import { TurnosService } from '../turnos/turnos.service';
+import { TurnosService } from '../appointments/turnos.service';
 import { ConfigService } from '@nestjs/config';
 
 // ⚕️ HUMAN CHECK - Office assignment scheduler
