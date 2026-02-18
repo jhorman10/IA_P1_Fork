@@ -24,7 +24,7 @@ export class ConsumerController {
         const channel = context.getChannelRef();
         const originalMsg = context.getMessage();
         const properties = originalMsg.properties;
-        const retryCount = properties.headers['x-retry-count'] || 0; // Assuming x-retry-count is set by a retry mechanism
+        const retryCount = this.getRetryCount(properties.headers || {});
 
         try {
             // Business Logic delegation

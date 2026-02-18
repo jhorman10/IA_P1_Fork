@@ -63,9 +63,9 @@ describe('ConsumerController', () => {
             expect(mockRmqContext.getChannelRef().ack).toHaveBeenCalled();
         });
 
-        it('should nack and move to DLQ on fatal error (BadRequest)', async () => {
-            const data = { idCard: 12345678, fullName: 'John Doe' };
-            mockRegisterUseCase.execute.mockRejectedValue(new BadRequestException('idCard must be numeric'));
+        it('should move to DLQ on fatal validation error (idCard not numeric)', async () => {
+            const data = { idCard: NaN as any, fullName: 'John' };
+            mockRegisterUseCase.execute.mockRejectedValue(new Error('idCard must be numeric'));
 
             await controller.handleCreateAppointment(data, mockRmqContext);
 
@@ -85,7 +85,6 @@ describe('ConsumerController', () => {
             const data = { idCard: 12345678, fullName: 'John Doe' };
             mockRegisterUseCase.execute.mockRejectedValue(new Error('Persistent Error'));
 
-            // Mock 2 retries already happened (3rd attempt now)
             const mockRmqContextWithRetries = {
                 getChannelRef: jest.fn().mockReturnValue({
                     ack: jest.fn(),
