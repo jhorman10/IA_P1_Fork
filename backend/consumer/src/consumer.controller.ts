@@ -23,8 +23,9 @@ export class ConsumerController {
     ): Promise<void> {
         const channel = context.getChannelRef();
         const originalMsg = context.getMessage();
-        const properties = originalMsg.properties;
-        const retryCount = this.getRetryCount(properties.headers || {});
+        const properties = originalMsg?.properties || {};
+        const headers = properties.headers || {};
+        const retryCount = this.getRetryCount(headers);
 
         try {
             // Business Logic delegation
@@ -60,9 +61,6 @@ export class ConsumerController {
             } else {
                 this.logger.warn(`Transient error for patient ${data.idCard}: ${message}. Requeuing (Retry ${retryCount + 1}/3)...`);
                 // Transient error: Requeue. 
-                // Note: Standard nack(true) doesn't add x-death, so N-retries requires a DLX cycle
-                // but for this implementation we assume the DLX/DLQ is set up to cycle or 
-                // we treat redelivered as the only retry.
                 channel.nack(originalMsg, false, true);
             }
         }

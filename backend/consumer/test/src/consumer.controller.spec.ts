@@ -27,7 +27,9 @@ describe('ConsumerController', () => {
             ack: jest.fn(),
             nack: jest.fn(),
         }),
-        getMessage: jest.fn().mockReturnValue({}),
+        getMessage: jest.fn().mockReturnValue({
+            properties: { headers: {} }
+        }),
     } as unknown as RmqContext;
 
     beforeEach(async () => {
@@ -76,9 +78,19 @@ describe('ConsumerController', () => {
             const data = { idCard: 12345678, fullName: 'John Doe' };
             mockRegisterUseCase.execute.mockRejectedValue(new Error('Transient DB Error'));
 
-            await controller.handleCreateAppointment(data, mockRmqContext);
+            const mockRmqContextTransient = {
+                getChannelRef: jest.fn().mockReturnValue({
+                    ack: jest.fn(),
+                    nack: jest.fn(),
+                }),
+                getMessage: jest.fn().mockReturnValue({
+                    properties: { headers: {} }
+                }),
+            } as unknown as RmqContext;
 
-            expect(mockRmqContext.getChannelRef().nack).toHaveBeenCalledWith(expect.anything(), false, true);
+            await controller.handleCreateAppointment(data, mockRmqContextTransient);
+
+            expect(mockRmqContextTransient.getChannelRef().nack).toHaveBeenCalledWith(expect.anything(), false, true);
         });
 
         it('should send to DLQ if max retries reached', async () => {

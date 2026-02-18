@@ -60,6 +60,7 @@
 | H-04 | Phase 4 | Resilience & Reliability Patterns (DLQ/Retries) | ✅ |
 | H-05 | Phase 5 | Mirror Testing Structure (1:1 src replica) | ✅ |
 | H-06 | Phase 6 | Infrastructure Independence (Kafka/SQS Readiness) | ✅ |
+| H-07 | Phase 7 | SOLID Hardening (Architectural Repentance) - Resolved SRP/DIP violations in Consumer logic. | ✅ |
 
 ---
 
@@ -67,7 +68,7 @@
 
 | Status | Count |
 |--------|-------|
-| ✅ Resuelto | 27 |
-| ⬜ Pendiente | 0 |
+| ✅ Resuelto | 28 |
+| ⬜ Pendiente | 1 |
 | 🔄 En progreso | 0 |
 | ⏸️ Bloqueado | 0 |
