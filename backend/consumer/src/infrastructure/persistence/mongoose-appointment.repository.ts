@@ -22,7 +22,7 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
     async findWaiting(): Promise<Appointment[]> {
         const docs = await this.model
             .find({ status: 'waiting' })
-            .sort(AppointmentQuerySpecification.QUEUE_SORT_ORDER)
+            .sort(AppointmentQuerySpecification.QUEUE_SORT_ORDER as any)
             .exec();
         return docs.map(doc => AppointmentMapper.toDomain(doc));
     }

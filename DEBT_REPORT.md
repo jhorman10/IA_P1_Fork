@@ -65,6 +65,7 @@
 | H-09 | Phase 9 | Scheduler Orchestration & DIP Hardening | `refactor-arch`, `testing-qa` | ✅ |
 | H-10 | Phase 10 | Technical Culture Elevation | `skill-creator` | ✅ |
 | H-11 | Phase 11 | Architectural Excellence (Value Objects & Factories) | `refactor-arch`, `testing-qa` | ✅ |
+| H-12 | Phase 12 | Repository Decoupling & Specification Pattern | `refactor-arch` | ✅ |
 
 ---
 
@@ -72,7 +73,7 @@
 
 | Status | Count |
 |--------|-------|
-| ✅ Resuelto | 33 |
+| ✅ Resuelto | 34 |
 | ⬜ Pendiente | 0 |
 | 🔄 En progreso | 0 |
 | ⏸️ Bloqueado | 0 |
