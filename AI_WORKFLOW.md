@@ -154,7 +154,24 @@ Este proyecto utiliza una metodología **AI-First** donde la IA actúa como un *
 | `Phase 4` | 18/Feb | feat | Resilience Patterns: DLQ, DLX, and Retry logic implementation | 🤖 |
 | `Phase 5` | 18/Feb | refactor | **Mirror Testing Structure (G-07)**: Dedicated `test/` folder with 1:1 `src/` replica | 🤖 |
 | `Phase 6` | 18/Feb | refactor | **Infrastructure Independence**: Full Port-Adapter decoupling (Broker Agnostic) | 🤖 |
+| `Phase 7` | 18/Feb | refactor | **SOLID Hardening**: SRP Split, DIP Loggers/Clock, Domain Policy extraction | 🤖 |
 | `Challenge` | 18/Feb | test | **Impossible Mock Defeated**: Finalized pure unit test without any infra | 🤖 |
+
+> **🛡️ Decisión Humana:** El humano exigió una refactorización de "Repentimiento Arquitectónico" para eliminar el acoplamiento a NestJS Logger y `Date.now()`, forzando la creación de `ClockPort` y `LoggerPort`.
+
+### 🔄 Iteración 11: SOLID Hardening (Architectural Repentance)
+- **Actor:** 🤖 Antigravity
+- **Descripción:** Refactorización final para pureza de dominio y desacoplamiento total de dependencias temporales y de logging.
+- **Decisiones clave:**
+    - El scheduler se dividió para cumplir con SRP (Complete vs Assign).
+    - Se eliminó el uso directo de `Date.now()` en entidades, pasándolo como argumento controlado por un `ClockPort`.
+    - Se estandarizó el manejo de errores en el controller para evitar excepciones de framework en la capa de aplicación.
+- **Commits:**
+    - `refactor(arch): split obese AssignmentUseCase into Complete and Assign specialized use cases (SRP)`
+    - `refactor(domain): extract consultation duration logic to Domain Policy (SRP)`
+    - `refactor(arch): introduce LoggerPort to decouple core logic from NestJS Logger (DIP)`
+    - `refactor(arch): introduce ClockPort for deterministic time management (DIP)`
+    - `test(consumer): sync controller tests with refactored error handling and DIP logic`
 
 > **🛡️ Decisión Humana:** El humano aprobó la restricción de idempotencia donde un paciente no puede tener más de un turno activo (`waiting/called`) simultáneamente para evitar duplicados.
 
