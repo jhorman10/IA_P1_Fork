@@ -154,6 +154,7 @@ Este proyecto utiliza una metodología **AI-First** donde la IA actúa como un *
 | `Phase 4` | 18/Feb | feat | Resilience Patterns: DLQ, DLX, and Retry logic implementation | 🤖 |
 | `Phase 5` | 18/Feb | refactor | **Mirror Testing Structure (G-07)**: Dedicated `test/` folder with 1:1 `src/` replica | 🤖 |
 | `Phase 6` | 18/Feb | refactor | **Infrastructure Independence**: Full Port-Adapter decoupling (Broker Agnostic) | 🤖 |
+| `Challenge` | 18/Feb | test | **Impossible Mock Defeated**: Finalized pure unit test without any infra | 🤖 |
 
 > **🛡️ Decisión Humana:** El humano aprobó la restricción de idempotencia donde un paciente no puede tener más de un turno activo (`waiting/called`) simultáneamente para evitar duplicados.
 
