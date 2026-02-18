@@ -231,7 +231,28 @@ Los siguientes archivos contienen marcadores de intervención humana:
 
 ---
 
-## 6. Estadísticas del Proyecto
+## 7. Registro de Prompts e Iteraciones (E-01 / E-04)
+
+### 7.1 Prompts Reales Utilizados (Ejemplos)
+
+| Fase | Prompt / Objetivo | Resultado |
+|-------|------------------|-----------|
+| **Refactor** | "Renombra `cedula` a `idCard` en todo el proyecto, asegurando que los DTOs y esquemas de Mongoose se mantengan sincronizados." | Refactor exitoso en backend, pero falló en tipos compartidos de WebSocket. |
+| **Fix** | "El dashboard no se actualiza tras el refactor. Revisa si los eventos de Socket.IO usan el nuevo nombre de campo." | Identificación de incoherencia en payloads; creación de `AppointmentEventPayload`. |
+| **Feature** | "Implementa idempotencia en la creación de turnos: si un paciente ya tiene un turno 'waiting', no crees uno nuevo, retorna el existente." | Implementación de lógica de búsqueda previa en `TurnosService`. |
+
+### 7.2 Log de Errores Críticos de la IA y Correcciones (E-04)
+
+| ID | Error de la IA | Impacto | Corrección Humana / Fix | Prevención |
+|----|----------------|----------|-------------------------|------------|
+| **ERR-01** | Ignorar actualización de interfaces WebSocket post-refactor. | Dashboard roto (nombres de campos undefined). | El humano forzó la creación de un archivo de tipos compartidos. | Skill `refactor-arch` ahora exige revisión de "Communication Layers". |
+| **ERR-02** | Sugerencia de Tailwind CSS contra la directriz de Vanilla CSS. | Violación de arquitectura visual. | El humano rechazó la propuesta; se mantuvo `page.module.css`. | `GEMINI.md` actualizado con "Vanilla CSS" como regla de oro. |
+| **ERR-03** | Mocks de tests que hacían hit a infraestructura real. | Tests lentos y dependientes de RabbitMQ externo. | El humano implementó mocks puros con `jest.fn()`. | Skill `testing-qa` incluye ejemplos de mocking de NestJS Microservices. |
+| **ERR-04** | Hot path: Recálculo de array de consultorios en cada ciclo del scheduler. | Degradación de performance bajo carga. | El humano movió la lógica al constructor del servicio. | Directriz de performance agregada al orquestador. |
+
+---
+
+## 8. Estadísticas Consolidadas
 
 | Métrica | Valor |
 |---------|-------|

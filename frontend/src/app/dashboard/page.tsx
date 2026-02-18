@@ -91,6 +91,9 @@ export default function CompletedHistoryDashboard() {
                 <span className={styles.nombre}>{t.fullName}</span>
                 <span className={styles.hora}>{formatTime(t.timestamp)}</span>
                 <span>Office {t.office}</span>
+                <span className={styles.badge}>
+                  {t.priority === "high" ? "🔴" : t.priority === "medium" ? "🟡" : "🟢"} {t.priority}
+                </span>
               </li>
             ))}
           </ul>
