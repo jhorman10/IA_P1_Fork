@@ -26,26 +26,29 @@ export class ConsumerController {
 
         try {
             // 🎯 PURE DELEGATION: Controller only orchestrates the entry point.
-            // Side effects (Notifications/Dashboard) are now in the Application layer.
             await this.registerUseCase.execute(data);
-
             channel.ack(originalMsg);
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
 
-            // ⚕️ HUMAN CHECK - Policy Decision: ValidationError is fatal and goes to DLQ
+            // ⚕️ HUMAN CHECK - Resilience Policy Decision:
+            // 1. ValidationError / DomainError -> FATAL (Move to DLQ)
+            // 2. InfrastructureError -> TRANSIENT (Requeue)
+            // 3. Unknown Error -> Retry until limit, then DLQ
+
             if (error instanceof ValidationError) {
-                this.logger.error(`Validation error for patient ${data.idCard}: ${message}. Moving to DLQ.`);
-                channel.nack(originalMsg, false, false); // No requeue
+                this.logger.error(`[FATAL] Validation error: ${message}. Moving to DLQ.`);
+                channel.nack(originalMsg, false, false);
                 return;
             }
 
+            this.logger.warn(`[RETRY] Processing failure for patient ${data.idCard}: ${message}`);
+
             if (retryCount >= 2) {
-                this.logger.error(`Max retries (3) reached for patient ${data.idCard}: ${message}. Moving to DLQ.`);
+                this.logger.error(`Max retries reached. Moving to DLQ. Error: ${message}`);
                 channel.nack(originalMsg, false, false);
             } else {
-                this.logger.warn(`Transient error for patient ${data.idCard}: ${message}. Requeuing (Retry ${retryCount + 1}/3)...`);
-                channel.nack(originalMsg, false, true);
+                channel.nack(originalMsg, false, true); // Requeue
             }
         }
     }
