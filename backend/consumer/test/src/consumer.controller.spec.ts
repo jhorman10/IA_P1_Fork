@@ -1,18 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConsumerController } from 'src/consumer.controller';
-import { AppointmentService } from 'src/appointments/appointment.service';
 import { NotificationsService } from 'src/notifications/notifications.service';
 import { RmqContext } from '@nestjs/microservices';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
+import { RegisterAppointmentUseCase } from 'src/domain/ports/inbound/register-appointment.use-case';
 
 describe('ConsumerController', () => {
     let controller: ConsumerController;
-    let appointmentService: AppointmentService;
+    let registerUseCase: RegisterAppointmentUseCase;
     let notificationsService: NotificationsService;
 
-    const mockAppointmentService = {
-        createAppointment: jest.fn(),
-        toEventPayload: jest.fn(),
+    const mockRegisterUseCase = {
+        execute: jest.fn(),
     };
 
     const mockNotificationsService = {
@@ -35,14 +34,14 @@ describe('ConsumerController', () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [ConsumerController],
             providers: [
-                { provide: AppointmentService, useValue: mockAppointmentService },
+                { provide: 'RegisterAppointmentUseCase', useValue: mockRegisterUseCase },
                 { provide: NotificationsService, useValue: mockNotificationsService },
                 { provide: 'APPOINTMENT_NOTIFICATIONS', useValue: mockNotificationsClient },
             ],
         }).compile();
 
         controller = module.get<ConsumerController>(ConsumerController);
-        appointmentService = module.get<AppointmentService>(AppointmentService);
+        registerUseCase = module.get<RegisterAppointmentUseCase>('RegisterAppointmentUseCase');
         notificationsService = module.get<NotificationsService>(NotificationsService);
     });
 
@@ -54,19 +53,19 @@ describe('ConsumerController', () => {
         it('should process appointment successfully', async () => {
             const data = { idCard: 12345678, fullName: 'John Doe', priority: 'medium' as any };
             const appointment = { idCard: 12345678, office: null, _id: 'id' };
-            mockAppointmentService.createAppointment.mockResolvedValue(appointment);
-            mockAppointmentService.toEventPayload.mockReturnValue({});
+            mockRegisterUseCase.execute.mockResolvedValue(appointment);
 
             await controller.handleCreateAppointment(data, mockRmqContext);
 
-            expect(mockAppointmentService.createAppointment).toHaveBeenCalledWith(data);
+            expect(mockRegisterUseCase.execute).toHaveBeenCalledWith(data);
             expect(mockNotificationsService.sendNotification).toHaveBeenCalled();
             expect(mockNotificationsClient.emit).toHaveBeenCalled();
             expect(mockRmqContext.getChannelRef().ack).toHaveBeenCalled();
         });
 
-        it('should nack on invalid data', async () => {
-            const data = { idCard: 'invalid' as any, fullName: 'John Doe' };
+        it('should nack and move to DLQ on fatal error (BadRequest)', async () => {
+            const data = { idCard: 12345678, fullName: 'John Doe' };
+            mockRegisterUseCase.execute.mockRejectedValue(new BadRequestException('idCard must be numeric'));
 
             await controller.handleCreateAppointment(data, mockRmqContext);
 
@@ -75,7 +74,7 @@ describe('ConsumerController', () => {
 
         it('should requeue on transient error', async () => {
             const data = { idCard: 12345678, fullName: 'John Doe' };
-            mockAppointmentService.createAppointment.mockRejectedValue(new Error('Transient DB Error'));
+            mockRegisterUseCase.execute.mockRejectedValue(new Error('Transient DB Error'));
 
             await controller.handleCreateAppointment(data, mockRmqContext);
 
@@ -84,7 +83,7 @@ describe('ConsumerController', () => {
 
         it('should send to DLQ if max retries reached', async () => {
             const data = { idCard: 12345678, fullName: 'John Doe' };
-            mockAppointmentService.createAppointment.mockRejectedValue(new Error('Persistent Error'));
+            mockRegisterUseCase.execute.mockRejectedValue(new Error('Persistent Error'));
 
             // Mock 2 retries already happened (3rd attempt now)
             const mockRmqContextWithRetries = {

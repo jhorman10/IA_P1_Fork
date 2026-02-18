@@ -1,15 +1,17 @@
 import { BadRequestException, Controller, Inject, Logger } from '@nestjs/common';
 import { ClientProxy, Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { AppointmentService } from './appointments/appointment.service';
 import { NotificationsService } from './notifications/notifications.service';
+import { RegisterAppointmentUseCase } from './domain/ports/inbound/register-appointment.use-case';
+import { AppointmentDocument } from './schemas/appointment.schema';
 
 @Controller()
 export class ConsumerController {
     private readonly logger = new Logger(ConsumerController.name);
 
     constructor(
-        private readonly appointmentService: AppointmentService,
+        @Inject('RegisterAppointmentUseCase')
+        private readonly registerUseCase: RegisterAppointmentUseCase,
         private readonly notificationsService: NotificationsService,
         @Inject('APPOINTMENT_NOTIFICATIONS') private readonly notificationsClient: ClientProxy,
     ) { }
@@ -24,23 +26,18 @@ export class ConsumerController {
         this.logger.log(`Received message (Attempt ${retryCount + 1}): ${JSON.stringify(data)}`);
 
         try {
-            if (typeof data.idCard !== 'number' || Number.isNaN(data.idCard)) {
-                throw new BadRequestException('idCard must be numeric');
-            }
+            // Business Logic delegation
+            const appointment = await this.registerUseCase.execute(data);
 
-            // Persist appointment in MongoDB (status: waiting, no office)
-            const appointment = await this.appointmentService.createAppointment(data);
-
-            // Send notification (log)
+            // Side effects (Notifications)
             await this.notificationsService.sendNotification(appointment.idCard, appointment.office);
 
-            // Emit appointment_created event to Producer
+            // Egress event (Infrastructure)
             this.notificationsClient.emit(
                 'appointment_created',
-                this.appointmentService.toEventPayload(appointment),
+                this.appointmentCreatedPayload(appointment),
             );
 
-            // Manual Acknowledgement
             channel.ack(originalMsg);
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
@@ -62,6 +59,22 @@ export class ConsumerController {
                 channel.nack(originalMsg, false, true);
             }
         }
+    }
+
+    /**
+     * Maps an AppointmentDocument to a transport-agnostic payload.
+     */
+    private appointmentCreatedPayload(appointment: AppointmentDocument): any {
+        return {
+            id: String(appointment._id),
+            fullName: appointment.fullName,
+            idCard: appointment.idCard,
+            office: appointment.office,
+            status: appointment.status,
+            priority: appointment.priority,
+            timestamp: appointment.timestamp,
+            completedAt: appointment.completedAt,
+        };
     }
 
     /**

@@ -1,22 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProducerService } from 'src/producer.service';
-import { ClientProxy } from '@nestjs/microservices';
+import { AppointmentPublisherPort } from 'src/domain/ports/outbound/appointment-publisher.port';
 
 describe('ProducerService', () => {
     let service: ProducerService;
-    let mockClientProxy: jest.Mocked<ClientProxy>;
+    let mockPublisher: jest.Mocked<AppointmentPublisherPort>;
 
     beforeEach(async () => {
-        mockClientProxy = {
-            emit: jest.fn(),
-        } as unknown as jest.Mocked<ClientProxy>;
+        mockPublisher = {
+            publishAppointmentCreated: jest.fn(),
+        } as unknown as jest.Mocked<AppointmentPublisherPort>;
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 ProducerService,
                 {
-                    provide: 'APPOINTMENTS_SERVICE',
-                    useValue: mockClientProxy,
+                    provide: 'AppointmentPublisherPort',
+                    useValue: mockPublisher,
                 },
             ],
         }).compile();
@@ -29,7 +29,7 @@ describe('ProducerService', () => {
     });
 
     describe('createAppointment - Success cases', () => {
-        it('should send appointment to RabbitMQ and return accepted status', async () => {
+        it('should publish appointment and return accepted status', async () => {
             const createAppointmentDto = {
                 idCard: 123456789,
                 fullName: 'John Doe',
@@ -37,39 +37,25 @@ describe('ProducerService', () => {
 
             const result = await service.createAppointment(createAppointmentDto);
 
-            expect(mockClientProxy.emit).toHaveBeenCalledWith('create_appointment', createAppointmentDto);
+            expect(mockPublisher.publishAppointmentCreated).toHaveBeenCalledWith(createAppointmentDto);
             expect(result).toEqual({
                 status: 'accepted',
                 message: 'Appointment assignment in progress',
             });
         });
-
-        it('should send event with exact name "create_appointment"', async () => {
-            const createAppointmentDto = {
-                idCard: 123456789,
-                fullName: 'John Doe',
-            };
-
-            await service.createAppointment(createAppointmentDto);
-
-            const eventName = mockClientProxy.emit.mock.calls[0][0];
-            expect(eventName).toBe('create_appointment');
-        });
     });
 
     describe('createAppointment - Error handling', () => {
-        it('should throw error if RabbitMQ fails', async () => {
-            const rabbitError = new Error('AMQP connection failed');
-            mockClientProxy.emit.mockImplementationOnce(() => {
-                throw rabbitError;
-            });
+        it('should throw error if publishing fails', async () => {
+            const publishError = new Error('Publishing failed');
+            mockPublisher.publishAppointmentCreated.mockRejectedValue(publishError);
 
             const createAppointmentDto = {
                 idCard: 123456789,
                 fullName: 'John Doe',
             };
 
-            await expect(service.createAppointment(createAppointmentDto)).rejects.toThrow('AMQP connection failed');
+            await expect(service.createAppointment(createAppointmentDto)).rejects.toThrow('Publishing failed');
         });
     });
 });

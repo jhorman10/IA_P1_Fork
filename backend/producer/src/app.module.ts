@@ -7,6 +7,7 @@ import { HealthController } from './health.controller';
 import { ProducerService } from './producer.service';
 import { AppointmentModule } from './appointments/appointment.module';
 import { EventsModule } from './events/events.module';
+import { RabbitMQPublisherAdapter } from './infrastructure/adapters/outbound/rabbitmq-publisher.adapter';
 
 @Module({
     imports: [
@@ -15,7 +16,6 @@ import { EventsModule } from './events/events.module';
             envFilePath: '.env',
         }),
         // ⚕️ HUMAN CHECK - Conexión a MongoDB (lectura)
-        // El Producer lee datos para consultar turnos y enviar snapshots por WebSocket
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
@@ -30,8 +30,6 @@ import { EventsModule } from './events/events.module';
                 useFactory: async (configService: ConfigService) => ({
                     transport: Transport.RMQ,
                     options: {
-                        // ⚕️ HUMAN CHECK - Configuración de conexión RabbitMQ
-                        // Cambiar credenciales default y usar variables de entorno seguras
                         urls: [configService.get<string>('RABBITMQ_URL') || 'amqp://guest:guest@localhost:5672'],
                         queue: configService.get<string>('RABBITMQ_QUEUE') || 'appointment_queue',
                         queueOptions: {
@@ -43,10 +41,15 @@ import { EventsModule } from './events/events.module';
             },
         ]),
         AppointmentModule,
-        // ⚕️ HUMAN CHECK - Módulo de Eventos (WebSocket + RabbitMQ listener)
         EventsModule,
     ],
     controllers: [ProducerController, HealthController],
-    providers: [ProducerService],
+    providers: [
+        ProducerService,
+        {
+            provide: 'AppointmentPublisherPort',
+            useClass: RabbitMQPublisherAdapter,
+        },
+    ],
 })
 export class AppModule { }

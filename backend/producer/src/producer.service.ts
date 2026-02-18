@@ -1,6 +1,6 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { AppointmentPublisherPort } from './domain/ports/outbound/appointment-publisher.port';
 
 export interface CreateAppointmentResponse {
     status: 'accepted';
@@ -9,18 +9,13 @@ export interface CreateAppointmentResponse {
 
 @Injectable()
 export class ProducerService {
-    private readonly logger = new Logger(ProducerService.name);
-
-    constructor(@Inject('APPOINTMENTS_SERVICE') private readonly client: ClientProxy) { }
+    constructor(
+        @Inject('AppointmentPublisherPort')
+        private readonly publisher: AppointmentPublisherPort
+    ) { }
 
     async createAppointment(createAppointmentDto: CreateAppointmentDto): Promise<CreateAppointmentResponse> {
-        try {
-            this.client.emit('create_appointment', createAppointmentDto);
-            return { status: 'accepted', message: 'Appointment assignment in progress' };
-        } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : String(error);
-            this.logger.error(`Error publishing message: ${message}`);
-            throw error;
-        }
+        await this.publisher.publishAppointmentCreated(createAppointmentDto);
+        return { status: 'accepted', message: 'Appointment assignment in progress' };
     }
 }
