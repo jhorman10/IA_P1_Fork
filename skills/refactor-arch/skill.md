@@ -1,21 +1,21 @@
 ---
-name: refactor-arch
-description: Refactorización de arquitecturas acopladas hacia Hexagonal Architecture, aplicando principios SOLID y patrones de diseño por categoría.
+name: refactor-arch (Senior Level)
+description: Refactorización avanzada hacia Hexagonal Architecture, aplicando SOLID, patrones de diseño y análisis de trade-offs técnicos.
 trigger: When feedback mentions architecture refactoring, hexagonal architecture, SOLID principles, design patterns, ports and adapters, domain isolation, coupling, decoupling, or dependency inversion.
 scope: backend/producer/src/, backend/consumer/src/, frontend/src/
 author: "IA_P1_Fork Team"
-version: "1.0.0"
+version: "2.0.0 (Senior Grade)"
 license: "MIT"
 autoinvoke: true
 ---
 
-# Skill: Architecture Refactoring
+# Skill: Architecture Refactoring (Senior Grade)
 
 ## Context
-Este proyecto necesita transitar de un **MVP acoplado** a una **arquitectura desacoplada, testeable y mantenible**, siguiendo los lineamientos de la rúbrica de evaluación:
-- **Arquitectura Hexagonal** (Ports & Adapters)
-- **Principios SOLID** (acrónimo completo)
-- **Patrones de Diseño** por categorías (Creacionales, Estructurales, Comportamiento)
+Este proyecto exige una **arquitectura de grado empresarial**: desacoplada, testeable, mantenible y lista para escalar. No se aceptan soluciones "código spaghetti".
+- **Arquitectura Hexagonal**: Puertos y Adaptadores estrictos.
+- **SOLID**: El estándar mínimo aceptable.
+- **Patrones de Diseño**: Uso consciente de patrones creacionales, estructurales y de comportamiento.
 
 ### Arquitectura objetivo
 ```

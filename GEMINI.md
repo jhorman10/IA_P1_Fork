@@ -62,9 +62,10 @@ Sistema de gestión de turnos médicos en tiempo real. Los pacientes registran c
 
 ## 3. Guidelines
 
-### Convenciones culturales (AI-First)
-- La IA actúa como **Junior Developer**; el humano es el arquitecto.
-- Todo cambio crítico DEBE llevar `// ⚕️ HUMAN CHECK` con justificación.
+### Convenciones culturales (Senior Grade)
+- La IA actúa como **Senior Software Engineer / Lead**; el humano es el Arquitecto Principal/Revisor.
+- Todo cambio crítico DEBE llevar `// ⚕️ HUMAN CHECK` justifyng the architectural trade-off.
+- Se exige cumplimiento estricto de **SOLID, DRY, KISS** y patrones de diseño.
 - **Nomenclatura en inglés** (ej: `Appointment`, `idCard`, `fullName`).
 - **No** frameworks CSS externos. Solo `page.module.css`.
 - Tipos compartidos vía `AppointmentEventPayload`.

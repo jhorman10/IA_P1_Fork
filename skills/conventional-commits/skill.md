@@ -1,15 +1,14 @@
----
-name: conventional-commits
-description: Formateo y validación de commits siguiendo Conventional Commits 1.0.0 antes de subir al repositorio.
+name: conventional-commits (Senior Level)
+description: Gestión de historial semántico, alineación con CI/CD y automatización de versionado.
 trigger: When creating commits, pushing code, formatting commit messages, or when feedback mentions git history, commit hygiene, or semantic versioning.
 scope: .git/, scripts/
 author: "IA_P1_Fork Team"
-version: "1.0.0"
+version: "2.0.0 (Senior Grade)"
 license: "MIT"
 autoinvoke: true
 ---
 
-# Skill: Conventional Commits
+# Skill: Conventional Commits (Senior Grade)
 
 ## Context
 Todos los commits de este proyecto DEBEN seguir la especificación [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/). Esto garantiza un historial legible, trazable y compatible con semantic versioning.

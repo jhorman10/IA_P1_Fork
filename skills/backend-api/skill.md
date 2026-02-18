@@ -1,15 +1,15 @@
 ---
-name: backend-api
-description: NestJS backend services, controllers, DTOs, validation, and RabbitMQ messaging patterns.
+name: backend-api (Senior Level)
+description: Desarrollo de microservicios NestJS de alto rendimiento, orquestación de mensajes y lógica de dominio pura.
 trigger: When feedback mentions services, controllers, DTOs, validation, message queues, ack/nack, or business logic in the backend.
 scope: backend/producer/src/, backend/consumer/src/
 author: "IA_P1_Fork Team"
-version: "1.0.0"
+version: "2.0.0 (Senior Grade)"
 license: "MIT"
 autoinvoke: true
 ---
 
-# Skill: Backend API
+# Skill: Backend API (Senior Grade)
 
 ## Context
 This project uses **NestJS** with two microservices:

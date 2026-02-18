@@ -1,15 +1,14 @@
----
-name: frontend-ui
-description: Next.js pages, React components, CSS Modules, and WebSocket integration.
+name: frontend-ui (Senior Level)
+description: Interfaces de alto rendimiento, accesibilidad (A11y), y gestión de estado reactiva y desacoplada.
 trigger: When feedback mentions UI components, WebSocket, CSS, styling, pages, dashboard, or frontend behavior.
 scope: frontend/src/
 author: "IA_P1_Fork Team"
-version: "1.0.0"
+version: "2.0.0 (Senior Grade)"
 license: "MIT"
 autoinvoke: true
 ---
 
-# Skill: Frontend UI
+# Skill: Frontend & UI (Senior Grade)
 
 ## Context
 The frontend is a **Next.js** (App Router) application that:

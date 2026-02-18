@@ -1,15 +1,14 @@
----
-name: skill-creator
-description: Creates new skills and workflows when no existing skill covers a task.
+name: skill-creator (Senior Level)
+description: Diseño y creación de nuevas capacidades de SA, orquestación de workflows y gobernanza de skills.
 trigger: When a task requires a specific capability not covered by existing skills in /skills.
 scope: skills/, .agent/workflows/
 author: "IA_P1_Fork Team"
-version: "1.0.0"
+version: "2.0.0 (Senior Grade)"
 license: "MIT"
 autoinvoke: true
 ---
 
-# Skill: Skill Creator
+# Skill: Skill Creator (Senior Grade)
 
 ## Purpose
 This meta-skill is used to define new skills when the orchestrator encounters feedback that doesn't match any existing skill trigger.

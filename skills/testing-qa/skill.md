@@ -1,15 +1,15 @@
 ---
-name: testing-qa
-description: Unit tests, spec files, mocking strategies, and test coverage for NestJS services.
+name: testing-qa (Senior Level)
+description: Aseguramiento de calidad técnica mediante TDD, mocking de alta precisión y validación de escenarios críticos.
 trigger: When feedback mentions tests, specs, unit testing, mocking, coverage, test failures, or QA validation.
 scope: backend/producer/test/, backend/consumer/src/**/*.spec.ts, backend/producer/src/**/*.spec.ts
 author: "IA_P1_Fork Team"
-version: "1.0.0"
+version: "2.0.0 (Senior Grade)"
 license: "MIT"
 autoinvoke: true
 ---
 
-# Skill: Testing & QA
+# Skill: Testing & QA (Senior Grade)
 
 ## Context
 The project uses **Jest** with **NestJS Testing Module** for unit tests.

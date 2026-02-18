@@ -1,15 +1,14 @@
----
-name: docker-infra
-description: Docker Compose configuration, healthchecks, environment variables, credentials, and deployment hardening.
+name: docker-infra (Senior Level)
+description: Orquestación de infraestructura resiliente, optimización de imágenes y seguridad en despliegue.
 trigger: When feedback mentions Docker, healthchecks, credentials, environment variables, ports, volumes, deployment, or infrastructure security.
 scope: docker-compose.yml, .env, .env.example, backend/producer/Dockerfile, backend/consumer/Dockerfile, frontend/Dockerfile
 author: "IA_P1_Fork Team"
-version: "1.0.0"
+version: "2.0.0 (Senior Grade)"
 license: "MIT"
 autoinvoke: true
 ---
 
-# Skill: Docker & Infrastructure
+# Skill: Docker & Infrastructure (Senior Grade)
 
 ## Context
 The project runs 5 services via Docker Compose:
