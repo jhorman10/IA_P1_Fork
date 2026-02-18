@@ -69,12 +69,14 @@ describe('SchedulerService', () => {
                 office: '3',
             });
 
+            mockAppointmentsService.toEventPayload.mockReturnValue({ id: 'appointment1' });
+
             // Execute
             await service.handleSchedulerTick();
 
             // Verify
             expect(mockAppointmentsService.assignOffice).toHaveBeenCalledWith('appointment1', '3');
-            expect(mockNotificationsClient.emit).toHaveBeenCalledWith('appointment_updated', expect.anything());
+            expect(mockNotificationsClient.emit).toHaveBeenCalledWith('appointment_updated', { id: 'appointment1' });
         });
 
         it('should do nothing if no offices are free', async () => {
