@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 import { render, screen } from '@testing-library/react';
-import Home from './page';
+import Home from '@/app/page';
 
 // Mock del hook personalizado
-jest.mock('../hooks/useAppointmentsWebSocket', () => ({
+jest.mock('@/hooks/useAppointmentsWebSocket', () => ({
     useAppointmentsWebSocket: () => ({
         appointments: [
             { id: '1', fullName: 'Test Patient', status: 'waiting', office: null },

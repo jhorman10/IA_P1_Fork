@@ -8,7 +8,10 @@ import { env } from "@/config/env";
 /**
  * Real-time hook using WebSocket (Socket.IO).
  */
-export function useAppointmentsWebSocket() {
+/**
+ * Real-time hook using WebSocket (Socket.IO).
+ */
+export function useAppointmentsWebSocket(onUpdate?: (appointment: Appointment) => void) {
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [connected, setConnected] = useState(false);
@@ -49,7 +52,7 @@ export function useAppointmentsWebSocket() {
             setConnected(false);
         });
 
-        socket.on("connect_error", (err: Error | any) => {
+        socket.on("connect_error", (err: Error) => {
             console.error("[WS] Connection error:", err?.message || err);
             setError("Connection error with the server");
             setConnected(false);
@@ -64,6 +67,9 @@ export function useAppointmentsWebSocket() {
         socket.on("APPOINTMENT_UPDATED", (payload: { type: string; data: Appointment }) => {
             console.log(`[WS] Appointment updated: ${payload.data.fullName} → ${payload.data.status}`);
             updateAppointment(payload.data);
+            if (onUpdate) {
+                onUpdate(payload.data);
+            }
         });
 
         return () => {
@@ -71,7 +77,7 @@ export function useAppointmentsWebSocket() {
             socket.disconnect();
             socketRef.current = null;
         };
-    }, [updateAppointment]);
+    }, [updateAppointment, onUpdate]);
 
     return { appointments, error, connected };
 }

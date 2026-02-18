@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
+import { Appointment } from "@/domain/Appointment";
 import { audioService } from "@/services/AudioService";
 import styles from "@/styles/page.module.css";
 
@@ -9,11 +10,20 @@ import styles from "@/styles/page.module.css";
  * Dashboard for completed appointments history.
  */
 export default function CompletedHistoryDashboard() {
-  const { appointments, error, connected } = useAppointmentsWebSocket();
-
-  const lastCountRef = useRef<number | null>(null);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [showToast, setShowToast] = useState(false);
+
+  const handleUpdate = useCallback((appointment: Appointment) => {
+    if (appointment.status === "completed") {
+      if (audioService.isEnabled()) {
+        audioService.play();
+      }
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2600);
+    }
+  }, []);
+
+  const { appointments, error, connected } = useAppointmentsWebSocket(handleUpdate);
 
   useEffect(() => {
     audioService.init("/sounds/ding.mp3", 0.6);
@@ -32,25 +42,6 @@ export default function CompletedHistoryDashboard() {
     };
   }, []);
 
-  useEffect(() => {
-    if (lastCountRef.current === null) {
-      const completedCount = appointments.filter(t => t.status === "completed").length;
-      lastCountRef.current = completedCount;
-      return;
-    }
-
-    const completedCount = appointments.filter(t => t.status === "completed").length;
-    if (completedCount > lastCountRef.current) {
-      if (audioService.isEnabled()) {
-        audioService.play();
-      }
-
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2600);
-    }
-
-    lastCountRef.current = completedCount;
-  }, [appointments]);
 
   const completedAppointments = appointments
     .filter(t => t.status === "completed")

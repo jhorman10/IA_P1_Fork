@@ -1,6 +1,7 @@
-import { HttpAppointmentRepository } from './HttpAppointmentRepository';
+import { HttpAppointmentRepository } from '@/repositories/HttpAppointmentRepository';
 import { httpGet, httpPost } from '@/lib/httpClient';
 import { env } from '@/config/env';
+import { AppointmentFactory } from '@test/factories/appointment.factory';
 
 jest.mock('@/lib/httpClient', () => ({
     httpGet: jest.fn(),
@@ -16,7 +17,7 @@ describe('HttpAppointmentRepository', () => {
     });
 
     it('should fetch appointments from correctly built URL', async () => {
-        const mockAppointments = [{ id: '1', fullName: 'Test' }];
+        const mockAppointments = AppointmentFactory.createMany(1, { fullName: 'Test' });
         (httpGet as jest.Mock).mockResolvedValue(mockAppointments);
 
         const result = await repository.getAppointments();
@@ -26,11 +27,11 @@ describe('HttpAppointmentRepository', () => {
     });
 
     it('should create appointment with POST request', async () => {
-        const mockDTO = { idCard: 123, fullName: 'New Patient', priority: 'high' };
+        const mockDTO = AppointmentFactory.create({ fullName: 'New Patient', priority: 'high' });
         const mockResponse = { id: 'new-id', status: 'waiting' };
         (httpPost as jest.Mock).mockResolvedValue(mockResponse);
 
-        const result = await repository.createAppointment(mockDTO as any);
+        const result = await repository.createAppointment(mockDTO);
 
         expect(httpPost).toHaveBeenCalledWith(`${env.API_BASE_URL}/appointments`, mockDTO);
         expect(result).toEqual(mockResponse);

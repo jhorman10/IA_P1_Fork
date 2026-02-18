@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
+import { Appointment } from "@/domain/Appointment";
 import { audioService } from "@/services/AudioService";
 import styles from "@/styles/page.module.css";
 
@@ -9,11 +10,20 @@ import styles from "@/styles/page.module.css";
  * Main Appointments Screen — Real-time via WebSocket
  */
 export default function AppointmentsScreen() {
-  const { appointments, error, connected } = useAppointmentsWebSocket();
-
-  const lastCountRef = useRef<number | null>(null);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [showToast, setShowToast] = useState(false);
+
+  const handleUpdate = useCallback((appointment: Appointment) => {
+    if (appointment.status === "called") {
+      if (audioService.isEnabled()) {
+        audioService.play();
+      }
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2600);
+    }
+  }, []);
+
+  const { appointments, error, connected } = useAppointmentsWebSocket(handleUpdate);
 
   useEffect(() => {
     audioService.init("/sounds/ding.mp3", 0.6);
@@ -32,23 +42,6 @@ export default function AppointmentsScreen() {
     };
   }, []);
 
-  useEffect(() => {
-    if (lastCountRef.current === null) {
-      lastCountRef.current = appointments.length;
-      return;
-    }
-
-    if (appointments.length > lastCountRef.current) {
-      if (audioService.isEnabled()) {
-        audioService.play();
-      }
-
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2600);
-    }
-
-    lastCountRef.current = appointments.length;
-  }, [appointments]);
 
   const calledAppointments = appointments.filter(t => t.status === "called");
   const waitingAppointments = appointments.filter(t => t.status === "waiting");
