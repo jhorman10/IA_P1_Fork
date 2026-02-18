@@ -1,35 +1,37 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ProducerController } from 'src/producer.controller';
-import { ProducerService } from 'src/producer.service';
-import { AppointmentService } from 'src/appointments/appointment.service';
 import * as request from 'supertest';
 
+/**
+ * ⚕️ HUMAN CHECK - Hexagonal Integration Test:
+ * Controller depends on inbound port tokens, not concrete services.
+ */
 describe('ProducerController (Integration Tests)', () => {
     let app: INestApplication;
-    let producerService: jest.Mocked<ProducerService>;
-    let appointmentService: jest.Mocked<AppointmentService>;
+    let createAppointmentUseCase: any;
+    let queryAppointmentsUseCase: any;
 
     beforeEach(async () => {
-        const mockProducerService = {
-            createAppointment: jest.fn(),
+        const mockCreateAppointmentUseCase = {
+            execute: jest.fn(),
         };
 
-        const mockAppointmentService = {
-            findByIdCard: jest.fn(),
+        const mockQueryAppointmentsUseCase = {
             findAll: jest.fn(),
+            findByIdCard: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({
             controllers: [ProducerController],
             providers: [
                 {
-                    provide: ProducerService,
-                    useValue: mockProducerService,
+                    provide: 'CreateAppointmentUseCase',
+                    useValue: mockCreateAppointmentUseCase,
                 },
                 {
-                    provide: AppointmentService,
-                    useValue: mockAppointmentService,
+                    provide: 'QueryAppointmentsUseCase',
+                    useValue: mockQueryAppointmentsUseCase,
                 },
             ],
         }).compile();
@@ -43,8 +45,8 @@ describe('ProducerController (Integration Tests)', () => {
             }),
         );
 
-        producerService = module.get(ProducerService) as jest.Mocked<ProducerService>;
-        appointmentService = module.get(AppointmentService) as jest.Mocked<AppointmentService>;
+        createAppointmentUseCase = module.get('CreateAppointmentUseCase');
+        queryAppointmentsUseCase = module.get('QueryAppointmentsUseCase');
 
         await app.init();
     });
@@ -61,7 +63,7 @@ describe('ProducerController (Integration Tests)', () => {
                 fullName: 'John Doe',
             };
 
-            producerService.createAppointment.mockResolvedValue({
+            createAppointmentUseCase.execute.mockResolvedValue({
                 status: 'accepted',
                 message: 'Appointment assignment in progress',
             });
@@ -75,7 +77,7 @@ describe('ProducerController (Integration Tests)', () => {
                 status: 'accepted',
                 message: 'Appointment assignment in progress',
             });
-            expect(producerService.createAppointment).toHaveBeenCalledWith(createAppointmentDto);
+            expect(createAppointmentUseCase.execute).toHaveBeenCalledWith(createAppointmentDto);
         });
 
         it('should return 400 if idCard is missing', async () => {
@@ -127,27 +129,54 @@ describe('ProducerController (Integration Tests)', () => {
         });
     });
 
-    describe('GET /appointments/:idCard - Query appointments', () => {
-        it('should return appointments for a valid ID card', async () => {
-            const idCard = 123456789;
+    describe('GET /appointments - Query all appointments', () => {
+        it('should return all appointments from QueryAppointmentsUseCase', async () => {
             const expectedAppointments = [
                 {
+                    id: 'abc-123',
                     idCard: 123456789,
                     fullName: 'John Doe',
                     office: '3',
                     status: 'called',
-                    createdAt: '2026-02-11T01:55:42.679Z',
+                    priority: 'medium',
+                    timestamp: Date.now(),
                 },
             ];
 
-            appointmentService.findByIdCard.mockResolvedValue(expectedAppointments as any);
+            queryAppointmentsUseCase.findAll.mockResolvedValue(expectedAppointments);
+
+            const response = await request(app.getHttpServer())
+                .get('/appointments')
+                .expect(200);
+
+            expect(response.body).toEqual(expectedAppointments);
+            expect(queryAppointmentsUseCase.findAll).toHaveBeenCalled();
+        });
+    });
+
+    describe('GET /appointments/:idCard - Query by ID card', () => {
+        it('should return appointments for a valid ID card', async () => {
+            const idCard = 123456789;
+            const expectedAppointments = [
+                {
+                    id: 'abc-123',
+                    idCard: 123456789,
+                    fullName: 'John Doe',
+                    office: '3',
+                    status: 'called',
+                    priority: 'medium',
+                    timestamp: Date.now(),
+                },
+            ];
+
+            queryAppointmentsUseCase.findByIdCard.mockResolvedValue(expectedAppointments);
 
             const response = await request(app.getHttpServer())
                 .get(`/appointments/${idCard}`)
                 .expect(200);
 
             expect(response.body).toEqual(expectedAppointments);
-            expect(appointmentService.findByIdCard).toHaveBeenCalledWith(idCard);
+            expect(queryAppointmentsUseCase.findByIdCard).toHaveBeenCalledWith(idCard);
         });
 
         it('should return 400 if idCard is not a valid number', async () => {

@@ -1,9 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProducerService } from 'src/producer.service';
+import { CreateAppointmentUseCaseImpl } from 'src/application/use-cases/create-appointment.use-case.impl';
 import { AppointmentPublisherPort } from 'src/domain/ports/outbound/appointment-publisher.port';
 
-describe('ProducerService', () => {
-    let service: ProducerService;
+/**
+ * ⚕️ HUMAN CHECK - Hexagonal Use Case Test:
+ * Tests the use-case implementation, mocking the outbound port.
+ */
+describe('CreateAppointmentUseCaseImpl', () => {
+    let useCase: CreateAppointmentUseCaseImpl;
     let mockPublisher: jest.Mocked<AppointmentPublisherPort>;
 
     beforeEach(async () => {
@@ -13,7 +17,7 @@ describe('ProducerService', () => {
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
-                ProducerService,
+                CreateAppointmentUseCaseImpl,
                 {
                     provide: 'AppointmentPublisherPort',
                     useValue: mockPublisher,
@@ -21,21 +25,21 @@ describe('ProducerService', () => {
             ],
         }).compile();
 
-        service = module.get<ProducerService>(ProducerService);
+        useCase = module.get<CreateAppointmentUseCaseImpl>(CreateAppointmentUseCaseImpl);
     });
 
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    describe('createAppointment - Success cases', () => {
+    describe('execute - Success cases', () => {
         it('should publish appointment and return accepted status', async () => {
             const createAppointmentDto = {
                 idCard: 123456789,
                 fullName: 'John Doe',
             };
 
-            const result = await service.createAppointment(createAppointmentDto);
+            const result = await useCase.execute(createAppointmentDto);
 
             expect(mockPublisher.publishAppointmentCreated).toHaveBeenCalledWith(createAppointmentDto);
             expect(result).toEqual({
@@ -45,7 +49,7 @@ describe('ProducerService', () => {
         });
     });
 
-    describe('createAppointment - Error handling', () => {
+    describe('execute - Error handling', () => {
         it('should throw error if publishing fails', async () => {
             const publishError = new Error('Publishing failed');
             mockPublisher.publishAppointmentCreated.mockRejectedValue(publishError);
@@ -55,7 +59,7 @@ describe('ProducerService', () => {
                 fullName: 'John Doe',
             };
 
-            await expect(service.createAppointment(createAppointmentDto)).rejects.toThrow('Publishing failed');
+            await expect(useCase.execute(createAppointmentDto)).rejects.toThrow('Publishing failed');
         });
     });
 });

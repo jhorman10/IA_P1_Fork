@@ -4,7 +4,7 @@ import { EventsController } from './events.controller';
 import { AppointmentModule } from '../appointments/appointment.module';
 
 // ⚕️ HUMAN CHECK - Módulo de Eventos
-// Conecta el WebSocket Gateway con el controlador de eventos RabbitMQ
+// Imports AppointmentModule which exports 'QueryAppointmentsUseCase' port
 @Module({
     imports: [AppointmentModule],
     controllers: [EventsController],

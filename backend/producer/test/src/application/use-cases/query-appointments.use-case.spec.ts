@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppointmentService } from 'src/appointments/appointment.service';
+import { QueryAppointmentsUseCaseImpl } from 'src/application/use-cases/query-appointments.use-case.impl';
 import { AppointmentReadRepository } from 'src/domain/ports/outbound/appointment-read.repository';
 import { AppointmentEventPayload } from 'src/types/appointment-event';
+import { NotFoundException } from '@nestjs/common';
 
 /**
- * ⚕️ HUMAN CHECK - DIP Verification:
- * AppointmentService facade depends only on AppointmentReadRepository port.
- * No Mongoose imports should exist in this test.
+ * ⚕️ HUMAN CHECK - Hexagonal Use Case Test:
+ * Tests the use-case implementation, mocking the outbound port.
  */
-describe('AppointmentService (Producer Facade)', () => {
-    let service: AppointmentService;
+describe('QueryAppointmentsUseCaseImpl', () => {
+    let useCase: QueryAppointmentsUseCaseImpl;
     let mockRepo: jest.Mocked<AppointmentReadRepository>;
 
     const mockPayloads: AppointmentEventPayload[] = [
@@ -41,7 +41,7 @@ describe('AppointmentService (Producer Facade)', () => {
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
-                AppointmentService,
+                QueryAppointmentsUseCaseImpl,
                 {
                     provide: 'AppointmentReadRepository',
                     useValue: mockRepo,
@@ -49,7 +49,7 @@ describe('AppointmentService (Producer Facade)', () => {
             ],
         }).compile();
 
-        service = module.get<AppointmentService>(AppointmentService);
+        useCase = module.get<QueryAppointmentsUseCaseImpl>(QueryAppointmentsUseCaseImpl);
     });
 
     afterEach(() => {
@@ -60,7 +60,7 @@ describe('AppointmentService (Producer Facade)', () => {
         it('should delegate to AppointmentReadRepository.findAll()', async () => {
             mockRepo.findAll.mockResolvedValue(mockPayloads);
 
-            const result = await service.findAll();
+            const result = await useCase.findAll();
 
             expect(mockRepo.findAll).toHaveBeenCalledTimes(1);
             expect(result).toEqual(mockPayloads);
@@ -70,7 +70,7 @@ describe('AppointmentService (Producer Facade)', () => {
         it('should return empty array when no appointments exist', async () => {
             mockRepo.findAll.mockResolvedValue([]);
 
-            const result = await service.findAll();
+            const result = await useCase.findAll();
 
             expect(result).toEqual([]);
         });
@@ -81,19 +81,18 @@ describe('AppointmentService (Producer Facade)', () => {
             const idCard = 12345678;
             mockRepo.findByIdCard.mockResolvedValue([mockPayloads[0]]);
 
-            const result = await service.findByIdCard(idCard);
+            const result = await useCase.findByIdCard(idCard);
 
             expect(mockRepo.findByIdCard).toHaveBeenCalledWith(idCard);
             expect(result).toEqual([mockPayloads[0]]);
         });
 
         it('should propagate NotFoundException from repository', async () => {
-            const { NotFoundException } = require('@nestjs/common');
             mockRepo.findByIdCard.mockRejectedValue(
                 new NotFoundException('No appointments found for ID card 999'),
             );
 
-            await expect(service.findByIdCard(999)).rejects.toThrow(NotFoundException);
+            await expect(useCase.findByIdCard(999)).rejects.toThrow(NotFoundException);
         });
     });
 });

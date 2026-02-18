@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { Inject, Logger, UseGuards } from '@nestjs/common';
 import {
     WebSocketGateway,
     WebSocketServer,
@@ -6,12 +6,12 @@ import {
     OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { AppointmentService } from '../appointments/appointment.service';
+import { QueryAppointmentsUseCase } from '../domain/ports/inbound/query-appointments.use-case';
 import { AppointmentEventPayload } from '../types/appointment-event';
 import { WsAuthGuard } from '../common/guards/ws-auth.guard';
 
 // 🛡️ HUMAN CHECK - WebSocket Gateway Hardened
-// ⚕️ HUMAN CHECK - DIP: Depends on AppointmentService facade (which depends on port)
+// ⚕️ HUMAN CHECK - Hexagonal: Depends on QueryAppointmentsUseCase inbound port (DIP)
 @UseGuards(WsAuthGuard)
 @WebSocketGateway({
     namespace: '/ws/appointments',
@@ -26,13 +26,16 @@ export class AppointmentsGateway implements OnGatewayConnection, OnGatewayDiscon
     @WebSocketServer()
     server: Server;
 
-    constructor(private readonly appointmentService: AppointmentService) { }
+    constructor(
+        @Inject('QueryAppointmentsUseCase')
+        private readonly queryAppointmentsUseCase: QueryAppointmentsUseCase,
+    ) { }
 
     async handleConnection(client: Socket): Promise<void> {
         this.logger.log(`Client connected: ${client.id}`);
 
         try {
-            const snapshot = await this.appointmentService.findAll();
+            const snapshot = await this.queryAppointmentsUseCase.findAll();
 
             client.emit('APPOINTMENTS_SNAPSHOT', {
                 type: 'APPOINTMENTS_SNAPSHOT',

@@ -1,20 +1,22 @@
-import { Body, Controller, Get, HttpCode, Param, Post, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Inject, Param, Post, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
-import { ProducerService, CreateAppointmentResponse } from './producer.service';
-import { AppointmentService } from './appointments/appointment.service';
+import { CreateAppointmentUseCase, CreateAppointmentResponse } from './domain/ports/inbound/create-appointment.use-case';
+import { QueryAppointmentsUseCase } from './domain/ports/inbound/query-appointments.use-case';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { AppointmentEventPayload } from './types/appointment-event';
 
-// ⚕️ HUMAN CHECK - SRP: Single responsibility per method.
-// Commands (POST) delegate to ProducerService (publish).
-// Queries (GET) delegate to AppointmentService (read facade).
+// ⚕️ HUMAN CHECK - Hexagonal: Controller depends ONLY on inbound ports (DIP).
+// Commands (POST) → CreateAppointmentUseCase
+// Queries (GET) → QueryAppointmentsUseCase
 
 @ApiTags('Appointments')
 @Controller('appointments')
 export class ProducerController {
     constructor(
-        private readonly producerService: ProducerService,
-        private readonly appointmentService: AppointmentService,
+        @Inject('CreateAppointmentUseCase')
+        private readonly createAppointmentUseCase: CreateAppointmentUseCase,
+        @Inject('QueryAppointmentsUseCase')
+        private readonly queryAppointmentsUseCase: QueryAppointmentsUseCase,
     ) { }
 
     @Post()
@@ -43,7 +45,7 @@ export class ProducerController {
         description: 'Invalid data — missing fields, incorrect types, or forbidden properties',
     })
     async createAppointment(@Body() createAppointmentDto: CreateAppointmentDto): Promise<CreateAppointmentResponse> {
-        return this.producerService.createAppointment(createAppointmentDto);
+        return this.createAppointmentUseCase.execute(createAppointmentDto);
     }
 
     @Get()
@@ -73,7 +75,7 @@ export class ProducerController {
         },
     })
     async getAllAppointments(): Promise<AppointmentEventPayload[]> {
-        return this.appointmentService.findAll();
+        return this.queryAppointmentsUseCase.findAll();
     }
 
     @Get(':idCard')
@@ -97,6 +99,6 @@ export class ProducerController {
         description: 'No appointments found for the provided ID card',
     })
     async getAppointmentsByIdCard(@Param('idCard', ParseIntPipe) idCard: number): Promise<AppointmentEventPayload[]> {
-        return this.appointmentService.findByIdCard(idCard);
+        return this.queryAppointmentsUseCase.findByIdCard(idCard);
     }
 }

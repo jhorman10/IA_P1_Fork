@@ -6,10 +6,10 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProducerController } from './producer.controller';
 import { HealthController } from './health.controller';
-import { ProducerService } from './producer.service';
 import { AppointmentModule } from './appointments/appointment.module';
 import { EventsModule } from './events/events.module';
 import { RabbitMQPublisherAdapter } from './infrastructure/adapters/outbound/rabbitmq-publisher.adapter';
+import { CreateAppointmentUseCaseImpl } from './application/use-cases/create-appointment.use-case.impl';
 
 @Module({
     imports: [
@@ -56,7 +56,12 @@ import { RabbitMQPublisherAdapter } from './infrastructure/adapters/outbound/rab
     ],
     controllers: [ProducerController, HealthController],
     providers: [
-        ProducerService,
+        // ⚕️ HUMAN CHECK - Hexagonal: Bind inbound port → use-case implementation
+        {
+            provide: 'CreateAppointmentUseCase',
+            useClass: CreateAppointmentUseCaseImpl,
+        },
+        // Outbound port → infrastructure adapter
         {
             provide: 'AppointmentPublisherPort',
             useClass: RabbitMQPublisherAdapter,
