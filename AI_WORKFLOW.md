@@ -136,6 +136,18 @@ Este proyecto utiliza una metodología **AI-First** donde la IA actúa como un *
 
 > **🛡️ Decisión Humana:** El humano identificó redundancia en archivos orquestadores (agent.md, GEMINI.md, .cursorrules, CLAUDE.md) y aprobó la consolidación a un solo `GEMINI.md`.
 
+### Fase 10 — Consistencia y Rendimiento (18/Feb/2026)
+
+| Commit | Fecha | Tipo | Descripción | Actor |
+|--------|-------|------|-------------|-------|
+| `04aecf3` | 18/Feb | feat | Catálogo completo de arquitecturas y 15 patrones de diseño | 🤖 Antigravity |
+| `48611bf` | 18/Feb | feat | Directrices de trazabilidad y gate de aprobación humana | 🤖 Antigravity |
+| `877d542` | 18/Feb | feat | Skill `conventional-commits` para estandarización de historial | 🤖 Antigravity |
+| `5e3bca2` | 18/Feb | fix | Resolver functional issues, configurar Jest y crear 5 suites en Consumer | 🤖 Antigravity |
+| `9818393` | 18/Feb | feat | **Idempotencia (A-01)** y **Índices MongoDB (A-02)** | 🤖 Antigravity |
+
+> **🛡️ Decisión Humana:** El humano aprobó la restricción de idempotencia donde un paciente no puede tener más de un turno activo (`waiting/called`) simultáneamente para evitar duplicados.
+
 ---
 
 ## 3. Anti-patrones Detectados por la IA (Lo que la IA Hizo Mal)
@@ -223,13 +235,13 @@ Los siguientes archivos contienen marcadores de intervención humana:
 
 | Métrica | Valor |
 |---------|-------|
-| Total de commits | 60 |
+| Total de commits | 65 |
 | Pull Requests | 16 |
 | Días de desarrollo | 10 (09/Feb - 18/Feb 2026) |
-| Commits generados por IA | ~35 (58%) |
-| Commits con intervención humana | ~25 (42%) |
-| Decisiones humanas críticas documentadas | 9 |
+| Commits generados por IA | ~40 (61%) |
+| Commits con intervención humana | ~25 (39%) |
+| Decisiones humanas críticas documentadas | 10 |
 | Anti-patrones detectados y corregidos | 8 |
-| Skills especializadas | 5 |
-| Test cases unitarios | 36+ |
-| Archivos con `// ⚕️ HUMAN CHECK` | 5+ |
+| Skills especializadas | 7 |
+| Test cases unitarios | 49+ (16 producer + 13 consumer + 20+ misc) |
+| Archivos con `// ⚕️ HUMAN CHECK` | 10+ |
