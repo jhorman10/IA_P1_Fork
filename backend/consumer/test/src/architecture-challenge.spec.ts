@@ -1,6 +1,8 @@
 import { AssignAvailableOfficesUseCaseImpl } from '../../src/application/use-cases/assign-available-offices.use-case.impl';
 import { Appointment } from '../../src/domain/entities/appointment.entity';
 import { IdCard } from '../../src/domain/value-objects/id-card.value-object';
+import { FullName } from '../../src/domain/value-objects/full-name.value-object';
+import { Priority } from '../../src/domain/value-objects/priority.value-object';
 
 /**
  * ⚕️ HUMAN CHECK - El Desafío del Mock Imposible
@@ -15,8 +17,8 @@ describe('AssignAppointmentsUseCase (Pure Logic - The Impossible Mock Challenge)
             findExpiredCalled: jest.fn().mockResolvedValue([]),
             getOccupiedOfficeIds: jest.fn().mockResolvedValue(['1']),
             findWaiting: jest.fn().mockResolvedValue([
-                new Appointment('A', new IdCard(123), 'John', 'high', 'waiting'),
-                new Appointment('B', new IdCard(456), 'Jane', 'medium', 'waiting'),
+                new Appointment('A', new IdCard(123), new FullName('John Doe'), new Priority('high'), 'waiting'),
+                new Appointment('B', new IdCard(456), new FullName('Jane Doe'), new Priority('medium'), 'waiting'),
             ]),
             save: jest.fn(),
         };

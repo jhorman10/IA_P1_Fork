@@ -1,63 +1,55 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
 import { AppointmentService } from 'src/appointments/appointment.service';
-import { Appointment } from 'src/schemas/appointment.schema';
+import { Appointment } from 'src/domain/entities/appointment.entity';
+import { IdCard } from 'src/domain/value-objects/id-card.value-object';
+import { FullName } from 'src/domain/value-objects/full-name.value-object';
+import { Priority } from 'src/domain/value-objects/priority.value-object';
 
 describe('AppointmentService', () => {
     let service: AppointmentService;
-    let model: any;
+    let mockRegisterUseCase: any;
+    let mockRepo: any;
+    let mockLogger: any;
 
-    const mockAppointment = {
-        idCard: 12345678,
-        fullName: 'John Doe',
-        priority: 'medium',
-        status: 'waiting',
-        timestamp: Date.now(),
-        save: jest.fn().mockResolvedValue({
-            idCard: 12345678,
-            fullName: 'John Doe',
-            _id: 'mockId',
-        }),
-    };
-
-    const mockAppointmentModel = function (dto: any) {
-        return {
-            ...dto,
-            save: jest.fn().mockResolvedValue({
-                ...dto,
-                _id: 'mockId',
-            }),
-        };
-    };
-
-    mockAppointmentModel.find = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue([]),
-        select: jest.fn().mockReturnThis(),
-        lean: jest.fn().mockReturnThis(),
-    });
-    mockAppointmentModel.findOne = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(null),
-    });
-    mockAppointmentModel.findOneAndUpdate = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(null),
-    });
-    mockAppointmentModel.updateMany = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue({ modifiedCount: 1 }),
-    });
+    const dummyAppointment = new Appointment(
+        'mockId',
+        new IdCard(12345678),
+        new FullName('John Doe'),
+        new Priority('medium'),
+        'waiting'
+    );
 
     beforeEach(async () => {
+        mockRegisterUseCase = {
+            execute: jest.fn().mockResolvedValue(dummyAppointment),
+        };
+        mockRepo = {
+            findWaiting: jest.fn().mockResolvedValue([]),
+            getOccupiedOfficeIds: jest.fn().mockResolvedValue([]),
+        };
+        mockLogger = {
+            log: jest.fn(),
+        };
+
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 AppointmentService,
                 {
-                    provide: getModelToken(Appointment.name),
-                    useValue: mockAppointmentModel,
+                    provide: 'RegisterAppointmentUseCase',
+                    useValue: mockRegisterUseCase,
+                },
+                {
+                    provide: 'AppointmentRepository',
+                    useValue: mockRepo,
+                },
+                {
+                    provide: 'LoggerPort',
+                    useValue: mockLogger,
                 },
             ],
         }).compile();
 
         service = module.get<AppointmentService>(AppointmentService);
-        model = module.get(getModelToken(Appointment.name));
     });
 
     it('should be defined', () => {
@@ -65,47 +57,18 @@ describe('AppointmentService', () => {
     });
 
     describe('createAppointment', () => {
-        it('should create an appointment if none exists', async () => {
-            const dto = { idCard: 12345678, fullName: 'John Doe', priority: 'high' as any };
-            model.findOne.mockReturnValue({
-                exec: jest.fn().mockResolvedValue(null),
-            });
-
-            const result = await service.createAppointment(dto);
-            expect(result).toBeDefined();
+        it('should delegate to RegisterAppointmentUseCase', async () => {
+            const dto = { idCard: 12345678, fullName: 'John Doe' };
+            const result = await service.createAppointment(dto as any);
+            expect(mockRegisterUseCase.execute).toHaveBeenCalled();
             expect(result.idCard).toBe(12345678);
-            expect(model.findOneAndUpdate).not.toHaveBeenCalled(); // No idempotency hit
-        });
-
-        it('should return existing appointment if patient already has one active (idempotency)', async () => {
-            const dto = { idCard: 12345678, fullName: 'John Doe', priority: 'high' as any };
-            const existing = { _id: 'activeId', idCard: 12345678, status: 'waiting' };
-
-            model.findOne.mockReturnValue({
-                exec: jest.fn().mockResolvedValue(existing),
-            });
-
-            const result = await service.createAppointment(dto);
-            expect(result._id).toBe('activeId');
-            expect(model.prototype.save).not.toBeDefined(); // Manual check for "new model()" not called is hard here, but findOne hit
         });
     });
 
     describe('findWaitingAppointments', () => {
-        it('should return waiting appointments sorted by priority', async () => {
-            const appointments = [
-                { priority: 'low', timestamp: 100, status: 'waiting' },
-                { priority: 'high', timestamp: 50, status: 'waiting' },
-                { priority: 'medium', timestamp: 75, status: 'waiting' },
-            ];
-            model.find.mockReturnValue({
-                exec: jest.fn().mockResolvedValue(appointments),
-            });
-
-            const result = await service.findWaitingAppointments();
-            expect(result[0].priority).toBe('high');
-            expect(result[1].priority).toBe('medium');
-            expect(result[2].priority).toBe('low');
+        it('should delegate to AppointmentRepository', async () => {
+            await service.findWaitingAppointments();
+            expect(mockRepo.findWaiting).toHaveBeenCalled();
         });
     });
 });

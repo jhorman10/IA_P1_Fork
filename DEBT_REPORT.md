@@ -67,6 +67,7 @@
 | H-11 | Phase 11 | Architectural Excellence (Value Objects & Factories) | `refactor-arch`, `testing-qa` | ✅ |
 | H-12 | Phase 12 | Repository Decoupling & Specification Pattern | `refactor-arch` | ✅ |
 | H-13 | Phase 13 | Domain Event Architecture (Decoupled Side Effects) | `refactor-arch`, `microservices-patterns` | ✅ |
+| H-14 | Phase 14 | Total Primitive Obsession Purge (VO Hardening) | `refactor-arch`, `clean-code` | ✅ |
 
 ---
 
@@ -74,7 +75,7 @@
 
 | Status | Count |
 |--------|-------|
-| ✅ Resuelto | 35 |
+| ✅ Resuelto | 36 |
 | ⬜ Pendiente | 0 |
 | 🔄 En progreso | 0 |
 | ⏸️ Bloqueado | 0 |

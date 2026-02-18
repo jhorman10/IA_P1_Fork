@@ -1,153 +1,52 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Appointment, AppointmentDocument } from '../schemas/appointment.schema';
+import { Injectable, Inject, Logger } from '@nestjs/common';
+import { RegisterAppointmentUseCase } from '../domain/ports/inbound/register-appointment.use-case';
+import { AppointmentRepository } from '../domain/ports/outbound/appointment.repository';
+import { AppointmentMapper } from '../infrastructure/persistence/appointment.mapper';
+import { Appointment } from '../domain/entities/appointment.entity';
 import { CreateAppointmentDto } from '../dto/create-appointment.dto';
-import { AppointmentEventPayload, AppointmentPriority } from '../types/appointment-event';
+import { LoggerPort } from '../domain/ports/outbound/logger.port';
 
-// ⚕️ HUMAN CHECK - Priority order for the scheduler
-const PRIORITY_ORDER: Record<AppointmentPriority, number> = {
-    high: 0,
-    medium: 1,
-    low: 2,
-};
+// Pattern: Application Service — Domain facade
+// ⚕️ HUMAN CHECK - SRP: Orchestrates domain via Use Cases
+// DIP: Depends on ports, not infrastructure
 
 @Injectable()
 export class AppointmentService {
-    private readonly logger = new Logger(AppointmentService.name);
-
-    constructor(@InjectModel(Appointment.name) private readonly appointmentModel: Model<AppointmentDocument>) { }
+    constructor(
+        @Inject('RegisterAppointmentUseCase')
+        private readonly registerAppointmentUseCase: RegisterAppointmentUseCase,
+        @Inject('AppointmentRepository')
+        private readonly repository: AppointmentRepository,
+        @Inject('LoggerPort')
+        private readonly logger: LoggerPort,
+    ) { }
 
     /**
-     * Creates an appointment in 'waiting' state.
-     * ⚕️ HUMAN CHECK - Idempotency (A-01): 
-     * Patient cannot have more than one active appointment (waiting or called).
+     * Facade: Delegates to Registration Use Case
      */
-    async createAppointment(data: CreateAppointmentDto): Promise<AppointmentDocument> {
-        // Step 1: Check for existing active appointment
-        const existing = await this.appointmentModel.findOne({
-            idCard: data.idCard,
-            status: { $in: ['waiting', 'called'] }
-        }).exec();
-
-        if (existing) {
-            this.logger.warn(`Duplicate appointment request ignored for patient ${data.idCard} — Active ID: ${existing._id}`);
-            return existing;
-        }
-
-        // Step 2: Create normal appointment if none exists
-        const appointment = new this.appointmentModel({
-            idCard: data.idCard,
-            fullName: data.fullName,
-            office: null,
-            status: 'waiting',
-            priority: data.priority ?? 'medium',
-            timestamp: Date.now(),
+    async createAppointment(data: CreateAppointmentDto): Promise<any> {
+        this.logger.log(`Service: Orchestrating registration for patient ${data.idCard}`, 'AppointmentService');
+        const appointment = await this.registerAppointmentUseCase.execute({
+            idCard: Number(data.idCard),
+            fullName: data.fullName
         });
 
-        const saved = await appointment.save();
-        this.logger.log(`Appointment created for patient ${saved.idCard} — ID: ${saved._id}`);
-        return saved;
+        // Return as plain object for controller compatibility
+        return AppointmentMapper.toPersistence(appointment);
     }
 
     /**
-     * Find appointments in waiting state, sorted by priority and timestamp.
+     * Facade: Delegates to Repository Port
      */
-    async findWaitingAppointments(): Promise<AppointmentDocument[]> {
-        const appointments = await this.appointmentModel
-            .find({ status: 'waiting' })
-            .exec();
-
-        appointments.sort((a, b) => {
-            const pA = PRIORITY_ORDER[a.priority] ?? PRIORITY_ORDER.medium;
-            const pB = PRIORITY_ORDER[b.priority] ?? PRIORITY_ORDER.medium;
-            if (pA !== pB) return pA - pB;
-            return a.timestamp - b.timestamp;
-        });
-
-        return appointments;
+    async findWaitingAppointments(): Promise<any[]> {
+        const appointments = await this.repository.findWaiting();
+        return appointments.map(a => AppointmentMapper.toPersistence(a));
     }
 
     /**
-     * IDs of currently occupied offices.
+     * Facade: Delegates to Repository Port
      */
     async getOccupiedOffices(): Promise<string[]> {
-        const appointments = await this.appointmentModel
-            .find({ status: 'called', office: { $ne: null } })
-            .select('office')
-            .lean()
-            .exec();
-
-        return appointments
-            .map(t => t.office)
-            .filter((c): c is string => c !== null && c !== undefined);
-    }
-
-    /**
-     * Atomic assignment of an office to an appointment.
-     */
-    async assignOffice(appointmentId: string, office: string): Promise<AppointmentDocument | null> {
-        const randomDurationSeconds = Math.floor(Math.random() * (15 - 8 + 1)) + 8;
-        const completedAt = Date.now() + randomDurationSeconds * 1000;
-
-        const appointment = await this.appointmentModel.findOneAndUpdate(
-            { _id: appointmentId, status: 'waiting' },
-            {
-                office,
-                status: 'called',
-                completedAt,
-            },
-            { new: true },
-        ).exec();
-
-        if (appointment) {
-            this.logger.log(`Appointment ${appointmentId} assigned to office ${office} (duration: ${randomDurationSeconds}s)`);
-        }
-
-        return appointment;
-    }
-
-    /**
-     * Transition appointments from 'called' to 'completed' if time exposure has expired.
-     */
-    async completeCalledAppointments(): Promise<AppointmentDocument[]> {
-        const now = Date.now();
-        const expired = await this.appointmentModel.find({
-            status: 'called',
-            completedAt: { $lte: now }
-        }).exec();
-
-        if (expired.length === 0) return [];
-
-        await this.appointmentModel.updateMany(
-            {
-                status: 'called',
-                completedAt: { $lte: now }
-            },
-            { status: 'completed' },
-        ).exec();
-
-        this.logger.log(`Completed ${expired.length} appointments whose attention time expired.`);
-
-        return expired.map(t => {
-            t.status = 'completed';
-            return t;
-        });
-    }
-
-    /**
-     * Maps an AppointmentDocument to AppointmentEventPayload for events.
-     */
-    toEventPayload(appointment: AppointmentDocument): AppointmentEventPayload {
-        return {
-            id: String(appointment._id),
-            fullName: appointment.fullName,
-            idCard: appointment.idCard,
-            office: appointment.office,
-            status: appointment.status,
-            priority: appointment.priority,
-            timestamp: appointment.timestamp,
-            completedAt: appointment.completedAt ?? undefined,
-        };
+        return this.repository.getOccupiedOfficeIds();
     }
 }

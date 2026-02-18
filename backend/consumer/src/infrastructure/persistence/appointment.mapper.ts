@@ -1,5 +1,7 @@
-import { Appointment, AppointmentPriority, AppointmentStatus } from '../../domain/entities/appointment.entity';
+import { Appointment } from '../../domain/entities/appointment.entity';
 import { IdCard } from '../../domain/value-objects/id-card.value-object';
+import { FullName } from '../../domain/value-objects/full-name.value-object';
+import { Priority } from '../../domain/value-objects/priority.value-object';
 import { AppointmentDocument } from '../../schemas/appointment.schema';
 
 /**
@@ -14,9 +16,9 @@ export class AppointmentMapper {
         return new Appointment(
             String(doc._id),
             new IdCard(doc.idCard),
-            doc.fullName,
-            doc.priority as AppointmentPriority,
-            doc.status as AppointmentStatus,
+            new FullName(doc.fullName),
+            new Priority(doc.priority),
+            doc.status as any,
             doc.office,
             doc.timestamp,
             doc.completedAt,
@@ -29,8 +31,8 @@ export class AppointmentMapper {
     public static toPersistence(entity: Appointment): any {
         return {
             idCard: entity.idCard.toValue(),
-            fullName: entity.fullName,
-            priority: entity.priority,
+            fullName: entity.fullName.toValue(),
+            priority: entity.priority.toValue(),
             status: entity.status,
             office: entity.office,
             completedAt: entity.completedAt,

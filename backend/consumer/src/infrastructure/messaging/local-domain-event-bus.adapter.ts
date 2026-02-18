@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DomainEventBus } from '../../domain/ports/outbound/domain-event-bus.port';
 import { DomainEvent } from '../../domain/events/domain-event.base';
+import { AppointmentEventsHandler } from '../../application/event-handlers/appointment-events.handler';
+import { AppointmentRegisteredEvent } from '../../domain/events/appointment-registered.event';
+import { AppointmentAssignedEvent } from '../../domain/events/appointment-assigned.event';
 
 /**
  * Adapter: Infrastructure — Local implementation of the DomainEventBus.
@@ -9,7 +12,8 @@ import { DomainEvent } from '../../domain/events/domain-event.base';
 @Injectable()
 export class LocalDomainEventBusAdapter implements DomainEventBus {
     private readonly logger = new Logger(LocalDomainEventBusAdapter.name);
-    private readonly handers: Array<(event: DomainEvent) => Promise<void>> = [];
+
+    constructor(private readonly handlers: AppointmentEventsHandler) { }
 
     async publish(events: DomainEvent | DomainEvent[]): Promise<void> {
         const eventArray = Array.isArray(events) ? events : [events];
@@ -17,16 +21,18 @@ export class LocalDomainEventBusAdapter implements DomainEventBus {
         for (const event of eventArray) {
             this.logger.debug(`Publishing domain event: ${event.constructor.name} [ID: ${event.eventId}]`);
             // In a real system, this would use an Event Store or a Message Broker.
-            // For now, we simulate local dispatch.
-            this.dispatch(event);
+            await this.dispatch(event);
         }
     }
 
     /**
-     * Internal dispatch mechanism (simple observer pattern).
+     * Internal dispatch mechanism.
      */
     private async dispatch(event: DomainEvent): Promise<void> {
-        // We'll hook this up to specific handlers in the next step.
-        // For now, it just logs.
+        if (event instanceof AppointmentRegisteredEvent) {
+            await this.handlers.onAppointmentRegistered(event);
+        } else if (event instanceof AppointmentAssignedEvent) {
+            await this.handlers.onAppointmentAssigned(event);
+        }
     }
 }

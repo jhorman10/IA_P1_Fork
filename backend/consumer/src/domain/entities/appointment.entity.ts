@@ -1,11 +1,12 @@
 import { IdCard } from '../value-objects/id-card.value-object';
 import { DomainEvent } from '../events/domain-event.base';
+import { FullName } from '../value-objects/full-name.value-object';
+import { Priority } from '../value-objects/priority.value-object';
 
 // Pattern: Entity — Domain object without infrastructure dependencies
 // ⚕️ HUMAN CHECK - Pure domain entity
 
 export type AppointmentStatus = 'waiting' | 'called' | 'completed';
-export type AppointmentPriority = 'high' | 'medium' | 'low';
 
 export class Appointment {
     private domainEvents: DomainEvent[] = [];
@@ -13,8 +14,8 @@ export class Appointment {
     constructor(
         public readonly id: string,
         public readonly idCard: IdCard,
-        public readonly fullName: string,
-        public readonly priority: AppointmentPriority,
+        public readonly fullName: FullName,
+        public readonly priority: Priority,
         public status: AppointmentStatus,
         public office: string | null = null,
         public timestamp: number = Date.now(),
