@@ -3,6 +3,7 @@ import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { RegisterAppointmentUseCase } from './domain/ports/inbound/register-appointment.use-case';
 import { ValidationError } from './domain/errors/validation.error';
+import { RmqHeaders } from './infrastructure/messaging/rmq-headers.interface';
 
 @Controller()
 export class ConsumerController {
@@ -21,7 +22,7 @@ export class ConsumerController {
         const channel = context.getChannelRef();
         const originalMsg = context.getMessage();
         const properties = originalMsg?.properties || {};
-        const headers = properties.headers || {};
+        const headers: RmqHeaders = properties.headers || {};
         const retryCount = this.getRetryCount(headers);
 
         try {
@@ -56,7 +57,8 @@ export class ConsumerController {
     /**
      * Extracts retry count from RabbitMQ x-death header.
      */
-    private getRetryCount(headers: any): number {
+    // ⚕️ HUMAN CHECK - H-04 Fix: Typed RmqHeaders instead of `any`
+    private getRetryCount(headers: RmqHeaders): number {
         const xDeath = headers['x-death'];
         if (!xDeath || !Array.isArray(xDeath) || xDeath.length === 0) {
             return 0;

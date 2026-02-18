@@ -6,11 +6,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CompleteExpiredAppointmentsUseCaseImpl } from '../application/use-cases/complete-expired-appointments.use-case.impl';
 import { AssignAvailableOfficesUseCaseImpl } from '../application/use-cases/assign-available-offices.use-case.impl';
 import { MaintenanceOrchestratorUseCaseImpl } from '../application/use-cases/maintenance-orchestrator.use-case.impl';
+import { ConsultationPolicy } from '../domain/policies/consultation.policy';
 
 @Module({
     imports: [AppointmentModule, NotificationsModule, ConfigModule],
     providers: [
         SchedulerService,
+        // ⚕️ HUMAN CHECK - H-07 Fix: ConsultationPolicy as injectable provider
+        ConsultationPolicy,
         {
             provide: 'CompleteExpiredAppointmentsUseCase',
             inject: ['AppointmentRepository', 'NotificationPort', 'LoggerPort', 'ClockPort'],
@@ -18,10 +21,10 @@ import { MaintenanceOrchestratorUseCaseImpl } from '../application/use-cases/mai
         },
         {
             provide: 'AssignAvailableOfficesUseCase',
-            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort', 'DomainEventBus', ConfigService],
-            useFactory: (repo, logger, clock, eventBus, config) => {
+            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort', 'DomainEventBus', ConfigService, ConsultationPolicy],
+            useFactory: (repo, logger, clock, eventBus, config, consultationPolicy) => {
                 const totalOffices = Number(config.get('CONSULTORIOS_TOTAL')) || 5;
-                return new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, eventBus, totalOffices);
+                return new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, eventBus, totalOffices, consultationPolicy);
             },
         },
         {

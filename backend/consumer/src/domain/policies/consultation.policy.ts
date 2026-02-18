@@ -1,7 +1,10 @@
+import { Injectable } from '@nestjs/common';
+
 /**
  * ⚕️ HUMAN CHECK - Domain Policy: Encapsulates business rules for consultations.
  * Made instance-based with injectable RNG for deterministic testing (F-10).
  */
+@Injectable()
 export class ConsultationPolicy {
     private static readonly MIN_DURATION_SECONDS = 8;
     private static readonly MAX_DURATION_SECONDS = 15;

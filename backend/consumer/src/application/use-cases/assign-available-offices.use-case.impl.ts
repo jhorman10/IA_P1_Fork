@@ -13,6 +13,8 @@ export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOffices
         private readonly clock: ClockPort,
         private readonly eventBus: DomainEventBus,
         private readonly totalOffices: number,
+        // ⚕️ HUMAN CHECK - H-07 Fix: Injectable dependency, not static call
+        private readonly consultationPolicy: ConsultationPolicy,
     ) { }
 
     async execute(): Promise<void> {
@@ -34,8 +36,8 @@ export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOffices
             const appointment = waiting[i];
             const office = freeOffices[i];
 
-            // ⚕️ HUMAN CHECK - DIP: Logic delegated to Domain Policy
-            const randomDuration = ConsultationPolicy.getRandomDurationSeconds();
+            // ⚕️ HUMAN CHECK - DIP: Logic delegated to injected Domain Policy (H-07)
+            const randomDuration = this.consultationPolicy.getRandomDurationSeconds();
 
             appointment.assignOffice(office, randomDuration, this.clock.now());
 

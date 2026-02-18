@@ -5,12 +5,12 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import 'reflect-metadata';
+import helmet from 'helmet';
 
 // ⚕️ HUMAN CHECK - SRP: Bootstrap decomposed into focused setup functions.
 // Each function has a single responsibility. Adding new middleware = new function.
 
 function configureSecurityMiddleware(app: INestApplication, frontendUrl: string): void {
-    const helmet = require('helmet');
     app.use(helmet());
 
     app.enableCors({

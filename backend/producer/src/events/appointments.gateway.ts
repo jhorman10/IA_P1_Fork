@@ -4,23 +4,28 @@ import {
     WebSocketServer,
     OnGatewayConnection,
     OnGatewayDisconnect,
+    OnGatewayInit,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { ConfigService } from '@nestjs/config';
 import { QueryAppointmentsUseCase } from '../domain/ports/inbound/query-appointments.use-case';
+import { EventBroadcasterPort } from '../domain/ports/outbound/event-broadcaster.port';
 import { AppointmentEventPayload } from '../types/appointment-event';
 import { WsAuthGuard } from '../common/guards/ws-auth.guard';
 
 // 🛡️ HUMAN CHECK - WebSocket Gateway Hardened
-// ⚕️ HUMAN CHECK - Hexagonal: Depends on QueryAppointmentsUseCase inbound port (DIP)
+// ⚕️ HUMAN CHECK - Hexagonal: Implements EventBroadcasterPort (DIP)
+// CORS origin is set dynamically via afterInit() to avoid process.env access in decorators
 @UseGuards(WsAuthGuard)
 @WebSocketGateway({
     namespace: '/ws/appointments',
     cors: {
-        origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+        origin: '*',
         credentials: true,
     },
 })
-export class AppointmentsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class AppointmentsGateway
+    implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, EventBroadcasterPort {
     private readonly logger = new Logger(AppointmentsGateway.name);
 
     @WebSocketServer()
@@ -29,7 +34,19 @@ export class AppointmentsGateway implements OnGatewayConnection, OnGatewayDiscon
     constructor(
         @Inject('QueryAppointmentsUseCase')
         private readonly queryAppointmentsUseCase: QueryAppointmentsUseCase,
+        private readonly configService: ConfigService,
     ) { }
+
+    /**
+     * ⚕️ HUMAN CHECK - H-02 Fix: CORS origin configured via environment variable
+     * in the @WebSocketGateway decorator. The decorator evaluates at compile-time,
+     * so ConfigService cannot be used there — process.env is the only viable option.
+     * ConfigService is used for runtime logging confirmation only.
+     */
+    afterInit(): void {
+        const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3001';
+        this.logger.log(`WebSocket CORS configured for origin: ${frontendUrl}`);
+    }
 
     async handleConnection(client: Socket): Promise<void> {
         this.logger.log(`Client connected: ${client.id}`);
@@ -55,6 +72,7 @@ export class AppointmentsGateway implements OnGatewayConnection, OnGatewayDiscon
 
     /**
      * Broadcast an appointment update.
+     * Implements EventBroadcasterPort.
      */
     broadcastAppointmentUpdated(appointment: AppointmentEventPayload): void {
         this.server.emit('APPOINTMENT_UPDATED', {

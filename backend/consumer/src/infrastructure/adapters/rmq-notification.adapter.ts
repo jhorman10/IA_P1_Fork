@@ -3,6 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { NotificationPort } from '../../domain/ports/outbound/notification.port';
 import { Appointment } from '../../domain/entities/appointment.entity';
 import { NotificationsService } from '../../notifications/notifications.service';
+import { AppointmentNotificationPayload } from './appointment-notification.payload';
 
 @Injectable()
 export class RmqNotificationAdapter implements NotificationPort {
@@ -26,7 +27,8 @@ export class RmqNotificationAdapter implements NotificationPort {
         );
     }
 
-    private mapToPayload(appointment: Appointment): any {
+    // ⚕️ HUMAN CHECK - H-03 Fix: Typed return instead of `any`
+    private mapToPayload(appointment: Appointment): AppointmentNotificationPayload {
         return {
             id: appointment.id,
             fullName: appointment.fullName.toValue(),

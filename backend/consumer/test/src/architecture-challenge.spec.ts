@@ -1,5 +1,6 @@
 import { AssignAvailableOfficesUseCaseImpl } from '../../src/application/use-cases/assign-available-offices.use-case.impl';
 import { Appointment } from '../../src/domain/entities/appointment.entity';
+import { ConsultationPolicy } from '../../src/domain/policies/consultation.policy';
 import { IdCard } from '../../src/domain/value-objects/id-card.value-object';
 import { FullName } from '../../src/domain/value-objects/full-name.value-object';
 import { Priority } from '../../src/domain/value-objects/priority.value-object';
@@ -46,7 +47,8 @@ describe('AssignAppointmentsUseCase (Pure Logic - The Impossible Mock Challenge)
             mockLogger as any,
             mockClock as any,
             mockEventBus as any,
-            3 // totalOffices
+            3, // totalOffices
+            new ConsultationPolicy(), // ⚕️ H-07: Injectable policy
         );
 
         // 3. Ejecución
