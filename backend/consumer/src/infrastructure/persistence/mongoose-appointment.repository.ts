@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AppointmentRepository } from '../../domain/ports/outbound/appointment.repository';
-import { Appointment, AppointmentStatus, AppointmentPriority } from '../../domain/entities/appointment.entity';
+import { Appointment } from '../../domain/entities/appointment.entity';
 import { Appointment as AppointmentSchema, AppointmentDocument } from '../../schemas/appointment.schema';
 import { IdCard } from '../../domain/value-objects/id-card.value-object';
+import { AppointmentMapper } from './appointment.mapper';
+import { AppointmentQuerySpecification } from '../../domain/specifications/appointment-query.specification';
 
 // Pattern: Adapter + Repository — Bridges Mongoose with the Domain Port
 // ⚕️ HUMAN CHECK - DIP: Implements domain port using infra-specific Mongoose
+// SRP: Delegates mapping to AppointmentMapper and query logic to Specification
 
 @Injectable()
 export class MongooseAppointmentRepository implements AppointmentRepository {
@@ -19,9 +22,9 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
     async findWaiting(): Promise<Appointment[]> {
         const docs = await this.model
             .find({ status: 'waiting' })
-            .sort({ priority: 1, timestamp: 1 })
+            .sort(AppointmentQuerySpecification.QUEUE_SORT_ORDER)
             .exec();
-        return docs.map(doc => this.mapToDomain(doc));
+        return docs.map(doc => AppointmentMapper.toDomain(doc));
     }
 
     async getOccupiedOfficeIds(): Promise<string[]> {
@@ -34,56 +37,36 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
     }
 
     async save(appointment: Appointment): Promise<Appointment> {
+        const persistenceData = AppointmentMapper.toPersistence(appointment);
         const updated = await this.model.findByIdAndUpdate(
             appointment.id,
-            {
-                idCard: appointment.idCard.toValue(),
-                fullName: appointment.fullName,
-                priority: appointment.priority,
-                status: appointment.status,
-                office: appointment.office,
-                completedAt: appointment.completedAt,
-            },
+            persistenceData,
             { new: true, upsert: true },
         ).exec();
-        return this.mapToDomain(updated);
+        return AppointmentMapper.toDomain(updated);
     }
 
     async findById(id: string): Promise<Appointment | null> {
         const doc = await this.model.findById(id).exec();
-        return doc ? this.mapToDomain(doc) : null;
+        return doc ? AppointmentMapper.toDomain(doc) : null;
     }
 
     async findByIdCardAndActive(idCard: IdCard): Promise<Appointment | null> {
         const doc = await this.model.findOne({
             idCard: idCard.toValue(),
-            status: { $in: ['waiting', 'called'] }
+            ...AppointmentQuerySpecification.getActiveFilter()
         }).exec();
-        return doc ? this.mapToDomain(doc) : null;
+        return doc ? AppointmentMapper.toDomain(doc) : null;
     }
 
     async findExpiredCalled(now: number): Promise<Appointment[]> {
-        const docs = await this.model.find({
-            status: 'called',
-            completedAt: { $lte: now },
-        }).exec();
-        return docs.map(doc => this.mapToDomain(doc));
+        const docs = await this.model.find(
+            AppointmentQuerySpecification.getExpiredCalledFilter(now)
+        ).exec();
+        return docs.map(doc => AppointmentMapper.toDomain(doc));
     }
 
     async updateStatus(id: string, status: string): Promise<void> {
         await this.model.findByIdAndUpdate(id, { status }).exec();
-    }
-
-    private mapToDomain(doc: AppointmentDocument): Appointment {
-        return new Appointment(
-            String(doc._id),
-            new IdCard(doc.idCard),
-            doc.fullName,
-            doc.priority as AppointmentPriority,
-            doc.status as AppointmentStatus,
-            doc.office,
-            doc.timestamp,
-            doc.completedAt,
-        );
     }
 }
