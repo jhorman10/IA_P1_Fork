@@ -55,13 +55,25 @@ src/
 | **DIP** | El dominio define interfaces (puertos). La infraestructura las implementa (adaptadores). |
 
 ### Patrones de diseño a aplicar
-| Categoría | Patrón | Uso |
+| Categoría | Patrón | Uso en el proyecto |
 |-----------|--------|-----|
 | **Creacional** | Factory | Crear entidades de dominio con validación encapsulada |
+| **Creacional** | Singleton | NestJS `@Injectable()` — instancia única de servicios |
+| **Creacional** | Builder | Construcción de queries complejos paso a paso |
 | **Estructural** | Repository | Abstraer persistencia detrás de un puerto de salida |
 | **Estructural** | Adapter | Conectar infraestructura (Mongoose, RabbitMQ) a los puertos |
-| **Comportamiento** | Strategy | Estrategias de ack/nack en consumer según tipo de error |
+| **Estructural** | Facade | Use Cases simplifican la orquestación de múltiples servicios |
+| **Estructural** | Decorator | DTOs con `class-validator` — validación declarativa |
+| **Estructural** | Proxy | Logging/caching automático sobre repositorios |
 | **Comportamiento** | Observer | Notificaciones WebSocket vía eventos de dominio |
+| **Comportamiento** | Strategy | Estrategias de ack/nack en consumer según tipo de error |
+| **Comportamiento** | Command | Mensajes RabbitMQ como comandos serializados |
+| **Comportamiento** | Chain of Responsibility | NestJS Pipeline (Guards → Pipes → Controllers) |
+| **Comportamiento** | State | Transiciones de `AppointmentStatus` con validación |
+| **Comportamiento** | Template Method | Flujo base de procesamiento de mensajes |
+| **Comportamiento** | Mediator | NestJS Modules como coordinadores de dependencias |
+
+> **Referencia completa:** Ver `assets/docs/architecture-patterns-catalog.md` para definiciones, ejemplos de código y justificaciones técnicas de cada patrón.
 
 ### Convenciones
 - Agregar `// ⚕️ HUMAN CHECK` en cada decisión de separación de capas.
@@ -139,3 +151,5 @@ Entregar resumen usando `skills/action-summary-template.md`.
 ## Assets
 - `assets/templates/hexagonal-structure.md` — Estructura de directorios de referencia
 - `assets/docs/solid-checklist.md` — Checklist de verificación SOLID por componente
+- `assets/docs/architecture-patterns-catalog.md` — Catálogo completo: 4 arquitecturas + 14 patrones de diseño con ejemplos
+
