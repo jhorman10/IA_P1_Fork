@@ -24,6 +24,6 @@ import { NotificationsService } from './notifications.service';
         ]),
     ],
     providers: [NotificationsService],
-    exports: [NotificationsService, ClientsModule],
+    exports: [NotificationsService],
 })
 export class NotificationsModule { }
