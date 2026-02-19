@@ -8,6 +8,7 @@ import { HealthController } from './health.controller';
 import { AppointmentModule } from './appointments/appointment.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { RetryPolicyAdapter } from './infrastructure/messaging/retry-policy.adapter';
 
 @Module({
     imports: [
@@ -35,6 +36,11 @@ import { SchedulerModule } from './scheduler/scheduler.module';
         AppointmentModule,
     ],
     controllers: [ConsumerController, HealthController],
-    providers: [],
+    providers: [
+        {
+            provide: 'RetryPolicyPort',
+            useClass: RetryPolicyAdapter,
+        },
+    ],
 })
 export class AppModule { }

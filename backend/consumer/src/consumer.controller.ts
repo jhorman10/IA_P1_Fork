@@ -2,8 +2,8 @@ import { Controller, Inject, Logger } from '@nestjs/common';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { RegisterAppointmentUseCase } from './domain/ports/inbound/register-appointment.use-case';
-import { DomainError } from './domain/errors/domain.error'; // Changed from ValidationError
 import { RmqHeaders } from './infrastructure/messaging/rmq-headers.interface';
+import { RetryPolicyPort } from './domain/ports/outbound/retry-policy.port';
 
 import { RegisterAppointmentCommand } from './application/commands/register-appointment.command';
 
@@ -14,6 +14,8 @@ export class ConsumerController {
     constructor(
         @Inject('RegisterAppointmentUseCase')
         private readonly registerUseCase: RegisterAppointmentUseCase,
+        @Inject('RetryPolicyPort')
+        private readonly retryPolicy: RetryPolicyPort,
     ) { }
 
     @EventPattern('create_appointment')
@@ -34,21 +36,9 @@ export class ConsumerController {
             channel.ack(originalMsg);
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
-
-            // ⚕️ HUMAN CHECK - Resilience Policy Decision:
-            // 1. DomainError (Validation/Business Rules) -> FATAL (Move to DLQ immediately)
-            // 2. Infrastructure/Transient Error -> Retry until limit, then DLQ
-
-            if (error instanceof DomainError) {
-                this.logger.error(`[FATAL] Domain/Business violation: ${message}. Moving to DLQ.`);
-                channel.nack(originalMsg, false, false); // No requeue
-                return;
-            }
-
             this.logger.warn(`[RETRY] Processing failure for patient ${data.idCard}: ${message}`);
-
-            if (retryCount >= 2) {
-                this.logger.error(`Max retries reached. Moving to DLQ. Error: ${message}`);
+            if (this.retryPolicy.shouldMoveToDLQ(retryCount, error)) {
+                this.logger.error(`[DLQ] Moving to DLQ. Error: ${message}`);
                 channel.nack(originalMsg, false, false);
             } else {
                 channel.nack(originalMsg, false, true); // Requeue
