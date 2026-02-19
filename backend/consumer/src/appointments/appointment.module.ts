@@ -16,6 +16,7 @@ import { MaintenanceOrchestratorUseCaseImpl } from '../application/use-cases/mai
 import { CompleteExpiredAppointmentsUseCaseImpl } from '../application/use-cases/complete-expired-appointments.use-case.impl';
 import { AssignAvailableOfficesUseCaseImpl } from '../application/use-cases/assign-available-offices.use-case.impl';
 import { ConsultationPolicy } from '../domain/policies/consultation.policy';
+import { EventDispatchingAppointmentRepositoryDecorator } from '../infrastructure/persistence/event-dispatching-appointment-repository.decorator';
 
 @Module({
     imports: [
@@ -24,8 +25,13 @@ import { ConsultationPolicy } from '../domain/policies/consultation.policy';
     ],
     providers: [
         {
-            provide: 'AppointmentRepository',
+            provide: 'MongooseAppointmentRepository', // Underlying impl
             useClass: MongooseAppointmentRepository,
+        },
+        {
+            provide: 'AppointmentRepository', // Decorated port (H-25)
+            inject: ['MongooseAppointmentRepository', 'DomainEventBus'],
+            useFactory: (inner, bus) => new EventDispatchingAppointmentRepositoryDecorator(inner, bus),
         },
         {
             provide: 'LockRepository',
@@ -60,9 +66,9 @@ import { ConsultationPolicy } from '../domain/policies/consultation.policy';
         },
         {
             provide: 'AssignAvailableOfficesUseCase',
-            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort', 'DomainEventBus', ConsultationPolicy],
-            useFactory: (repo, logger, clock, bus, policy) =>
-                new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, bus, 5, policy),
+            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort', ConsultationPolicy],
+            useFactory: (repo, logger, clock, policy) =>
+                new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, 5, policy),
         },
         {
             provide: 'MaintenanceOrchestratorUseCase',
@@ -77,8 +83,8 @@ import { ConsultationPolicy } from '../domain/policies/consultation.policy';
         },
         {
             provide: 'RegisterAppointmentUseCase',
-            inject: ['AppointmentRepository', 'LoggerPort', 'DomainEventBus'],
-            useFactory: (repo, logger, eventBus) => new RegisterAppointmentUseCaseImpl(repo, logger, eventBus),
+            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort'],
+            useFactory: (repo, logger, clock) => new RegisterAppointmentUseCaseImpl(repo, logger, clock),
         },
     ],
     exports: [

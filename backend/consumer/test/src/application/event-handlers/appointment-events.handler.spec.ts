@@ -14,11 +14,14 @@ import { Priority } from '../../../../src/domain/value-objects/priority.value-ob
 describe('AppointmentEventsHandlers (Split OCP Handlers)', () => {
     let mockNotificationPort: any;
     const dummyAppointment = new Appointment(
-        'test-id',
         new IdCard(12345678),
         new FullName('John Doe'),
         new Priority('medium'),
         'waiting',
+        null,
+        Date.now(),
+        undefined,
+        'test-id'
     );
 
     beforeEach(() => {

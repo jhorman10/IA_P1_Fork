@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { ValidationError } from '../errors/validation.error';
 import { IdCard } from '../value-objects/id-card.value-object';
 import { DomainEvent } from '../events/domain-event.base';
@@ -5,7 +6,7 @@ import { FullName } from '../value-objects/full-name.value-object';
 import { Priority } from '../value-objects/priority.value-object';
 
 // Pattern: Entity — Domain object without infrastructure dependencies
-// ⚕️ HUMAN CHECK - Pure domain entity
+// ⚕️ HUMAN CHECK - Pure domain entity accurately owning its Identity (H-24)
 
 export type AppointmentStatus = 'waiting' | 'called' | 'completed';
 
@@ -13,7 +14,6 @@ export class Appointment {
     private domainEvents: DomainEvent[] = [];
 
     constructor(
-        public readonly id: string,
         public readonly idCard: IdCard,
         public readonly fullName: FullName,
         public readonly priority: Priority,
@@ -21,6 +21,7 @@ export class Appointment {
         public office: string | null = null,
         public timestamp: number = Date.now(),
         public completedAt?: number,
+        public readonly id: string = randomUUID(), // 🎯 DOMAIN GENERATED IDENTITY
     ) { }
 
     public recordEvent(event: DomainEvent): void {

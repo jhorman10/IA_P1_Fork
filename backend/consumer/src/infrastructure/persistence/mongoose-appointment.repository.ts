@@ -27,13 +27,15 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
         return docs.map(doc => AppointmentMapper.toDomain(doc));
     }
 
-    async getOccupiedOfficeIds(): Promise<string[]> {
-        const docs = await this.model
+    async findAvailableOffices(allOfficeIds: string[]): Promise<string[]> {
+        const occupiedDocs = await this.model
             .find({ status: 'called' })
             .select('office')
             .lean()
             .exec();
-        return docs.map(d => String(d.office));
+
+        const occupiedIds = occupiedDocs.map(d => String(d.office));
+        return allOfficeIds.filter(id => !occupiedIds.includes(id));
     }
 
     async save(appointment: Appointment): Promise<Appointment> {

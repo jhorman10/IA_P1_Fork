@@ -16,10 +16,10 @@ describe('AssignAppointmentsUseCase (Pure Logic - The Impossible Mock Challenge)
         // 1. Mocks de Ports (Interfaces)
         const mockRepo = {
             findExpiredCalled: jest.fn().mockResolvedValue([]),
-            getOccupiedOfficeIds: jest.fn().mockResolvedValue(['1']),
+            findAvailableOffices: jest.fn().mockResolvedValue(['2', '3']),
             findWaiting: jest.fn().mockResolvedValue([
-                new Appointment('A', new IdCard(123), new FullName('John Doe'), new Priority('high'), 'waiting'),
-                new Appointment('B', new IdCard(456), new FullName('Jane Doe'), new Priority('medium'), 'waiting'),
+                new Appointment(new IdCard(123), new FullName('John Doe'), new Priority('high'), 'waiting'),
+                new Appointment(new IdCard(456), new FullName('Jane Doe'), new Priority('medium'), 'waiting'),
             ]),
             save: jest.fn(),
         };
@@ -46,7 +46,6 @@ describe('AssignAppointmentsUseCase (Pure Logic - The Impossible Mock Challenge)
             mockRepo as any,
             mockLogger as any,
             mockClock as any,
-            mockEventBus as any,
             3, // totalOffices
             new ConsultationPolicy(), // ⚕️ H-07: Injectable policy
         );
@@ -56,7 +55,6 @@ describe('AssignAppointmentsUseCase (Pure Logic - The Impossible Mock Challenge)
 
         // 4. Aserciones de Negocio
         expect(mockRepo.save).toHaveBeenCalledTimes(2);
-        expect(mockEventBus.publish).toHaveBeenCalledTimes(2);
 
         const firstAssigned = mockRepo.save.mock.calls[0][0];
         expect(firstAssigned.office).toBe('2');

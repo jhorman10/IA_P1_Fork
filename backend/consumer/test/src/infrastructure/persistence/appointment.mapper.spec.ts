@@ -15,13 +15,14 @@ describe('AppointmentMapper', () => {
     describe('toPersistence', () => {
         it('should map a domain entity to PersistenceAppointmentData', () => {
             const entity = new Appointment(
-                'entity-id',
                 new IdCard(12345678),
                 new FullName('John Doe'),
                 new Priority('high'),
                 'waiting',
                 null,
                 now,
+                undefined,
+                'entity-id',
             );
 
             const result: PersistenceAppointmentData = AppointmentMapper.toPersistence(entity);
@@ -39,7 +40,6 @@ describe('AppointmentMapper', () => {
 
         it('should include office and completedAt when present', () => {
             const entity = new Appointment(
-                'entity-id',
                 new IdCard(99999),
                 new FullName('Jane Smith'),
                 new Priority('low'),
@@ -47,6 +47,7 @@ describe('AppointmentMapper', () => {
                 '3',
                 now,
                 now + 10000,
+                'entity-id',
             );
 
             const result = AppointmentMapper.toPersistence(entity);

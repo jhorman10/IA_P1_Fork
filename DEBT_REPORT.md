@@ -22,6 +22,9 @@
 | D-03 | Missing 'priority' field in domain model (E-02) | Logic | ✅ |
 | D-04 | Spanish nomenclature (cedula, nombre) (E-03, H-03) | Universal Language| ✅ |
 | D-05 | Missing Domain Factories for entity creation (H-11) | Object Creation | ✅ |
+| D-06 | H-24/H-30: Identity Leakage — DB dependent IDs | Domain Purity | ✅ |
+| D-07 | H-28/H-29: Primitive Obsession in Factories & Temporal Leak | Domain Purity | ✅ |
+| D-08 | H-31/H-26: Leaky Logic & Repository SRP (Available Offices) | Domain Logic | ✅ |
 
 ---
 
@@ -36,6 +39,10 @@
 | A-04 | Logic: Scheduler inconsistent with docs (A-04) | Business Rules | ✅ |
 | A-05 | Missing Domain Event Architecture (H-13) | Event-Driven | ✅ |
 | A-06 | Lacking Centralized Error/Resilience Policies (H-15) | Resilience | ✅ |
+| A-07 | H-20: Concurrency Race Condition (LockRepository) | Resilience | ✅ |
+| A-08 | H-21: Poison Message Inefficiency (DomainError -> DLQ) | Resilience | ✅ |
+| A-09 | H-22: Use Case Leakage (Command Pattern) | Orchestration | ✅ |
+| A-10 | H-25: Side-Effect Bloat (Automated Dispatch) | Orchestration | ✅ |
 
 ---
 
@@ -50,6 +57,7 @@
 | I-04 | ValidationPipe global leakage in RMQ microservice (A-06) | Validation | ✅ |
 | I-05 | Missing Repository Decoupling (H-12) | Persistence | ✅ |
 | I-06 | Lacking Resilience Patterns: DLQ/Retries (H-04) | Reliability | ✅ |
+| I-07 | H-23: Liar Health Check (Database Dependency) | Health | ✅ |
 
 ---
 

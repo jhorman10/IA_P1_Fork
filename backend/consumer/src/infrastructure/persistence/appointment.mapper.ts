@@ -16,7 +16,6 @@ export class AppointmentMapper {
      */
     public static toDomain(doc: AppointmentDocument): Appointment {
         return new Appointment(
-            String(doc._id),
             new IdCard(doc.idCard),
             new FullName(doc.fullName),
             new Priority(doc.priority),
@@ -24,6 +23,7 @@ export class AppointmentMapper {
             doc.office,
             doc.timestamp,
             doc.completedAt ?? undefined,
+            String(doc._id), // 🎯 RECONSTRUCT IDENTITY
         );
     }
 

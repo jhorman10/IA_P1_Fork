@@ -3,28 +3,30 @@ import { IdCard } from '../value-objects/id-card.value-object';
 import { FullName } from '../value-objects/full-name.value-object';
 import { Priority } from '../value-objects/priority.value-object';
 
+/**
+ * ⚕️ HUMAN CHECK - Domain Factory (H-28)
+ * Ensures consistency and valid initial state.
+ */
 export class AppointmentFactory {
-    public static createNew(idCard: IdCard, fullNameStr: string): Appointment {
+    public static createNew(idCard: IdCard, fullName: FullName, timestamp: number): Appointment {
         return new Appointment(
-            '', // ID will be assigned by persistence or a UUID generator
             idCard,
-            new FullName(fullNameStr),
+            fullName,
             new Priority('medium'), // Business Policy: Default priority is medium
             'waiting',
             null,
-            Date.now()
+            timestamp
         );
     }
 
-    public static createWithPriority(idCard: IdCard, fullNameStr: string, priorityStr: string): Appointment {
+    public static createWithPriority(idCard: IdCard, fullName: FullName, priority: Priority, timestamp: number): Appointment {
         return new Appointment(
-            '',
             idCard,
-            new FullName(fullNameStr),
-            new Priority(priorityStr),
+            fullName,
+            priority,
             'waiting',
             null,
-            Date.now()
+            timestamp
         );
     }
 }
