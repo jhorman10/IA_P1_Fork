@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { CreateAppointmentDTO } from "@/domain/CreateAppointment";
-import { HttpAppointmentRepository } from "@/repositories/HttpAppointmentRepository";
+import { useDependencies } from "@/context/DependencyContext";
 
 /**
  * Hook for registering appointments.
@@ -34,11 +34,11 @@ export function useAppointmentRegistration() {
     /**
      * Repository singleton
      */
-    const repositoryRef = useRef<HttpAppointmentRepository | null>(null);
+    const { repository } = useDependencies();
+    const repositoryRef = useRef(repository); // Keep ref for stability or just use repository directly? DependencyContext is stable.
 
-    if (!repositoryRef.current) {
-        repositoryRef.current = new HttpAppointmentRepository();
-    }
+    // 🛡️ HUMAN CHECK - DIP: Hook uses injected repository, not class.
+
 
     useEffect(() => {
         return () => {

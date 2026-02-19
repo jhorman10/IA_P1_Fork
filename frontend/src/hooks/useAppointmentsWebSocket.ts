@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
-import { io, Socket } from "socket.io-client";
+import { useEffect, useState, useCallback } from "react";
 import { Appointment } from "@/domain/Appointment";
-import { env } from "@/config/env";
+import { useDependencies } from "@/context/DependencyContext";
 
 /**
  * Real-time hook using WebSocket (Socket.IO).
@@ -16,7 +15,8 @@ export function useAppointmentsWebSocket(onUpdate?: (appointment: Appointment) =
     const [error, setError] = useState<string | null>(null);
     const [connected, setConnected] = useState(false);
 
-    const socketRef = useRef<Socket | null>(null);
+    // 🛡️ HUMAN CHECK - DI: Inject RealTime implementation (SocketIO, SSE, Mock)
+    const { realTime } = useDependencies();
 
     const updateAppointment = useCallback((updatedAppointment: Appointment) => {
         setAppointments(prev => {
@@ -31,53 +31,37 @@ export function useAppointmentsWebSocket(onUpdate?: (appointment: Appointment) =
     }, []);
 
     useEffect(() => {
-        const socket = io(`${env.WS_URL}/ws/appointments`, {
-            transports: ["websocket"],
-            reconnection: true,
-            reconnectionDelay: 1000,
-            reconnectionDelayMax: 5000,
-            reconnectionAttempts: Infinity,
-        });
-
-        socketRef.current = socket;
-
-        socket.on("connect", () => {
-            console.log("[WS] Connected to server");
+        // Setup listeners
+        realTime.onConnect(() => {
             setConnected(true);
             setError(null);
         });
 
-        socket.on("disconnect", (reason) => {
-            console.log(`[WS] Disconnected: ${reason}`);
+        realTime.onDisconnect(() => {
             setConnected(false);
         });
 
-        socket.on("connect_error", (err: Error) => {
-            console.error("[WS] Connection error:", err?.message || err);
-            setError("Connection error with the server");
+        realTime.onError((err) => {
+            setError("Error de conexión en tiempo real");
             setConnected(false);
         });
 
-        socket.on("APPOINTMENTS_SNAPSHOT", (payload: { type: string; data: Appointment[] }) => {
-            console.log(`[WS] Snapshot received: ${payload.data.length} appointments`);
-            setAppointments(payload.data);
-            setError(null);
+        realTime.onSnapshot((data) => {
+            setAppointments(data);
         });
 
-        socket.on("APPOINTMENT_UPDATED", (payload: { type: string; data: Appointment }) => {
-            console.log(`[WS] Appointment updated: ${payload.data.fullName} → ${payload.data.status}`);
-            updateAppointment(payload.data);
-            if (onUpdate) {
-                onUpdate(payload.data);
-            }
+        realTime.onAppointmentUpdated((data) => {
+            updateAppointment(data);
+            if (onUpdate) onUpdate(data);
         });
+
+        // Initialize connection
+        realTime.connect();
 
         return () => {
-            console.log("[WS] Cleanup — disconnecting");
-            socket.disconnect();
-            socketRef.current = null;
+            realTime.disconnect();
         };
-    }, [updateAppointment, onUpdate]);
+    }, [realTime, updateAppointment, onUpdate]);
 
     return { appointments, error, connected };
 }

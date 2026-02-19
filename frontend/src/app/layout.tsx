@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
+import { DependencyProvider } from "@/context/DependencyContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
-        {children}
+        <DependencyProvider>
+          {children}
+        </DependencyProvider>
       </body>
     </html>
   );
