@@ -472,6 +472,7 @@ audit completo del proyecto siguiendo OWASP Top 10."
 | `fix(skills)` | `b2d9e1a` | 🤖 | Repair YAML frontmatter in 4 skills (skill-creator, docker, git, frontend). Enable full registry sync. |
 | `refactor(meta)` | `d5e6f7g` | 🤖 | Homologate Copilot Instructions. Use shared context modules (DRY/Efficiency). |
 | `refactor(docs)` | `45f065c` | 🤖 | Convert README to Landing Page strategy. Eliminate 4 sources of duplication (DRY). |
+| `feat(i18n)` | `8a72569` | 🤖 | Localize user-facing content (README, Frontend, API) to Spanish. |
 
 ---
 **STATUS: ELITE DDD GRADE + FULL HEXAGONAL + SOLID CERTIFIED + SECURITY HARDENING** ✅
