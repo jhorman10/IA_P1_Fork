@@ -474,6 +474,7 @@ audit completo del proyecto siguiendo OWASP Top 10."
 | `refactor(docs)` | `45f065c` | 🤖 | Convert README to Landing Page strategy. Eliminate 4 sources of duplication (DRY). |
 | `feat(i18n)` | `8a72569` | 🤖 | Localize user-facing content (README, Frontend, API) to Spanish. |
 | `refactor(frontend)` | `2378344` | 🤖 | Implement Hexagonal Architecture (Ports/Adapters/DI) in Frontend. Decouple Hooks from Infrastructure. |
+| `fix(security)` | `pending` | 🤖 | Restrict WebSocket CORS origin to `FRONTEND_URL` (H-08). |
 
 ---
 **STATUS: ELITE DDD GRADE + FULL HEXAGONAL + SOLID CERTIFIED + SECURITY HARDENING** ✅

@@ -20,7 +20,8 @@ import { WsAuthGuard } from '../common/guards/ws-auth.guard';
 @WebSocketGateway({
     namespace: '/ws/appointments',
     cors: {
-        origin: '*',
+        // 🛡️ HUMAN CHECK - H-08 Fix: Restrict origin to Frontend URL.
+        origin: process.env.FRONTEND_URL || 'http://localhost:3001',
         credentials: true,
     },
 })
