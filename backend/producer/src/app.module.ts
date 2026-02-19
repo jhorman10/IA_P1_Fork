@@ -5,6 +5,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProducerController } from './producer.controller';
+import { AppointmentQueryController } from './appointments/appointment-query.controller';
 import { HealthController } from './health.controller';
 import { AppointmentModule } from './appointments/appointment.module';
 import { EventsModule } from './events/events.module';
@@ -59,7 +60,7 @@ import { CreateAppointmentUseCaseImpl } from './application/use-cases/create-app
             }],
         }),
     ],
-    controllers: [ProducerController, HealthController],
+    controllers: [ProducerController, AppointmentQueryController, HealthController],
     providers: [
         // ⚕️ HUMAN CHECK - Hexagonal: Bind inbound port → use-case implementation
         {
