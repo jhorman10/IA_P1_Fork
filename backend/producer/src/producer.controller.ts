@@ -41,7 +41,7 @@ export class ProducerController {
             type: 'object',
             properties: {
                 status: { type: 'string', example: 'accepted' },
-                message: { type: 'string', example: 'Appointment assignment in progress' },
+                message: { type: 'string', example: 'Asignación de turno en progreso' },
             },
         },
     })
