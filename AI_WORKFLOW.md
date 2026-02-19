@@ -479,8 +479,10 @@ audit completo del proyecto siguiendo OWASP Top 10."
 ---
 | `feat(domain)` | `5e94dbc` | 🤖 | Implement Value Objects (`IdCard`, `PatientName`) and Safe Mappers (H-09, H-10). |
 | `fix(resilience)` | `c865630` | 🤖 | Implement `DomainExceptionFilter` in Producer. Map Domain Errors to HTTP 400 (H-12). |
-| `fix(security)` | `pending` | 🤖 | Zero Hardcode in WS Guard + Dynamic Throttling (H-13, H-14). |
+| `fix(security)` | `0b1f474` | 🤖 | Zero Hardcode in WS Guard + Dynamic Throttling (H-13, H-14). |
+| `fix(ops)` | `c757526` | 🤖 | Enable Shutdown Hooks + Security Hardened Dockerfiles (H-15, H-16). |
+| `fix(hygiene)` | `pending` | 🤖 | Shared Kernel Sync + Strict Types + Env Docs (H-17, H-18, H-19). |
 
 ---
-**STATUS: ELITE DDD GRADE + FULL HEXAGONAL + SOLID CERTIFIED + PURE DOMAIN + RESILIENT + SECURE** �
+**STATUS: ELITE DDD GRADE + FULL HEXAGONAL + SOLID CERTIFIED + PURE DOMAIN + RESILIENT + SECURE + DEVOPS READY + HYGIENIC** ✨�
 
