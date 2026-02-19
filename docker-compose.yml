@@ -21,18 +21,15 @@ services:
       - ./backend/producer:/app
       - /app/node_modules
       - /app/dist
+    # ⚕️ HUMAN CHECK - Variables de entorno gestionadas vía .env
     environment:
-      - NODE_ENV=development
-      - PORT=3000
-      # ⚕️ HUMAN CHECK - RabbitMQ connection credentials
-      # Do not use default credentials (guest/guest) in production.
-      # Configure secure variables in .env
-      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq:5672
-      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE:-appointment_queue}
-      # ⚕️ HUMAN CHECK - Notifications queue (WebSocket bridge)
-      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE:-appointment_notifications}
-      # ⚕️ HUMAN CHECK - MongoDB connection credentials (Read)
-      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/appointments_db?authSource=admin
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PRODUCER_PORT}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq:${RABBITMQ_PORT}
+      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE}
+      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE}
+      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:${MONGODB_PORT}/appointments_db?authSource=admin
+      - FRONTEND_URL=${FRONTEND_URL}
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -62,20 +59,15 @@ services:
       - ./backend/consumer:/app
       - /app/node_modules
       - /app/dist
+    # ⚕️ HUMAN CHECK - Variables de entorno gestionadas vía .env
     environment:
-      - NODE_ENV=development
-      # ⚕️ HUMAN CHECK - RabbitMQ connection credentials
-      # Do not use default credentials (guest/guest) in production.
-      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq:5672
-      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE:-appointment_queue}
-      # ⚕️ HUMAN CHECK - Notifications queue (WebSocket bridge)
-      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE:-appointment_notifications}
-      # ⚕️ HUMAN CHECK - Scheduler configuration
-      - SCHEDULER_INTERVAL_MS=1000
-      - CONSULTORIOS_TOTAL=5
-      # ⚕️ HUMAN CHECK - MongoDB connection credentials
-      # Do not use default credentials in production.
-      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/appointments_db?authSource=admin
+      - NODE_ENV=${NODE_ENV}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq:${RABBITMQ_PORT}
+      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE}
+      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE}
+      - SCHEDULER_INTERVAL_MS=${SCHEDULER_INTERVAL_MS}
+      - CONSULTORIOS_TOTAL=${CONSULTORIOS_TOTAL}
+      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:${MONGODB_PORT}/appointments_db?authSource=admin
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -104,14 +96,11 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    # ⚕️ HUMAN CHECK - Variables de entorno gestionadas vía .env
     environment:
-      - NODE_ENV=development
-      # ⚕️ HUMAN CHECK - NEXT_PUBLIC_* se ejecutan en el NAVEGADOR del usuario, no en Docker
-      # Por eso usan localhost (no el hostname interno 'producer')
-      # Para probar en red local, cambia 'localhost' por tu IP local (ej. http://192.168.1.50:3000)
-      - NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
-      # ⚕️ HUMAN CHECK - URL del WebSocket
-      - NEXT_PUBLIC_WS_URL=http://localhost:3000
+      - NODE_ENV=${NODE_ENV}
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+      - NEXT_PUBLIC_WS_URL=${NEXT_PUBLIC_WS_URL}
     depends_on:
       - producer
     networks:

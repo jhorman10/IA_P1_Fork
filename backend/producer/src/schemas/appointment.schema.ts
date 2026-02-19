@@ -18,7 +18,7 @@ export class Appointment {
 
     // ⚕️ HUMAN CHECK - Nullable office
     // null when the patient is waiting
-    @Prop({ default: null, index: true })
+    @Prop({ type: String, default: null, index: true })
     office!: string | null;
 
     @Prop({ default: 'waiting', enum: ['waiting', 'called', 'completed'], index: true })
@@ -32,7 +32,7 @@ export class Appointment {
     timestamp!: number;
 
     // ⚕️ HUMAN CHECK - Completion timestamp
-    @Prop({ default: null })
+    @Prop({ type: Number, default: null })
     completedAt!: number | null;
 }
 
