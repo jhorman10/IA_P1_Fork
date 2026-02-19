@@ -18,6 +18,10 @@ export class Appointment {
     @Prop({ required: true })
     fullName!: string;
 
+    // Store domain UUID separately
+    @Prop({ required: true, unique: true })
+    domainId!: string;
+
     // ⚕️ HUMAN CHECK - Nullable office
     // null when waiting, assigned by the scheduler
     @Prop({ type: String, default: null, index: true })

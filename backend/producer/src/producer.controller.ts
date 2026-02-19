@@ -43,9 +43,11 @@ export class ProducerController {
     async createAppointment(@Body() dto: CreateAppointmentDto): Promise<CreateAppointmentResponseDto> {
         // 1. Map DTO (HTTP) → Command (Domain)
         // ⚕️ HUMAN CHECK - SRP: Controller handles data mapping, not the Use Case.
+
         const command = {
             idCard: dto.idCard,
             fullName: dto.fullName,
+            priority: dto.priority ?? 'medium',
         };
 
         // 2. Execute Use Case (Business Logic)

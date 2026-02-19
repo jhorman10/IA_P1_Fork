@@ -41,15 +41,16 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
     async save(appointment: Appointment): Promise<Appointment> {
         const persistenceData = AppointmentMapper.toPersistence(appointment);
 
-        // New entity (no ID assigned yet) → create document
-        if (!appointment.id) {
+        // Try to find by domainId
+        const existing = await this.model.findOne({ domainId: appointment.id }).exec();
+        if (!existing) {
             const created = await this.model.create(persistenceData);
             return AppointmentMapper.toDomain(created);
         }
 
         // Existing entity → update in place
-        const updated = await this.model.findByIdAndUpdate(
-            appointment.id,
+        const updated = await this.model.findOneAndUpdate(
+            { domainId: appointment.id },
             persistenceData,
             { new: true, upsert: true },
         ).exec();

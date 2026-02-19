@@ -12,4 +12,5 @@ export interface PersistenceAppointmentData {
     office: string | null;
     timestamp: number;
     completedAt?: number;
+    domainId: string;
 }

@@ -44,67 +44,79 @@ export default function AppointmentsScreen() {
 
 
   const calledAppointments = appointments.filter(t => t.status === "called");
-  const waitingAppointments = appointments.filter(t => t.status === "waiting");
+  const waitingAppointments = appointments
+    .filter(t => t.status === "waiting")
+    .sort((a, b) => {
+      const priorityOrder = { high: 0, medium: 1, low: 2 };
+      return priorityOrder[a.priority] - priorityOrder[b.priority];
+    });
 
   return (
-    <main className={styles.container}>
-      <h1 className={styles.title}>Turnos Disponibles</h1>
+    <main className={styles.dashboardSplitLayout}>
+      <section className={styles.leftPanel}>
+        <header className={styles.stickyHeader}>
+          <h1 className={styles.title}>Turnos Disponibles</h1>
+          <p className={connected ? styles.connected : styles.disconnected}>
+            {connected ? "🟢 Conectado en tiempo real" : "🔴 Desconectado — reconectando..."}
+          </p>
+          {!audioEnabled && (
+            <p className={styles.audioHint}>
+              Toca la pantalla para activar sonido 🔔
+            </p>
+          )}
+          {error && <p className={styles.error}>{error}</p>}
+        </header>
 
-      <p className={connected ? styles.connected : styles.disconnected}>
-        {connected ? "🟢 Conectado en tiempo real" : "🔴 Desconectado — reconectando..."}
-      </p>
+        <section className={styles.sectionBlock}>
+          <h2 className={styles.sectionTitle}>📢 Llamados <span className={styles.countBadge}>{calledAppointments.length}</span></h2>
+          {calledAppointments.length > 0 ? (
+            <ul className={styles.cardGrid}>
+              {calledAppointments.map((t) => (
+                <li key={t.id} className={`${styles.appointmentCard} ${styles.highlight}`}> 
+                  <div className={styles.cardMain}>
+                    <span className={styles.nombre}>{t.fullName}</span>
+                    <span className={styles.officeBadge}>Consultorio {t.office}</span>
+                  </div>
+                  <div className={styles.cardMeta}>
+                    <span className={styles.statusBadge} data-status={t.priority}>
+                      {t.priority === "high" ? "🔴 Alta" : t.priority === "medium" ? "🟡 Media" : "🟢 Baja"}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.empty}>No hay turnos llamados</p>
+          )}
+        </section>
 
-      {!audioEnabled && (
-        <p className={styles.audioHint}>
-          Toca la pantalla para activar sonido 🔔
-        </p>
-      )}
+        {appointments.length === 0 && !error && (
+          <p className={styles.empty}>No hay turnos registrados</p>
+        )}
 
-      {error && <p className={styles.error}>{error}</p>}
-
-      {calledAppointments.length > 0 && (
-        <>
-          <h2 className={styles.sectionTitle}>📢 Llamados</h2>
-          <ul className={styles.list}>
-            {calledAppointments.map((t) => (
-              <li key={t.id} className={`${styles.item} ${styles.highlight}`}>
-                <span className={styles.nombre}>{t.fullName}</span>
-                <span>Consultorio {t.office}</span>
-                <span className={styles.badge}>
-                  {t.priority === "high" ? "🔴 Alta" : t.priority === "medium" ? "🟡 Media" : "🟢 Baja"}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      {waitingAppointments.length > 0 && (
-        <>
-          <h2 className={styles.sectionTitle}>⏳ En Espera</h2>
-          <ul className={styles.list}>
+        {showToast && (
+          <div className={styles.toast}>
+            🔔 Nuevo turno llamado
+          </div>
+        )}
+      </section>
+      <aside className={styles.rightPanel}>
+        <h2 className={styles.sectionTitle}>⏳ Cola de Espera <span className={styles.countBadge}>{waitingAppointments.length}</span></h2>
+        {waitingAppointments.length > 0 ? (
+          <ul className={styles.waitingQueue}>
             {waitingAppointments.map((t) => (
-              <li key={t.id} className={styles.item}>
+              <li key={t.id} className={styles.queueCard}>
                 <span className={styles.nombre}>{t.fullName}</span>
-                <span>Consultorio no asignado</span>
-                <span className={styles.badge}>
+                <span className={styles.statusBadge} data-status={t.priority}>
                   {t.priority === "high" ? "🔴 Alta" : t.priority === "medium" ? "🟡 Media" : "🟢 Baja"}
                 </span>
               </li>
             ))}
           </ul>
-        </>
-      )}
-
-      {appointments.length === 0 && !error && (
-        <p className={styles.empty}>No hay turnos registrados</p>
-      )}
-
-      {showToast && (
-        <div className={styles.toast}>
-          🔔 Nuevo turno llamado
-        </div>
-      )}
+        ) : (
+          <p className={styles.empty}>No hay turnos en espera</p>
+        )}
+      </aside>
     </main>
   );
 }

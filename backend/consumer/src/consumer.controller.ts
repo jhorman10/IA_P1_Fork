@@ -31,7 +31,7 @@ export class ConsumerController {
 
         try {
             // ⚕️ HUMAN CHECK - DIP: Input mapped to Command before Use Case execution
-            const command = new RegisterAppointmentCommand(data.idCard, data.fullName);
+            const command = new RegisterAppointmentCommand(data.idCard, data.fullName, data.priority);
             await this.registerUseCase.execute(command);
             channel.ack(originalMsg);
         } catch (error: unknown) {

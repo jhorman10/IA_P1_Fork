@@ -37,7 +37,17 @@ export class RegisterAppointmentUseCaseImpl implements RegisterAppointmentUseCas
         }
 
         // 3. Domain Factory (Centralized Business Policies)
-        const appointment = AppointmentFactory.createNew(idCardVo, fullNameVo, this.clock.now());
+        let appointment: Appointment;
+        if (command.priority) {
+            appointment = AppointmentFactory.createWithPriority(
+                idCardVo,
+                fullNameVo,
+                new Priority(command.priority),
+                this.clock.now()
+            );
+        } else {
+            appointment = AppointmentFactory.createNew(idCardVo, fullNameVo, this.clock.now());
+        }
 
         // 🧠 Domain Concern: Intent of registration
         appointment.recordEvent(new AppointmentRegisteredEvent(appointment));

@@ -23,7 +23,7 @@ export class AppointmentMapper {
             doc.office,
             doc.timestamp,
             doc.completedAt ?? undefined,
-            String(doc._id), // 🎯 RECONSTRUCT IDENTITY
+            doc.domainId // Use domainId for domain identity
         );
     }
 
@@ -39,6 +39,7 @@ export class AppointmentMapper {
             office: entity.office,
             completedAt: entity.completedAt,
             timestamp: entity.timestamp,
+            domainId: entity.id,
         };
     }
 }
