@@ -4,6 +4,8 @@ import {
     CreateAppointmentUseCase,
     CreateAppointmentCommand,
 } from '../../domain/ports/inbound/create-appointment.use-case';
+import { IdCard } from '../../domain/value-objects/id-card.vo';
+import { PatientName } from '../../domain/value-objects/patient-name.vo';
 
 /**
  * Application Use Case: Create Appointment
@@ -18,8 +20,20 @@ export class CreateAppointmentUseCaseImpl implements CreateAppointmentUseCase {
     ) { }
 
     async execute(command: CreateAppointmentCommand): Promise<void> {
-        // ⚕️ HUMAN CHECK - SRP: Use Case only orchestrates business logic.
-        // Returns void. UI response is Controller responsibility.
-        await this.publisher.publishAppointmentCreated(command);
+        // ⚕️ HUMAN CHECK - H-09 Fix: Domain Validation using Value Objects.
+        // We instantiate them to ensure the data adheres to business rules.
+        // If validation fails, it throws immediately.
+        const idCardVo = new IdCard(command.idCard);
+        const nameVo = new PatientName(command.fullName);
+
+        // Usage: We could pass VOs to the publisher, but the interface expects the Command schema or primitive types.
+        // For this refactor, we use VOs as "Guards" and then pass the valid data.
+
+        await this.publisher.publishAppointmentCreated({
+            ...command,
+            // Ensure we send the sanitized/trimmed values if necessary
+            fullName: nameVo.Value,
+            idCard: idCardVo.Value,
+        });
     }
 }

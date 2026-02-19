@@ -5,6 +5,7 @@ import { QueryAppointmentsUseCase } from './domain/ports/inbound/query-appointme
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { CreateAppointmentResponseDto } from './dto/create-appointment-response.dto';
 import { AppointmentResponseDto } from './dto/appointment-response.dto';
+import { AppointmentMapper } from './mappers/appointment.mapper';
 
 // ⚕️ HUMAN CHECK - Hexagonal: Controller depends ONLY on inbound ports (DIP).
 // Commands (POST) → CreateAppointmentUseCase
@@ -57,6 +58,7 @@ export class ProducerController {
         };
     }
 
+
     @Get()
     @ApiOperation({
         summary: 'List all appointments',
@@ -71,9 +73,8 @@ export class ProducerController {
     })
     async getAllAppointments(): Promise<AppointmentResponseDto[]> {
         const events = await this.queryAppointmentsUseCase.findAll();
-        // Map Domain/Event object to Response DTO (if structure matches, cast is okay for now, but explicit mapping is safer)
-        // Since AppointmentEventPayload and AppointmentResponseDto match structurally:
-        return events as unknown as AppointmentResponseDto[];
+        // ⚕️ HUMAN CHECK - H-10 Fix: Safe Mapping (No more `as unknown`)
+        return AppointmentMapper.toResponseDtoList(events);
     }
 
     @Get(':idCard')
@@ -99,6 +100,6 @@ export class ProducerController {
     })
     async getAppointmentsByIdCard(@Param('idCard', ParseIntPipe) idCard: number): Promise<AppointmentResponseDto[]> {
         const events = await this.queryAppointmentsUseCase.findByIdCard(idCard);
-        return events as unknown as AppointmentResponseDto[];
+        return AppointmentMapper.toResponseDtoList(events);
     }
 }
