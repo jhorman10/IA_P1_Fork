@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppointmentSchema as SchemaDef } from '../schemas/appointment.schema';
-import { AppointmentService } from './appointment.service';
+
 import { RegisterAppointmentUseCaseImpl } from '../application/use-cases/register-appointment.use-case.impl';
 import { MongooseAppointmentRepository } from '../infrastructure/persistence/mongoose-appointment.repository';
 import { NestLoggerAdapter } from '../infrastructure/logging/nest-logger.adapter';
@@ -18,7 +18,7 @@ import { LocalDomainEventBusAdapter } from '../infrastructure/messaging/local-do
         NotificationsModule,
     ],
     providers: [
-        AppointmentService,
+
         {
             provide: 'AppointmentRepository',
             useClass: MongooseAppointmentRepository,
@@ -52,7 +52,7 @@ import { LocalDomainEventBusAdapter } from '../infrastructure/messaging/local-do
         },
     ],
     exports: [
-        AppointmentService,
+
         'AppointmentRepository',
         'RegisterAppointmentUseCase',
         'LoggerPort',

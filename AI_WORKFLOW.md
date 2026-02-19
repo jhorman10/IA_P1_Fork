@@ -406,5 +406,37 @@ audit completo del proyecto siguiendo OWASP Top 10."
 | `refactor(producer)` | `44634f4` | 🤖 | Decouple CreateAppointmentUseCase from DTOs (DIP) and UI logic (SRP). Introduced Command object. |
 
 ---
+
+### Fase 10: Eliminación de Código Muerto (AppointmentService) (2026-02-19)
+
+> **SA-Refactor-Arch** usando skill `refactor-arch`
+
+#### Interacciones
+
+```
+👤 Human: Solicita auditoría hostil de "appointment.service.ts" (Consumer).
+
+🤖 IA (SA-Refactor-Arch): [Analizó archivo]
+   Resultado: Facade Perezoso. Código Muerto (Dead Code).
+   Violación SRP/DIP y Anti-patrón Middleman.
+
+👤 Human: "Crea un plan de accion para darle solucion definitiva"
+
+🤖 IA: [Plan de Eliminación Total]
+   1. Borrar appointment.service.ts
+   2. Borrar appointment.service.spec.ts
+   3. Limpiar AppointmentModule
+
+👤 Human: ✅ Aprobado.
+
+🤖 IA: [Ejecutó eliminación]
+   Resultado: Consumer 12 test suites (44 tests) ✅ PASS. (-7 tests del servicio muerto)
+```
+
+| Commit | Hash | Actor | Descripción |
+|--------|------|-------|-------------|
+| `refactor(consumer)` | `e8f9a2b` | 🤖 | Delete AppointmentService (Dead Code/Anti-pattern). Clean AppointmentModule. |
+
+---
 **STATUS: ELITE DDD GRADE + FULL HEXAGONAL + SOLID CERTIFIED + SECURITY HARDENING** ✅
 
