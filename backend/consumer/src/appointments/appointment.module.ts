@@ -95,7 +95,7 @@ import { EventDispatchingAppointmentRepositoryDecorator } from '../infrastructur
         'ClockPort',
         'NotificationPort',
         'DomainEventBus',
-        MongooseModule
+        // MongooseModule eliminado: no exportar infraestructura
     ],
 })
 export class AppointmentModule { }

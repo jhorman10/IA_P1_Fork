@@ -16,6 +16,6 @@ import { AppointmentModule } from '../appointments/appointment.module';
             useExisting: AppointmentsGateway,
         },
     ],
-    exports: [AppointmentsGateway],
+    // exports: [AppointmentsGateway], // No exportar adaptador concreto
 })
 export class EventsModule { }
