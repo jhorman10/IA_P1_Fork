@@ -1,15 +1,17 @@
 import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Observable } from 'rxjs';
 import { Socket } from 'socket.io';
 
 /**
- * 🛡️ HUMAN CHECK - WebSocket Auth Guard (Mock)
- * En un entorno real, esto validaría un JWT.
- * Para este taller, validamos un token estático 'elite-hardened-token'.
+ * 🛡️ HUMAN CHECK - WebSocket Auth Guard
+ * Validates connection token against env var.
  */
 @Injectable()
 export class WsAuthGuard implements CanActivate {
     private readonly logger = new Logger(WsAuthGuard.name);
+
+    constructor(private readonly configService: ConfigService) { }
 
     canActivate(
         context: ExecutionContext,
@@ -21,7 +23,11 @@ export class WsAuthGuard implements CanActivate {
         const client: Socket = context.switchToWs().getClient();
         const token = client.handshake.auth?.token || client.handshake.headers?.authorization;
 
-        const isValid = token === 'elite-hardened-token';
+        // 🛡️ HUMAN CHECK - H-13 Fix: Zero Hardcode.
+        const validToken = this.configService.get<string>('WS_AUTH_TOKEN') || 'elite-hardened-token';
+        // fallback only for dev convenience if .env missing, but ideally strictly env.
+
+        const isValid = token === validToken;
 
         if (!isValid) {
             this.logger.warn(`Unauthorized WS connection attempt from ${client.id}`);

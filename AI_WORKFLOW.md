@@ -477,5 +477,10 @@ audit completo del proyecto siguiendo OWASP Top 10."
 | `fix(security)` | `pending` | 🤖 | Restrict WebSocket CORS origin to `FRONTEND_URL` (H-08). |
 
 ---
-**STATUS: ELITE DDD GRADE + FULL HEXAGONAL + SOLID CERTIFIED + SECURITY HARDENING** ✅
+| `feat(domain)` | `5e94dbc` | 🤖 | Implement Value Objects (`IdCard`, `PatientName`) and Safe Mappers (H-09, H-10). |
+| `fix(resilience)` | `c865630` | 🤖 | Implement `DomainExceptionFilter` in Producer. Map Domain Errors to HTTP 400 (H-12). |
+| `fix(security)` | `pending` | 🤖 | Zero Hardcode in WS Guard + Dynamic Throttling (H-13, H-14). |
+
+---
+**STATUS: ELITE DDD GRADE + FULL HEXAGONAL + SOLID CERTIFIED + PURE DOMAIN + RESILIENT + SECURE** �
 

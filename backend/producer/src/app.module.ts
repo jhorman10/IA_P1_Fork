@@ -49,10 +49,15 @@ import { CreateAppointmentUseCaseImpl } from './application/use-cases/create-app
         AppointmentModule,
         EventsModule,
         // 🛡️ HUMAN CHECK - Proteccion contra ataques de fuerza bruta y DoS
-        ThrottlerModule.forRoot([{
-            ttl: 60000,
-            limit: 10,
-        }]),
+        // H-14 Fix: Relaxed limits (100 req/min) and ConfigService integration
+        ThrottlerModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => [{
+                ttl: config.get<number>('THROTTLE_TTL') ?? 60000,
+                limit: config.get<number>('THROTTLE_LIMIT') ?? 100,
+            }],
+        }),
     ],
     controllers: [ProducerController, HealthController],
     providers: [
