@@ -45,6 +45,7 @@
 
 | Fecha | Tipo | Descripción | Commit | Actor |
 |-------|------|-------------|--------|-------|
+| 2026-02-19 | docs | Registra 7 hallazgos de auditoría SOLID en DEBT_REPORT.md | `3996958` | 🤖 |
 | 2026-02-19 | refactor | Elimina exportaciones de MongooseModule y AppointmentsGateway en módulos | `bcbf5ba` | 🤖 |
 | 2026-02-19 | docs | Verificado: emisión de eventos solo vía EventBroadcasterPort | N/A | 🤖 |
 | 2026-02-19 | refactor | Modulariza ProducerController, queries a AppointmentQueryController (SRP) | `44bc19f` | 🤖 |
@@ -129,6 +130,7 @@ graph TD
 
 | Hash | Tipo | Descripción | Actor |
 |------|------|-------------|-------|
+| `3996958` | docs | Registra 7 hallazgos de auditoría SOLID en DEBT_REPORT.md | 🤖 |
 | `bcbf5ba` | refactor | Elimina exportaciones de MongooseModule y AppointmentsGateway | 🤖 |
 | `44bc19f` | refactor | Modulariza ProducerController, queries a AppointmentQueryController | 🤖 |
 | `0c3bd89` | refactor | Extraer política de reintentos a RetryPolicyPort | 🤖 |
@@ -200,6 +202,7 @@ graph TD
 | 24 | **SRP Modularization**: ProducerController modularizado | `44bc19f` | 🤖 |
 | 25 | **Domain Events DIP**: Verificado EventBroadcasterPort | N/A | 🤖 |
 | 26 | **Infra Exports Purge**: Elimina exportaciones de infra | `bcbf5ba` | 🤖 |
+| 27 | **DEBT_REPORT Sync**: Registra 7 hallazgos SOLID en DEBT_REPORT.md | `3996958` | 🤖 |
 
 ---
 
