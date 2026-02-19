@@ -22,7 +22,7 @@ import { WsAuthGuard } from '../common/guards/ws-auth.guard';
     namespace: '/ws/appointments',
     cors: {
         // 🛡️ HUMAN CHECK - H-08 Fix: Restrict origin to Frontend URL.
-        origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+        origin: process.env.FRONTEND_URL, // Zero Magic Numbers: FRONTEND_URL debe estar siempre definido en .env
         credentials: true,
     },
 })
@@ -46,7 +46,11 @@ export class AppointmentsGateway
      * ConfigService is used for runtime logging confirmation only.
      */
     afterInit(): void {
-        const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3001';
+        const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+        if (!frontendUrl) {
+            this.logger.error('FRONTEND_URL no está definido en variables de entorno. Requerido para CORS/WebSocket.');
+            throw new Error('FRONTEND_URL debe estar definido en .env');
+        }
         this.logger.log(`WebSocket CORS configured for origin: ${frontendUrl}`);
     }
 
