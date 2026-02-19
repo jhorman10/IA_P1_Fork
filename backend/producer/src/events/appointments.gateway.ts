@@ -15,7 +15,8 @@ import { WsAuthGuard } from '../common/guards/ws-auth.guard';
 
 // 🛡️ HUMAN CHECK - WebSocket Gateway Hardened
 // ⚕️ HUMAN CHECK - Hexagonal: Implements EventBroadcasterPort (DIP)
-// CORS origin is set dynamically via afterInit() to avoid process.env access in decorators
+// EXCEPCIÓN: El uso de process.env en el decorador @WebSocketGateway es necesario porque los decoradores se evalúan en tiempo de compilación.
+// NestJS no permite inyectar ConfigService en decoradores. El acceso a variables de entorno en tiempo de ejecución se realiza vía ConfigService (ver afterInit()).
 @UseGuards(WsAuthGuard)
 @WebSocketGateway({
     namespace: '/ws/appointments',
