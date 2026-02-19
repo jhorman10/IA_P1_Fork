@@ -109,6 +109,18 @@
   border-left: 6px solid #cbd5e1;
 }
 
+/* TURNO EN ESPERA */
+.waiting {
+  border-left: 6px solid #f59e0b;
+  background: #fffbeb;
+}
+
+/* TURNO SIENDO ATENDIDO EN CONSULTORIO */
+.called {
+  border-left: 6px solid #3b82f6;
+  background: #eff6ff;
+}
+
 @keyframes fadeInLift {
   from {
     opacity: 0;

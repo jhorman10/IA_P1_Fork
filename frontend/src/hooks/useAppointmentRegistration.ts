@@ -41,6 +41,9 @@ export function useAppointmentRegistration() {
 
 
     useEffect(() => {
+        // Resetear inFlightRef en cada mount (evita bloqueo tras Fast Refresh o remount)
+        isMountedRef.current = true;
+        inFlightRef.current = false;
         return () => {
             isMountedRef.current = false;
         };
@@ -67,35 +70,30 @@ export function useAppointmentRegistration() {
 
             safeSet(
                 setSuccess,
-                res.message ?? "Appointment registered successfully"
+                res.message ?? "Turno registrado exitosamente."
             );
         } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : "UNKNOWN_ERROR";
+            const errorCode = err instanceof Error ? err.message : "UNKNOWN_ERROR";
+            // Si el servidor envió un mensaje específico, mostrarlo directamente
+            const serverMessage = (err as any)?.serverMessage;
 
-            let userMessage = "Could not register the appointment.";
+            let userMessage = serverMessage ?? "No se pudo registrar el turno. Intente de nuevo.";
 
-            switch (message) {
-                case "TIMEOUT":
-                    userMessage =
-                        "The server took too long. Please try again.";
-                    break;
-
-                case "RATE_LIMIT":
-                    userMessage =
-                        "Too many requests. Please wait a few seconds.";
-                    break;
-
-                case "HTTP_ERROR":
-                case "SERVER_ERROR":
-                    userMessage =
-                        "Server error. Please try later.";
-                    break;
-
-                case "CIRCUIT_OPEN":
-                    userMessage =
-                        "Server temporarily unavailable. Retrying...";
-                    break;
+            if (!serverMessage) {
+                switch (errorCode) {
+                    case "TIMEOUT":
+                        userMessage = "El servidor tardó demasiado. Intente de nuevo.";
+                        break;
+                    case "RATE_LIMIT":
+                        userMessage = "Demasiadas solicitudes. Espere unos segundos.";
+                        break;
+                    case "SERVER_ERROR":
+                        userMessage = "Error en el servidor. Intente más tarde.";
+                        break;
+                    case "CIRCUIT_OPEN":
+                        userMessage = "Servidor temporalmente no disponible.";
+                        break;
+                }
             }
 
             safeSet(setError, userMessage);

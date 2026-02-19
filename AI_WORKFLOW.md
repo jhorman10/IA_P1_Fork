@@ -55,6 +55,7 @@
 | 2026-02-19 | refactor | Eliminar exportación de ClientsModule en NotificationsModule (DIP) | `052df83` | 🤖 |
 | 2026-02-19 | refactor | Centraliza todas las variables de entorno en .env y refuerza HUMAN CHECK en docker-compose.yml. Se elimina configuración directa y se documenta trazabilidad. | N/A | 🤖 |
 | 2026-02-19 | fix | Exporta MaintenanceOrchestratorUseCase en AppointmentModule y corrige inyección de dependencias en SchedulerModule. Servicios corren sin errores de DI. | `14726b5` | 🤖 |
+| 2026-02-19 | test | test(e2e): estructura inicial y primer caso E2E para flujo completo de turnos médicos (API → RabbitMQ → Consumer → MongoDB) | `c112783` | 🤖 |
 
 ### 1.2 — Estado de Auditorías
 

@@ -58,7 +58,7 @@
 | I-01 | Faltan índices en MongoDB (A-02) | Persistencia | ✅ |
 | I-02 | Manejo incorrecto de ack/nack en RMQ (A-03) | Mensajería | ✅ |
 | I-03 | Credenciales hardcodeadas y healthchecks ausentes (A-05, E-05, G-04) | Docker/Seguridad | ✅ |
-| I-04 | Fuga global de ValidationPipe en microservicio RMQ (A-06) | Validación | ✅ |
+| I-04 | Falta suite E2E: Validar flujo completo API → RabbitMQ → Consumer → MongoDB. | Integración | ✅ |
 | I-05 | Falta desacoplamiento de Repositorios (H-12) | Persistencia | ✅ |
 | I-06 | Faltan Patrones de Resiliencia: DLQ/Retry (H-04) | Confiabilidad | ✅ |
 | I-07 | H-23: Health Check mentiroso (Dependencia de BD) | Salud | ✅ |
