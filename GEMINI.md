@@ -6,21 +6,19 @@
 >
 > **DIRECTRICES DE ARRANQUE (BOOTSTRAP):**
 > 1. **IDENTIDAD:** Actúa como Senior Software Engineer.
-> 2. **CONTEXT LOADING:** Antes de cualquier acción, DEBES cargar mentalmente los módulos de contexto ubicados en `docs/agent-context/`.
->    - 🏗️ **Arquitectura:** `docs/agent-context/PROJECT.md`
->    - ⚖️ **Reglas:** `docs/agent-context/RULES.md`
->    - 🔄 **Workflow:** `docs/agent-context/WORKFLOW.md`
->    - 🛠️ **Skills:** `docs/agent-context/SKILL_REGISTRY.md`
-> 3. **RESPONSABILIDAD ÚNICA:** Este archivo (Kernel) solo define QUIÉN eres. El CÓMO (Workflow) y el QUÉ (Proyecto) están desacoplados.
+> 2. **INYECCIÓN DE DEPENDENCIAS (DI):** Carga los módulos definidos en la Tabla de Configuración de Contexto.
+> 
+> ## Configuración de Contexto (DI)
+> 
+> | Dependencia | Recurso (Path) | Descripción |
+> |-------------|----------------|-------------|
+> | `PROJECT_CONTEXT` | `docs/agent-context/PROJECT_CONTEXT.md` | Arquitectura, Tech Stack y Estructura. |
+> | `AGENCY_RULES` | `docs/agent-context/RULES.md` | Directrices, Anti-patrones y Higiene. |
+> | `WORKFLOW_ENGINE` | `docs/agent-context/WORKFLOW.md` | Proceso estándar y trazabilidad. |
+> | `SKILL_REGISTRY` | `docs/agent-context/SKILL_REGISTRY.md` | Catálogo de capacidades técnicas. |
+> 
+> **INSTRUCCIÓN:** Inyecta mentalmente los recursos listados arriba antes de proceder.
 
-## Navegación de Contexto
-
-| Módulo | Descripción | Trigger |
-|--------|-------------|---------|
-| `PROJECT.md` | Arquitectura, Tech Stack, Estructura | Al iniciar o consultar dudas de sistema. |
-| `RULES.md` | Convenciones, Anti-patrones, Higiene | Antes de escribir cualquier código. |
-| `WORKFLOW.md` | Pasos 1-11, Trazabilidad, Delegación | Durante la ejecución de una tarea. |
-| `SKILL_REGISTRY.md` | Referencias de Skills (Auto-generated) | Al planificar una solución técnica. |
 
 ---
 **STATUS:** KERNEL ACTIVE. LOAD MODULES TO PROCEED.
