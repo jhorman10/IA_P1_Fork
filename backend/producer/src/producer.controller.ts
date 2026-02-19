@@ -3,16 +3,12 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/s
 import { CreateAppointmentUseCase } from './domain/ports/inbound/create-appointment.use-case';
 import { QueryAppointmentsUseCase } from './domain/ports/inbound/query-appointments.use-case';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { AppointmentEventPayload } from './types/appointment-event';
+import { CreateAppointmentResponseDto } from './dto/create-appointment-response.dto';
+import { AppointmentResponseDto } from './dto/appointment-response.dto';
 
 // ⚕️ HUMAN CHECK - Hexagonal: Controller depends ONLY on inbound ports (DIP).
 // Commands (POST) → CreateAppointmentUseCase
 // Queries (GET) → QueryAppointmentsUseCase
-
-interface CreateAppointmentResponse {
-    status: string;
-    message: string;
-}
 
 @ApiTags('Appointments')
 @Controller('appointments')
@@ -37,19 +33,13 @@ export class ProducerController {
     @ApiResponse({
         status: 202,
         description: 'Appointment accepted and queued for processing',
-        schema: {
-            type: 'object',
-            properties: {
-                status: { type: 'string', example: 'accepted' },
-                message: { type: 'string', example: 'Asignación de turno en progreso' },
-            },
-        },
+        type: CreateAppointmentResponseDto,
     })
     @ApiResponse({
         status: 400,
         description: 'Invalid data — missing fields, incorrect types, or forbidden properties',
     })
-    async createAppointment(@Body() dto: CreateAppointmentDto): Promise<CreateAppointmentResponse> {
+    async createAppointment(@Body() dto: CreateAppointmentDto): Promise<CreateAppointmentResponseDto> {
         // 1. Map DTO (HTTP) → Command (Domain)
         // ⚕️ HUMAN CHECK - SRP: Controller handles data mapping, not the Use Case.
         const command = {
@@ -77,24 +67,13 @@ export class ProducerController {
     @ApiResponse({
         status: 200,
         description: 'List of appointments',
-        schema: {
-            type: 'array',
-            items: {
-                type: 'object',
-                properties: {
-                    id: { type: 'string', example: 'uuid' },
-                    fullName: { type: 'string', example: 'John Doe' },
-                    idCard: { type: 'number', example: 123456789 },
-                    office: { type: 'string', example: '3', nullable: true },
-                    status: { type: 'string', example: 'called', enum: ['waiting', 'called', 'completed'] },
-                    priority: { type: 'string', example: 'medium', enum: ['high', 'medium', 'low'] },
-                    timestamp: { type: 'number', example: 1710000000 },
-                },
-            },
-        },
+        type: [AppointmentResponseDto],
     })
-    async getAllAppointments(): Promise<AppointmentEventPayload[]> {
-        return this.queryAppointmentsUseCase.findAll();
+    async getAllAppointments(): Promise<AppointmentResponseDto[]> {
+        const events = await this.queryAppointmentsUseCase.findAll();
+        // Map Domain/Event object to Response DTO (if structure matches, cast is okay for now, but explicit mapping is safer)
+        // Since AppointmentEventPayload and AppointmentResponseDto match structurally:
+        return events as unknown as AppointmentResponseDto[];
     }
 
     @Get(':idCard')
@@ -112,12 +91,14 @@ export class ProducerController {
     @ApiResponse({
         status: 200,
         description: 'Appointments found for the patient',
+        type: [AppointmentResponseDto],
     })
     @ApiResponse({
         status: 404,
         description: 'No appointments found for the provided ID card',
     })
-    async getAppointmentsByIdCard(@Param('idCard', ParseIntPipe) idCard: number): Promise<AppointmentEventPayload[]> {
-        return this.queryAppointmentsUseCase.findByIdCard(idCard);
+    async getAppointmentsByIdCard(@Param('idCard', ParseIntPipe) idCard: number): Promise<AppointmentResponseDto[]> {
+        const events = await this.queryAppointmentsUseCase.findByIdCard(idCard);
+        return events as unknown as AppointmentResponseDto[];
     }
 }
