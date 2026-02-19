@@ -4,10 +4,10 @@ import { AppointmentStatus, AppointmentPriority } from '../types/appointment-eve
 
 export type AppointmentDocument = HydratedDocument<Appointment>;
 
-// ⚕️ HUMAN CHECK - Appointment Schema (Producer - read-only)
-// Must be synced with the Consumer schema.
-// ⚕️ HUMAN CHECK - MongoDB Indexes (A-02)
-// Producer uses these for Dashboard queries and patient history lookup.
+// ⚕️ HUMAN CHECK - Esquema de Appointment (Producer - solo lectura)
+// Debe estar sincronizado con el esquema del Consumer.
+// ⚕️ HUMAN CHECK - Índices de MongoDB (A-02)
+// El Producer los usa para queries de Dashboard y consulta de historial de paciente.
 @Schema({ timestamps: true })
 export class Appointment {
     @Prop({ required: true, index: true })
@@ -16,8 +16,8 @@ export class Appointment {
     @Prop({ required: true })
     fullName!: string;
 
-    // ⚕️ HUMAN CHECK - Nullable office
-    // null when the patient is waiting
+    // ⚕️ HUMAN CHECK - Campo office nullable
+    // null cuando el paciente está en espera
     @Prop({ type: String, default: null, index: true })
     office!: string | null;
 
@@ -27,11 +27,11 @@ export class Appointment {
     @Prop({ default: 'medium', enum: ['high', 'medium', 'low'] })
     priority!: AppointmentPriority;
 
-    // ⚕️ HUMAN CHECK - Creation timestamp (epoch ms)
+    // ⚕️ HUMAN CHECK - Timestamp de creación (epoch ms)
     @Prop({ default: () => Date.now() })
     timestamp!: number;
 
-    // ⚕️ HUMAN CHECK - Completion timestamp
+    // ⚕️ HUMAN CHECK - Timestamp de finalización
     @Prop({ type: Number, default: null })
     completedAt!: number | null;
 }

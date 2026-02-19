@@ -4,12 +4,12 @@ import { AppointmentStatus, AppointmentPriority } from '../types/appointment-eve
 
 export type AppointmentDocument = HydratedDocument<Appointment>;
 
-// ⚕️ HUMAN CHECK - Appointment Schema
-// Ensuring fields and types meet business needs.
-// ⚕️ HUMAN CHECK - MongoDB Indexes (A-02)
-// idCard: Unique check (idempotency support) and fast patient search
-// status: Scheduler and Dashboard optimization
-// Composite: Optimization for the pending appointments query
+// ⚕️ HUMAN CHECK - Esquema de Appointment
+// Asegura que los campos y tipos cumplen los requisitos de negocio.
+// ⚕️ HUMAN CHECK - Índices de MongoDB (A-02)
+// idCard: Chequeo único (soporte de idempotencia) y búsqueda rápida de paciente
+// status: Optimización para Scheduler y Dashboard
+// Composite: Optimización para la consulta de turnos pendientes
 @Schema({ timestamps: true })
 export class Appointment {
     @Prop({ required: true, index: true })
