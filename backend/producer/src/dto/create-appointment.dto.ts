@@ -7,18 +7,18 @@ export class CreateAppointmentDto {
         description: 'Patient ID card number',
         example: 123456789,
     })
-    @IsNotEmpty()
-    @IsNumber()
-    @IsPositive()
-    @Max(Number.MAX_SAFE_INTEGER)
+    @IsNotEmpty({ message: 'La cédula es obligatoria' })
+    @IsNumber({}, { message: 'La cédula debe ser un número' })
+    @IsPositive({ message: 'La cédula debe ser positiva' })
+    @Max(Number.MAX_SAFE_INTEGER, { message: 'Número de cédula inválido' })
     idCard: number;
 
     @ApiProperty({
         description: 'Patient full name',
         example: 'John Doe',
     })
-    @IsNotEmpty()
-    @IsString()
+    @IsNotEmpty({ message: 'El nombre es obligatorio' })
+    @IsString({ message: 'El nombre debe ser texto' })
     fullName: string;
 
     @ApiPropertyOptional({
@@ -29,6 +29,6 @@ export class CreateAppointmentDto {
     })
     @IsOptional()
     @IsString()
-    @IsIn(['high', 'medium', 'low'])
+    @IsIn(['high', 'medium', 'low'], { message: 'La prioridad debe ser alta, media o baja' })
     priority?: AppointmentPriority;
 }

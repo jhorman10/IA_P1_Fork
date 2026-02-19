@@ -63,7 +63,7 @@ export class ProducerController {
         // 3. Construct Response (Presentation Logic)
         return {
             status: 'accepted',
-            message: 'Appointment assignment in progress',
+            message: 'Asignación de turno en progreso',
         };
     }
 

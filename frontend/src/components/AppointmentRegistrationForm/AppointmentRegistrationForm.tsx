@@ -30,11 +30,11 @@ export default function AppointmentRegistrationForm() {
 
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
-            <h2>Register Appointment</h2>
+            <h2>Registrar Turno</h2>
 
             <input
                 type="text"
-                placeholder="Full Name"
+                placeholder="Nombre Completo"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 className={styles.input}
@@ -42,7 +42,7 @@ export default function AppointmentRegistrationForm() {
 
             <input
                 type="text"
-                placeholder="ID Card Number"
+                placeholder="Número de Identificación"
                 value={idCard}
                 onChange={(e) => setIdCard(e.target.value)}
                 className={styles.input}
@@ -53,13 +53,13 @@ export default function AppointmentRegistrationForm() {
                 onChange={(e) => setPriority(e.target.value as "high" | "medium" | "low")}
                 className={styles.input}
             >
-                <option value="low">Low Priority</option>
-                <option value="medium">Medium Priority</option>
-                <option value="high">High Priority</option>
+                <option value="low">Prioridad Baja</option>
+                <option value="medium">Prioridad Media</option>
+                <option value="high">Prioridad Alta</option>
             </select>
 
             <button disabled={loading} className={styles.button}>
-                {loading ? "Sending..." : "Register Now"}
+                {loading ? "Enviando..." : "Registrar Ahora"}
             </button>
 
             {success && <p className={styles.success}>{success}</p>}

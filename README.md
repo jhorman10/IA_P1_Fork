@@ -1,95 +1,95 @@
-# IA_P1 - Real-Time Medical Appointment System
+# IA_P1 - Sistema de Turnos Médicos en Tiempo Real
 
-> **Medical appointment management system certified for "Elite DDD" & "Hexagonal Architecture".**
-> Built with NestJS, RabbitMQ, MongoDB, and Next.js.
+> **Sistema de gestión de citas médicas certificado con "Elite DDD" y "Arquitectura Hexagonal".**
+> Construido con NestJS, RabbitMQ, MongoDB y Next.js.
 
-## 🚀 System Architecture
+## 🚀 Arquitectura del Sistema
 
-The core architecture decouples appointment reception from processing using an **Event-Driven Microservices** pattern.
+La arquitectura central desacopla la recepción de turnos del procesamiento utilizando un patrón de **Microservicios Orientados a Eventos**.
 
 ```mermaid
 sequenceDiagram
-    participant C as Client (Frontend)
-    participant P as Producer (API + WS)
+    participant C as Cliente (Frontend)
+    participant P as Productor (API + WS)
     participant Q as RabbitMQ
-    participant W as Consumer (Worker)
-    participant S as Scheduler (Consumer)
+    participant W as Consumidor (Worker)
+    participant S as Planificador (Consumer)
     participant D as MongoDB
 
     C->>P: 1. POST /appointments (HTTP)
-    P->>Q: 2. Publishes 'create_appointment'
+    P->>Q: 2. Publica 'create_appointment'
     P-->>C: 202 Accepted
-    Q->>W: 3. Consumes message (ack/nack)
-    W->>D: 4. Saves appointment (Status: Waiting)
-    W->>Q: 4b. Domain Event → Notification
+    Q->>W: 3. Consume mensaje (ack/nack)
+    W->>D: 4. Guarda turno (Estado: Esperando)
+    W->>Q: 4b. Evento de Dominio → Notificación
     
-    loop Every SCHEDULER_INTERVAL_MS
-        S->>D: 5. Finds waiting appointments
-        S->>D: 6. Assigns office (randomized duration 8-15s)
-        S->>Q: 8. Publishes 'appointment_created'
+    loop Cada SCHEDULER_INTERVAL_MS
+        S->>D: 5. Busca turnos en espera
+        S->>D: 6. Asigna consultorio (duración aleatoria 8-15s)
+        S->>Q: 8. Publica 'appointment_created'
     end
 
-    Q->>P: 9. Consumes notification event
-    P->>C: 10. Emits WebSocket event (Real-time)
+    Q->>P: 9. Consume evento de notificación
+    P->>C: 10. Emite evento WebSocket (Tiempo Real)
 ```
 
-## 📚 Documentation & Project Context
+## 📚 Documentación y Contexto del Proyecto
 
-This project uses a modular "Meta-Architecture" where documentation is the Single Source of Truth for both humans and AI agents.
+Este proyecto utiliza una "Meta-Arquitectura" modular donde la documentación es la Fuente Única de Verdad tanto para humanos como para agentes de IA.
 
-| Module | Description | Location |
-|--------|-------------|----------|
-| **🏗️ Project Context** | Architecture, Tech Stack, Folder Structure, Services definition. | [**PROJECT_CONTEXT.md**](./docs/agent-context/PROJECT_CONTEXT.md) |
-| **⚖️ Rules & Guidelines** | Cultural conventions, Anti-patterns, Hygiene rules. | [**RULES.md**](./docs/agent-context/RULES.md) |
-| **🔄 Workflow Engine** | Interaction protocols, traceability, and delegation model. | [**WORKFLOW.md**](./docs/agent-context/WORKFLOW.md) |
-| **🛠️ Skill Registry** | Capabilities available to the AI Orchestrator (Auto-synced). | [**SKILL_REGISTRY.md**](./docs/agent-context/SKILL_REGISTRY.md) |
+| Módulo | Descripción | Ubicación |
+|--------|-------------|-----------|
+| **🏗️ Contexto del Proyecto** | Arquitectura, Stack Tecnológico, Estructura de Carpetas. | [**PROJECT_CONTEXT.md**](./docs/agent-context/PROJECT_CONTEXT.md) |
+| **⚖️ Reglas y Directrices** | Convenciones culturales, Anti-patrones, Higiene. | [**RULES.md**](./docs/agent-context/RULES.md) |
+| **🔄 Motor de Flujo** | Protocolos de interacción, trazabilidad y modelo de delegación. | [**WORKFLOW.md**](./docs/agent-context/WORKFLOW.md) |
+| **🛠️ Registro de Skills** | Capacidades disponibles para el Orquestador de IA. | [**SKILL_REGISTRY.md**](./docs/agent-context/SKILL_REGISTRY.md) |
 
-### Status Reports
-- **Technical Debt:** [DEBT_REPORT.md](./DEBT_REPORT.md) (Status: **ELITE GRADE**)
-- **Security Audit:** [SECURITY_AUDIT.md](./SECURITY_AUDIT.md)
-- **AI Traceability:** [AI_WORKFLOW.md](./AI_WORKFLOW.md)
+### Reportes de Estado
+- **Deuda Técnica:** [DEBT_REPORT.md](./DEBT_REPORT.md) (Estado: **ELITE GRADE**)
+- **Auditoría de Seguridad:** [SECURITY_AUDIT.md](./SECURITY_AUDIT.md)
+- **Trazabilidad IA:** [AI_WORKFLOW.md](./AI_WORKFLOW.md)
 
 ---
 
-## 🛠️ Quick Start
+## 🛠️ Inicio Rápido
 
-### Prerequisites
+### Prerrequisitos
 - Docker Engine & Docker Compose v2
 
-### Steps
+### Pasos
 
-1. **Clone the repository**
+1. **Clonar el repositorio**
    ```bash
    git clone https://github.com/jhorman10/IA_P1_Fork.git
    cd IA_P1_Fork
    ```
 
-2. **Configure environment**
+2. **Configurar entorno**
    ```bash
    cp .env.example .env
-   # Edit .env with secure credentials (see .env.example for details)
+   # Editar .env con credenciales seguras (ver .env.example para detalles)
    ```
 
-3. **Start the infrastructure**
+3. **Iniciar infraestructura**
    ```bash
    docker compose up -d --build
    ```
 
-4. **Access the application**
+4. **Acceder a la aplicación**
    - **Frontend:** [http://localhost:3001](http://localhost:3001)
    - **API Swagger:** [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
    - **RabbitMQ Admin:** [http://localhost:15672](http://localhost:15672)
 
 ---
 
-## ✨ Key Features
+## ✨ Características Clave
 
-- **Event-Driven**: Pure async communication via RabbitMQ.
-- **Domain-Driven Design (DDD)**: Value Objects, Domain Events, Factories, Specifications.
-- **Hexagonal Architecture**: Ports & Adapters pattern in Consumer service.
-- **Real-Time**: WebSockets for instant appointment updates.
-- **Resilience**: DLQ (Dead Letter Queue), Retry Policies, and Healthchecks.
-- **Security**: Helmet, Rate Limiting, CORS, and Zero-Hardcode Policy.
+- **Orientado a Eventos**: Comunicación puramente asíncrona vía RabbitMQ.
+- **Diseño Guiado por el Dominio (DDD)**: Value Objects, Eventos de Dominio, Fábricas, Especificaciones.
+- **Arquitectura Hexagonal**: Patrón de Puertos y Adaptadores en el servicio Consumidor.
+- **Tiempo Real**: WebSockets para actualizaciones instantáneas de turnos.
+- **Resiliencia**: DLQ (Dead Letter Queue), Políticas de Reintento y Healthchecks.
+- **Seguridad**: Helmet, Rate Limiting, CORS y Política de Cero Hardcodeo.
 
 ---
-**STATUS: ARCHITECTURAL PURITY ACHIEVED** ✅
+**ESTADO: PUREZA ARQUITECTÓNICA ALCANZADA** ✅

@@ -59,15 +59,15 @@ export default function CompletedHistoryDashboard() {
 
   return (
     <main className={styles.container}>
-      <h1 className={styles.title}>Completed Appointments History</h1>
+      <h1 className={styles.title}>Historial de Turnos Completados</h1>
 
       <p className={connected ? styles.connected : styles.disconnected}>
-        {connected ? "🟢 Connected in real-time" : "🔴 Disconnected — reconnecting..."}
+        {connected ? "🟢 Conectado en tiempo real" : "🔴 Desconectado — reconectando..."}
       </p>
 
       {!audioEnabled && (
         <p className={styles.audioHint}>
-          Tap the screen to enable sound 🔔
+          Toca la pantalla para activar sonido 🔔
         </p>
       )}
 
@@ -75,15 +75,15 @@ export default function CompletedHistoryDashboard() {
 
       {completedAppointments.length > 0 && (
         <>
-          <h2 className={styles.sectionTitle}>✅ Completed ({completedAppointments.length})</h2>
+          <h2 className={styles.sectionTitle}>✅ Completados ({completedAppointments.length})</h2>
           <ul className={styles.list}>
             {completedAppointments.map((t) => (
               <li key={t.id} className={`${styles.item} ${styles.atendido}`}>
                 <span className={styles.nombre}>{t.fullName}</span>
                 <span className={styles.hora}>{formatTime(t.timestamp)}</span>
-                <span>Office {t.office}</span>
+                <span>Consultorio {t.office}</span>
                 <span className={styles.badge}>
-                  {t.priority === "high" ? "🔴" : t.priority === "medium" ? "🟡" : "🟢"} {t.priority}
+                  {t.priority === "high" ? "🔴 Alta" : t.priority === "medium" ? "🟡 Media" : "🟢 Baja"}
                 </span>
               </li>
             ))}
@@ -92,12 +92,12 @@ export default function CompletedHistoryDashboard() {
       )}
 
       {completedAppointments.length === 0 && !error && (
-        <p className={styles.empty}>No completed appointments yet</p>
+        <p className={styles.empty}>No hay turnos completados aún</p>
       )}
 
       {showToast && (
         <div className={styles.toast}>
-          ✅ Appointment completed
+          ✅ Turno completado
         </div>
       )}
     </main>

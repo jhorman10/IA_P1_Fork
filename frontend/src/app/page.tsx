@@ -48,15 +48,15 @@ export default function AppointmentsScreen() {
 
   return (
     <main className={styles.container}>
-      <h1 className={styles.title}>Available Appointments</h1>
+      <h1 className={styles.title}>Turnos Disponibles</h1>
 
       <p className={connected ? styles.connected : styles.disconnected}>
-        {connected ? "🟢 Connected in real-time" : "🔴 Disconnected — reconnecting..."}
+        {connected ? "🟢 Conectado en tiempo real" : "🔴 Desconectado — reconectando..."}
       </p>
 
       {!audioEnabled && (
         <p className={styles.audioHint}>
-          Tap the screen to enable sound 🔔
+          Toca la pantalla para activar sonido 🔔
         </p>
       )}
 
@@ -64,14 +64,14 @@ export default function AppointmentsScreen() {
 
       {calledAppointments.length > 0 && (
         <>
-          <h2 className={styles.sectionTitle}>📢 Called</h2>
+          <h2 className={styles.sectionTitle}>📢 Llamados</h2>
           <ul className={styles.list}>
             {calledAppointments.map((t) => (
               <li key={t.id} className={`${styles.item} ${styles.highlight}`}>
                 <span className={styles.nombre}>{t.fullName}</span>
-                <span>Office {t.office}</span>
+                <span>Consultorio {t.office}</span>
                 <span className={styles.badge}>
-                  {t.priority === "high" ? "🔴" : t.priority === "medium" ? "🟡" : "🟢"} {t.priority}
+                  {t.priority === "high" ? "🔴 Alta" : t.priority === "medium" ? "🟡 Media" : "🟢 Baja"}
                 </span>
               </li>
             ))}
@@ -81,14 +81,14 @@ export default function AppointmentsScreen() {
 
       {waitingAppointments.length > 0 && (
         <>
-          <h2 className={styles.sectionTitle}>⏳ Waiting</h2>
+          <h2 className={styles.sectionTitle}>⏳ En Espera</h2>
           <ul className={styles.list}>
             {waitingAppointments.map((t) => (
               <li key={t.id} className={styles.item}>
                 <span className={styles.nombre}>{t.fullName}</span>
-                <span>Office not assigned</span>
+                <span>Consultorio no asignado</span>
                 <span className={styles.badge}>
-                  {t.priority === "high" ? "🔴" : t.priority === "medium" ? "🟡" : "🟢"} {t.priority}
+                  {t.priority === "high" ? "🔴 Alta" : t.priority === "medium" ? "🟡 Media" : "🟢 Baja"}
                 </span>
               </li>
             ))}
@@ -97,12 +97,12 @@ export default function AppointmentsScreen() {
       )}
 
       {appointments.length === 0 && !error && (
-        <p className={styles.empty}>No appointments registered</p>
+        <p className={styles.empty}>No hay turnos registrados</p>
       )}
 
       {showToast && (
         <div className={styles.toast}>
-          🔔 New appointment called
+          🔔 Nuevo turno llamado
         </div>
       )}
     </main>
