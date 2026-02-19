@@ -14,7 +14,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-AGENT_FILE="$REPO_ROOT/GEMINI.md"
+AGENT_FILE="$REPO_ROOT/docs/agent-context/SKILL_REGISTRY.md"
 SKILLS_DIR="$REPO_ROOT/skills"
 
 echo "🔄 Syncing Skill References..."
@@ -24,7 +24,7 @@ echo ""
 
 # Verify files exist
 if [ ! -f "$AGENT_FILE" ]; then
-    echo "❌ Error: agent.md not found at $AGENT_FILE"
+    echo "❌ Error: SKILL_REGISTRY.md not found at $AGENT_FILE"
     exit 1
 fi
 
@@ -71,9 +71,9 @@ END_SENTINEL="<!-- END SKILL REFERENCES -->"
 
 if ! grep -q "$BEGIN_SENTINEL" "$AGENT_FILE"; then
     echo ""
-    echo "❌ Error: Sentinel comment not found in agent.md"
+    echo "❌ Error: Sentinel comment not found in SKILL_REGISTRY.md"
     echo "   Expected: $BEGIN_SENTINEL"
-    echo "   Add this comment to agent.md to enable auto-sync."
+    echo "   Add this comment to SKILL_REGISTRY.md to enable auto-sync."
     exit 1
 fi
 
