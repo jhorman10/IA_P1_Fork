@@ -1,4 +1,3 @@
-
 # 📋 Reporte de Deuda Técnica y Endurecimiento — IA_P1_Fork
 
 > **Estado Ejecutivo**: Consolidación de todo el feedback y fases de endurecimiento arquitectónico.
@@ -47,6 +46,7 @@
 | A-11 | H-32: Retry Policy acoplada en Controller (Violación DIP) | Resiliencia | ✅ |
 | A-12 | H-33: ProducerController con Múltiples Responsabilidades (Violación SRP) | Orquestación | ✅ |
 | A-13 | H-34: Emisión de Domain Events verificada vía Ports | Event-Driven | ✅ |
+| A-14 | MaintenanceOrchestratorUseCase no exportado: SchedulerService no puede inyectar dependencias (bloqueo crítico de arranque). Solución: exportar provider en AppointmentModule. | Orquestación | ✅ |
 
 ---
 

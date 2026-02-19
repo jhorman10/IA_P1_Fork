@@ -54,6 +54,7 @@
 | 2026-02-19 | docs | Documentar excepción de process.env en decorador WebSocketGateway | `280cf7a` | 🤖 |
 | 2026-02-19 | refactor | Eliminar exportación de ClientsModule en NotificationsModule (DIP) | `052df83` | 🤖 |
 | 2026-02-19 | refactor | Centraliza todas las variables de entorno en .env y refuerza HUMAN CHECK en docker-compose.yml. Se elimina configuración directa y se documenta trazabilidad. | N/A | 🤖 |
+| 2026-02-19 | fix | Exporta MaintenanceOrchestratorUseCase en AppointmentModule y corrige inyección de dependencias en SchedulerModule. Servicios corren sin errores de DI. | `14726b5` | 🤖 |
 
 ### 1.2 — Estado de Auditorías
 
