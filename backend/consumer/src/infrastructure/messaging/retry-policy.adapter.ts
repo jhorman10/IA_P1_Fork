@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DomainError } from '../../../domain/errors/domain.error';
-import { RetryPolicyPort } from '../../../domain/ports/outbound/retry-policy.port';
+import { DomainError } from '../../domain/errors/domain.error';
+import { RetryPolicyPort } from '../../domain/ports/outbound/retry-policy.port';
 
 @Injectable()
 export class RetryPolicyAdapter implements RetryPolicyPort {
