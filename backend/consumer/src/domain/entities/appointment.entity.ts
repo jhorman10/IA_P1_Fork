@@ -1,3 +1,4 @@
+import { ValidationError } from '../errors/validation.error';
 import { IdCard } from '../value-objects/id-card.value-object';
 import { DomainEvent } from '../events/domain-event.base';
 import { FullName } from '../value-objects/full-name.value-object';
@@ -34,7 +35,7 @@ export class Appointment {
 
     public assignOffice(office: string, durationSeconds: number, now: number): void {
         if (this.status !== 'waiting') {
-            throw new Error(`Cannot assign office to appointment in ${this.status} status`);
+            throw new ValidationError(`Cannot assign office to appointment in ${this.status} status`);
         }
         this.status = 'called';
         this.office = office;

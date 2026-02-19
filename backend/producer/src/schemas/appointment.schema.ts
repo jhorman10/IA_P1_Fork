@@ -11,29 +11,29 @@ export type AppointmentDocument = HydratedDocument<Appointment>;
 @Schema({ timestamps: true })
 export class Appointment {
     @Prop({ required: true, index: true })
-    idCard: number;
+    idCard!: number;
 
     @Prop({ required: true })
-    fullName: string;
+    fullName!: string;
 
     // ⚕️ HUMAN CHECK - Nullable office
     // null when the patient is waiting
     @Prop({ default: null, index: true })
-    office: string | null;
+    office!: string | null;
 
     @Prop({ default: 'waiting', enum: ['waiting', 'called', 'completed'], index: true })
-    status: AppointmentStatus;
+    status!: AppointmentStatus;
 
     @Prop({ default: 'medium', enum: ['high', 'medium', 'low'] })
-    priority: AppointmentPriority;
+    priority!: AppointmentPriority;
 
     // ⚕️ HUMAN CHECK - Creation timestamp (epoch ms)
     @Prop({ default: () => Date.now() })
-    timestamp: number;
+    timestamp!: number;
 
     // ⚕️ HUMAN CHECK - Completion timestamp
     @Prop({ default: null })
-    completedAt: number | null;
+    completedAt!: number | null;
 }
 
 export const AppointmentSchema = SchemaFactory.createForClass(Appointment);

@@ -9,29 +9,13 @@ import { MaintenanceOrchestratorUseCaseImpl } from '../application/use-cases/mai
 import { ConsultationPolicy } from '../domain/policies/consultation.policy';
 
 @Module({
-    imports: [AppointmentModule, NotificationsModule, ConfigModule],
+    imports: [
+        AppointmentModule,
+        NotificationsModule,
+        ConfigModule,
+    ],
     providers: [
         SchedulerService,
-        // ⚕️ HUMAN CHECK - H-07 Fix: ConsultationPolicy as injectable provider
-        ConsultationPolicy,
-        {
-            provide: 'CompleteExpiredAppointmentsUseCase',
-            inject: ['AppointmentRepository', 'NotificationPort', 'LoggerPort', 'ClockPort'],
-            useFactory: (repo, notifier, logger, clock) => new CompleteExpiredAppointmentsUseCaseImpl(repo, notifier, logger, clock),
-        },
-        {
-            provide: 'AssignAvailableOfficesUseCase',
-            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort', 'DomainEventBus', ConfigService, ConsultationPolicy],
-            useFactory: (repo, logger, clock, eventBus, config, consultationPolicy) => {
-                const totalOffices = Number(config.get('CONSULTORIOS_TOTAL')) || 5;
-                return new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, eventBus, totalOffices, consultationPolicy);
-            },
-        },
-        {
-            provide: 'MaintenanceOrchestratorUseCase',
-            inject: ['CompleteExpiredAppointmentsUseCase', 'AssignAvailableOfficesUseCase', 'LoggerPort'],
-            useFactory: (complete, assign, logger) => new MaintenanceOrchestratorUseCaseImpl(complete, assign, logger),
-        },
     ],
     exports: [SchedulerService],
 })

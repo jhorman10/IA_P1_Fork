@@ -51,7 +51,7 @@ export class MongooseAppointmentReadRepository implements AppointmentReadReposit
             status: doc.status,
             priority: doc.priority,
             timestamp: doc.timestamp,
-            completedAt: doc.completedAt,
+            completedAt: doc.completedAt ?? undefined,
         };
     }
 }

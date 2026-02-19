@@ -4,11 +4,11 @@ import { AppointmentPriority } from '../types/appointment-event';
 export class CreateAppointmentDto {
     @IsNotEmpty()
     @IsNumber()
-    idCard: number;
+    idCard!: number;
 
     @IsNotEmpty()
     @IsString()
-    fullName: string;
+    fullName!: string;
 
     @IsOptional()
     @IsString()

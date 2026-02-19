@@ -11,6 +11,11 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { Appointment } from '../domain/entities/appointment.entity';
 import { AppointmentRegisteredHandler, AppointmentAssignedHandler } from '../application/event-handlers/appointment-events.handler';
 import { LocalDomainEventBusAdapter } from '../infrastructure/messaging/local-domain-event-bus.adapter';
+import { MongooseLockRepository } from '../infrastructure/persistence/mongoose-lock.repository';
+import { MaintenanceOrchestratorUseCaseImpl } from '../application/use-cases/maintenance-orchestrator.use-case.impl';
+import { CompleteExpiredAppointmentsUseCaseImpl } from '../application/use-cases/complete-expired-appointments.use-case.impl';
+import { AssignAvailableOfficesUseCaseImpl } from '../application/use-cases/assign-available-offices.use-case.impl';
+import { ConsultationPolicy } from '../domain/policies/consultation.policy';
 
 @Module({
     imports: [
@@ -18,10 +23,13 @@ import { LocalDomainEventBusAdapter } from '../infrastructure/messaging/local-do
         NotificationsModule,
     ],
     providers: [
-
         {
             provide: 'AppointmentRepository',
             useClass: MongooseAppointmentRepository,
+        },
+        {
+            provide: 'LockRepository',
+            useClass: MongooseLockRepository,
         },
         {
             provide: 'LoggerPort',
@@ -35,15 +43,37 @@ import { LocalDomainEventBusAdapter } from '../infrastructure/messaging/local-do
             provide: 'NotificationPort',
             useClass: RmqNotificationAdapter,
         },
-        // ⚕️ HUMAN CHECK - OCP: Individual event handlers registered separately.
-        // Adding new domain events only requires registering new handler classes.
+        ConsultationPolicy,
         AppointmentRegisteredHandler,
         AppointmentAssignedHandler,
         {
             provide: 'DomainEventBus',
             inject: [AppointmentRegisteredHandler, AppointmentAssignedHandler],
-            useFactory: (registered: AppointmentRegisteredHandler, assigned: AppointmentAssignedHandler) =>
+            useFactory: (registered, assigned) =>
                 new LocalDomainEventBusAdapter([registered, assigned]),
+        },
+        {
+            provide: 'CompleteExpiredAppointmentsUseCase',
+            inject: ['AppointmentRepository', 'NotificationPort', 'LoggerPort', 'ClockPort'],
+            useFactory: (repo, notification, logger, clock) =>
+                new CompleteExpiredAppointmentsUseCaseImpl(repo, notification, logger, clock),
+        },
+        {
+            provide: 'AssignAvailableOfficesUseCase',
+            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort', 'DomainEventBus', ConsultationPolicy],
+            useFactory: (repo, logger, clock, bus, policy) =>
+                new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, bus, 5, policy),
+        },
+        {
+            provide: 'MaintenanceOrchestratorUseCase',
+            inject: [
+                'AssignAvailableOfficesUseCase',
+                'CompleteExpiredAppointmentsUseCase',
+                'LockRepository',
+                'LoggerPort'
+            ],
+            useFactory: (assign, complete, lock, logger) =>
+                new MaintenanceOrchestratorUseCaseImpl(assign, complete, lock, logger),
         },
         {
             provide: 'RegisterAppointmentUseCase',

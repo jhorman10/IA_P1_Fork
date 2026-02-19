@@ -11,7 +11,7 @@ export class CreateAppointmentDto {
     @IsNumber({}, { message: 'La cédula debe ser un número' })
     @IsPositive({ message: 'La cédula debe ser positiva' })
     @Max(Number.MAX_SAFE_INTEGER, { message: 'Número de cédula inválido' })
-    idCard: number;
+    idCard!: number;
 
     @ApiProperty({
         description: 'Patient full name',
@@ -19,7 +19,7 @@ export class CreateAppointmentDto {
     })
     @IsNotEmpty({ message: 'El nombre es obligatorio' })
     @IsString({ message: 'El nombre debe ser texto' })
-    fullName: string;
+    fullName!: string;
 
     @ApiPropertyOptional({
         description: 'Appointment priority',

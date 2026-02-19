@@ -30,7 +30,7 @@ export class AppointmentsGateway
     private readonly logger = new Logger(AppointmentsGateway.name);
 
     @WebSocketServer()
-    server: Server;
+    server!: Server;
 
     constructor(
         @Inject('QueryAppointmentsUseCase')

@@ -1,12 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HealthController } from 'src/health.controller';
+import { getConnectionToken } from '@nestjs/mongoose';
 
 describe('HealthController', () => {
     let controller: HealthController;
+    let mockConnection: any;
 
     beforeEach(async () => {
+        mockConnection = { readyState: 1 };
         const module: TestingModule = await Test.createTestingModule({
             controllers: [HealthController],
+            providers: [
+                {
+                    provide: getConnectionToken(),
+                    useValue: mockConnection,
+                },
+            ],
         }).compile();
 
         controller = module.get<HealthController>(HealthController);
@@ -16,9 +25,17 @@ describe('HealthController', () => {
         expect(controller).toBeDefined();
     });
 
-    it('should return ok status', () => {
-        const result = controller.check();
-        expect(result.status).toBe('ok');
-        expect(result.timestamp).toBeDefined();
+    it('should return ok status when DB is up', async () => {
+        const mockRes: any = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn().mockReturnThis(),
+        };
+
+        await controller.check(mockRes);
+
+        expect(mockRes.status).toHaveBeenCalledWith(200);
+        expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({
+            status: 'ok'
+        }));
     });
 });

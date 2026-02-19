@@ -4,11 +4,16 @@ describe('MaintenanceOrchestratorUseCaseImpl', () => {
     let orchestrator: MaintenanceOrchestratorUseCaseImpl;
     let mockCompleteUseCase: any;
     let mockAssignUseCase: any;
+    let mockLockRepository: any;
     let mockLogger: any;
 
     beforeEach(() => {
         mockCompleteUseCase = { execute: jest.fn().mockResolvedValue(undefined) };
         mockAssignUseCase = { execute: jest.fn().mockResolvedValue(undefined) };
+        mockLockRepository = {
+            acquire: jest.fn().mockResolvedValue(true),
+            release: jest.fn().mockResolvedValue(undefined),
+        };
         mockLogger = {
             log: jest.fn(),
             error: jest.fn(),
@@ -18,6 +23,7 @@ describe('MaintenanceOrchestratorUseCaseImpl', () => {
         orchestrator = new MaintenanceOrchestratorUseCaseImpl(
             mockCompleteUseCase,
             mockAssignUseCase,
+            mockLockRepository,
             mockLogger,
         );
     });

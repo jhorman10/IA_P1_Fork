@@ -23,7 +23,7 @@ export class AppointmentMapper {
             doc.status as AppointmentStatus,
             doc.office,
             doc.timestamp,
-            doc.completedAt,
+            doc.completedAt ?? undefined,
         );
     }
 
