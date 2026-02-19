@@ -62,6 +62,7 @@ async function connectNotificationsMicroservice(app: INestApplication, rabbitUrl
 async function bootstrap(): Promise<void> {
     const logger = new Logger('Bootstrap');
     const app = await NestFactory.create(AppModule);
+    app.enableShutdownHooks();
     const configService = app.get(ConfigService);
 
     // 🛡️ HUMAN CHECK - Security & Validation

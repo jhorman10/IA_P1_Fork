@@ -11,6 +11,7 @@ async function bootstrap(): Promise<void> {
     // Switched from createMicroservice to create to have an HTTP port
     // and allow Docker/K8s Healthchecks.
     const app = await NestFactory.create(AppModule);
+    app.enableShutdownHooks();
     const configService = app.get(ConfigService);
 
     const rabbitUrl = configService.getOrThrow<string>('RABBITMQ_URL');
