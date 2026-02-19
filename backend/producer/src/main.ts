@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import 'reflect-metadata';
 import helmet from 'helmet';
+import { DomainExceptionFilter } from './infrastructure/filters/domain-exception.filter';
 
 // ⚕️ HUMAN CHECK - SRP: Bootstrap decomposed into focused setup functions.
 // Each function has a single responsibility. Adding new middleware = new function.
@@ -20,6 +21,9 @@ function configureSecurityMiddleware(app: INestApplication, frontendUrl: string)
     });
 
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
+
+    // 🛡️ HUMAN CHECK - Resilience: Map Domain Errors (VOs) to 400 instead of 500.
+    app.useGlobalFilters(new DomainExceptionFilter());
 }
 
 function configureSwagger(app: INestApplication): void {
