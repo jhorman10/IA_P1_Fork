@@ -5,7 +5,7 @@
 
 | Status | Count |
 |--------|-------|
-| ✅ Resolved | 38 |
+| ✅ Resolved | 45 |
 | ⬜ Pending | 0 |
 | 🔄 In Progress | 0 |
 | ⏸️ Blocked | 0 |
@@ -43,6 +43,9 @@
 | A-08 | H-21: Poison Message Inefficiency (DomainError -> DLQ) | Resilience | ✅ |
 | A-09 | H-22: Use Case Leakage (Command Pattern) | Orchestration | ✅ |
 | A-10 | H-25: Side-Effect Bloat (Automated Dispatch) | Orchestration | ✅ |
+| A-11 | H-32: Retry Policy Coupled in Controller (DIP Violation) | Resilience | ✅ |
+| A-12 | H-33: ProducerController Multi-Responsibility (SRP Violation) | Orchestration | ✅ |
+| A-13 | H-34: Domain Events Emission Verified via Ports | Event-Driven | ✅ |
 
 ---
 
@@ -58,6 +61,10 @@
 | I-05 | Missing Repository Decoupling (H-12) | Persistence | ✅ |
 | I-06 | Lacking Resilience Patterns: DLQ/Retries (H-04) | Reliability | ✅ |
 | I-07 | H-23: Liar Health Check (Database Dependency) | Health | ✅ |
+| I-08 | H-35: ClientsModule Export Leakage in NotificationsModule (DIP) | Messaging | ✅ |
+| I-09 | H-36: Magic Number in CORS/WebSocket Origin (Zero Hardcode) | Config | ✅ |
+| I-10 | H-37: process.env in Decorator (Documented Exception) | Config | ✅ |
+| I-11 | H-38: Infrastructure Exports in Modules (MongooseModule, Gateway) | Encapsulation | ✅ |
 
 ---
 
