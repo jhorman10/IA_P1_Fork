@@ -1,94 +1,95 @@
-# 📋 Technical Debt & Hardening Report — IA_P1_Fork
 
-> **Executive Status**: Consolidation of all feedback and architectural hardening phases.
-> Organized by system layer to ensure Single Responsibility and Dependency Inversion.
+# 📋 Reporte de Deuda Técnica y Endurecimiento — IA_P1_Fork
 
-| Status | Count |
-|--------|-------|
-| ✅ Resolved | 45 |
-| ⬜ Pending | 0 |
-| 🔄 In Progress | 0 |
-| ⏸️ Blocked | 0 |
+> **Estado Ejecutivo**: Consolidación de todo el feedback y fases de endurecimiento arquitectónico.
+> Organizado por capa del sistema para garantizar Responsabilidad Única e Inversión de Dependencias.
 
----
-
-## 1. Domain Layer (Pure Business Logic)
-*Focus: Tactical DDD, Value Objects, Entities, and Universal Logic.*
-
-| ID | Issue / Goal | Area | Status |
-|----|--------------|------|--------|
-| D-01 | Primitive Obsession: use of strings for IDs/Priorities (H-11, H-14) | Domain Purity | ✅ |
-| D-02 | Lack of Idempotency in appointment creation (A-01) | Domain Rules | ✅ |
-| D-03 | Missing 'priority' field in domain model (E-02) | Logic | ✅ |
-| D-04 | Spanish nomenclature (cedula, nombre) (E-03, H-03) | Universal Language| ✅ |
-| D-05 | Missing Domain Factories for entity creation (H-11) | Object Creation | ✅ |
-| D-06 | H-24/H-30: Identity Leakage — DB dependent IDs | Domain Purity | ✅ |
-| D-07 | H-28/H-29: Primitive Obsession in Factories & Temporal Leak | Domain Purity | ✅ |
-| D-08 | H-31/H-26: Leaky Logic & Repository SRP (Available Offices) | Domain Logic | ✅ |
+| Estado | Cantidad |
+|--------|---------|
+| ✅ Resuelto | 45 |
+| ⬜ Pendiente | 0 |
+| 🔄 En Progreso | 0 |
+| ⏸️ Bloqueado | 0 |
 
 ---
 
-## 2. Application Layer (Orchestration & Events)
-*Focus: Use Cases, Domain Events, and Side-Effect Management.*
+## 1. Capa de Dominio (Lógica de Negocio Pura)
+*Enfoque: DDD Táctico, Value Objects, Entidades y Lógica Universal.*
 
-| ID | Issue / Goal | Area | Status |
-|----|--------------|------|--------|
-| A-01 | SRP Violation: Scheduler coupling to infra (G-09, H-09) | Orchestration | ✅ |
-| A-02 | SRP Violation: Controllers over-intelligent (H-08) | Decoupling | ✅ |
-| A-03 | Performance: Scheduler recreates consultorios in tick (G-06) | Optimization | ✅ |
-| A-04 | Logic: Scheduler inconsistent with docs (A-04) | Business Rules | ✅ |
-| A-05 | Missing Domain Event Architecture (H-13) | Event-Driven | ✅ |
-| A-06 | Lacking Centralized Error/Resilience Policies (H-15) | Resilience | ✅ |
-| A-07 | H-20: Concurrency Race Condition (LockRepository) | Resilience | ✅ |
-| A-08 | H-21: Poison Message Inefficiency (DomainError -> DLQ) | Resilience | ✅ |
-| A-09 | H-22: Use Case Leakage (Command Pattern) | Orchestration | ✅ |
-| A-10 | H-25: Side-Effect Bloat (Automated Dispatch) | Orchestration | ✅ |
-| A-11 | H-32: Retry Policy Coupled in Controller (DIP Violation) | Resilience | ✅ |
-| A-12 | H-33: ProducerController Multi-Responsibility (SRP Violation) | Orchestration | ✅ |
-| A-13 | H-34: Domain Events Emission Verified via Ports | Event-Driven | ✅ |
+| ID | Hallazgo / Meta | Área | Estado |
+|-----|-------------------------------------------------------------|-------------------|--------|
+| D-01 | Obsesión por Primitivos: uso de strings para IDs/Prioridades (H-11, H-14) | Pureza de Dominio | ✅ |
+| D-02 | Falta de idempotencia en la creación de citas (A-01) | Reglas de Dominio | ✅ |
+| D-03 | Falta campo 'priority' en el modelo de dominio (E-02) | Lógica | ✅ |
+| D-04 | Nomenclatura en español (cédula, nombre) (E-03, H-03) | Lenguaje Universal | ✅ |
+| D-05 | Faltan Fábricas de Dominio para creación de entidades (H-11) | Creación de Objetos | ✅ |
+| D-06 | H-24/H-30: Fuga de Identidad — IDs dependientes de BD | Pureza de Dominio | ✅ |
+| D-07 | H-28/H-29: Obsesión por Primitivos en Fábricas & Fuga Temporal | Pureza de Dominio | ✅ |
+| D-08 | H-31/H-26: Lógica Fuga & SRP en Repositorio (Consultorios Disponibles) | Lógica de Dominio | ✅ |
 
 ---
 
-## 3. Infrastructure Layer (Persistence, Messaging, Docker)
-*Focus: Adapters, Ports, Healthchecks, and External Integration.*
+## 2. Capa de Aplicación (Orquestación y Eventos)
+*Enfoque: Casos de Uso, Eventos de Dominio y Manejo de Efectos Colaterales.*
 
-| ID | Issue / Goal | Area | Status |
-|----|--------------|------|--------|
-| I-01 | Lack of MongoDB Indexes (A-02) | Persistence | ✅ |
-| I-02 | Incorrect RMQ ack/nack handling (A-03) | Messaging | ✅ |
-| I-03 | Hardcoded credentials and missing healthchecks (A-05, E-05, G-04) | Docker/Security | ✅ |
-| I-04 | ValidationPipe global leakage in RMQ microservice (A-06) | Validation | ✅ |
-| I-05 | Missing Repository Decoupling (H-12) | Persistence | ✅ |
-| I-06 | Lacking Resilience Patterns: DLQ/Retries (H-04) | Reliability | ✅ |
-| I-07 | H-23: Liar Health Check (Database Dependency) | Health | ✅ |
-| I-08 | H-35: ClientsModule Export Leakage in NotificationsModule (DIP) | Messaging | ✅ |
-| I-09 | H-36: Magic Number in CORS/WebSocket Origin (Zero Hardcode) | Config | ✅ |
-| I-10 | H-37: process.env in Decorator (Documented Exception) | Config | ✅ |
-| I-11 | H-38: Infrastructure Exports in Modules (MongooseModule, Gateway) | Encapsulation | ✅ |
-
----
-
-## 4. Presentation & Delivery (UI, API, Git)
-*Focus: Frontend, Dashboard Reactivity, and Source Control Hygiene.*
-
-| ID | Issue / Goal | Area | Status |
-|----|--------------|------|--------|
-| P-01 | React Warning: setState synchronously within effect (G-08) | Frontend | ✅ |
-| P-02 | Chaotic commit history / lack of semantic structure (E-06) | Git | ✅ |
-| P-03 | Inconsistent feature/* branching (G-05) | Git | ✅ |
-| P-04 | Missing Frontend/Consumer tests (G-07, H-05) | QA | ✅ |
+| ID | Hallazgo / Meta | Área | Estado |
+|------|-------------------------------------------------------------|-------------------|--------|
+| A-01 | Violación SRP: Scheduler acoplado a infraestructura (G-09, H-09) | Orquestación | ✅ |
+| A-02 | Violación SRP: Controladores sobre-inteligentes (H-08) | Desacoplamiento | ✅ |
+| A-03 | Performance: Scheduler recrea consultorios en cada tick (G-06) | Optimización | ✅ |
+| A-04 | Lógica: Scheduler inconsistente con documentación (A-04) | Reglas de Negocio | ✅ |
+| A-05 | Falta Arquitectura de Eventos de Dominio (H-13) | Event-Driven | ✅ |
+| A-06 | Faltan Políticas Centralizadas de Error/Resiliencia (H-15) | Resiliencia | ✅ |
+| A-07 | H-20: Condición de Carrera de Concurrencia (LockRepository) | Resiliencia | ✅ |
+| A-08 | H-21: Ineficiencia con Poison Message (DomainError -> DLQ) | Resiliencia | ✅ |
+| A-09 | H-22: Fuga de Caso de Uso (Command Pattern) | Orquestación | ✅ |
+| A-10 | H-25: Bloat de Efectos Colaterales (Despacho Automatizado) | Orquestación | ✅ |
+| A-11 | H-32: Retry Policy acoplada en Controller (Violación DIP) | Resiliencia | ✅ |
+| A-12 | H-33: ProducerController con Múltiples Responsabilidades (Violación SRP) | Orquestación | ✅ |
+| A-13 | H-34: Emisión de Domain Events verificada vía Ports | Event-Driven | ✅ |
 
 ---
 
-## 5. Strategy & AI Traceability
-*Focus: Documentation, Prompt Logging, and AI-Native Methodology.*
+## 3. Capa de Infraestructura (Persistencia, Mensajería, Docker)
+*Enfoque: Adaptadores, Puertos, Healthchecks e Integración Externa.*
 
-| ID | Issue / Goal | Area | Status |
-|----|--------------|------|--------|
-| S-01 | AI_WORKFLOW.md lacking real prompts/evidence (E-01, G-01) | Transparency | ✅ |
-| S-02 | Missing "What AI did wrong" documentation (E-04, G-03) | Audit | ✅ |
-| S-03 | Low Technical Culture: SA as "Junior" identity (H-10) | Culture | ✅ |
-| S-04 | GEMINI.md God Object Violation (Meta-Architecture) | Meta | ✅ |
+| ID | Hallazgo / Meta | Área | Estado |
+|------|-------------------------------------------------------------|-------------------|--------|
+| I-01 | Faltan índices en MongoDB (A-02) | Persistencia | ✅ |
+| I-02 | Manejo incorrecto de ack/nack en RMQ (A-03) | Mensajería | ✅ |
+| I-03 | Credenciales hardcodeadas y healthchecks ausentes (A-05, E-05, G-04) | Docker/Seguridad | ✅ |
+| I-04 | Fuga global de ValidationPipe en microservicio RMQ (A-06) | Validación | ✅ |
+| I-05 | Falta desacoplamiento de Repositorios (H-12) | Persistencia | ✅ |
+| I-06 | Faltan Patrones de Resiliencia: DLQ/Retry (H-04) | Confiabilidad | ✅ |
+| I-07 | H-23: Health Check mentiroso (Dependencia de BD) | Salud | ✅ |
+| I-08 | H-35: Fuga de Export de ClientsModule en NotificationsModule (DIP) | Mensajería | ✅ |
+| I-09 | H-36: Número mágico en origen CORS/WebSocket (Zero Hardcode) | Configuración | ✅ |
+| I-10 | H-37: process.env en Decorador (Excepción Documentada) | Configuración | ✅ |
+| I-11 | H-38: Exports de Infraestructura en Módulos (MongooseModule, Gateway) | Encapsulamiento | ✅ |
 
 ---
-**STATUS: ARCHITECTURAL DEBT PURGED — ELITE DDD GRADE CERTIFIED**
+
+## 4. Presentación y Entrega (UI, API, Git)
+*Enfoque: Frontend, Reactividad del Dashboard e Higiene de Control de Versiones.*
+
+| ID | Hallazgo / Meta | Área | Estado |
+|------|-------------------------------------------------------------|-------------------|--------|
+| P-01 | Advertencia React: setState sincrónico dentro de effect (G-08) | Frontend | ✅ |
+| P-02 | Historial de commits caótico / sin estructura semántica (E-06) | Git | ✅ |
+| P-03 | Branching feature/* inconsistente (G-05) | Git | ✅ |
+| P-04 | Faltan tests en Frontend/Consumer (G-07, H-05) | QA | ✅ |
+
+---
+
+## 5. Estrategia y Trazabilidad AI
+*Enfoque: Documentación, Registro de Prompts y Metodología AI-Nativa.*
+
+| ID | Hallazgo / Meta | Área | Estado |
+|------|-------------------------------------------------------------|-------------------|--------|
+| S-01 | AI_WORKFLOW.md sin prompts/evidencia reales (E-01, G-01) | Transparencia | ✅ |
+| S-02 | Falta documentación "Qué hizo mal la IA" (E-04, G-03) | Auditoría | ✅ |
+| S-03 | Baja Cultura Técnica: SA con identidad "Junior" (H-10) | Cultura | ✅ |
+| S-04 | Violación God Object en GEMINI.md (Meta-Arquitectura) | Meta | ✅ |
+
+---
+**ESTADO: DEUDA ARQUITECTÓNICA DEPURADA — CERTIFICACIÓN DDD ÉLITE**
