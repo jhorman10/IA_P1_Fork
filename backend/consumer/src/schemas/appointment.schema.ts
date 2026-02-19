@@ -20,7 +20,7 @@ export class Appointment {
 
     // ⚕️ HUMAN CHECK - Nullable office
     // null when waiting, assigned by the scheduler
-    @Prop({ default: null, index: true })
+    @Prop({ type: String, default: null, index: true })
     office!: string | null;
 
     // ⚕️ HUMAN CHECK - Appointment states
@@ -37,7 +37,7 @@ export class Appointment {
     timestamp!: number;
 
     // ⚕️ HUMAN CHECK - Completion timestamp
-    @Prop({ default: null })
+    @Prop({ type: Number, default: null })
     completedAt!: number | null;
 }
 

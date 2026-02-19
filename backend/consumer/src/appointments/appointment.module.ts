@@ -49,7 +49,10 @@ import { EventDispatchingAppointmentRepositoryDecorator } from '../infrastructur
             provide: 'NotificationPort',
             useClass: RmqNotificationAdapter,
         },
-        ConsultationPolicy,
+        {
+            provide: ConsultationPolicy,
+            useFactory: () => new ConsultationPolicy(),
+        },
         AppointmentRegisteredHandler,
         AppointmentAssignedHandler,
         {
@@ -95,6 +98,7 @@ import { EventDispatchingAppointmentRepositoryDecorator } from '../infrastructur
         'ClockPort',
         'NotificationPort',
         'DomainEventBus',
+        'MaintenanceOrchestratorUseCase',
         // MongooseModule eliminado: no exportar infraestructura
     ],
 })
