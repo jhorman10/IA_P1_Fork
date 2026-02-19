@@ -1,3 +1,4 @@
+---
 name: frontend-ui (Senior Level)
 description: Interfaces de alto rendimiento, accesibilidad (A11y), y gestión de estado reactiva y desacoplada.
 trigger: When feedback mentions UI components, WebSocket, CSS, styling, pages, dashboard, or frontend behavior.

@@ -1,3 +1,4 @@
+---
 name: skill-creator (Senior Level)
 description: Diseño y creación de nuevas capacidades de SA, orquestación de workflows y gobernanza de skills.
 trigger: When a task requires a specific capability not covered by existing skills in /skills.

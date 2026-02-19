@@ -1,3 +1,4 @@
+---
 name: docker-infra (Senior Level)
 description: Orquestación de infraestructura resiliente, optimización de imágenes y seguridad en despliegue.
 trigger: When feedback mentions Docker, healthchecks, credentials, environment variables, ports, volumes, deployment, or infrastructure security.

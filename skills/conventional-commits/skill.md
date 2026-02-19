@@ -1,3 +1,4 @@
+---
 name: conventional-commits (Senior Level)
 description: Gestión de historial semántico, alineación con CI/CD y automatización de versionado.
 trigger: When creating commits, pushing code, formatting commit messages, or when feedback mentions git history, commit hygiene, or semantic versioning.
