@@ -4,10 +4,11 @@ import { IdCard } from '../../../../src/domain/value-objects/id-card.value-objec
 import { FullName } from '../../../../src/domain/value-objects/full-name.value-object';
 import { Priority } from '../../../../src/domain/value-objects/priority.value-object';
 import { PersistenceAppointmentData } from '../../../../src/infrastructure/persistence/persistence-appointment.interface';
+import { Types } from 'mongoose';
 
 /**
- * ⚕️ HUMAN CHECK - Type Safety Verification:
- * No 'any' types. toPersistence returns PersistenceAppointmentData.
+ * ⚕️ HUMAN CHECK - Verificación de Type Safety:
+ * Sin tipos 'any'. toPersistence retorna PersistenceAppointmentData.
  */
 describe('AppointmentMapper', () => {
     const now = Date.now();
@@ -41,7 +42,7 @@ describe('AppointmentMapper', () => {
 
         it('should include office and completedAt when present', () => {
             const entity = new Appointment(
-                new IdCard(99999),
+                new IdCard(123456789),
                 new FullName('Jane Smith'),
                 new Priority('low'),
                 'called',
@@ -61,8 +62,7 @@ describe('AppointmentMapper', () => {
 
     describe('toDomain', () => {
         it('should map a Mongoose document to a domain entity', () => {
-            // Usar Types.ObjectId y el cast recomendado para tipado estricto
-            const { Types } = require('mongoose');
+            // Usar Types.ObjectId para tipado estricto con Mongoose
             const mockDoc = {
                 _id: new Types.ObjectId(),
                 idCard: 12345678,
@@ -87,7 +87,6 @@ describe('AppointmentMapper', () => {
         });
 
         it('should map a called appointment with office', () => {
-            const { Types } = require('mongoose');
             const mockDoc = {
                 _id: new Types.ObjectId(),
                 idCard: 87654321,
@@ -110,7 +109,6 @@ describe('AppointmentMapper', () => {
 
     describe('Roundtrip (toDomain → toPersistence)', () => {
         it('should preserve data through a full roundtrip', () => {
-            const { Types } = require('mongoose');
             const originalDoc = {
                 _id: new Types.ObjectId(),
                 idCard: 55555555,

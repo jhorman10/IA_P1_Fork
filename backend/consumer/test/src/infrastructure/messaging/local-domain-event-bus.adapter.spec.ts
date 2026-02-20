@@ -3,9 +3,9 @@ import { DomainEvent } from '../../../../src/domain/events/domain-event.base';
 import { DomainEventHandler } from '../../../../src/domain/ports/outbound/domain-event-handler.port';
 
 /**
- * ⚕️ HUMAN CHECK - OCP Verification:
- * Tests the registry-based dispatch. No instanceof chains.
- * New event types should work by registering new handlers, not modifying the bus.
+ * ⚕️ HUMAN CHECK - Verificación OCP:
+ * Testea el despacho basado en registro. Sin cadenas instanceof.
+ * Los nuevos tipos de evento deberían funcionar registrando nuevos handlers, sin modificar el bus.
  */
 
 class FakeEventA extends DomainEvent {

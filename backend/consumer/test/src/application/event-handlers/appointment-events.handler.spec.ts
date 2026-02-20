@@ -8,8 +8,8 @@ import { FullName } from '../../../../src/domain/value-objects/full-name.value-o
 import { Priority } from '../../../../src/domain/value-objects/priority.value-object';
 
 /**
- * ⚕️ HUMAN CHECK - Split handlers: each handler implements DomainEventHandler<T>.
- * Tests verify individual handler + notification side-effect.
+ * ⚕️ HUMAN CHECK - Handlers divididos: cada handler implementa DomainEventHandler<T>.
+ * Los tests verifican handler individual + efecto secundario de notificación.
  */
 describe('AppointmentEventsHandlers (Split OCP Handlers)', () => {
     interface NotificationPortMock {

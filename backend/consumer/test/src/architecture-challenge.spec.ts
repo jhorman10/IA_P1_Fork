@@ -37,8 +37,8 @@ describe('AssignAppointmentsUseCase (Pure Logic - The Impossible Mock Challenge)
         }
         const mockRepo: RepoMock = {
             findWaiting: jest.fn().mockResolvedValue([
-                new Appointment(new IdCard(123), new FullName('John Doe'), new Priority('high'), 'waiting'),
-                new Appointment(new IdCard(456), new FullName('Jane Doe'), new Priority('medium'), 'waiting'),
+                new Appointment(new IdCard(123456789), new FullName('John Doe'), new Priority('high'), 'waiting'),
+                new Appointment(new IdCard(987654321), new FullName('Jane Doe'), new Priority('medium'), 'waiting'),
             ]),
             findAvailableOffices: jest.fn().mockResolvedValue(['2', '3']),
             save: jest.fn().mockResolvedValue(undefined as unknown as Appointment),
@@ -59,10 +59,6 @@ describe('AssignAppointmentsUseCase (Pure Logic - The Impossible Mock Challenge)
         const mockClock: ClockMock = {
             now: jest.fn().mockReturnValue(Date.now()),
             isoNow: jest.fn().mockReturnValue(new Date().toISOString()),
-        };
-
-        const mockEventBus = {
-            publish: jest.fn().mockResolvedValue(undefined),
         };
 
         // 2. Inyección de Dependencias PURA (DIP)
