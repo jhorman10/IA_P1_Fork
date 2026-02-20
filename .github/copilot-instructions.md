@@ -45,7 +45,7 @@ const SKILL_REGISTRY  = await read_file("docs/agent-context/SKILL_REGISTRY.md");
 
 ### 1.2 — Delegation Algorithm
 
-> **Ref:** Ver `WORKFLOW.md` steps 3-6 (Match → Planificar → Aprobar → Ejecutar)
+> **Ref:** Ver `WORKFLOW.md` sección "1. Flujo de Trabajo" (pasos 3-6: MATCH → PLANIFICAR → APROBAR → EJECUTAR)
 
 ```javascript
 // Algoritmo de Delegación a Sub-Agentes (SA)
@@ -100,21 +100,22 @@ ${content}
 
 ### 1.3 — Documentation Protocol
 
-> **Ref:** Ver `WORKFLOW.md` steps 8-9 (Registrar → Actualizar)
+> **Ref:** Ver `WORKFLOW.md` sección "1. Flujo de Trabajo" (pasos 8-9: REGISTRAR → ACTUALIZAR)
 
 **Post-Ejecución Obligatoria:**
 
 1. **AI_WORKFLOW.md:** Registrar interacciones humano-máquina
-   - **Formato:** Ver `WORKFLOW.md` sección "Step 8: Template de Registro"
+   - **Paso:** WORKFLOW.md paso 8 (REGISTRAR)
    - **Debe incluir:** User request → Tipo de tarea → Skills cargadas → SA output → Commits → Human approval
 
 2. **DEBT_REPORT.md:** Si se corrige hallazgo/deuda
-   - **Formato:** Ver `WORKFLOW.md` sección "Step 9: Template de Hallazgos"
+   - **Paso:** WORKFLOW.md paso 9 (ACTUALIZAR)
    - **Debe incluir:** ID hallazgo → Severidad → Solución → Archivos cambiados → Tests validation
 
-3. **Checklist:** Ver `RULES.md` sección "Checklist Post-Tarea"
+3. **Checklist:**
+   - **Ref:** Ver `RULES.md` sección "2. Reglas de Operación (Anti-patrones)"
    - ✅ Commits con Conventional Commits
-   - ✅ Documentación actualizada
+   - ✅ Documentación actualizada (AI_WORKFLOW.md + DEBT_REPORT.md)
    - ✅ Tests passing
    - ✅ Git status limpio
 
