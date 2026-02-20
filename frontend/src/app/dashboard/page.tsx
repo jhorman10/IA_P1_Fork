@@ -5,6 +5,8 @@ import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 import { Appointment } from "@/domain/Appointment";
 import { audioService } from "@/services/AudioService";
 import { WaitingAppointmentCard, CalledAppointmentCard, CompletedAppointmentCard } from "@/components/AppointmentCard";
+import AppointmentSkeleton from "@/components/AppointmentSkeleton";
+import WebSocketStatus from "@/components/WebSocketStatus";
 import styles from "@/styles/page.module.css";
 
 /**
@@ -24,7 +26,7 @@ export default function CompletedHistoryDashboard() {
     }
   }, []);
 
-  const { appointments, error, connected } = useAppointmentsWebSocket(handleUpdate);
+  const { appointments, error, connected, isConnecting, connectionStatus } = useAppointmentsWebSocket(handleUpdate);
 
   useEffect(() => {
     audioService.init("/sounds/ding.mp3", 0.6);
@@ -63,9 +65,7 @@ export default function CompletedHistoryDashboard() {
     <main className={styles.dashboardContainer}>
       <header className={styles.stickyHeader}>
         <h1 className={styles.title}>Panel de Turnos en Tiempo Real</h1>
-        <p className={connected ? styles.connected : styles.disconnected}>
-          {connected ? "🟢 Conectado en tiempo real" : "🔴 Desconectado — reconectando..."}
-        </p>
+        <WebSocketStatus status={connectionStatus} variant="block" />
         {!audioEnabled && (
           <p className={styles.audioHint}>
             Toca la pantalla para activar sonido 🔔
@@ -87,6 +87,8 @@ export default function CompletedHistoryDashboard() {
               />
             ))}
           </ul>
+        ) : isConnecting ? (
+          <AppointmentSkeleton count={2} />
         ) : (
           <p className={styles.empty}>No hay turnos siendo atendidos</p>
         )}
@@ -104,6 +106,8 @@ export default function CompletedHistoryDashboard() {
               />
             ))}
           </ul>
+        ) : isConnecting ? (
+          <AppointmentSkeleton count={3} />
         ) : (
           <p className={styles.empty}>No hay turnos en espera</p>
         )}
@@ -122,6 +126,8 @@ export default function CompletedHistoryDashboard() {
               />
             ))}
           </ul>
+        ) : isConnecting ? (
+          <AppointmentSkeleton count={2} />
         ) : (
           <p className={styles.empty}>No hay turnos completados aún</p>
         )}

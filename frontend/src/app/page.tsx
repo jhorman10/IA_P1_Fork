@@ -5,6 +5,8 @@ import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 import { Appointment } from "@/domain/Appointment";
 import { audioService } from "@/services/AudioService";
 import { CalledAppointmentCard, WaitingAppointmentCard } from "@/components/AppointmentCard";
+import AppointmentSkeleton from "@/components/AppointmentSkeleton";
+import WebSocketStatus from "@/components/WebSocketStatus";
 import styles from "@/styles/page.module.css";
 
 /**
@@ -24,7 +26,7 @@ export default function AppointmentsScreen() {
     }
   }, []);
 
-  const { appointments, error, connected } = useAppointmentsWebSocket(handleUpdate);
+  const { appointments, error, connected, isConnecting, connectionStatus } = useAppointmentsWebSocket(handleUpdate);
 
   useEffect(() => {
     audioService.init("/sounds/ding.mp3", 0.6);
@@ -57,9 +59,7 @@ export default function AppointmentsScreen() {
       <section className={styles.leftPanel}>
         <header className={styles.stickyHeader}>
           <h1 className={styles.title}>Turnos Disponibles</h1>
-          <p className={connected ? styles.connected : styles.disconnected}>
-            {connected ? "🟢 Conectado en tiempo real" : "🔴 Desconectado — reconectando..."}
-          </p>
+          <WebSocketStatus status={connectionStatus as "connected" | "connecting" | "disconnected"} variant="block" />
           {!audioEnabled && (
             <p className={styles.audioHint}>
               Toca la pantalla para activar sonido 🔔
@@ -81,6 +81,8 @@ export default function AppointmentsScreen() {
                 />
               ))}
             </ul>
+          ) : isConnecting ? (
+            <AppointmentSkeleton count={2} />
           ) : (
             <p className={styles.empty}>No hay turnos en consultorio</p>
           )}
@@ -108,6 +110,8 @@ export default function AppointmentsScreen() {
               />
             ))}
           </ul>
+        ) : isConnecting ? (
+          <AppointmentSkeleton count={3} />
         ) : (
           <p className={styles.empty}>No hay turnos en espera</p>
         )}

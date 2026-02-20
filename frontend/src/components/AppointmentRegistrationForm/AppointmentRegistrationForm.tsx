@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAppointmentRegistration } from "@/hooks/useAppointmentRegistration";
+import FormLoadingOverlay from "@/components/FormLoadingOverlay";
 import styles from "./AppointmentRegistrationForm.module.css";
 import { sanitizeText } from "@/security/sanitize";
 
@@ -40,48 +41,57 @@ export default function AppointmentRegistrationForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className={styles.form}>
-            <h2>Registrar Turno</h2>
-
-            <input
-                type="text"
-                placeholder="Nombre Completo"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className={styles.input}
+        <>
+            <FormLoadingOverlay 
+                isLoading={loading} 
+                message="Registrando tu turno..." 
             />
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <h2>Registrar Turno</h2>
 
-            <input
-                type="text"
-                placeholder="Número de Identificación (6-12 dígitos)"
-                value={idCard}
-                onChange={(e) => {
-                    // Solo permitir dígitos
-                    const val = e.target.value.replace(/\D/g, "");
-                    if (val.length <= 12) setIdCard(val);
-                }}
-                className={styles.input}
-                maxLength={12}
-                inputMode="numeric"
-            />
+                <input
+                    type="text"
+                    placeholder="Nombre Completo"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className={styles.input}
+                    disabled={loading}
+                />
 
-            <select
-                value={priority}
-                onChange={(e) => setPriority(e.target.value as "high" | "medium" | "low")}
-                className={styles.input}
-            >
-                <option value="low">Prioridad Baja</option>
-                <option value="medium">Prioridad Media</option>
-                <option value="high">Prioridad Alta</option>
-            </select>
+                <input
+                    type="text"
+                    placeholder="Número de Identificación (6-12 dígitos)"
+                    value={idCard}
+                    onChange={(e) => {
+                        // Solo permitir dígitos
+                        const val = e.target.value.replace(/\D/g, "");
+                        if (val.length <= 12) setIdCard(val);
+                    }}
+                    className={styles.input}
+                    maxLength={12}
+                    inputMode="numeric"
+                    disabled={loading}
+                />
 
-            <button disabled={loading} className={styles.button}>
-                {loading ? "Enviando..." : "Registrar Ahora"}
-            </button>
+                <select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value as "high" | "medium" | "low")}
+                    className={styles.input}
+                    disabled={loading}
+                >
+                    <option value="low">Prioridad Baja</option>
+                    <option value="medium">Prioridad Media</option>
+                    <option value="high">Prioridad Alta</option>
+                </select>
 
-            {success && <p className={styles.success}>{success}</p>}
-            {validationError && <p className={styles.error}>{validationError}</p>}
-            {error && <p className={styles.error}>{error}</p>}
-        </form>
+                <button disabled={loading} className={styles.button}>
+                    {loading ? "Enviando..." : "Registrar Ahora"}
+                </button>
+
+                {success && <p className={styles.success}>{success}</p>}
+                {validationError && <p className={styles.error}>{validationError}</p>}
+                {error && <p className={styles.error}>{error}</p>}
+            </form>
+        </>
     );
 }

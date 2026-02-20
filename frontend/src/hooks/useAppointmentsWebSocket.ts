@@ -14,6 +14,7 @@ export function useAppointmentsWebSocket(onUpdate?: (appointment: Appointment) =
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [connected, setConnected] = useState(false);
+    const [isConnecting, setIsConnecting] = useState(true);
 
     // 🛡️ HUMAN CHECK - DI: Inject RealTime implementation (SocketIO, SSE, Mock)
     const { realTime } = useDependencies();
@@ -34,16 +35,19 @@ export function useAppointmentsWebSocket(onUpdate?: (appointment: Appointment) =
         // Setup listeners
         realTime.onConnect(() => {
             setConnected(true);
+            setIsConnecting(false);
             setError(null);
         });
 
         realTime.onDisconnect(() => {
             setConnected(false);
+            setIsConnecting(true);
         });
 
         realTime.onError((err) => {
             setError("Error de conexión en tiempo real");
             setConnected(false);
+            setIsConnecting(false);
         });
 
         realTime.onSnapshot((data) => {
@@ -63,5 +67,7 @@ export function useAppointmentsWebSocket(onUpdate?: (appointment: Appointment) =
         };
     }, [realTime, updateAppointment, onUpdate]);
 
-    return { appointments, error, connected };
+    const connectionStatus = connected ? "connected" : isConnecting ? "connecting" : "disconnected";
+
+    return { appointments, error, connected, isConnecting, connectionStatus };
 }

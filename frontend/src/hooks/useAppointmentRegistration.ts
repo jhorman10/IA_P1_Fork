@@ -103,5 +103,5 @@ export function useAppointmentRegistration() {
         }
     };
 
-    return { register, loading, success, error };
+    return { register, loading, success, error, isSubmitting: loading };
 }
