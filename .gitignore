@@ -36,5 +36,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# GitHub workflows / configs (do not commit local agent configs)
-.github/
+# GitHub workflows / configs
+# Note: .github/copilot-instructions.md is tracked as it's part of the Agent Orchestrator architecture
