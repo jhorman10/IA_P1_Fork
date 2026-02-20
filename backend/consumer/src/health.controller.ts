@@ -9,7 +9,7 @@ export class HealthController {
 
     @Get()
     async check(@Res() res: Response) {
-        // ⚕️ HUMAN CHECK - Observability (H-23): Real dependency health check
+        // ⚕️ HUMAN CHECK - Observabilidad (H-23): Verificación real del estado de dependencias
         const dbStatus = this.connection.readyState === 1 ? 'up' : 'down';
 
         const isHealthy = dbStatus === 'up';

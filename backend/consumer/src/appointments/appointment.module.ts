@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseModule, getModelToken } from '@nestjs/mongoose';
 import { AppointmentSchema as SchemaDef } from '../schemas/appointment.schema';
 
 import { RegisterAppointmentUseCaseImpl } from '../application/use-cases/register-appointment.use-case.impl';
@@ -24,9 +24,13 @@ import { EventDispatchingAppointmentRepositoryDecorator } from '../infrastructur
         NotificationsModule,
     ],
     providers: [
+        // ⚕️ HUMAN CHECK - Corrección A-08: ConsultationPolicy inyectada en el Repositorio
+        // Permite que el Repositorio delegue la lógica de negocio a la política de dominio
         {
             provide: 'MongooseAppointmentRepository', // Underlying impl
-            useClass: MongooseAppointmentRepository,
+            inject: [getModelToken(Appointment.name), ConsultationPolicy],
+            useFactory: (model, policy) => 
+                new MongooseAppointmentRepository(model, policy),
         },
         {
             provide: 'AppointmentRepository', // Decorated port (H-25)

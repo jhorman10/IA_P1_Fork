@@ -7,9 +7,9 @@ import { ConfigService } from '@nestjs/config';
 async function bootstrap(): Promise<void> {
     const logger = new Logger('Bootstrap');
 
-    // ⚕️ HUMAN CHECK - Hybrid App: HTTP (Health) + Microservice
-    // Switched from createMicroservice to create to have an HTTP port
-    // and allow Docker/K8s Healthchecks.
+    // ⚕️ HUMAN CHECK - Aplicación híbrida: HTTP (Health) + Microservicio
+    // Se usa create en lugar de createMicroservice para tener un puerto HTTP
+    // y permitir Healthchecks de Docker/K8s.
     const app = await NestFactory.create(AppModule);
     app.enableShutdownHooks();
     const configService = app.get(ConfigService);

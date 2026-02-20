@@ -20,7 +20,7 @@ export class SchedulerService implements OnModuleInit {
     }
 
     onModuleInit() {
-        // ⚕️ HUMAN CHECK - Side Effects: Moved from constructor to lifecycle hook for testability
+        // ⚕️ HUMAN CHECK - Efectos secundarios: Movidos del constructor al lifecycle hook para testabilidad
         this.logger.log(
             `Scheduler initialization — interval: ${this.intervalMs}ms.`,
             'SchedulerService'

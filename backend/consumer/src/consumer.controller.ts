@@ -30,7 +30,7 @@ export class ConsumerController {
         const retryCount = this.getRetryCount(headers);
 
         try {
-            // ⚕️ HUMAN CHECK - DIP: Input mapped to Command before Use Case execution
+            // ⚕️ HUMAN CHECK - DIP: El input se mapea al Command antes de ejecutar el Caso de Uso
             const command = new RegisterAppointmentCommand(data.idCard, data.fullName, data.priority);
             await this.registerUseCase.execute(command);
             channel.ack(originalMsg);
@@ -49,7 +49,7 @@ export class ConsumerController {
     /**
      * Extracts retry count from RabbitMQ x-death header.
      */
-    // ⚕️ HUMAN CHECK - H-04 Fix: Typed RmqHeaders instead of `any`
+    // ⚕️ HUMAN CHECK - H-04 Fix: RmqHeaders tipado en lugar de `any`
     private getRetryCount(headers: RmqHeaders): number {
         const xDeath = headers['x-death'];
         if (!xDeath || !Array.isArray(xDeath) || xDeath.length === 0) {

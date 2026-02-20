@@ -22,31 +22,31 @@ export class Appointment {
     @Prop({ required: true, unique: true })
     domainId!: string;
 
-    // ⚕️ HUMAN CHECK - Nullable office
-    // null when waiting, assigned by the scheduler
+    // ⚕️ HUMAN CHECK - Campo office nullable
+    // null cuando está en espera, asignado por el scheduler
     @Prop({ type: String, default: null, index: true })
     office!: string | null;
 
-    // ⚕️ HUMAN CHECK - Appointment states
+    // ⚕️ HUMAN CHECK - Estados del Appointment
     @Prop({ default: 'waiting', enum: ['waiting', 'called', 'completed'], index: true })
     status!: AppointmentStatus;
 
-    // ⚕️ HUMAN CHECK - Appointment priority
-    // Determines assignment order in the scheduler
+    // ⚕️ HUMAN CHECK - Prioridad del Appointment
+    // Determina el orden de asignación en el scheduler
     @Prop({ default: 'medium', enum: ['high', 'medium', 'low'] })
     priority!: AppointmentPriority;
 
-    // ⚕️ HUMAN CHECK - Creation timestamp (epoch ms)
+    // ⚕️ HUMAN CHECK - Timestamp de creación (epoch ms)
     @Prop({ default: () => Date.now() })
     timestamp!: number;
 
-    // ⚕️ HUMAN CHECK - Completion timestamp
+    // ⚕️ HUMAN CHECK - Timestamp de finalización
     @Prop({ type: Number, default: null })
     completedAt!: number | null;
 }
 
 export const AppointmentSchema = SchemaFactory.createForClass(Appointment);
 
-// ⚕️ HUMAN CHECK - Composite index for Scheduler optimization
+// ⚕️ HUMAN CHECK - Índice compuesto para optimización del Scheduler
 AppointmentSchema.index({ status: 1, priority: 1, timestamp: 1 });
 
