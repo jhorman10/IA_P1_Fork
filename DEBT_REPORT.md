@@ -5,7 +5,7 @@
 
 | Estado | Cantidad |
 |--------|---------|
-| ✅ Resuelto | 64 |
+| ✅ Resuelto | 70 |
 | ⬜ Pendiente | 0 |
 | 🔄 En Progreso | 0 |
 | ⏸️ Bloqueado | 0 |
@@ -142,6 +142,74 @@
 |----|----------|---------|--------|--------|
 | L-19 | `mock-event-broadcaster` sin tipo de dominio: usaba `any[]` como contenedor de eventos | `test/fixtures/mocks/mock-event-broadcaster.ts` | Importa `DomainEvent`; define `DomainEventConstructor = new (...args: unknown[]) => DomainEvent` | ✅ |
 | L-20 | `mock-mongoose-model` sin contrato de datos: toda la persistencia era `any` | `test/fixtures/mocks/mock-mongoose-model.ts` | Define `interface MongoDoc extends PersistenceAppointmentData { _id: string }` y `type MongoFilter = Record<string, unknown>` | ✅ |
+
+---
+
+## 7. Auditoría Hostil v11: Violaciones DIP/DDD Ocultas (2026-02-19)
+
+*Auditoría exhaustiva enfocada en detectar acoplamiento oculto entre capas de dominio e infraestructura. Búsqueda de violaciones sutiles de DIP/DDD que pasaron auditorías previas.*
+
+**Metodología:** Inspección semántica + grep patterns (imports Mongoose/NestJS en domain/, console.log sin LoggerPort, magic numbers, comentarios indecisos).
+
+| ID | Hallazgo | Severidad | Área | Solución | Estado |
+|----|----------|-----------|------|----------|--------|
+| **H-32** | **Specification retorna sintaxis Mongoose en dominio** — `AppointmentQuerySpecification.getActiveFilter()` retorna `{ status: { $in: [...] } }` y `getExpiredCalledFilter()` retorna `{ completedAt: { $lte: ... } }`. **Violación DIP crítica:** el dominio expone sintaxis de MongoDB, imposible cambiar BD sin modificar dominio. | ⛔ **CRÍTICO** | Dominio / Specifications | Crear `MongooseQueryBuilder` en `infrastructure/persistence/` para traducir especificaciones a queries Mongoose. Dominio solo expone constantes (`ACTIVE_STATUSES`) y el adapter construye el filtro. Repository usa `MongooseQueryBuilder.buildActiveFilter(AppointmentQuerySpecification.ACTIVE_STATUSES)`. | ✅ |
+| **H-33** | **Framework dependency en Domain Policy** — `ConsultationPolicy` tiene `@Injectable()` de NestJS en capa de dominio. **Violación DIP:** dominio no debe conocer frameworks de infraestructura, no reutilizable fuera de NestJS. | 🟠 **ALTO** | Dominio / Policies | Eliminar `@Injectable()` decorator. Ya existe factory pattern en `AppointmentModule`: `{ provide: ConsultationPolicy, useFactory: () => new ConsultationPolicy() }`. Dominio puro sin decoradores. | ✅ |
+| **H-34** | **Console.log directo en Repository** — `MongooseAppointmentRepository` tiene 3 llamadas `console.log()` en líneas 30, 40, 50 (`findWaiting`, `findAvailableOffices`). **Inconsistencia:** todos los demás adapters usan `LoggerPort`, este no. Logs no van a sistema centralizado. | 🟡 **MEDIO** | Infraestructura / Persistence | Inyectar `LoggerPort` en constructor del repository (mismo patrón que Use Cases). Reemplazar `console.log('[DEBUG] ...')` por `this.logger.log('[DEBUG] ...')`. Agregar FakeLogger en tests de integración que implementa todos los métodos de `LoggerPort`. | ✅ |
+| **H-35** | **Magic number hardcoded** — `AppointmentModule` línea 81: `new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, 5, policy)`. El `5` (número total de consultorios) está hardcoded, no ajustable por entorno (dev: 3 oficinas, prod: 10 oficinas). | 🟡 **MEDIO** | Aplicación / Config | Parametrizar desde `ConfigService`: `const totalOffices = config.get<number>('TOTAL_OFFICES', 5);`. Inyectar `ConfigService` en factory del módulo. Variable de entorno `TOTAL_OFFICES` en `.env`. | ✅ |
+| **H-36** | **Ref innecesario en React Hook** — `useAppointmentRegistration.ts` línea 36: `const repositoryRef = useRef(repository); // Keep ref for stability or just use repository directly? DependencyContext is stable.` **Comentario indeciso + código redundante:** `DependencyContext` Provider ya garantiza estabilidad, `useRef` agrega complejidad sin beneficio. | 🟢 **BAJO** | Frontend / Hooks | Eliminar `repositoryRef`. Usar `repository` directamente de `useDependencies()`. Actualizar llamada de `repositoryRef.current!.createAppointment(data)` a `repository.createAppointment(data)`. Clarificar comentario HUMAN CHECK. | ✅ |
+| **H-37** | **Acoplamiento indirecto vía Specification** — `mongoose-appointment.repository.ts` usa `AppointmentQuerySpecification.getActiveFilter()` directamente, perpetuando fuga de sintaxis Mongoose desde dominio. | ⚪ **INFO** | Infraestructura / Persistence | Auto-resuelto al corregir **H-32**. Repository ahora usa `MongooseQueryBuilder.buildActiveFilter(AppointmentQuerySpecification.ACTIVE_STATUSES)`. Specification ya no expone sintaxis de BD. | ✅ |
+
+### 7.1 — Cambios Técnicos Implementados
+
+**Archivos Nuevos:**
+- `backend/consumer/src/infrastructure/persistence/mongoose-query.builder.ts` (+30 líneas)
+  - `buildActiveFilter(statuses: AppointmentStatus[]): MongoQuery`
+  - `buildExpiredCalledFilter(now: number): MongoQuery`
+
+**Archivos Modificados:**
+- `backend/consumer/src/domain/specifications/appointment-query.specification.ts` (-20 líneas)
+  - ❌ Eliminados: `getActiveFilter()`, `getExpiredCalledFilter()`
+  - ✅ Mantenidos: `ACTIVE_STATUSES`, `QUEUE_SORT_ORDER` (constantes puras)
+  
+- `backend/consumer/src/domain/policies/consultation.policy.ts` (-1 línea)
+  - ❌ Eliminado: `import { Injectable } from '@nestjs/common';` + `@Injectable()` decorator
+  
+- `backend/consumer/src/infrastructure/persistence/mongoose-appointment.repository.ts` (+5 líneas imports/constructor, +3 líneas logger)
+  - ✅ Agregados: `import { LoggerPort } from '../../domain/ports/outbound/logger.port'`, `import { MongooseQueryBuilder } from './mongoose-query.builder'`
+  - ✅ Constructor: `@Inject('LoggerPort') private readonly logger: LoggerPort`
+  - ✅ Reemplazos: `console.log()` → `this.logger.log()`
+  - ✅ Uso: `MongooseQueryBuilder.buildActiveFilter(AppointmentQuerySpecification.ACTIVE_STATUSES)`
+
+- `backend/consumer/src/appointments/appointment.module.ts` (+4 líneas)
+  - ✅ Agregados: `import { ConfigModule, ConfigService } from '@nestjs/config'`
+  - ✅ Imports: `ConfigModule` en imports array
+  - ✅ Factory: Inyecta `ConfigService`, parametriza `totalOffices`
+  - ✅ Inyección LoggerPort en MongooseAppointmentRepository factory
+
+- `backend/consumer/test/src/infrastructure/persistence/mongoose-appointment.repository.integration.spec.ts` (+25 líneas)
+  - ✅ Agregada clase `FakeLogger implements LoggerPort` con todos los métodos (`log`, `error`, `warn`, `debug`, `verbose`)
+  - ✅ Constructor repository: `new MongooseAppointmentRepository(model, policy, new FakeLogger())`
+
+- `frontend/src/hooks/useAppointmentRegistration.ts` (-3 líneas redundantes)
+  - ❌ Eliminados: `repositoryRef = useRef(repository)`, `repositoryRef.current!.createAppointment()`
+  - ✅ Uso directo: `repository.createAppointment(data)`
+
+### 7.2 — Verificación Post-Remediación
+
+```bash
+✓ Tests Consumer: 189/189 PASS
+✓ ESLint: 0 errores
+✓ Arquitectura: DIP/DDD compliant
+✓ Commits: 3 organizados con Conventional Commits
+```
+
+**Principios Validados:**
+- ✅ **DIP (Dependency Inversion Principle):** Dominio no depende de Mongoose ni NestJS
+- ✅ **SRP (Single Responsibility Principle):** Specification = reglas de negocio, QueryBuilder = traducción a BD
+- ✅ **Clean Architecture:** Dependency Rule respetada (dominio → aplicación → infraestructura)
+- ✅ **Hexagonal Architecture:** Adaptadores correctamente ubicados fuera del dominio
+- ✅ **DDD (Domain-Driven Design):** Dominio expresivo, libre de detalles técnicos
 
 ---
 **ESTADO: DEUDA ARQUITECTÓNICA DEPURADA — CERTIFICACIÓN DDD ÉLITE + LINTING AUDITADO**
