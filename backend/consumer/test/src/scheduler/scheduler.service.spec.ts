@@ -8,11 +8,7 @@ describe('SchedulerService', () => {
     interface MaintenanceUseCaseMock {
         execute: jest.Mock<void, []>;
     }
-    interface SchedulerRegistryMock {
-        addInterval: jest.Mock<void, [string, unknown]>;
-    }
     let maintenanceUseCase: MaintenanceUseCaseMock;
-    let schedulerRegistry: SchedulerRegistryMock;
 
     const mockMaintenanceUseCase = {
         execute: jest.fn(),
@@ -49,7 +45,6 @@ describe('SchedulerService', () => {
 
         service = module.get<SchedulerService>(SchedulerService);
         maintenanceUseCase = module.get('MaintenanceOrchestratorUseCase');
-        schedulerRegistry = module.get(SchedulerRegistry);
     });
 
     afterEach(() => {

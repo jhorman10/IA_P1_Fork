@@ -6,7 +6,7 @@ import { ValidationError } from '../../src/domain/errors/validation.error';
 describe('ConsumerController', () => {
     let controller: ConsumerController;
     interface RegisterUseCaseMock {
-        execute: jest.Mock<Promise<{ id: string }>, [any]>;
+        execute: jest.Mock<Promise<{ id: string }>, [unknown]>;
     }
     let registerUseCase: RegisterUseCaseMock;
 

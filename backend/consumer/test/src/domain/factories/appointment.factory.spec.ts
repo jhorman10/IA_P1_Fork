@@ -5,7 +5,7 @@ import { FullName } from '../../../../src/domain/value-objects/full-name.value-o
 
 describe('AppointmentFactory', () => {
     it('should create a new appointment with default waiting status', () => {
-        const idCard = new IdCard(12345);
+        const idCard = new IdCard(123456789);
         const fullName = new FullName('John Doe');
         const now = Date.now();
 
@@ -19,7 +19,7 @@ describe('AppointmentFactory', () => {
     });
 
     it('should allow creating with explicit priority', () => {
-        const idCard = new IdCard(12345);
+        const idCard = new IdCard(987654321);
         const fullName = new FullName('Jane Doe');
         const priority = new Priority('high');
         const now = Date.now();
