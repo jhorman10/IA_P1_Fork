@@ -4,9 +4,9 @@ import { Connection, Types } from 'mongoose';
 import { LockRepository } from '../../domain/ports/outbound/lock.repository';
 
 // Pattern: Adapter (Infrastructure)
-// ⚕️ HUMAN CHECK - Horizontal Scaling Fix (H-20)
-// Uses MongoDB unique index or TTL for distributed locking.
-// In a real production environment, Redis (Redlock) would be preferred.
+// ⚕️ HUMAN CHECK - Corrección para escala horizontal (H-20)
+// Usa índice único o TTL de MongoDB para bloqueo distribuido.
+// En producción real, se preferiría Redis (Redlock).
 
 @Injectable()
 export class MongooseLockRepository implements LockRepository {

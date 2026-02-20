@@ -4,7 +4,7 @@ import { NotificationPort } from '../../domain/ports/outbound/notification.port'
 import { Appointment } from '../../domain/entities/appointment.entity';
 
 // Pattern: Adapter — Bridges RabbitMQ Client with the Domain Port
-// ⚕️ HUMAN CHECK - DIP: Implements notification port using NestJS ClientProxy
+// ⚕️ HUMAN CHECK - DIP: Implementa el puerto de notificación usando NestJS ClientProxy
 
 @Injectable()
 export class RabbitMQNotificationAdapter implements NotificationPort {

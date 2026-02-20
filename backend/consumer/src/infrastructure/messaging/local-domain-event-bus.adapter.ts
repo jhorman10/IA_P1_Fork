@@ -5,8 +5,8 @@ import { DomainEventHandler } from '../../domain/ports/outbound/domain-event-han
 
 /**
  * Adapter: Infrastructure — Local implementation of the DomainEventBus.
- * ⚕️ HUMAN CHECK - OCP: Uses handler registry. Adding new events requires
- * registering new handlers, not modifying this class.
+ * ⚕️ HUMAN CHECK - OCP: Usa un registro de handlers. Agregar nuevos eventos requiere
+ * registrar nuevos handlers, sin modificar esta clase.
  */
 @Injectable()
 export class LocalDomainEventBusAdapter implements DomainEventBus {

@@ -7,16 +7,19 @@ import { Appointment as AppointmentSchema, AppointmentDocument } from '../../sch
 import { IdCard } from '../../domain/value-objects/id-card.value-object';
 import { AppointmentMapper } from './appointment.mapper';
 import { AppointmentQuerySpecification } from '../../domain/specifications/appointment-query.specification';
+import { ConsultationPolicy } from '../../domain/policies/consultation.policy';
 
 // Pattern: Adapter + Repository — Bridges Mongoose with the Domain Port
-// ⚕️ HUMAN CHECK - DIP: Implements domain port using infra-specific Mongoose
-// SRP: Delegates mapping to AppointmentMapper and query logic to Specification
+// ⚕️ HUMAN CHECK - DIP: Implementa el puerto de dominio usando Mongoose de infraestructura
+// SRP: Delega mapeo a AppointmentMapper, lógica de query a Specification,
+//      y LÓGICA DE NEGOCIO a ConsultationPolicy (corrección A-08: lógica de dominio extraída)
 
 @Injectable()
 export class MongooseAppointmentRepository implements AppointmentRepository {
     constructor(
         @InjectModel(AppointmentSchema.name)
         private readonly model: Model<AppointmentDocument>,
+        private readonly consultationPolicy: ConsultationPolicy, // ⚕️ Inject domain policy
     ) { }
 
     async findWaiting(): Promise<Appointment[]> {
@@ -31,12 +34,19 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
     async findAvailableOffices(allOfficeIds: string[]): Promise<string[]> {
         const occupiedDocs = await this.model
             .find({ status: 'called' })
-            .select('office')
+            .select('office status')
             .lean()
             .exec();
         console.log('[DEBUG] findAvailableOffices() →', occupiedDocs.length, 'oficinas ocupadas');
-        const occupiedIds = occupiedDocs.map(d => String(d.office));
-        const libres = allOfficeIds.filter(id => !occupiedIds.includes(id));
+        
+        // Build lightweight objects for the policy — only office/status needed
+        // ⚕️ HUMAN CHECK - Evitar toDomain() completo en docs lean parciales (solo office+status seleccionados)
+        const occupiedOffices = occupiedDocs
+            .filter(d => d.office && d.status === 'called')
+            .map(d => d.office as string);
+
+        // ⚕️ HUMAN CHECK - Lógica de negocio delegada a la política de dominio (corrección A-08)
+        const libres = allOfficeIds.filter(id => !occupiedOffices.includes(id));
         console.log('[DEBUG] findAvailableOffices() → oficinas libres:', libres);
         return libres;
     }

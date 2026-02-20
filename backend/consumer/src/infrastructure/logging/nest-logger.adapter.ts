@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { LoggerPort } from '../../domain/ports/outbound/logger.port';
 
 /**
- * ⚕️ HUMAN CHECK - Infrastructure Adapter: Maps Domain LoggerPort to NestJS Logger.
+ * ⚕️ HUMAN CHECK - Adaptador de Infraestructura: Mapea el LoggerPort de dominio al Logger de NestJS.
  */
 @Injectable()
 export class NestLoggerAdapter implements LoggerPort {

@@ -1,6 +1,6 @@
 /**
  * Typed RabbitMQ message headers for retry tracking.
- * ⚕️ HUMAN CHECK - H-04 Fix: Replaces `any` param in ConsumerController.getRetryCount()
+ * ⚕️ HUMAN CHECK - H-04 Fix: Reemplaza el parámetro `any` en ConsumerController.getRetryCount()
  */
 export interface XDeathEntry {
     count?: number;

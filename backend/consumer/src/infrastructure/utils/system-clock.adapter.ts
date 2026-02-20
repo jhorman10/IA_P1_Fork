@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ClockPort } from '../../domain/ports/outbound/clock.port';
 
 /**
- * ⚕️ HUMAN CHECK - Infrastructure Adapter: Maps ClockPort to standard system time.
+ * ⚕️ HUMAN CHECK - Adaptador de Infraestructura: Mapea ClockPort al tiempo del sistema.
  */
 @Injectable()
 export class SystemClockAdapter implements ClockPort {
