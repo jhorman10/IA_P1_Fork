@@ -626,6 +626,39 @@ Resultado: Auditoría REMEDIADA.
 | refactor(producer) | `44bc19f` | Modularizar ProducerController |
 | refactor(core) | `bcbf5ba` | Eliminar exports de infraestructura |
 
+### 9.11 — Auditoría Hostil v11: DIP/DDD Violations (2026-02-19)
+
+```
+👤 Human: "Lanza nuevamente el prompt del senior hostil"
+
+🤖 IA: [Escaneó all .ts buscando violaciones DIP/DDD ocultas]
+   Resultado: 7 hallazgos (H-32 a H-37: 1 crítico, 1 alto, 2 medio, 1 bajo, 2 info)
+
+👤 Human: ✅ "si" (proceder con remediación completa)
+
+🤖 IA: [Ejecutó 6 refactors arquitectónicos]
+   - H-32 ⛔ CRÍTICO: Specification retorna sintaxis Mongoose en dominio
+   - H-33 🟠 ALTO: @Injectable de NestJS en ConsultationPolicy (dominio)
+   - H-34 🟡 MEDIO: 3 console.log en Repository sin LoggerPort
+   - H-35 🟡 MEDIO: Magic number 5 hardcoded (TOTAL_OFFICES)
+   - H-36 🟢 BAJO: repositoryRef innecesario en hook React
+   - H-37 ⚪ INFO: (Auto-resuelto con H-32)
+
+   Soluciones implementadas:
+   - Crear MongooseQueryBuilder en infrastructure (H-32)
+   - Eliminar decoradores de framework en dominio (H-33)
+   - Inyectar LoggerPort en todos los adapters (H-34)
+   - Parametrizar configuración desde env (H-35)
+   - Simplificar hooks React eliminando refs redundantes (H-36)
+
+   Resultado: 189/189 PASS ✅
+```
+
+| Commit | Hash | Descripción |
+|--------|------|-------------|
+| refactor(consumer) | `152fb14` | Auditoría v11 Backend: H-32 a H-35 (DIP/DDD) |
+| refactor(frontend) | `f3721fa` | Auditoría v11 Frontend: H-36 (ref cleanup) |
+
 ---
 
 ## 10. Appendix
