@@ -30,7 +30,11 @@ export default [
     rules: Object.assign({}, tsEslintPlugin.configs.recommended.rules, {
       'no-unused-vars': 'off',
       'no-console': 'off',
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': ['warn', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      }],
     }),
   }),
 ];
