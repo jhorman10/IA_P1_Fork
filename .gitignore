@@ -7,6 +7,11 @@ dist/
 build/
 .next/
 
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+
 # Environment files
 .env
 .env.local
