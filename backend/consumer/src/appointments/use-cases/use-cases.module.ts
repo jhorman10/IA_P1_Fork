@@ -6,6 +6,7 @@ import { AssignAvailableOfficesUseCaseImpl } from '../../application/use-cases/a
 import { MaintenanceOrchestratorUseCaseImpl } from '../../application/use-cases/maintenance-orchestrator.use-case.impl';
 import { RepositoriesModule } from '../repositories/repositories.module';
 import { PoliciesModule } from '../policies/policies.module';
+import { ConsultationPolicy } from 'src/domain/policies/consultation.policy';
 
 /**
  * @description UseCasesModule encapsulates all business logic orchestration.
@@ -54,7 +55,7 @@ import { PoliciesModule } from '../policies/policies.module';
         {
             provide: 'AssignAvailableOfficesUseCase',
             inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort', 'ConsultationPolicy', ConfigService],
-            useFactory: (repo, logger, clock, policy: any, configService: ConfigService) => {
+            useFactory: (repo, logger, clock, policy: ConsultationPolicy, configService: ConfigService) => {
                 const totalOffices = configService.get<number>('TOTAL_OFFICES', 5);
                 return new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, totalOffices, policy);
             },
