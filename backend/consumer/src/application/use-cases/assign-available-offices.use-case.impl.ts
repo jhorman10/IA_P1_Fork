@@ -19,35 +19,45 @@ export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOffices
     ) { }
 
     async execute(): Promise<void> {
-        // 1. Get available offices (Logic encapsulated in Repository - H-31)
+        this.logger.log('--- INICIO ASIGNACIÓN DE CONSULTORIOS ---', 'AssignAvailableOfficesUseCase');
         const allOffices = Array.from({ length: this.totalOffices }, (_, i) => String(i + 1));
+        this.logger.log(`Oficinas totales: ${allOffices.join(', ')}`, 'AssignAvailableOfficesUseCase');
         const freeOffices = await this.appointmentRepository.findAvailableOffices(allOffices);
+        this.logger.log(`Oficinas libres detectadas: ${freeOffices.join(', ')}`, 'AssignAvailableOfficesUseCase');
 
-        if (freeOffices.length === 0) return;
+        if (freeOffices.length === 0) {
+            this.logger.log('No hay oficinas libres para asignar.', 'AssignAvailableOfficesUseCase');
+            return;
+        }
 
-        // 2. Get waiting appointments
-        const waiting = await this.appointmentRepository.findWaiting();
-        if (waiting.length === 0) return;
+        let waiting = await this.appointmentRepository.findWaiting();
+        this.logger.log(`Turnos en espera detectados: ${waiting.map(a => a.idCard.toValue()).join(', ')}`, 'AssignAvailableOfficesUseCase');
+        if (waiting.length === 0) {
+            this.logger.log('No hay turnos en espera para asignar.', 'AssignAvailableOfficesUseCase');
+            return;
+        }
 
-        // 3. Batch Assignment
+        // Ordenar por prioridad (high, medium, low) y luego por timestamp (FIFO)
+        waiting = waiting.sort((a, b) => {
+            const priorityDiff = a.priority.getNumericWeight() - b.priority.getNumericWeight();
+            if (priorityDiff !== 0) return priorityDiff;
+            return a.timestamp - b.timestamp;
+        });
+
         const possibleAssignments = Math.min(freeOffices.length, waiting.length);
+        this.logger.log(`Asignaciones posibles: ${possibleAssignments}`, 'AssignAvailableOfficesUseCase');
 
         for (let i = 0; i < possibleAssignments; i++) {
             const appointment = waiting[i];
             const office = freeOffices[i];
-
-            // ⚕️ HUMAN CHECK - DIP: Logic delegated to injected Domain Policy (H-07)
+            this.logger.log(`Asignando oficina ${office} al turno ${appointment.idCard.toValue()} (prioridad: ${appointment.priority.toValue()})`, 'AssignAvailableOfficesUseCase');
             const randomDuration = this.consultationPolicy.getRandomDurationSeconds();
-
+            this.logger.log(`Duración asignada: ${randomDuration}s`, 'AssignAvailableOfficesUseCase');
             appointment.assignOffice(office, randomDuration, this.clock.now());
-
-            // 🧠 Intent: Business Rule record
             appointment.recordEvent(new AppointmentAssignedEvent(appointment));
-
-            // 🎯 Automated Side-effects (H-25)
             await this.appointmentRepository.save(appointment);
-
             this.logger.log(`Assigned office ${office} to appointment ${appointment.idCard.toValue()}`, 'AssignAvailableOfficesUseCase');
         }
+        this.logger.log('--- FIN ASIGNACIÓN DE CONSULTORIOS ---', 'AssignAvailableOfficesUseCase');
     }
 }

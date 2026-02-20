@@ -8,6 +8,8 @@ import { LoggerPort } from '../../domain/ports/outbound/logger.port';
 import { ClockPort } from '../../domain/ports/outbound/clock.port';
 import { AppointmentRegisteredEvent } from '../../domain/events/appointment-registered.event';
 
+
+import { Priority } from '../../domain/value-objects/priority.value-object';
 import { RegisterAppointmentCommand } from '../commands/register-appointment.command';
 
 /**
