@@ -9,8 +9,15 @@ import * as request from 'supertest';
  */
 describe('ProducerController (Integration Tests)', () => {
     let app: INestApplication;
-    let createAppointmentUseCase: any;
-    let queryAppointmentsUseCase: any;
+    interface CreateAppointmentUseCaseMock {
+        execute: jest.Mock;
+    }
+    interface QueryAppointmentsUseCaseMock {
+        findAll: jest.Mock;
+        findByIdCard: jest.Mock;
+    }
+    let createAppointmentUseCase: CreateAppointmentUseCaseMock;
+    let queryAppointmentsUseCase: QueryAppointmentsUseCaseMock;
 
     beforeEach(async () => {
         const mockCreateAppointmentUseCase = {

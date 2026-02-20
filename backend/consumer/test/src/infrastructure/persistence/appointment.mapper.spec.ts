@@ -35,6 +35,7 @@ describe('AppointmentMapper', () => {
                 office: null,
                 timestamp: now,
                 completedAt: undefined,
+                domainId: 'entity-id',
             });
         });
 
@@ -60,8 +61,10 @@ describe('AppointmentMapper', () => {
 
     describe('toDomain', () => {
         it('should map a Mongoose document to a domain entity', () => {
+            // Usar Types.ObjectId y el cast recomendado para tipado estricto
+            const { Types } = require('mongoose');
             const mockDoc = {
-                _id: 'mongo-id-123',
+                _id: new Types.ObjectId(),
                 idCard: 12345678,
                 fullName: 'John Doe',
                 priority: 'medium',
@@ -69,7 +72,8 @@ describe('AppointmentMapper', () => {
                 office: null,
                 timestamp: now,
                 completedAt: undefined,
-            } as any;
+                domainId: 'mongo-id-123',
+            } as unknown as import('../../../../src/schemas/appointment.schema').AppointmentDocument;
 
             const entity = AppointmentMapper.toDomain(mockDoc);
 
@@ -83,8 +87,9 @@ describe('AppointmentMapper', () => {
         });
 
         it('should map a called appointment with office', () => {
+            const { Types } = require('mongoose');
             const mockDoc = {
-                _id: 'mongo-id-456',
+                _id: new Types.ObjectId(),
                 idCard: 87654321,
                 fullName: 'Jane Smith',
                 priority: 'high',
@@ -92,7 +97,8 @@ describe('AppointmentMapper', () => {
                 office: '5',
                 timestamp: now,
                 completedAt: now + 15000,
-            } as any;
+                domainId: 'mongo-id-456',
+            } as unknown as import('../../../../src/schemas/appointment.schema').AppointmentDocument;
 
             const entity = AppointmentMapper.toDomain(mockDoc);
 
@@ -104,8 +110,9 @@ describe('AppointmentMapper', () => {
 
     describe('Roundtrip (toDomain → toPersistence)', () => {
         it('should preserve data through a full roundtrip', () => {
+            const { Types } = require('mongoose');
             const originalDoc = {
-                _id: 'roundtrip-id',
+                _id: new Types.ObjectId(),
                 idCard: 55555555,
                 fullName: 'Roundtrip Test',
                 priority: 'low',
@@ -113,7 +120,8 @@ describe('AppointmentMapper', () => {
                 office: '2',
                 timestamp: now,
                 completedAt: now + 8000,
-            } as any;
+                domainId: 'roundtrip-id',
+            } as unknown as import('../../../../src/schemas/appointment.schema').AppointmentDocument;
 
             const entity = AppointmentMapper.toDomain(originalDoc);
             const persisted = AppointmentMapper.toPersistence(entity);

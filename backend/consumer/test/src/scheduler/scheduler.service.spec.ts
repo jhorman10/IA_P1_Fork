@@ -5,8 +5,14 @@ import { ConfigService } from '@nestjs/config';
 
 describe('SchedulerService', () => {
     let service: SchedulerService;
-    let maintenanceUseCase: any;
-    let schedulerRegistry: any;
+    interface MaintenanceUseCaseMock {
+        execute: jest.Mock<void, []>;
+    }
+    interface SchedulerRegistryMock {
+        addInterval: jest.Mock<void, [string, unknown]>;
+    }
+    let maintenanceUseCase: MaintenanceUseCaseMock;
+    let schedulerRegistry: SchedulerRegistryMock;
 
     const mockMaintenanceUseCase = {
         execute: jest.fn(),

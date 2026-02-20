@@ -14,17 +14,41 @@ import { Priority } from '../../src/domain/value-objects/priority.value-object';
 describe('AssignAppointmentsUseCase (Pure Logic - The Impossible Mock Challenge)', () => {
     it('should orchestrate assignment using only pure domain ports', async () => {
         // 1. Mocks de Ports (Interfaces)
-        const mockRepo = {
-            findExpiredCalled: jest.fn().mockResolvedValue([]),
-            findAvailableOffices: jest.fn().mockResolvedValue(['2', '3']),
+        // Mock completo de AppointmentRepository
+        interface RepoMock {
+            findWaiting: jest.Mock<Promise<Appointment[]>, []>;
+            findAvailableOffices: jest.Mock<Promise<string[]>, [string[]]>;
+            save: jest.Mock<Promise<Appointment>, [Appointment]>;
+            findById: jest.Mock<Promise<Appointment | null>, [string]>;
+            findByIdCardAndActive: jest.Mock<Promise<Appointment | null>, [IdCard]>;
+            findExpiredCalled: jest.Mock<Promise<Appointment[]>, [number]>;
+            updateStatus: jest.Mock<Promise<void>, [string, string]>;
+        }
+        interface LoggerMock {
+            log: jest.Mock<void, unknown[]>;
+            error: jest.Mock<void, unknown[]>;
+            warn: jest.Mock<void, unknown[]>;
+            debug: jest.Mock<void, unknown[]>;
+            verbose: jest.Mock<void, unknown[]>;
+        }
+        interface ClockMock {
+            now: jest.Mock<number, []>;
+            isoNow: jest.Mock<string, []>;
+        }
+        const mockRepo: RepoMock = {
             findWaiting: jest.fn().mockResolvedValue([
                 new Appointment(new IdCard(123), new FullName('John Doe'), new Priority('high'), 'waiting'),
                 new Appointment(new IdCard(456), new FullName('Jane Doe'), new Priority('medium'), 'waiting'),
             ]),
-            save: jest.fn(),
+            findAvailableOffices: jest.fn().mockResolvedValue(['2', '3']),
+            save: jest.fn().mockResolvedValue(undefined as unknown as Appointment),
+            findById: jest.fn().mockResolvedValue(null),
+            findByIdCardAndActive: jest.fn().mockResolvedValue(null),
+            findExpiredCalled: jest.fn().mockResolvedValue([]),
+            updateStatus: jest.fn().mockResolvedValue(undefined),
         };
 
-        const mockLogger = {
+        const mockLogger: LoggerMock = {
             log: jest.fn(),
             error: jest.fn(),
             warn: jest.fn(),
@@ -32,7 +56,7 @@ describe('AssignAppointmentsUseCase (Pure Logic - The Impossible Mock Challenge)
             verbose: jest.fn(),
         };
 
-        const mockClock = {
+        const mockClock: ClockMock = {
             now: jest.fn().mockReturnValue(Date.now()),
             isoNow: jest.fn().mockReturnValue(new Date().toISOString()),
         };
@@ -43,9 +67,9 @@ describe('AssignAppointmentsUseCase (Pure Logic - The Impossible Mock Challenge)
 
         // 2. Inyección de Dependencias PURA (DIP)
         const useCase = new AssignAvailableOfficesUseCaseImpl(
-            mockRepo as any,
-            mockLogger as any,
-            mockClock as any,
+            mockRepo,
+            mockLogger,
+            mockClock,
             3, // totalOffices
             new ConsultationPolicy(), // ⚕️ H-07: Injectable policy
         );

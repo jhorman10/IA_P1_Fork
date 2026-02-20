@@ -12,7 +12,10 @@ import { Priority } from '../../../../src/domain/value-objects/priority.value-ob
  * Tests verify individual handler + notification side-effect.
  */
 describe('AppointmentEventsHandlers (Split OCP Handlers)', () => {
-    let mockNotificationPort: any;
+    interface NotificationPortMock {
+        notifyAppointmentUpdated: jest.Mock<Promise<void>, [Appointment]>;
+    }
+    let mockNotificationPort: NotificationPortMock;
     const dummyAppointment = new Appointment(
         new IdCard(12345678),
         new FullName('John Doe'),

@@ -4,7 +4,7 @@ import { getConnectionToken } from '@nestjs/mongoose';
 
 describe('HealthController', () => {
     let controller: HealthController;
-    let mockConnection: any;
+    let mockConnection: { readyState: number };
 
     beforeEach(async () => {
         mockConnection = { readyState: 1 };
@@ -26,12 +26,13 @@ describe('HealthController', () => {
     });
 
     it('should return ok status when DB is up', async () => {
-        const mockRes: any = {
+        // Usar Partial<Response> para simular solo los métodos usados
+        const mockRes: Partial<import('express').Response> = {
             status: jest.fn().mockReturnThis(),
             json: jest.fn().mockReturnThis(),
         };
 
-        await controller.check(mockRes);
+        await controller.check(mockRes as import('express').Response);
 
         expect(mockRes.status).toHaveBeenCalledWith(200);
         expect(mockRes.json).toHaveBeenCalledWith(expect.objectContaining({
