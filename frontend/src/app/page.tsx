@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 import { Appointment } from "@/domain/Appointment";
 import { audioService } from "@/services/AudioService";
+import AppointmentCard from "@/components/AppointmentCard/AppointmentCard";
 import styles from "@/styles/page.module.css";
 
 /**
@@ -72,17 +73,13 @@ export default function AppointmentsScreen() {
           {calledAppointments.length > 0 ? (
             <ul className={styles.cardGrid}>
               {calledAppointments.map((t) => (
-                <li key={t.id} className={`${styles.appointmentCard} ${styles.highlight}`}> 
-                  <div className={styles.cardMain}>
-                    <span className={styles.nombre}>{t.fullName}</span>
-                    <span className={styles.officeBadge}>Consultorio {t.office}</span>
-                  </div>
-                  <div className={styles.cardMeta}>
-                    <span className={styles.statusBadge} data-status={t.priority}>
-                      {t.priority === "high" ? "🔴 Alta" : t.priority === "medium" ? "🟡 Media" : "🟢 Baja"}
-                    </span>
-                  </div>
-                </li>
+                <AppointmentCard
+                  key={t.id}
+                  appointment={t}
+                  status="called"
+                  showTime={true}
+                  timeIcon="🔔"
+                />
               ))}
             </ul>
           ) : (
@@ -103,14 +100,16 @@ export default function AppointmentsScreen() {
       <aside className={styles.rightPanel}>
         <h2 className={styles.sectionTitle}>⏳ Cola de Espera <span className={styles.countBadge}>{waitingAppointments.length}</span></h2>
         {waitingAppointments.length > 0 ? (
-          <ul className={styles.waitingQueue}>
+          <ul className={styles.cardGrid}>
             {waitingAppointments.map((t) => (
-              <li key={t.id} className={styles.queueCard}>
-                <span className={styles.nombre}>{t.fullName}</span>
-                <span className={styles.statusBadge} data-status={t.priority}>
-                  {t.priority === "high" ? "🔴 Alta" : t.priority === "medium" ? "🟡 Media" : "🟢 Baja"}
-                </span>
-              </li>
+              <AppointmentCard
+                key={t.id}
+                appointment={t}
+                status="waiting"
+                showTime={true}
+                timeIcon="📝"
+                consultorioLabel="Pendiente"
+              />
             ))}
           </ul>
         ) : (
