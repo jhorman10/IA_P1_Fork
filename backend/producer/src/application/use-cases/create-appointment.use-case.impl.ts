@@ -1,9 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { AppointmentPublisherPort } from "../../domain/ports/outbound/appointment-publisher.port";
+
 import {
-  CreateAppointmentUseCase,
   CreateAppointmentCommand,
+  CreateAppointmentUseCase,
 } from "../../domain/ports/inbound/create-appointment.use-case";
+import { AppointmentPublisherPort } from "../../domain/ports/outbound/appointment-publisher.port";
 import { IdCard } from "../../domain/value-objects/id-card.vo";
 import { PatientName } from "../../domain/value-objects/patient-name.vo";
 

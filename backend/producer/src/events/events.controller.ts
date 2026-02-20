@@ -1,5 +1,6 @@
 import { Controller, Inject, Logger } from "@nestjs/common";
 import { EventPattern, Payload } from "@nestjs/microservices";
+
 import { EventBroadcasterPort } from "../domain/ports/outbound/event-broadcaster.port";
 import { AppointmentEventPayload } from "../types/appointment-event";
 

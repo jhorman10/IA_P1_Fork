@@ -1,8 +1,9 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
-import { AppointmentRegisteredEvent } from "../../domain/events/appointment-registered.event";
+
 import { AppointmentAssignedEvent } from "../../domain/events/appointment-assigned.event";
-import { NotificationPort } from "../../domain/ports/outbound/notification.port";
+import { AppointmentRegisteredEvent } from "../../domain/events/appointment-registered.event";
 import { DomainEventHandler } from "../../domain/ports/outbound/domain-event-handler.port";
+import { NotificationPort } from "../../domain/ports/outbound/notification.port";
 
 /**
  * Handler: Reacts to AppointmentRegistered events.

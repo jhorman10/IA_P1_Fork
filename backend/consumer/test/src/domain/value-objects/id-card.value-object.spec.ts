@@ -1,5 +1,5 @@
-import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
 import { ValidationError } from "../../../../src/domain/errors/validation.error";
+import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
 
 describe("IdCard Value Object", () => {
   it("should create a valid IdCard from a 6-digit number", () => {

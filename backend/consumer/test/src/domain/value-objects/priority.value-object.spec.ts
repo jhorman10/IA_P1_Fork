@@ -1,5 +1,5 @@
-import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
 import { ValidationError } from "../../../../src/domain/errors/validation.error";
+import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
 
 describe("Priority Value Object", () => {
   describe("constructor", () => {

@@ -1,7 +1,8 @@
 import { Module } from "@nestjs/common";
+
+import { AppointmentModule } from "../appointments/appointment.module";
 import { AppointmentsGateway } from "./appointments.gateway";
 import { EventsController } from "./events.controller";
-import { AppointmentModule } from "../appointments/appointment.module";
 
 // ⚕️ HUMAN CHECK - Módulo Hexagonal
 // Vincula EventBroadcasterPort → AppointmentsGateway (DIP)

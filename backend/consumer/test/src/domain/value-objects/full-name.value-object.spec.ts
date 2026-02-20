@@ -1,5 +1,5 @@
-import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
 import { ValidationError } from "../../../../src/domain/errors/validation.error";
+import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
 
 describe("FullName Value Object", () => {
   describe("constructor", () => {

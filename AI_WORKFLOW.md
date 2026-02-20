@@ -808,8 +808,23 @@ TOTAL MVP SCORE:     62/100            MVP CONDICIONAL
 | `/skills/*.md`         | Skills especializadas                |
 | `/docs/agent-context/` | Módulos de contexto modular          |
 
+## 11. Configuración de Linter y Formateo on Save
+
+- **Rol:** IA (Orquestador)
+- **Archivos Modificados:**
+  - `backend/producer/eslint.config.js`
+  - `backend/consumer/eslint.config.js`
+  - `frontend/eslint.config.mjs`
+  - `backend/producer/package.json`, `backend/consumer/package.json`, `frontend/package.json`
+- **Contexto:** Configurar el linter para ordenar las importaciones por prioridad cada vez que se guarda y formatear el código.
+- **Acciones:**
+  - Se comprobó que `.vscode/settings.json` ya contenía `editor.formatOnSave` y la corrección automática de eslint `source.fixAll.eslint`.
+  - Se instaló la dependencia dev `eslint-plugin-simple-import-sort` usando `--legacy-peer-deps` por conflictos preexistentes en las versiones.
+  - Se modificaron los archivos `eslint.config.js` (`eslint.config.mjs` en frontend) para configurar reglas strict ("error") para `simple-import-sort/imports` y `exports`.
+  - Se aplicaron las reglas localmente con el autofix de eslint verificando la correcta funcionalidad.
+
 ---
 
 Documento generado y mantenido bajo metodologia AI-First con trazabilidad completa.
 
-Ultima actualizacion: 2026-02-19
+Ultima actualizacion: 2026-02-20

@@ -5,10 +5,10 @@
  * Tests automatic event dispatching after repository saves
  */
 
-import { EventDispatchingAppointmentRepositoryDecorator } from "../../../../src/infrastructure/persistence/event-dispatching-appointment-repository.decorator";
+import { AppointmentRegisteredEvent } from "../../../../src/domain/events/appointment-registered.event";
 import { AppointmentRepository } from "../../../../src/domain/ports/outbound/appointment.repository";
 import { DomainEventBus } from "../../../../src/domain/ports/outbound/domain-event-bus.port";
-import { AppointmentRegisteredEvent } from "../../../../src/domain/events/appointment-registered.event";
+import { EventDispatchingAppointmentRepositoryDecorator } from "../../../../src/infrastructure/persistence/event-dispatching-appointment-repository.decorator";
 
 describe("EventDispatchingAppointmentRepositoryDecorator", () => {
   let decorator: EventDispatchingAppointmentRepositoryDecorator;

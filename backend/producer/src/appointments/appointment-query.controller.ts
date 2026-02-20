@@ -1,5 +1,6 @@
 import { Controller, Get, Inject, Param, ParseIntPipe } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from "@nestjs/swagger";
+import { ApiOperation, ApiParam,ApiResponse, ApiTags } from "@nestjs/swagger";
+
 import { QueryAppointmentsUseCase } from "../domain/ports/inbound/query-appointments.use-case";
 import { AppointmentResponseDto } from "../dto/appointment-response.dto";
 import { AppointmentMapper } from "../mappers/appointment.mapper";

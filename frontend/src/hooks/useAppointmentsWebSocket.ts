@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { Appointment } from "@/domain/Appointment";
+import { useCallback,useEffect, useState } from "react";
+
 import { useDependencies } from "@/context/DependencyContext";
+import { Appointment } from "@/domain/Appointment";
 
 /**
  * Real-time hook using WebSocket (Socket.IO).

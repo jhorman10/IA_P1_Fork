@@ -1,16 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
-import { Appointment } from "@/domain/Appointment";
-import { audioService } from "@/services/AudioService";
+
 import {
-  WaitingAppointmentCard,
   CalledAppointmentCard,
   CompletedAppointmentCard,
+  WaitingAppointmentCard,
 } from "@/components/AppointmentCard";
 import AppointmentSkeleton from "@/components/AppointmentSkeleton";
 import WebSocketStatus from "@/components/WebSocketStatus";
+import { Appointment } from "@/domain/Appointment";
+import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
+import { audioService } from "@/services/AudioService";
 import styles from "@/styles/page.module.css";
 
 /**

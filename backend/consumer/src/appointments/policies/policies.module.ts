@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+
 import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 
 /**

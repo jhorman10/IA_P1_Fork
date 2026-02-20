@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
-import { CreateAppointmentDTO } from "@/domain/CreateAppointment";
+import { useEffect,useRef, useState } from "react";
+
 import { useDependencies } from "@/context/DependencyContext";
+import { CreateAppointmentDTO } from "@/domain/CreateAppointment";
 
 /**
  * Hook for registering appointments.

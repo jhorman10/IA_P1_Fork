@@ -1,6 +1,6 @@
-import { LocalDomainEventBusAdapter } from "../../../../src/infrastructure/messaging/local-domain-event-bus.adapter";
 import { DomainEvent } from "../../../../src/domain/events/domain-event.base";
 import { DomainEventHandler } from "../../../../src/domain/ports/outbound/domain-event-handler.port";
+import { LocalDomainEventBusAdapter } from "../../../../src/infrastructure/messaging/local-domain-event-bus.adapter";
 
 /**
  * ⚕️ HUMAN CHECK - Verificación OCP:

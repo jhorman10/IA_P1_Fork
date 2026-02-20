@@ -1,16 +1,17 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
-import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { MongooseModule } from "@nestjs/mongoose";
-import { ProducerController } from "./producer.controller";
-import { AppointmentQueryController } from "./appointments/appointment-query.controller";
-import { HealthController } from "./health.controller";
-import { AppointmentModule } from "./appointments/appointment.module";
-import { EventsModule } from "./events/events.module";
-import { RabbitMQPublisherAdapter } from "./infrastructure/adapters/outbound/rabbitmq-publisher.adapter";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+
 import { CreateAppointmentUseCaseImpl } from "./application/use-cases/create-appointment.use-case.impl";
+import { AppointmentModule } from "./appointments/appointment.module";
+import { AppointmentQueryController } from "./appointments/appointment-query.controller";
+import { EventsModule } from "./events/events.module";
+import { HealthController } from "./health.controller";
+import { RabbitMQPublisherAdapter } from "./infrastructure/adapters/outbound/rabbitmq-publisher.adapter";
+import { ProducerController } from "./producer.controller";
 
 @Module({
   imports: [

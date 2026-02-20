@@ -1,13 +1,12 @@
-import { FullName } from "../../domain/value-objects/full-name.value-object";
-import { IdCard } from "../../domain/value-objects/id-card.value-object";
-import { AppointmentFactory } from "../../domain/factories/appointment.factory";
 import { Appointment } from "../../domain/entities/appointment.entity";
+import { AppointmentRegisteredEvent } from "../../domain/events/appointment-registered.event";
+import { AppointmentFactory } from "../../domain/factories/appointment.factory";
 import { RegisterAppointmentUseCase } from "../../domain/ports/inbound/register-appointment.use-case";
 import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
-import { LoggerPort } from "../../domain/ports/outbound/logger.port";
 import { ClockPort } from "../../domain/ports/outbound/clock.port";
-import { AppointmentRegisteredEvent } from "../../domain/events/appointment-registered.event";
-
+import { LoggerPort } from "../../domain/ports/outbound/logger.port";
+import { FullName } from "../../domain/value-objects/full-name.value-object";
+import { IdCard } from "../../domain/value-objects/id-card.value-object";
 import { Priority } from "../../domain/value-objects/priority.value-object";
 import { RegisterAppointmentCommand } from "../commands/register-appointment.command";
 

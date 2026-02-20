@@ -1,6 +1,7 @@
 import { defineConfig } from "eslint/config";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
 
 const eslintConfig = defineConfig([
   {
@@ -28,9 +29,12 @@ const eslintConfig = defineConfig([
     },
     plugins: {
       "@typescript-eslint": tsPlugin,
+      "simple-import-sort": simpleImportSort,
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
     },
   },
   {
@@ -54,9 +58,12 @@ const eslintConfig = defineConfig([
     },
     plugins: {
       "@typescript-eslint": tsPlugin,
+      "simple-import-sort": simpleImportSort,
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
       "@typescript-eslint/no-explicit-any": "off",
     },
   },

@@ -1,5 +1,5 @@
-import { NotificationPort } from "../../../src/domain/ports/outbound/notification.port";
 import { Appointment } from "../../../src/domain/entities/appointment.entity";
+import { NotificationPort } from "../../../src/domain/ports/outbound/notification.port";
 
 /**
  * MockNotificationPort: Tracks notification calls for testing.

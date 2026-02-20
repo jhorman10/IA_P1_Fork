@@ -1,6 +1,7 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { ConsumerController } from "../../src/consumer.controller";
 import { RmqContext } from "@nestjs/microservices";
+import { Test, TestingModule } from "@nestjs/testing";
+
+import { ConsumerController } from "../../src/consumer.controller";
 import { ValidationError } from "../../src/domain/errors/validation.error";
 
 describe("ConsumerController", () => {

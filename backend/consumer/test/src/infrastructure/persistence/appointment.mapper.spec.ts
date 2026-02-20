@@ -1,10 +1,11 @@
-import { AppointmentMapper } from "../../../../src/infrastructure/persistence/appointment.mapper";
-import { Appointment } from "../../../../src/domain/entities/appointment.entity";
-import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
-import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
-import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
-import { PersistenceAppointmentData } from "../../../../src/infrastructure/persistence/persistence-appointment.interface";
 import { Types } from "mongoose";
+
+import { Appointment } from "../../../../src/domain/entities/appointment.entity";
+import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
+import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
+import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
+import { AppointmentMapper } from "../../../../src/infrastructure/persistence/appointment.mapper";
+import { PersistenceAppointmentData } from "../../../../src/infrastructure/persistence/persistence-appointment.interface";
 
 /**
  * ⚕️ HUMAN CHECK - Verificación de Type Safety:

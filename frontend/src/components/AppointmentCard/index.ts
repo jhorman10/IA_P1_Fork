@@ -15,11 +15,11 @@
  * <WaitingAppointmentCard appointment={apt} showTime={true} /> // ❌ TypeScript error: showTime not applicable
  */
 
-export { WaitingAppointmentCard } from "./WaitingAppointmentCard";
 export { CalledAppointmentCard } from "./CalledAppointmentCard";
 export { CompletedAppointmentCard } from "./CompletedAppointmentCard";
+export { WaitingAppointmentCard } from "./WaitingAppointmentCard";
 
 // Re-export types for use in containers
-export type { WaitingAppointmentCardProps } from "./WaitingAppointmentCard";
 export type { CalledAppointmentCardProps } from "./CalledAppointmentCard";
 export type { CompletedAppointmentCardProps } from "./CompletedAppointmentCard";
+export type { WaitingAppointmentCardProps } from "./WaitingAppointmentCard";

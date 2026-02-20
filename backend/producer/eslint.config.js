@@ -1,9 +1,10 @@
 import jsConfig from "@eslint/js";
 import parser from "@typescript-eslint/parser";
 import tsEslintPlugin from "@typescript-eslint/eslint-plugin";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
 
 function withoutExtends(config) {
-  const { extends: _extends, ...rest } = config;
+  const {  ...rest } = config;
   return rest;
 }
 
@@ -24,10 +25,13 @@ export default [
     },
     plugins: {
       "@typescript-eslint": tsEslintPlugin,
+      "simple-import-sort": simpleImportSort,
     },
     rules: Object.assign({}, tsEslintPlugin.configs.recommended.rules, {
       "no-unused-vars": "off",
       "no-console": "off",
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
       "@typescript-eslint/no-unused-vars": [
         "warn",
         {

@@ -5,6 +5,7 @@
  */
 
 import { render } from "@testing-library/react";
+
 import AppointmentSkeleton from "@/components/AppointmentSkeleton";
 
 describe("AppointmentSkeleton", () => {

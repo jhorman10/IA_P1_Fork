@@ -1,9 +1,9 @@
+import { AppointmentAssignedEvent } from "../../domain/events/appointment-assigned.event";
+import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 import { AssignAvailableOfficesUseCase } from "../../domain/ports/inbound/assign-available-offices.use-case";
 import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
-import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
-import { LoggerPort } from "../../domain/ports/outbound/logger.port";
 import { ClockPort } from "../../domain/ports/outbound/clock.port";
-import { AppointmentAssignedEvent } from "../../domain/events/appointment-assigned.event";
+import { LoggerPort } from "../../domain/ports/outbound/logger.port";
 
 /**
  * 🛰️ HUMAN CHECK - H-25 Fix: Automatización mediante el Decorador del Repositorio

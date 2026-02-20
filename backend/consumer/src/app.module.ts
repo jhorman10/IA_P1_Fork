@@ -2,13 +2,14 @@ import { Module, OnModuleInit } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ScheduleModule } from "@nestjs/schedule";
+
+import { AppointmentModule } from "./appointments/appointment.module";
 import { ConsumerController } from "./consumer.controller";
 import { HealthController } from "./health.controller";
-import { AppointmentModule } from "./appointments/appointment.module";
+import { RetryPolicyAdapter } from "./infrastructure/messaging/retry-policy.adapter";
 import { NotificationsModule } from "./notifications/notifications.module";
 import { SchedulerModule } from "./scheduler/scheduler.module";
 import { SchedulerService } from "./scheduler/scheduler.service";
-import { RetryPolicyAdapter } from "./infrastructure/messaging/retry-policy.adapter";
 
 @Module({
   imports: [

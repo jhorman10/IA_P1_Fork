@@ -1,13 +1,14 @@
 import { Module } from "@nestjs/common";
-import { NestLoggerAdapter } from "../infrastructure/logging/nest-logger.adapter";
-import { SystemClockAdapter } from "../infrastructure/utils/system-clock.adapter";
-import { RmqNotificationAdapter } from "../infrastructure/adapters/rmq-notification.adapter";
-import { NotificationsModule } from "../notifications/notifications.module";
+
 import {
-  AppointmentRegisteredHandler,
   AppointmentAssignedHandler,
+  AppointmentRegisteredHandler,
 } from "../application/event-handlers/appointment-events.handler";
+import { RmqNotificationAdapter } from "../infrastructure/adapters/rmq-notification.adapter";
+import { NestLoggerAdapter } from "../infrastructure/logging/nest-logger.adapter";
 import { LocalDomainEventBusAdapter } from "../infrastructure/messaging/local-domain-event-bus.adapter";
+import { SystemClockAdapter } from "../infrastructure/utils/system-clock.adapter";
+import { NotificationsModule } from "../notifications/notifications.module";
 import { PoliciesModule } from "./policies/policies.module";
 import { RepositoriesModule } from "./repositories/repositories.module";
 import { UseCasesModule } from "./use-cases/use-cases.module";

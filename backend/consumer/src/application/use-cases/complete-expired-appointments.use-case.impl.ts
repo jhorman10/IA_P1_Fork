@@ -1,8 +1,8 @@
 import { CompleteExpiredAppointmentsUseCase } from "../../domain/ports/inbound/complete-expired-appointments.use-case";
 import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
-import { NotificationPort } from "../../domain/ports/outbound/notification.port";
-import { LoggerPort } from "../../domain/ports/outbound/logger.port";
 import { ClockPort } from "../../domain/ports/outbound/clock.port";
+import { LoggerPort } from "../../domain/ports/outbound/logger.port";
+import { NotificationPort } from "../../domain/ports/outbound/notification.port";
 
 export class CompleteExpiredAppointmentsUseCaseImpl implements CompleteExpiredAppointmentsUseCase {
   constructor(

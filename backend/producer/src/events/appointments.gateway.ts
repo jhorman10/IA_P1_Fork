@@ -1,17 +1,18 @@
 import { Inject, Logger, UseGuards } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import {
-  WebSocketGateway,
-  WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
+  WebSocketGateway,
+  WebSocketServer,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
-import { ConfigService } from "@nestjs/config";
+
+import { WsAuthGuard } from "../common/guards/ws-auth.guard";
 import { QueryAppointmentsUseCase } from "../domain/ports/inbound/query-appointments.use-case";
 import { EventBroadcasterPort } from "../domain/ports/outbound/event-broadcaster.port";
 import { AppointmentEventPayload } from "../types/appointment-event";
-import { WsAuthGuard } from "../common/guards/ws-auth.guard";
 
 // 🛡️ HUMAN CHECK - WebSocket Gateway protegido
 // ⚕️ HUMAN CHECK - Hexagonal: Implementa EventBroadcasterPort (DIP)

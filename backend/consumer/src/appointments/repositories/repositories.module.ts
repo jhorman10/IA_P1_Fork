@@ -1,12 +1,13 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+
+import { EventDispatchingAppointmentRepositoryDecorator } from "../../infrastructure/persistence/event-dispatching-appointment-repository.decorator";
+import { MongooseAppointmentRepository } from "../../infrastructure/persistence/mongoose-appointment.repository";
+import { MongooseLockRepository } from "../../infrastructure/persistence/mongoose-lock.repository";
 import {
   Appointment,
   AppointmentSchema,
 } from "../../schemas/appointment.schema";
-import { MongooseAppointmentRepository } from "../../infrastructure/persistence/mongoose-appointment.repository";
-import { MongooseLockRepository } from "../../infrastructure/persistence/mongoose-lock.repository";
-import { EventDispatchingAppointmentRepositoryDecorator } from "../../infrastructure/persistence/event-dispatching-appointment-repository.decorator";
 import { PoliciesModule } from "../policies/policies.module";
 
 /**

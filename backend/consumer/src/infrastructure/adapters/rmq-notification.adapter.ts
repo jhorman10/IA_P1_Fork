@@ -1,7 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import { NotificationPort } from "../../domain/ports/outbound/notification.port";
+
 import { Appointment } from "../../domain/entities/appointment.entity";
+import { NotificationPort } from "../../domain/ports/outbound/notification.port";
 import { NotificationsService } from "../../notifications/notifications.service";
 import { AppointmentNotificationPayload } from "./appointment-notification.payload";
 

@@ -1,7 +1,8 @@
-import { HttpAppointmentRepository } from "@/repositories/HttpAppointmentRepository";
-import { httpGet, httpPost } from "@/lib/httpClient";
-import { env } from "@/config/env";
 import { AppointmentFactory } from "@test/factories/appointment.factory";
+
+import { env } from "@/config/env";
+import { httpGet, httpPost } from "@/lib/httpClient";
+import { HttpAppointmentRepository } from "@/repositories/HttpAppointmentRepository";
 
 jest.mock("@/lib/httpClient", () => ({
   httpGet: jest.fn(),

@@ -1,12 +1,12 @@
-import { RegisterAppointmentUseCaseImpl } from "../../../../src/application/use-cases/register-appointment.use-case.impl";
 import { RegisterAppointmentCommand } from "../../../../src/application/commands/register-appointment.command";
-import { MockAppointmentRepository } from "../../../fixtures/mocks/mock-appointment-repository";
-import { MockLoggerPort } from "../../../fixtures/mocks/mock-logger.port";
-import { MockClockPort } from "../../../fixtures/mocks/mock-clock.port";
-import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
-import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
-import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
+import { RegisterAppointmentUseCaseImpl } from "../../../../src/application/use-cases/register-appointment.use-case.impl";
 import { Appointment } from "../../../../src/domain/entities/appointment.entity";
+import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
+import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
+import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
+import { MockAppointmentRepository } from "../../../fixtures/mocks/mock-appointment-repository";
+import { MockClockPort } from "../../../fixtures/mocks/mock-clock.port";
+import { MockLoggerPort } from "../../../fixtures/mocks/mock-logger.port";
 
 describe("RegisterAppointmentUseCaseImpl", () => {
   let useCase: RegisterAppointmentUseCaseImpl;

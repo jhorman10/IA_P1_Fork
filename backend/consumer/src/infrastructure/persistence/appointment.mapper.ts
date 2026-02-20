@@ -2,8 +2,8 @@ import {
   Appointment,
   AppointmentStatus,
 } from "../../domain/entities/appointment.entity";
-import { IdCard } from "../../domain/value-objects/id-card.value-object";
 import { FullName } from "../../domain/value-objects/full-name.value-object";
+import { IdCard } from "../../domain/value-objects/id-card.value-object";
 import { Priority } from "../../domain/value-objects/priority.value-object";
 import { AppointmentDocument } from "../../schemas/appointment.schema";
 import { PersistenceAppointmentData } from "./persistence-appointment.interface";

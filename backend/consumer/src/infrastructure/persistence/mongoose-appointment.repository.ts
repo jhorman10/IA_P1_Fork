@@ -1,18 +1,19 @@
-import { Injectable, Inject } from "@nestjs/common";
+import { Inject,Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
+
 import { Appointment } from "../../domain/entities/appointment.entity";
+import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
+import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
+import { LoggerPort } from "../../domain/ports/outbound/logger.port";
+import { AppointmentQuerySpecification } from "../../domain/specifications/appointment-query.specification";
+import { IdCard } from "../../domain/value-objects/id-card.value-object";
 import {
   Appointment as AppointmentSchema,
   AppointmentDocument,
 } from "../../schemas/appointment.schema";
-import { IdCard } from "../../domain/value-objects/id-card.value-object";
 import { AppointmentMapper } from "./appointment.mapper";
-import { AppointmentQuerySpecification } from "../../domain/specifications/appointment-query.specification";
-import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 import { MongooseQueryBuilder } from "./mongoose-query.builder";
-import { LoggerPort } from "../../domain/ports/outbound/logger.port";
 
 // Pattern: Adapter + Repository — Bridges Mongoose with the Domain Port
 // ⚕️ HUMAN CHECK - DIP: Implementa el puerto de dominio usando Mongoose de infraestructura

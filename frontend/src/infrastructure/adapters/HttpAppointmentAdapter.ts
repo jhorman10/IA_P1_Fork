@@ -1,10 +1,10 @@
-import { Appointment } from "@/domain/Appointment";
 import { env } from "@/config/env";
-import { AppointmentRepository } from "@/domain/ports/AppointmentRepository";
+import { Appointment } from "@/domain/Appointment";
 import {
   CreateAppointmentDTO,
   CreateAppointmentResponse,
 } from "@/domain/CreateAppointment";
+import { AppointmentRepository } from "@/domain/ports/AppointmentRepository";
 // 🛡️ HUMAN CHECK - Adapter uses raw HTTP Client (Infrastructure)
 const headers = { "Content-Type": "application/json" };
 

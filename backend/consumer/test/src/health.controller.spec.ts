@@ -1,6 +1,6 @@
+import { getConnectionToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { HealthController } from "src/health.controller";
-import { getConnectionToken } from "@nestjs/mongoose";
 
 describe("HealthController", () => {
   let controller: HealthController;

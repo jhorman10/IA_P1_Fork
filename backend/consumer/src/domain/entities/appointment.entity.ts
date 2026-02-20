@@ -1,8 +1,9 @@
 import { randomUUID } from "crypto";
+
 import { ValidationError } from "../errors/validation.error";
-import { IdCard } from "../value-objects/id-card.value-object";
 import { DomainEvent } from "../events/domain-event.base";
 import { FullName } from "../value-objects/full-name.value-object";
+import { IdCard } from "../value-objects/id-card.value-object";
 import { Priority } from "../value-objects/priority.value-object";
 
 // Pattern: Entity — Domain object without infrastructure dependencies

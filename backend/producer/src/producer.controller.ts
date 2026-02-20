@@ -1,5 +1,6 @@
 import { Body, Controller, HttpCode, Inject, Post } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from "@nestjs/swagger";
+import { ApiBody,ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+
 import { CreateAppointmentUseCase } from "./domain/ports/inbound/create-appointment.use-case";
 import { QueryAppointmentsUseCase } from "./domain/ports/inbound/query-appointments.use-case";
 import { CreateAppointmentDto } from "./dto/create-appointment.dto";

@@ -1,7 +1,8 @@
 import { io, Socket } from "socket.io-client";
-import { RealTimePort } from "@/domain/ports/RealTimePort";
-import { Appointment } from "@/domain/Appointment";
+
 import { env } from "@/config/env";
+import { Appointment } from "@/domain/Appointment";
+import { RealTimePort } from "@/domain/ports/RealTimePort";
 
 export class SocketIoAdapter implements RealTimePort {
   private socket: Socket | null = null;

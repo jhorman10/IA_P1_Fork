@@ -5,12 +5,13 @@
  * Tests RabbitMQ notification dispatch for appointment updates
  */
 
-import { RmqNotificationAdapter } from "../../../../src/infrastructure/adapters/rmq-notification.adapter";
-import { NotificationsService } from "../../../../src/notifications/notifications.service";
 import { ClientProxy } from "@nestjs/microservices";
+import { of } from "rxjs";
+
 import { Appointment } from "../../../../src/domain/entities/appointment.entity";
 import { AppointmentNotificationPayload } from "../../../../src/infrastructure/adapters/appointment-notification.payload";
-import { of } from "rxjs";
+import { RmqNotificationAdapter } from "../../../../src/infrastructure/adapters/rmq-notification.adapter";
+import { NotificationsService } from "../../../../src/notifications/notifications.service";
 
 describe("RmqNotificationAdapter", () => {
   let adapter: RmqNotificationAdapter;

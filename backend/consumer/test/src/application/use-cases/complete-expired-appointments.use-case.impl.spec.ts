@@ -1,12 +1,12 @@
 import { CompleteExpiredAppointmentsUseCaseImpl } from "../../../../src/application/use-cases/complete-expired-appointments.use-case.impl";
-import { MockAppointmentRepository } from "../../../fixtures/mocks/mock-appointment-repository";
-import { MockLoggerPort } from "../../../fixtures/mocks/mock-logger.port";
-import { MockClockPort } from "../../../fixtures/mocks/mock-clock.port";
-import { MockNotificationPort } from "../../../fixtures/mocks/mock-notification.port";
-import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
-import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
-import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
 import { Appointment } from "../../../../src/domain/entities/appointment.entity";
+import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
+import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
+import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
+import { MockAppointmentRepository } from "../../../fixtures/mocks/mock-appointment-repository";
+import { MockClockPort } from "../../../fixtures/mocks/mock-clock.port";
+import { MockLoggerPort } from "../../../fixtures/mocks/mock-logger.port";
+import { MockNotificationPort } from "../../../fixtures/mocks/mock-notification.port";
 
 describe("CompleteExpiredAppointmentsUseCaseImpl", () => {
   let useCase: CompleteExpiredAppointmentsUseCaseImpl;

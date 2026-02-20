@@ -1,13 +1,14 @@
 import { Test, TestingModule } from "@nestjs/testing";
+
 import {
-  AppointmentRegisteredHandler,
   AppointmentAssignedHandler,
+  AppointmentRegisteredHandler,
 } from "../../../../src/application/event-handlers/appointment-events.handler";
-import { AppointmentRegisteredEvent } from "../../../../src/domain/events/appointment-registered.event";
-import { AppointmentAssignedEvent } from "../../../../src/domain/events/appointment-assigned.event";
 import { Appointment } from "../../../../src/domain/entities/appointment.entity";
-import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
+import { AppointmentAssignedEvent } from "../../../../src/domain/events/appointment-assigned.event";
+import { AppointmentRegisteredEvent } from "../../../../src/domain/events/appointment-registered.event";
 import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
+import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
 import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
 
 /**

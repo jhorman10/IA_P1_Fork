@@ -1,11 +1,13 @@
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
+import "reflect-metadata";
+
 import { INestApplication, Logger, ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { NestFactory } from "@nestjs/core";
 import { MicroserviceOptions, Transport } from "@nestjs/microservices";
-import "reflect-metadata";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import helmet from "helmet";
+
+import { AppModule } from "./app.module";
 import { DomainExceptionFilter } from "./infrastructure/filters/domain-exception.filter";
 
 // ⚕️ HUMAN CHECK - SRP: Bootstrap descompuesto en funciones especializadas.

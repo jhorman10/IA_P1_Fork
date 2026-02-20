@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 function getClientIP(req: NextRequest): string {
   const forwarded = req.headers.get("x-forwarded-for");

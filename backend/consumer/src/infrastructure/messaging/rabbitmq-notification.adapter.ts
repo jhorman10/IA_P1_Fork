@@ -1,7 +1,8 @@
-import { Injectable, Inject } from "@nestjs/common";
+import { Inject,Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import { NotificationPort } from "../../domain/ports/outbound/notification.port";
+
 import { Appointment } from "../../domain/entities/appointment.entity";
+import { NotificationPort } from "../../domain/ports/outbound/notification.port";
 
 // Pattern: Adapter — Bridges RabbitMQ Client with the Domain Port
 // ⚕️ HUMAN CHECK - DIP: Implementa el puerto de notificación usando NestJS ClientProxy

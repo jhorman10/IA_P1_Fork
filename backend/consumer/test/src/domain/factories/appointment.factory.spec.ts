@@ -1,7 +1,7 @@
 import { AppointmentFactory } from "../../../../src/domain/factories/appointment.factory";
+import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
 import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
 import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
-import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
 
 describe("AppointmentFactory", () => {
   it("should create a new appointment with default waiting status", () => {

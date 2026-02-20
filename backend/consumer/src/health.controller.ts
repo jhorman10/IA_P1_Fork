@@ -1,7 +1,7 @@
 import { Controller, Get, HttpStatus, Res } from "@nestjs/common";
 import { InjectConnection } from "@nestjs/mongoose";
-import { Connection } from "mongoose";
 import { Response } from "express";
+import { Connection } from "mongoose";
 
 @Controller("health")
 export class HealthController {

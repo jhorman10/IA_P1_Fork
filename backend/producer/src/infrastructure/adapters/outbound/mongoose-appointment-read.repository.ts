@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+
 import { AppointmentReadRepository } from "../../../domain/ports/outbound/appointment-read.repository";
 import {
   Appointment,

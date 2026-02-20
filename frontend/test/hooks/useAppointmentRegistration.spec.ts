@@ -4,10 +4,11 @@
  * Tests appointment registration with error handling and double-submit prevention
  */
 
-import { renderHook, act, waitFor } from "@testing-library/react";
-import { useAppointmentRegistration } from "@/hooks/useAppointmentRegistration";
 import { mockRepository, resetMocks } from "@test/mocks/DependencyContext.mock";
+import { act, renderHook, waitFor } from "@testing-library/react";
+
 import { CreateAppointmentDTO } from "@/domain/CreateAppointment";
+import { useAppointmentRegistration } from "@/hooks/useAppointmentRegistration";
 
 // Mock the DependencyContext module
 jest.mock("@/context/DependencyContext", () => ({

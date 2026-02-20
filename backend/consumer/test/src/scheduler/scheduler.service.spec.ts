@@ -1,7 +1,7 @@
+import { ConfigService } from "@nestjs/config";
+import { SchedulerRegistry } from "@nestjs/schedule";
 import { Test, TestingModule } from "@nestjs/testing";
 import { SchedulerService } from "src/scheduler/scheduler.service";
-import { SchedulerRegistry } from "@nestjs/schedule";
-import { ConfigService } from "@nestjs/config";
 
 describe("SchedulerService", () => {
   let service: SchedulerService;

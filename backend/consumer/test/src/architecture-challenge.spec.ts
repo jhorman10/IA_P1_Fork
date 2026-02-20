@@ -1,8 +1,8 @@
 import { AssignAvailableOfficesUseCaseImpl } from "../../src/application/use-cases/assign-available-offices.use-case.impl";
 import { Appointment } from "../../src/domain/entities/appointment.entity";
 import { ConsultationPolicy } from "../../src/domain/policies/consultation.policy";
-import { IdCard } from "../../src/domain/value-objects/id-card.value-object";
 import { FullName } from "../../src/domain/value-objects/full-name.value-object";
+import { IdCard } from "../../src/domain/value-objects/id-card.value-object";
 import { Priority } from "../../src/domain/value-objects/priority.value-object";
 
 /**

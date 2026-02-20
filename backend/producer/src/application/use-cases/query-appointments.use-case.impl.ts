@@ -1,6 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { AppointmentReadRepository } from "../../domain/ports/outbound/appointment-read.repository";
+
 import { QueryAppointmentsUseCase } from "../../domain/ports/inbound/query-appointments.use-case";
+import { AppointmentReadRepository } from "../../domain/ports/outbound/appointment-read.repository";
 import { AppointmentEventPayload } from "../../types/appointment-event";
 
 /**

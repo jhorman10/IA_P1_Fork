@@ -1,8 +1,9 @@
 import { Module } from "@nestjs/common";
-import { SchedulerService } from "./scheduler.service";
+import { ConfigModule } from "@nestjs/config";
+
 import { AppointmentModule } from "../appointments/appointment.module";
 import { NotificationsModule } from "../notifications/notifications.module";
-import { ConfigModule } from "@nestjs/config";
+import { SchedulerService } from "./scheduler.service";
 
 @Module({
   imports: [

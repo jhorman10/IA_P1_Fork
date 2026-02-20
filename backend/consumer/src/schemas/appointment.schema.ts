@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
+
 import {
-  AppointmentStatus,
   AppointmentPriority,
+  AppointmentStatus,
 } from "../types/appointment-event";
 
 export type AppointmentDocument = HydratedDocument<Appointment>;

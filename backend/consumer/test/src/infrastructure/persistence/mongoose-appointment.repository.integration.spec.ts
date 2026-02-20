@@ -1,17 +1,18 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { connect, Connection, Model } from "mongoose";
+
+import { Appointment } from "../../../../src/domain/entities/appointment.entity";
+import { ConsultationPolicy } from "../../../../src/domain/policies/consultation.policy";
+import { LoggerPort } from "../../../../src/domain/ports/outbound/logger.port";
+import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
+import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
+import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
 import { MongooseAppointmentRepository } from "../../../../src/infrastructure/persistence/mongoose-appointment.repository";
 import {
   Appointment as AppointmentSchemaClass,
   AppointmentDocument,
   AppointmentSchema,
 } from "../../../../src/schemas/appointment.schema";
-import { Appointment } from "../../../../src/domain/entities/appointment.entity";
-import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
-import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
-import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
-import { ConsultationPolicy } from "../../../../src/domain/policies/consultation.policy";
-import { LoggerPort } from "../../../../src/domain/ports/outbound/logger.port";
 
 /**
  * Fake Logger for tests

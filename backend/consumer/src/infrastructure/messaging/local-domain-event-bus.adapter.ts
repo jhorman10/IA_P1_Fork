@@ -1,6 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { DomainEventBus } from "../../domain/ports/outbound/domain-event-bus.port";
+
 import { DomainEvent } from "../../domain/events/domain-event.base";
+import { DomainEventBus } from "../../domain/ports/outbound/domain-event-bus.port";
 import { DomainEventHandler } from "../../domain/ports/outbound/domain-event-handler.port";
 
 /**

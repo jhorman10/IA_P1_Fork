@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
+
 import { AppointmentPublisherPort } from "../../../domain/ports/outbound/appointment-publisher.port";
 import { CreateAppointmentDto } from "../../../dto/create-appointment.dto";
 

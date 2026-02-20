@@ -5,11 +5,11 @@
  * Tests RabbitMQ-only notification dispatch for appointment updates
  */
 
-import { RabbitMQNotificationAdapter } from "../../../../src/infrastructure/messaging/rabbitmq-notification.adapter";
 import { ClientProxy } from "@nestjs/microservices";
-import { Appointment } from "../../../../src/domain/entities/appointment.entity";
 import { of } from "rxjs";
-import { describe, beforeEach, it } from "node:test";
+
+import { Appointment } from "../../../../src/domain/entities/appointment.entity";
+import { RabbitMQNotificationAdapter } from "../../../../src/infrastructure/messaging/rabbitmq-notification.adapter";
 
 describe("RabbitMQNotificationAdapter", () => {
   let adapter: RabbitMQNotificationAdapter;

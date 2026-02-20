@@ -5,9 +5,10 @@
  * Tests distributed lock acquisition/release using MongoDB
  */
 
-import { MongooseLockRepository } from "../../../../src/infrastructure/persistence/mongoose-lock.repository";
-import { Connection } from "mongoose";
 import { Logger } from "@nestjs/common";
+import { Connection } from "mongoose";
+
+import { MongooseLockRepository } from "../../../../src/infrastructure/persistence/mongoose-lock.repository";
 
 describe("MongooseLockRepository", () => {
   let repository: MongooseLockRepository;

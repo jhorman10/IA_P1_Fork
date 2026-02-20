@@ -1,5 +1,5 @@
-import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
 import { Appointment } from "../../domain/entities/appointment.entity";
+import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
 import { DomainEventBus } from "../../domain/ports/outbound/domain-event-bus.port";
 import { IdCard } from "../../domain/value-objects/id-card.value-object";
 

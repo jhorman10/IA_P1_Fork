@@ -5,9 +5,10 @@
  * Tests retry policy decisions (DLQ vs retry)
  */
 
-import { RetryPolicyAdapter } from "../../../../src/infrastructure/messaging/retry-policy.adapter";
 import { ConfigService } from "@nestjs/config";
+
 import { ValidationError } from "../../../../src/domain/errors/validation.error";
+import { RetryPolicyAdapter } from "../../../../src/infrastructure/messaging/retry-policy.adapter";
 
 describe("RetryPolicyAdapter", () => {
   let adapter: RetryPolicyAdapter;

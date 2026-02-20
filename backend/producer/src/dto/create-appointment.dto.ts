@@ -1,13 +1,14 @@
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
+  IsIn,
   IsNotEmpty,
-  IsString,
   IsNumber,
   IsOptional,
-  IsIn,
   IsPositive,
+  IsString,
   Max,
 } from "class-validator";
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+
 import { AppointmentPriority } from "../types/appointment-event";
 
 export class CreateAppointmentDto {

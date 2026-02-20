@@ -1,10 +1,11 @@
 import {
+  IsIn,
   IsNotEmpty,
-  IsString,
   IsNumber,
   IsOptional,
-  IsIn,
+  IsString,
 } from "class-validator";
+
 import { AppointmentPriority } from "../types/appointment-event";
 
 export class CreateAppointmentDto {

@@ -1,8 +1,8 @@
+import { NotFoundException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { QueryAppointmentsUseCaseImpl } from "src/application/use-cases/query-appointments.use-case.impl";
 import { AppointmentReadRepository } from "src/domain/ports/outbound/appointment-read.repository";
 import { AppointmentEventPayload } from "src/types/appointment-event";
-import { NotFoundException } from "@nestjs/common";
 
 /**
  * ⚕️ HUMAN CHECK - Test de Caso de Uso Hexagonal:

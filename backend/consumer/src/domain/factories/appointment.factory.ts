@@ -1,6 +1,6 @@
 import { Appointment } from "../entities/appointment.entity";
-import { IdCard } from "../value-objects/id-card.value-object";
 import { FullName } from "../value-objects/full-name.value-object";
+import { IdCard } from "../value-objects/id-card.value-object";
 import { Priority } from "../value-objects/priority.value-object";
 
 /**

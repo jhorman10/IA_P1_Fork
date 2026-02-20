@@ -21,7 +21,8 @@
  * ```
  */
 
-import { createContext, useContext, ReactNode, useMemo } from "react";
+import { createContext, ReactNode, useContext, useMemo } from "react";
+
 import { AppointmentRepository } from "@/domain/ports/AppointmentRepository";
 import { RealTimePort } from "@/domain/ports/RealTimePort";
 

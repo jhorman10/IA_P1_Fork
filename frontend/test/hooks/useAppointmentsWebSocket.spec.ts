@@ -4,11 +4,12 @@
  * Tests real-time appointment synchronization via WebSocket
  */
 
-import { renderHook, act, waitFor } from "@testing-library/react";
-import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
-import { mockRealTime, resetMocks } from "@test/mocks/DependencyContext.mock";
 import { AppointmentFactory } from "@test/factories/appointment.factory";
+import { mockRealTime, resetMocks } from "@test/mocks/DependencyContext.mock";
+import { act, renderHook, waitFor } from "@testing-library/react";
+
 import { Appointment } from "@/domain/Appointment";
+import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 
 // Mock the DependencyContext module
 jest.mock("@/context/DependencyContext", () => ({

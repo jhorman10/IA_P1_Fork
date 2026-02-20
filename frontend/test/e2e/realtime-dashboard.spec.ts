@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect,test } from "@playwright/test";
 
 // Este test requiere que el backend y frontend estén corriendo y accesibles
 // FRONTEND_URL y API_BASE_URL deben estar configurados correctamente en .env

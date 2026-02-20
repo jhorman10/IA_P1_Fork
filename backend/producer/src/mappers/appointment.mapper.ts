@@ -1,5 +1,5 @@
-import { AppointmentEventPayload } from "../types/appointment-event";
 import { AppointmentResponseDto } from "../dto/appointment-response.dto";
+import { AppointmentEventPayload } from "../types/appointment-event";
 
 export class AppointmentMapper {
   static toResponseDto(event: AppointmentEventPayload): AppointmentResponseDto {
