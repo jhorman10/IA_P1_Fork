@@ -13,9 +13,9 @@ import { Priority } from '../../domain/value-objects/priority.value-object';
 import { RegisterAppointmentCommand } from '../commands/register-appointment.command';
 
 /**
- * 🛰️ HUMAN CHECK - H-25 Fix: Side effects moved to Repository Decorator
- * H-28 Fix: Strict VO boundary
- * H-29 Fix: Deterministic timestamp
+ * 🛰️ HUMAN CHECK - H-25 Fix: Efectos secundarios movidos al Decorador del Repositorio
+ * H-28 Fix: Frontera estricta de Value Objects
+ * H-29 Fix: Timestamp determinista
  */
 export class RegisterAppointmentUseCaseImpl implements RegisterAppointmentUseCase {
     constructor(

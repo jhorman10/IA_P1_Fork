@@ -16,7 +16,7 @@ export class MaintenanceOrchestratorUseCaseImpl implements MaintenanceOrchestrat
     ) { }
 
     async execute(): Promise<void> {
-        // ⚕️ HUMAN CHECK - H-20 Fix: Distributed Lock for concurrency safety
+        // ⚕️ HUMAN CHECK - H-20 Fix: Bloqueo distribuido para seguridad en concurrencia
         const acquired = await this.lockRepository.acquire(this.LOCK_NAME, this.LOCK_TTL);
         if (!acquired) {
             return; // Another instance is already running

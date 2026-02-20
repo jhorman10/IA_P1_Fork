@@ -6,7 +6,7 @@ import { DomainEventHandler } from '../../domain/ports/outbound/domain-event-han
 
 /**
  * Handler: Reacts to AppointmentRegistered events.
- * ⚕️ HUMAN CHECK - OCP: One handler per event type. No instanceof chains.
+ * ⚕️ HUMAN CHECK - OCP: Un handler por tipo de evento. Sin cadenas instanceof.
  */
 @Injectable()
 export class AppointmentRegisteredHandler implements DomainEventHandler<AppointmentRegisteredEvent> {

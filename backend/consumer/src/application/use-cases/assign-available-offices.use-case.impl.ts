@@ -6,7 +6,7 @@ import { ClockPort } from '../../domain/ports/outbound/clock.port';
 import { AppointmentAssignedEvent } from '../../domain/events/appointment-assigned.event';
 
 /**
- * 🛰️ HUMAN CHECK - H-25 Fix: Automation via Repository Decorator
+ * 🛰️ HUMAN CHECK - H-25 Fix: Automatización mediante el Decorador del Repositorio
  */
 export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOfficesUseCase {
     constructor(
@@ -14,7 +14,7 @@ export class AssignAvailableOfficesUseCaseImpl implements AssignAvailableOffices
         private readonly logger: LoggerPort,
         private readonly clock: ClockPort,
         private readonly totalOffices: number,
-        // ⚕️ HUMAN CHECK - H-07 Fix: Injectable dependency, not static call
+        // ⚕️ HUMAN CHECK - H-07 Fix: Dependencia inyectable, no llamada estática
         private readonly consultationPolicy: ConsultationPolicy,
     ) { }
 

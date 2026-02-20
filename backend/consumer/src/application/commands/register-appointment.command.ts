@@ -1,6 +1,6 @@
 /**
- * ⚕️ HUMAN CHECK - Application Command
- * Decouples Use Case from API/Infrastructure DTOs.
+ * ⚕️ HUMAN CHECK - Comando de Aplicación
+ * Desacopla el Caso de Uso de los DTOs de la API/Infraestructura.
  */
 export class RegisterAppointmentCommand {
     constructor(
