@@ -1,15 +1,13 @@
-import { Body, Controller, Get, HttpCode, Inject, Param, Post, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import { Body, Controller, HttpCode, Inject, Post } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { CreateAppointmentUseCase } from './domain/ports/inbound/create-appointment.use-case';
 import { QueryAppointmentsUseCase } from './domain/ports/inbound/query-appointments.use-case';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { CreateAppointmentResponseDto } from './dto/create-appointment-response.dto';
-import { AppointmentResponseDto } from './dto/appointment-response.dto';
-import { AppointmentMapper } from './mappers/appointment.mapper';
 
-// ⚕️ HUMAN CHECK - Hexagonal: Controller depends ONLY on inbound ports (DIP).
-// Commands (POST) → CreateAppointmentUseCase
-// Queries (GET) → QueryAppointmentsUseCase
+// ⚕️ HUMAN CHECK - Hexagonal: El Controller depende ÚNICAMENTE de los puertos de entrada (DIP).
+// Comandos (POST) → CreateAppointmentUseCase
+// Consultas (GET) → QueryAppointmentsUseCase
 
 @ApiTags('Appointments')
 @Controller('appointments')
@@ -42,7 +40,7 @@ export class ProducerController {
     })
     async createAppointment(@Body() dto: CreateAppointmentDto): Promise<CreateAppointmentResponseDto> {
         // 1. Map DTO (HTTP) → Command (Domain)
-        // ⚕️ HUMAN CHECK - SRP: Controller handles data mapping, not the Use Case.
+        // ⚕️ HUMAN CHECK - SRP: El Controller gestiona el mapeo de datos, no el Caso de Uso.
 
         const command = {
             idCard: dto.idCard,

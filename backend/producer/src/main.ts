@@ -8,8 +8,8 @@ import 'reflect-metadata';
 import helmet from 'helmet';
 import { DomainExceptionFilter } from './infrastructure/filters/domain-exception.filter';
 
-// ⚕️ HUMAN CHECK - SRP: Bootstrap decomposed into focused setup functions.
-// Each function has a single responsibility. Adding new middleware = new function.
+// ⚕️ HUMAN CHECK - SRP: Bootstrap descompuesto en funciones especializadas.
+// Cada función tiene una única responsabilidad. Agregar nuevo middleware = nueva función.
 
 function configureSecurityMiddleware(app: INestApplication, frontendUrl: string): void {
     app.use(helmet());
@@ -22,7 +22,7 @@ function configureSecurityMiddleware(app: INestApplication, frontendUrl: string)
 
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
 
-    // 🛡️ HUMAN CHECK - Resilience: Map Domain Errors (VOs) to 400 instead of 500.
+    // 🛡️ HUMAN CHECK - Resiliencia: Mapea errores de dominio (VOs) a 400 en lugar de 500.
     app.useGlobalFilters(new DomainExceptionFilter());
 }
 
@@ -65,14 +65,14 @@ async function bootstrap(): Promise<void> {
     app.enableShutdownHooks();
     const configService = app.get(ConfigService);
 
-    // 🛡️ HUMAN CHECK - Security & Validation
+    // 🛡️ HUMAN CHECK - Seguridad y validación
     const frontendUrl = configService.get<string>('FRONTEND_URL') || 'http://localhost:3001';
     configureSecurityMiddleware(app, frontendUrl);
 
-    // ⚕️ HUMAN CHECK - API Documentation
+    // ⚕️ HUMAN CHECK - Documentación de la API
     configureSwagger(app);
 
-    // ⚕️ HUMAN CHECK - Hybrid App: HTTP + Microservice (RabbitMQ listener)
+    // ⚕️ HUMAN CHECK - Aplicación híbrida: HTTP + Microservicio (listener RabbitMQ)
     const rabbitUrl = configService.getOrThrow<string>('RABBITMQ_URL');
     const notificationsQueue = configService.getOrThrow<string>('RABBITMQ_NOTIFICATIONS_QUEUE');
     await connectNotificationsMicroservice(app, rabbitUrl, notificationsQueue);

@@ -5,8 +5,8 @@ import { AppointmentEventPayload } from '../../types/appointment-event';
 
 /**
  * Application Use Case: Query Appointments
- * ⚕️ HUMAN CHECK - Hexagonal: Orchestrates outbound port (read repository).
- * Replaces former AppointmentService facade.
+ * ⚕️ HUMAN CHECK - Hexagonal: Orquesta el puerto de salida (repositorio de lectura).
+ * Reemplaza la antigua fachada AppointmentService.
  */
 @Injectable()
 export class QueryAppointmentsUseCaseImpl implements QueryAppointmentsUseCase {

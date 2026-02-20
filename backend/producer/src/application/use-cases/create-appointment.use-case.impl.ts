@@ -9,8 +9,8 @@ import { PatientName } from '../../domain/value-objects/patient-name.vo';
 
 /**
  * Application Use Case: Create Appointment
- * ⚕️ HUMAN CHECK - Hexagonal: Orchestrates outbound port (publisher).
- * Replaces former ProducerService.
+ * ⚕️ HUMAN CHECK - Hexagonal: Orquesta el puerto de salida (publicador).
+ * Reemplaza el antiguo ProducerService.
  */
 @Injectable()
 export class CreateAppointmentUseCaseImpl implements CreateAppointmentUseCase {
@@ -20,9 +20,9 @@ export class CreateAppointmentUseCaseImpl implements CreateAppointmentUseCase {
     ) { }
 
     async execute(command: CreateAppointmentCommand): Promise<void> {
-        // ⚕️ HUMAN CHECK - H-09 Fix: Domain Validation using Value Objects.
-        // We instantiate them to ensure the data adheres to business rules.
-        // If validation fails, it throws immediately.
+        // ⚕️ HUMAN CHECK - H-09 Fix: Validación de dominio mediante Value Objects.
+        // Se instancian para garantizar que los datos cumplen las reglas de negocio.
+        // Si la validación falla, lanza inmediatamente.
         const idCardVo = new IdCard(command.idCard);
         const nameVo = new PatientName(command.fullName);
 

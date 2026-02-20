@@ -1,6 +1,6 @@
 /**
  * Command: Create Appointment
- * ⚕️ HUMAN CHECK - DIP: Pure domain object, decoupled from API DTOs.
+ * ⚕️ HUMAN CHECK - DIP: Objeto de dominio puro, desacoplado de los DTOs de la API.
  */
 export interface CreateAppointmentCommand {
     idCard: number;
@@ -9,8 +9,8 @@ export interface CreateAppointmentCommand {
 
 /**
  * Inbound Port: Create Appointment Use Case
- * ⚕️ HUMAN CHECK - Hexagonal: Controller depends on this interface.
- * Returns void (fire-and-forget logic).
+ * ⚕️ HUMAN CHECK - Hexagonal: El Controller depende de esta interfaz.
+ * Retorna void (lógica fire-and-forget).
  */
 export interface CreateAppointmentUseCase {
     execute(command: CreateAppointmentCommand): Promise<void>;

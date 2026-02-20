@@ -13,15 +13,15 @@ import { EventBroadcasterPort } from '../domain/ports/outbound/event-broadcaster
 import { AppointmentEventPayload } from '../types/appointment-event';
 import { WsAuthGuard } from '../common/guards/ws-auth.guard';
 
-// 🛡️ HUMAN CHECK - WebSocket Gateway Hardened
-// ⚕️ HUMAN CHECK - Hexagonal: Implements EventBroadcasterPort (DIP)
+// 🛡️ HUMAN CHECK - WebSocket Gateway protegido
+// ⚕️ HUMAN CHECK - Hexagonal: Implementa EventBroadcasterPort (DIP)
 // EXCEPCIÓN: El uso de process.env en el decorador @WebSocketGateway es necesario porque los decoradores se evalúan en tiempo de compilación.
 // NestJS no permite inyectar ConfigService en decoradores. El acceso a variables de entorno en tiempo de ejecución se realiza vía ConfigService (ver afterInit()).
 @UseGuards(WsAuthGuard)
 @WebSocketGateway({
     namespace: '/ws/appointments',
     cors: {
-        // 🛡️ HUMAN CHECK - H-08 Fix: Restrict origin to Frontend URL.
+        // 🛡️ HUMAN CHECK - H-08 Fix: Restringe el origen a la URL del Frontend.
         origin: process.env.FRONTEND_URL, // Zero Magic Numbers: FRONTEND_URL debe estar siempre definido en .env
         credentials: true,
     },
@@ -40,10 +40,10 @@ export class AppointmentsGateway
     ) { }
 
     /**
-     * ⚕️ HUMAN CHECK - H-02 Fix: CORS origin configured via environment variable
-     * in the @WebSocketGateway decorator. The decorator evaluates at compile-time,
-     * so ConfigService cannot be used there — process.env is the only viable option.
-     * ConfigService is used for runtime logging confirmation only.
+     * ⚕️ HUMAN CHECK - H-02 Fix: Origen de CORS configurado mediante variable de entorno
+     * en el decorador @WebSocketGateway. El decorador se evalúa en tiempo de compilación,
+     * por lo que ConfigService no puede usarse ahí — process.env es la única opción viable.
+     * ConfigService se usa únicamente para confirmar el valor en runtime mediante log.
      */
     afterInit(): void {
         const frontendUrl = this.configService.get<string>('FRONTEND_URL');

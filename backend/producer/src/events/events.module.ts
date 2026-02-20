@@ -3,9 +3,9 @@ import { AppointmentsGateway } from './appointments.gateway';
 import { EventsController } from './events.controller';
 import { AppointmentModule } from '../appointments/appointment.module';
 
-// ⚕️ HUMAN CHECK - Hexagonal Module
-// Binds EventBroadcasterPort → AppointmentsGateway (DIP)
-// Imports AppointmentModule which exports 'QueryAppointmentsUseCase' port
+// ⚕️ HUMAN CHECK - Módulo Hexagonal
+// Vincula EventBroadcasterPort → AppointmentsGateway (DIP)
+// Importa AppointmentModule que exporta el puerto 'QueryAppointmentsUseCase'
 @Module({
     imports: [AppointmentModule],
     controllers: [EventsController],

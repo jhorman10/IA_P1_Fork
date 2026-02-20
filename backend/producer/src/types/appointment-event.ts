@@ -1,6 +1,6 @@
-// ⚕️ HUMAN CHECK - Domain types for Appointment
-// These types centralize definitions for states, priorities, and payloads
-// to ensure type safety and consistency across services.
+// ⚕️ HUMAN CHECK - Tipos de dominio para Appointment
+// Estos tipos centralizan las definiciones de estados, prioridades y payloads
+// para garantizar consistencia y seguridad de tipos entre servicios.
 
 /**
  * Valid states for the appointment lifecycle

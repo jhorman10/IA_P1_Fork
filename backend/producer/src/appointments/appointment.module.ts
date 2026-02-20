@@ -4,7 +4,7 @@ import { Appointment, AppointmentSchema } from '../schemas/appointment.schema';
 import { MongooseAppointmentReadRepository } from '../infrastructure/adapters/outbound/mongoose-appointment-read.repository';
 import { QueryAppointmentsUseCaseImpl } from '../application/use-cases/query-appointments.use-case.impl';
 
-// ⚕️ HUMAN CHECK - Hexagonal Module: Binds inbound port → use-case, outbound port → adapter
+// ⚕️ HUMAN CHECK - Módulo Hexagonal: Vincula puerto de entrada → caso de uso, puerto de salida → adaptador
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: Appointment.name, schema: AppointmentSchema }]),

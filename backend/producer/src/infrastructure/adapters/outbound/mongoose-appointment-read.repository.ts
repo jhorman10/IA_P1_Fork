@@ -7,8 +7,8 @@ import { AppointmentEventPayload } from '../../../types/appointment-event';
 
 /**
  * Adapter: Infrastructure — Mongoose implementation of AppointmentReadRepository.
- * ⚕️ HUMAN CHECK - DIP: Implements domain port using infra-specific Mongoose
- * SRP: Only responsible for read queries and mapping to DTOs
+ * ⚕️ HUMAN CHECK - DIP: Implementa el puerto de dominio usando Mongoose (infraestructura)
+ * SRP: Solo responsable de consultas de lectura y mapeo a DTOs
  */
 @Injectable()
 export class MongooseAppointmentReadRepository implements AppointmentReadRepository {

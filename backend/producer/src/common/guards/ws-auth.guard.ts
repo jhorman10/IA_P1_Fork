@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { Socket } from 'socket.io';
 
 /**
- * 🛡️ HUMAN CHECK - WebSocket Auth Guard
- * Validates connection token against env var.
+ * 🛡️ HUMAN CHECK - Guardia de autenticación WebSocket
+ * Valida el token de conexión contra la variable de entorno.
  */
 @Injectable()
 export class WsAuthGuard implements CanActivate {
@@ -23,7 +23,7 @@ export class WsAuthGuard implements CanActivate {
         const client: Socket = context.switchToWs().getClient();
         const token = client.handshake.auth?.token || client.handshake.headers?.authorization;
 
-        // 🛡️ HUMAN CHECK - H-13 Fix: Zero Hardcode.
+        // 🛡️ HUMAN CHECK - H-13 Fix: Sin valores hardcodeados.
         const validToken = this.configService.get<string>('WS_AUTH_TOKEN') || 'elite-hardened-token';
         // fallback only for dev convenience if .env missing, but ideally strictly env.
 

@@ -13,7 +13,7 @@ export class DomainExceptionFilter implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
 
-        // 🛡️ HUMAN CHECK - Resilience:
+        // 🛡️ HUMAN CHECK - Resiliencia:
         // If it's already an HttpException (e.g. 404, 403), let it pass or handle standard.
         // We only want to catch "Domain Validation Errors" which are generic JS Errors here.
         if (exception instanceof HttpException) {

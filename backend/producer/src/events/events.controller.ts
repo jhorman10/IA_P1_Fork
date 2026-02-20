@@ -3,7 +3,7 @@ import { EventPattern, Payload } from '@nestjs/microservices';
 import { EventBroadcasterPort } from '../domain/ports/outbound/event-broadcaster.port';
 import { AppointmentEventPayload } from '../types/appointment-event';
 
-// ⚕️ HUMAN CHECK - DIP: Depends on EventBroadcasterPort, not concrete AppointmentsGateway
+// ⚕️ HUMAN CHECK - DIP: Depende de EventBroadcasterPort, no del AppointmentsGateway concreto
 @Controller()
 export class EventsController {
     private readonly logger = new Logger(EventsController.name);
