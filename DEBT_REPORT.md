@@ -301,3 +301,23 @@ Usuario solicitó: "Refactoriza el copilot-instructions para que tenga en cuenta
 
 ---
 **ESTADO: ARQUITECTURA AI OPTIMIZADA — CERTIFICACIÓN SRP/DIP ÉLITE**
+
+---
+
+## 9. Auditoría MVP — Hallazgos Pendientes (2026-02-20)
+
+*Detectados durante Auditoría Hostil MVPv1 — Severidades actualizadas post-ejecución.*
+
+| ID | Hallazgo | Área | Severidad | Estado | Sprint |
+|-----|----------|------|-----------|--------|--------|
+| H-S1 | Token WebSocket hardcodeado 'elite-hardened-token' (ws-auth.guard.ts:27) | SEGURIDAD | 🔴 CRÍTICA | ⏸️ BLOCKER | Sprint0 (5min) |
+| H-T1 | Frontend 0 spec.ts — 0% unit tests (15+ componentes sin cobertura) | TESTING | 🟠 ALTO | ⏸️ BLOCKER | Sprint1-2 (12h) |
+| H-U1 | Loading states incompletos: 3/50 async points (6% cobertura) | UX/UI | 🟠 ALTO | ⬜ PENDIENTE | Sprint0 (2h) |
+| H-A1 | appointment.module.ts monolítico (113 líneas, 8+ providers) | ARQUITECTURA | 🟠 ALTO | ⬜ PENDIENTE | Sprint1 (4h) |
+| H-I1 | Rate limiting ausente en Producer API | INFRAESTRUCTURA | 🟡 MEDIO | ⬜ PENDIENTE | Sprint2 |
+| H-L1 | Logs no JSON-estructurados en servicios | INFRAESTRUCTURA | 🟡 MEDIO | ⬜ PENDIENTE | Sprint2 |
+| H-H1 | Helmet security headers no actualizados en Producer | INFRAESTRUCTURA | 🟡 MEDIO | ⬜ PENDIENTE | Sprint2 |
+
+**Scorecard MVP:** 62/100 (Arquitectura 88%, SOLID 85%, Testing 42%, Infra 65%, UX 70%)
+**Veredicto:** 🟡 MVP CONDICIONAL — Aceptable si se remedian blockers H-S1, H-T1, H-U1
+
