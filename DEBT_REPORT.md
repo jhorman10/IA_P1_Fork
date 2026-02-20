@@ -586,3 +586,628 @@ export interface ConsultationPolicy {
 
 **RESUMEN:** Excelente trabajo en arquitectura y SOLID. El proyecto merece 4.4/5.0 hoy y puede llegar a 4.8/5.0 con las mejoras listadas. Prioriza testing frontend (H-T1) para pasar a EXPERTO.
 
+
+---
+
+## 11. Plan de Acción con Sub-Agentes Especializados
+
+**Objetivo:** Mejorar de 4.4/5.0 → 4.8/5.0 (EXCELENTE)  
+**Timeline:** 22-25 horas distribuidas en 3-4 sprints  
+**Responsable:** Team Lead + SA especializados
+
+---
+
+### 📋 Matriz de Tareas × Sub-Agentes
+
+| # | Tarea | Prioridad | Skills SA | Timeline | Puntos |
+|---|-------|-----------|-----------|----------|--------|
+| 1 | Testing Frontend (H-T1) | 🔴 CRÍTICA | testing-qa, frontend-ui | 12h / 2 sprints | 1.5 pts |
+| 2 | ADR Documentation | 🟠 ALTA | refactor-arch | 4h / 1 sprint | +0.3 pts |
+| 3 | Loading States (H-U1) | 🟡 MEDIA | frontend-ui | 2h / Quick Win | +0.2 pts |
+| 4 | Module Refactoring (H-A1) | 🟡 MEDIA | refactor-arch | 4h / 1 sprint | +0.1 pts |
+| 5 | Extended JSDoc | 🟡 BAJA | refactor-arch | 3h / 1 sprint | +0.1 pts |
+| **TOTAL** | — | — | — | **25h / 3-4 sprints** | **+2.2 pts** |
+
+---
+
+### 🤖 TAREA 1: Frontend Testing Suite (H-T1) — 🔴 CRÍTICA
+
+**Objetivo:** Crear 15+ tests para frontend → Llevar cobertura de 0% → 80%
+
+**Sub-Agentes Asignados:**
+- 🎯 **SA Primario:** `testing-qa` (Test strategy, fixtures, mocks)
+- 🎯 **SA Secundario:** `frontend-ui` (Component structure, hooks testing)
+
+**Descripción de Trabajo:**
+
+```
+### Phase 1: Test Infrastructure (2h)
+├─ Configurar jest.config.ts para React Testing Library
+├─ Setup mocks globales (httpClient, WebSocket, RabbitMQ)
+├─ Crear factory functions para test data
+└─ Establecer patrones de testing reutilizables
+
+### Phase 2: Page Tests (5h)
+├─ dashboard/page.tsx (3 tests + snapshot)
+├─ registration/page.tsx (4 tests)
+├─ profiles/ pages (2 tests)
+└─ Error scenarios (2 tests)
+
+### Phase 3: Hook Tests (3h)
+├─ useAppointmentRegistration (5 tests)
+├─ useAppointmentsRealtime (4 tests)
+├─ useAppointmentsWebSocket (4 tests)
+└─ Error handling (2 tests)
+
+### Phase 4: Component Tests (2h)
+├─ AppointmentRegistrationForm (4 tests)
+└─ UI edge cases (2 tests)
+```
+
+**Entregables:**
+
+```
+✅ 15+ .spec.ts files creados
+✅ Mock factories para httpClient, WebSocket, appointments
+✅ Fixtures de test data con doctores, turnos, eventos
+✅ Coverage report: backend +80%
+✅ CI/CD integration: npm test --coverage
+✅ Documentation: frontend/test/README.md
+```
+
+**Criterios de Aceptación:**
+
+```
+✓ npm test -- frontend/ → ALL PASS
+✓ Coverage: statements >80%, branches >75%
+✓ Todos los mocks son puros (sin DB real)
+✓ Tests aislados: no dependen de orden ejecución
+✓ Naming convention: describe('ComponentName') + it('should ...')
+✓ No warnings de console en ejecución
+```
+
+**Recursos:**
+
+- Template: `frontend/test/app/page.spec.example.ts` (por crear)
+- Mocks: `frontend/test/mocks/http-client.mock.ts`, etc.
+- Fixtures: `frontend/test/factories/appointment.factory.ts`
+
+**Success Metrics:**
+
+| Métrica | Baseline | Target | Verificación |
+|---------|----------|--------|---|
+| Test Files | 0 | 15+ | find frontend -name "*.spec.ts" |
+| Test Count | 0 | 30+ | npm test -- frontend --listTests |
+| Coverage | 0% | 80%+ | npm test -- coverage --collectCoverageFrom |
+| Pass Rate | N/A | 100% | npm test -- --passWithNoTests |
+
+---
+
+### 🤖 TAREA 2: Architecture Decision Records (ADR) — 🟠 ALTA
+
+**Objetivo:** Documentar decisiones arquitectónicas clave en formato ADR estándar
+
+**Sub-Agente Asignado:**
+- 🎯 **SA Primario:** `refactor-arch` (Decisiones de diseño, trade-offs)
+
+**Descripción de Trabajo:**
+
+```
+### ADR-001: Hexagonal Architecture + DDD Táctico
+├─ Status: ACCEPTED
+├─ Context: Sistema de turnos con lógica de negocio compleja
+├─ Decision: Hexagonal + DDD táctico vs Clean/CQRS
+├─ Consequences:
+│  + Domain aislado, testeable, framework-independent
+│  + Bajo acoplamiento, fácil agregar nuevos adaptadores
+│  + Eventos de dominio para comunicación asincrónica
+│  - Requiere 3 capas (domain, app, infr)
+│  - Curva aprendizaje en equipo
+└─ References: SOLID principios, Evan Vernon "DDD Distilled"
+
+### ADR-002: Event-Driven Architecture + RabbitMQ
+├─ Status: ACCEPTED
+├─ Context: Dos servicios independientes (Producer REST, Consumer Workers)
+├─ Decision: Event-driven via RabbitMQ vs REST calls / CQRS
+├─ Consequences:
+│  + Desacoplamiento Producer/Consumer
+│  + Escalable: múltiples workers en paralelo
+│  + Resilencia: dead-letter queues para fallos
+│  - Eventual consistency (datos no inmediatamente sincronizados)
+│  - Debugging distribuido más complejo
+└─ Tradeoff: Eventual consistency vs consistency gap aceptable
+
+### ADR-003: Policy Pattern para Reglas de Negocio
+├─ Status: ACCEPTED
+├─ Context: 10+ reglas de validación (horario, capacidad, disponibilidad)
+├─ Decision: Policy pattern vs if/switch vs Strategy pattern
+├─ Consequences:
+│  + Cada regla = clase independiente (OCP)
+│  + Fácil agregar/modificar reglas
+│  + Composable: ejecutar múltiples policies
+│  - Más boilerplate inicial
+│  - Requiere entendimiento de patron
+└─ Alternative: Strategy pattern (similar, menos específico)
+
+### ADR-004: MongoDB vs PostgreSQL
+├─ Status: ACCEPTED
+├─ Context: Almacenamiento flexible de turnos con datos variables
+├─ Decision: MongoDB (NoSQL) vs PostgreSQL (SQL)
+├─ Consequences:
+│  + Flexible schema para campos variables (metadata)
+│  + Rápido prototipado
+│  + Driver Mongoose con validación
+│  - Transacciones más limitadas
+│  - Requiere índices manuales para performance
+└─ Mitigation: Índices creados. Validación en aplicación.
+
+### ADR-005: Domain Events para Comunicación Inter-Servicio
+├─ Status: ACCEPTED
+├─ Context: Producer crea turno → Consumer debe actualizar disponibilidad
+├─ Decision: Domain Events en lugar de REST calls sincronos
+├─ Consequences:
+│  + Desacoplamiento temporal
+│  + Fácil agregar nuevos subscribers (auditoria, notificaciones)
+│  - Debugging requiere entender event flow
+└─ Related: ADR-002 (Event-driven Architecture)
+```
+
+**Entregables:**
+
+```
+✅ /docs/architecture/ADR-001.md (Hexagonal + DDD)
+✅ /docs/architecture/ADR-002.md (Event-Driven + RabbitMQ)
+✅ /docs/architecture/ADR-003.md (Policy Pattern)
+✅ /docs/architecture/ADR-004.md (MongoDB Selection)
+✅ /docs/architecture/ADR-005.md (Domain Events)
+✅ /docs/architecture/README.md (Index + Guidelines)
+```
+
+**Formato Estándar (RFC 3986 compliant):**
+
+```
+# ADR-[001-999]: [Title in Sentence case]
+
+## Status
+Proposed | Accepted | Deprecated | Superseded by ADR-XXX
+
+## Context
+[What is the issue? Background information?]
+
+## Decision
+[What is the decision we've made to address the context?]
+
+## Consequences
+### Positive
+- [Benefit 1]
+- [Benefit 2]
+
+### Negative
+- [Drawback 1]
+- [Drawback 2]
+
+## Alternatives Considered
+- [Alternative 1: Why not?]
+- [Alternative 2: Why not?]
+
+## Related
+- [Related ADR-XXX]
+- [External reference]
+```
+
+**Success Metrics:**
+
+| Métrica | Target | Verificación |
+|---------|--------|---|
+| ADR Files Created | 5 | ls /docs/architecture/ADR-*.md |
+| Format Compliance | 100% | Manual review |
+| Team Sign-off | All ADRs | Code review approval |
+
+---
+
+### 🤖 TAREA 3: Loading States Implementation (H-U1) — 🟡 MEDIA
+
+**Objetivo:** Agregar loading feedback a 50+ async points en frontend
+
+**Sub-Agente Asignado:**
+- 🎯 **SA Primario:** `frontend-ui` (Component state, UX patterns)
+
+**Descripción de Trabajo:**
+
+```
+### Phase 1: Identify Async Points (0.5h)
+├─ Dashboard appointments load
+├─ Registration form submission  
+├─ WebSocket reconnection
+├─ Real-time updates
+├─ Modal operations
+└─ ... (5+ más)
+
+### Phase 2: Create Loading Components (1h)
+├─ <AppointmentSkeleton /> — Placeholder mientras carga
+├─ <FormLoadingOverlay /> — Overlay en form validation
+├─ <WebSocketStatus /> — Indicador conexión WS
+└─ <UpdateSpinner /> — Spinner para async updates
+
+### Phase 3: Integrate in 10 Components (0.5h)
+├─ dashboard/page.tsx
+├─ registration/page.tsx
+├─ useAppointmentRegistration hook
+├─ useAppointmentsRealtime hook
+└─ ... (6+ más)
+```
+
+**Patrón de Implementación:**
+
+```typescript
+// ANTES:
+export function Dashboard() {
+    const { appointments } = useAppointmentsRealtime();
+    return <AppointmentList items={appointments} />; // ¿Cargando?
+}
+
+// DESPUÉS:
+export function Dashboard() {
+    const { appointments, isLoading, error } = useAppointmentsRealtime();
+    
+    if (error) return <ErrorAlert message={error.message} />;
+    if (isLoading && !appointments.length) return <AppointmentSkeleton />;
+    if (appointments.length === 0) return <EmptyState />;
+    
+    return <AppointmentList items={appointments} />;
+}
+```
+
+**Entregables:**
+
+```
+✅ <AppointmentSkeleton /> component created
+✅ <FormLoadingOverlay /> component created
+✅ <WebSocketStatus /> component created
+✅ 10+ componentes actualizados con loading states
+✅ Consistencia visual en todo el frontend
+✅ Tests para loading states (incluido en Task 1)
+```
+
+**Success Metrics:**
+
+| Métrica | Baseline | Target |
+|---------|----------|--------|
+| Components with loading | 3 | 50+ |
+| Coverage % | 6% | 100% |
+| UX Feedback | Pobre | Excelente |
+| Loading Time | N/A | <500ms timeout |
+
+---
+
+### 🤖 TAREA 4: Module Refactoring (H-A1) — 🟡 MEDIA
+
+**Objetivo:** Dividir appointment.module.ts monolítico en sub-módulos lógicos
+
+**Sub-Agente Asignado:**
+- 🎯 **SA Primario:** `refactor-arch` (Module structure, SOLID principles)
+
+**Descripción de Trabajo:**
+
+```
+### ANTES (113 líneas, 8+ providers en 1 archivo):
+@Module({
+    imports: [...],
+    controllers: [AppointmentController],
+    providers: [
+        CreateAppointmentUseCase,
+        AssignOfficesUseCase,
+        CompleteExpiredUseCase,
+        MongooseAppointmentRepository,
+        ConsultationPolicy,
+        OfficeAvailabilityAdapter,
+        // ... más
+    ],
+})
+export class AppointmentModule {}
+
+### DESPUÉS (Dividido en sub-módulos):
+
+1. PoliciesModule (37 líneas)
+   ├─ Providers: ConsultationPolicy, OfficeHourPolicy, CapacityPolicy
+   └─ Exports: [ConsultationPolicy]
+
+2. RepositoriesModule (31 líneas)
+   ├─ Imports: MongooseModule.forFeatureAsync([AppointmentSchema])
+   ├─ Providers: MongooseAppointmentRepository
+   └─ Exports: [AppointmentRepository]
+
+3. UseCasesModule (25 líneas)
+   ├─ Providers: CreateAppointmentUseCase, AssignOfficesUseCase, CompleteExpiredUseCase
+   └─ Exports: [CreateAppointmentUseCase, ...]
+
+4. AppointmentModule (20 líneas, orquestador)
+   ├─ Imports: [PoliciesModule, RepositoriesModule, UseCasesModule]
+   ├─ Controllers: [AppointmentController]
+   └─ Exports: [AppointmentModule]
+```
+
+**Entregables:**
+
+```
+✅ /src/appointments/policies/policies.module.ts (37L)
+✅ /src/appointments/repositories/repositories.module.ts (31L)
+✅ /src/appointments/use-cases/use-cases.module.ts (25L)
+✅ /src/appointments/appointment.module.ts refactored (20L)
+✅ Todos los imports actualizados
+✅ Tests pasando sin cambios (backward compatible)
+```
+
+**Criterios de Aceptación:**
+
+```
+✓ Cada sub-módulo una responsabilidad clara
+✓ No hay imports circulares
+✓ Exports explícitos en cada módulo
+✓ npm test pasa 100%
+✓ Lincount: <40 líneas por archivo
+✓ Documentación /docs/architecture/modules.md
+```
+
+**Success Metrics:**
+
+| Métrica | Antes | Después |
+|---------|-------|---------|
+| Líneas por arquivo | 113 | <40 |
+| Providers por archivo | 8+ | 2-3 |
+| Cohesión | Media | Alta |
+| Testabilidad | OK | Excelente |
+
+---
+
+### 🤖 TAREA 5: Extended JSDoc Documentation — 🟡 BAJA
+
+**Objetivo:** Documentar decisiones técnicas en JSDoc con @justification y @tradeoff
+
+**Sub-Agente Asignado:**
+- 🎯 **SA Primario:** `refactor-arch` (Technical documentation)
+
+**Descripción de Trabajo:**
+
+```
+### Patrones a Documentar:
+
+1. Interfaces de Dominio
+@interface ConsultationPolicy
+├─ @description: Evalúa si un turno puede ser consultado
+├─ @justification: Policy pattern permite agregar reglas sin modificar use-cases
+├─ @tradeoff: vs. if/switch: +mantenible, -boilerplate inicial
+└─ @seeAlso: ADR-003, DEBT_REPORT.md §3
+
+2. Value Objects
+@class AppointmentId
+├─ @description: ID de turno con validación
+├─ @justification: Value Object garantiza invariantes
+├─ @tradeoff: vs. string: +type-safe, -memoria
+└─ @example: AppointmentId.create('turn-001')
+
+3. Use Cases
+@class CreateAppointmentUseCase
+├─ @description: Orquesta creación de turnos
+├─ @justification: Use Case patrón = responsabilidad única
+├─ @tradeoff: vs. Fat Controller: +testeable, -boilerplate
+└─ @dependencies: AppointmentRepository, ConsultationPolicy
+
+4. Repositories
+@interface AppointmentRepository
+├─ @description: Puerto de persistencia para turnos
+├─ @justification: Repository pattern abstrae detalles de BD
+├─ @tradeoff: vs. Direct ORM: +flexible, -indirection
+└─ @implementations: MongooseAppointmentRepository
+```
+
+**Entregables:**
+
+```
+✅ 20+ archivos con JSDoc extendido
+✅ @description + @justification en todas las interfaces
+✅ @tradeoff documentado en decisiones complejas
+✅ @seeAlso referencias a ADR, DEBT_REPORT, etc
+✅ Generación de docs automática: npm run docs
+```
+
+**Plantilla Estándar:**
+
+```typescript
+/**
+ * @description [Qué hace?]
+ * @justification [Por qué este patrón?]
+ * @tradeoff [Ventajas vs desventajas vs alternativa]
+ * @seeAlso [Referencias: ADR-X, DEBT_REPORT.md]
+ * @example [Código de ejemplo de uso]
+ * @complexity [Time/Space complexity si aplica]
+ */
+```
+
+**Success Metrics:**
+
+| Métrica | Target | Verificación |
+|---------|--------|---|
+| JSDoc Coverage | 100% | npm run lint:jsdoc |
+| Justifications | Todas | Manual review |
+| References | Activas | Link checker |
+
+---
+
+## 📅 Timeline de Ejecución
+
+### Sprint 0 (Semana 1) — Quick Wins
+```
+┌────────────────────────────────────────┐
+│ Lunes-Miércoles (2-4 Feb 2026)         │
+├────────────────────────────────────────┤
+│ Loading States (H-U1)          [2h]    │
+│ ├─ Create components           1h      │
+│ └─ Integrate in 10 components  1h      │
+└────────────────────────────────────────┘
+```
+
+### Sprint 1 (Semana 2-3) — Core Improvements
+```
+┌────────────────────────────────────────┐
+│ 5-18 Febrero 2026 (2 semanas)          │
+├────────────────────────────────────────┤
+│ ADR Documentation             [4h]     │
+│ ├─ Write 5 ADRs              2h       │
+│ └─ Team review & feedback    2h       │
+│                                        │
+│ Module Refactoring (H-A1)     [4h]     │
+│ ├─ Create sub-modules        2h       │
+│ └─ Update imports & tests    2h       │
+│                                        │
+│ Extended JSDoc                [3h]     │
+│ └─ Document 20+ files         3h      │
+└────────────────────────────────────────┘
+```
+
+### Sprint 2-3 (Semana 4-6) — Frontend Testing
+```
+┌────────────────────────────────────────┐
+│ 19 Feb - 4 Mar 2026 (2 sprints)        │
+├────────────────────────────────────────┤
+│ Frontend Testing (H-T1)       [12h]    │
+│ ├─ Phase 1: Infrastructure    2h      │
+│ ├─ Phase 2: Page Tests        5h      │
+│ ├─ Phase 3: Hook Tests        3h      │
+│ └─ Phase 4: Component Tests   2h      │
+└────────────────────────────────────────┘
+```
+
+---
+
+## 🔄 Interdependencias & Secuencia
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ TAREA 1: Testing Frontend (H-T1)                            │
+│ ├─ DEPENDS ON: ADR-001, JSDoc (para entender patrones)     │
+│ └─ BLOCKS: Production deployment (todas las features)      │
+├─────────────────────────────────────────────────────────────┤
+│ TAREA 2: ADR Documentation                                  │
+│ ├─ DEPENDS ON: None (standalone)                            │
+│ └─ UNBLOCKS: Module Refactoring, JSDoc                      │
+├─────────────────────────────────────────────────────────────┤
+│ TAREA 3: Loading States (H-U1)                             │
+│ ├─ DEPENDS ON: None (independent)                           │
+│ └─ QUICK WIN: 2 horas, impacto inmediato en UX            │
+├─────────────────────────────────────────────────────────────┤
+│ TAREA 4: Module Refactoring (H-A1)                         │
+│ ├─ DEPENDS ON: ADR-001 (decisión de arquitectura)          │
+│ └─ BLOCKS: None (backward compatible)                       │
+├─────────────────────────────────────────────────────────────┤
+│ TAREA 5: Extended JSDoc                                     │
+│ ├─ DEPENDS ON: ADR Documentation (para references)         │
+│ └─ SUPPORTS: Testing (documentación de funciones)          │
+└─────────────────────────────────────────────────────────────┘
+
+ORDEN RECOMENDADO:
+1. → Tarea 3 (Quick Win UX): 2h
+2. → Tarea 2 (ADR): 4h (habilita otras tareas)
+3. → Tarea 5 (JSDoc): 3h (paralelo con task 2)
+4. → Tarea 4 (Module Refactor): 4h (depende de ADR)
+5. → Tarea 1 (Frontend Testing): 12h (crítica, requiere infraestructura)
+
+PARALLELIZABLE:
+- Tarea 2 & 3 (independientes)
+- Tarea 2 & 5 (pueden ocurrir en paralelo)
+- Tarea 3 (puede ocurrir en Sprint 0)
+```
+
+---
+
+## 📊 Matriz de Recursos & Responsabilidades
+
+| Tarea | SA Principal | Skills | Team | Seniority | Horas |
+|-------|-------------|--------|------|-----------|-------|
+| H-T1: Testing Frontend | testing-qa | testing, frontend-ui | Dev | Mid-Senior | 12h |
+| ADR Documentation | refactor-arch | arquitectura | Architect | Senior | 4h |
+| H-U1: Loading States | frontend-ui | frontend | Dev | Mid | 2h |
+| H-A1: Module Refactor | refactor-arch | arquitectura, testing | Dev | Senior | 4h |
+| JSDoc Documentation | refactor-arch | arquitectura | Dev | Mid | 3h |
+| **TOTAL** | — | — | — | — | **25h** |
+
+---
+
+## ✅ Criterios de Aceptación Global
+
+### Definition of Done (DoD)
+
+```
+Para CADA tarea:
+☐ Code review aprobado (2+ reviewers)
+☐ Tests pasando: npm test (100%)
+☐ Linting: npm run lint (0 errors)
+☐ Documentation actualizada (README, ADR, JSDoc)
+☐ Commits siguiendo Conventional Commits
+☐ PR merged a main/develop
+☐ Deployed a staging
+
+Para el PLAN COMPLETO:
+☐ Evaluación: 4.4/5.0 → 4.8/5.0 validada
+☐ Frontend coverage: 0% → 80%+
+☐ Todos los ADRs documentados
+☐ Módulos refactorizados sin regressions
+☐ Loading states implementados
+☐ JSDoc coverage: 100%
+```
+
+---
+
+## 📈 Success Metrics & KPIs
+
+| KPI | Baseline | Target | Método de Verificación |
+|-----|----------|--------|---|
+| Evaluación académica | 4.4/5.0 | 4.8/5.0 | DEBT_REPORT sección 10 |
+| Frontend test coverage | 0% | 80%+ | npm test -- --coverage |
+| Load time con feedback | N/A | <500ms | DevTools performance |
+| ADR documentation | 0 | 5+ | ls /docs/architecture/ |
+| Module cohesión | Media | Alta | Manual code review |
+| JSDoc coverage | 40% | 100% | ESLint jsdoc plugin |
+| Bug rate (frontend) | TBD | -50% | GitHub issues trend |
+
+---
+
+## 🚀 Ejecución & Follow-up
+
+### Weekly Standup Agenda
+
+```
+Lunes:
+  - Revisión de avancos vs timeline
+  - Bloqueadores identificados
+  - Ajustes de scope si necesario
+
+Miércoles:
+  - Demo de features completadas
+  - Code review sync
+  - Preview de lo que viene
+
+Viernes:
+  - Sprint closure
+  - Métricas: test coverage, lint, performance
+  - Planning para próximo sprint
+```
+
+### Definition of Ready (DoR)
+
+Antes de iniciar cada tarea:
+```
+☐ AC (Acceptance Criteria) definidos
+☐ SA especializado asignado
+☐ Recursos/templates disponibles
+☐ Dependencias identificadas
+☐ Estimación validada por team
+☐ Risk assessment completado
+```
+
+---
+
+**ESTADO:** Plan de Acción Listo para Ejecución  
+**Aprobación:** Pending Team Lead Review  
+**Última Actualización:** 2026-02-20
+
