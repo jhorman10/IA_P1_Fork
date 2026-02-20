@@ -90,6 +90,7 @@
 | S-02 | Falta documentación "Qué hizo mal la IA" (E-04, G-03) | Auditoría | ✅ |
 | S-03 | Baja Cultura Técnica: SA con identidad "Junior" (H-10) | Cultura | ✅ |
 | S-04 | Violación God Object en GEMINI.md (Meta-Arquitectura) | Meta | ✅ |
+| S-05 | copilot-instructions.md viola SRP (558 líneas, contenido duplicado) | Arquitectura AI | ✅ |
 
 ---
 **ESTADO: DEUDA ARQUITECTÓNICA DEPURADA — CERTIFICACIÓN DDD ÉLITE**
@@ -212,4 +213,91 @@
 - ✅ **DDD (Domain-Driven Design):** Dominio expresivo, libre de detalles técnicos
 
 ---
-**ESTADO: DEUDA ARQUITECTÓNICA DEPURADA — CERTIFICACIÓN DDD ÉLITE + LINTING AUDITADO**
+
+## 8. Refactor SRP del Orquestador (copilot-instructions.md) (2026-02-20)
+
+*Refactorización arquitectónica del archivo `copilot-instructions.md` aplicando Principio de Responsabilidad Única (SRP) y Dependency Inversion Principle (DIP).*
+
+### 8.1 — Hallazgo: Violación SRP en copilot-instructions.md
+
+| ID | Hallazgo | Severidad | Área | Solución | Estado |
+|----|----------|-----------|------|----------|--------|
+| **S-05** | **copilot-instructions.md viola SRP (558 líneas con contenido duplicado)** | 🟡 MEDIO | Meta-Arquitectura | Aplicar SRP: delegar a contextos externos | ✅ |
+
+**Problema Detectado:**
+- Archivo de 558 líneas con contenido embebido:
+  * Matriz de skills con justificaciones extensas (debería delegar a SKILL_REGISTRY.md)
+  * Protocolo de 3 pasos con código embebido (debería delegar a WORKFLOW.md)
+  * Reglas de Oro (debería delegar a RULES.md)
+  * Ejemplos completos de 400+ líneas (debería referenciar templates externos)
+- Violación de DRY: Contenido duplicado entre copilot-instructions y archivos de contexto
+- Violación de Single Source of Truth: Reglas definidas en múltiples lugares
+
+**Contexto:**
+Usuario solicitó: "Refactoriza el copilot-instructions para que tenga en cuenta todos los contextos adjuntos, conserva principios SOLID, delega y linkea, este archivo solo debe ser un orquestador".
+
+### 8.2 — Cambios Técnicos Implementados
+
+**Arquitectura Aplicada:**
+- ✅ **SRP:** Archivo solo orquesta delegación a Sub-Agentes, no define reglas/contextos
+- ✅ **DIP:** Bootstrap con inyección de dependencias explícita (4 read_file)
+- ✅ **DRY:** Elimina duplicación de contenido con archivos externos
+- ✅ **Single Source of Truth:** 4 módulos de contexto externos
+
+**Cambios en .github/copilot-instructions.md:**
+
+1. **Header Refactorizado (SRP explícito):**
+   - Antes: "System Prompt de Producción — Adaptado para GitHub Copilot"
+   - Después: "Principio de Responsabilidad Única (SRP): Este archivo orquesta la delegación a Sub-Agentes (SA)"
+
+2. **Bootstrap con DIP:**
+   ```javascript
+   // Paso 0: Inyección de Dependencias (DIP)
+   const PROJECT_CONTEXT = await read_file("docs/agent-context/PROJECT_CONTEXT.md");
+   const RULES = await read_file("docs/agent-context/RULES.md");
+   const WORKFLOW = await read_file("docs/agent-context/WORKFLOW.md");
+   const SKILL_REGISTRY = await read_file("docs/agent-context/SKILL_REGISTRY.md");
+   ```
+
+3. **Delegación a Single Sources of Truth:**
+   - Arquitectura/Stack → `PROJECT_CONTEXT.md` (NestJS, Next.js, MongoDB, RabbitMQ)
+   - Reglas/Anti-patrones → `RULES.md` (SOLID, DRY, KISS, // ⚕️ HUMAN CHECK)
+   - Workflow 11 pasos → `WORKFLOW.md` (Leer → Elegir → Match → ... → Repetir)
+   - Catálogo de Skills → `SKILL_REGISTRY.md` (8 skills con triggers automáticos)
+
+4. **Algoritmo de Delegación Conciso (50 líneas):**
+   - Reemplaza 3 pasos extensos por algoritmo funcional
+   - Carga dinámica de skills según tipo de tarea
+   - Inyección de contextos en prompt del Sub-Agente
+
+5. **Eliminación de Ejemplos Extensos:**
+   - Antes: ~400 líneas de código de ejemplo
+   - Después: Referencias a templates externos en `skills/*/assets/delegation-template.md`
+
+6. **Modificación de .gitignore:**
+   - Eliminada regla que ignoraba `.github/` completa
+   - Permitir tracking de `copilot-instructions.md` (parte crítica de arquitectura AI)
+
+### 8.3 — Verificación Post-Refactor
+
+```bash
+✓ Líneas: 558 → 132 (reducción 76%)
+✓ Git: copilot-instructions.md ahora trackeado
+✓ Commit: f2a75c7 "refactor(docs): Apply SRP to copilot-instructions (558→132 lines)"
+✓ Documentación: AI_WORKFLOW.md sección 9.12, DEBT_REPORT.md sección 8
+```
+
+**Principios SOLID Validados:**
+- ✅ **SRP:** Orquestador puro (responsabilidad única: coordinar delegación)
+- ✅ **DIP:** Inyección de dependencias explícita en Bootstrap
+- ✅ **OCP:** Extensible agregando nuevos contextos sin modificar algoritmo
+- ✅ **DRY:** Contenido no duplicado, referencias a fuentes únicas
+- ✅ **Single Source of Truth:** 4 módulos externos como autoridad
+
+**Mantenibilidad Post-Refactor:**
+- Cambios a reglas/workflow: Modificar archivos específicos (RULES.md, WORKFLOW.md)
+- Cambios a skills: Modificar SKILL_REGISTRY.md o archivos de skills
+- Orquestador: Estable, solo cambia si algoritmo de delegación evoluciona
+
+---
+**ESTADO: ARQUITECTURA AI OPTIMIZADA — CERTIFICACIÓN SRP/DIP ÉLITE**

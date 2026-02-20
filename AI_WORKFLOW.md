@@ -659,6 +659,46 @@ Resultado: Auditoría REMEDIADA.
 | refactor(consumer) | `152fb14` | Auditoría v11 Backend: H-32 a H-35 (DIP/DDD) |
 | refactor(frontend) | `f3721fa` | Auditoría v11 Frontend: H-36 (ref cleanup) |
 
+### 9.12 — Refactor SRP del Copilot-Instructions.md (2026-02-20)
+
+**Skill(s):** `refactor-arch`, `solid-principles`
+
+```
+👤 Human: "Refactoriza el copilot-instructions para que tenga en cuenta todos los contextos adjuntos, conserva principios SOLID, delega y linkea, este archivo solo debe ser un orquestador"
+   [Adjuntó: PROJECT_CONTEXT.md, RULES.md, WORKFLOW.md, SKILL_REGISTRY.md, carpeta skills/]
+
+🤖 IA: [Identificó tarea de Architectural Refactor]
+   Principio aplicado: SRP (Single Responsibility Principle)
+   Objetivo: Hacer copilot-instructions.md pure orchestrator que delega a contextos externos
+   
+🤖 IA: [Ejecutó refactor completo]
+   - Header refactorizado: Bootstrap con DIP explícito (4 read_file)
+   - Single Source of Truth: Delegación a PROJECT_CONTEXT, RULES, WORKFLOW, SKILL_REGISTRY
+   - Algoritmo de delegación conciso (50 líneas)
+   - Eliminados ejemplos extensos (referenciados a templates externos)
+   - Reducción: 558 → 132 líneas (76% menos código)
+   
+👤 Human: [Implícito ✅ - solicitud completada]
+
+🤖 IA: [Modificó .gitignore para trackear copilot-instructions.md]
+🤖 IA: [Creó commit y actualizó documentación]
+```
+
+**Arquitectura Aplicada:**
+- ✅ SRP: Archivo solo orquesta, no define reglas/contextos
+- ✅ DIP: Bootstrap con inyección de dependencias explícita
+- ✅ DRY: Elimina duplicación con archivos externos
+- ✅ Single Source of Truth: 4 módulos de contexto
+
+**Resultado:**
+- Archivo refactorizado: 132 líneas vs 558 previas
+- Mantenibilidad: Cambios a reglas/workflow se hacen en archivos específicos
+- Trazabilidad: Bootstrap muestra explícitamente qué contextos carga
+
+| Commit | Hash | Descripción |
+|--------|------|-------------|
+| refactor(docs) | `f2a75c7` | Apply SRP to copilot-instructions (558→132 lines) |
+
 ---
 
 ## 10. Appendix
