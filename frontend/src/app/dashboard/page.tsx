@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 import { Appointment } from "@/domain/Appointment";
 import { audioService } from "@/services/AudioService";
+import AppointmentCard from "@/components/AppointmentCard/AppointmentCard";
 import styles from "@/styles/page.module.css";
 
 /**
@@ -58,16 +59,6 @@ export default function CompletedHistoryDashboard() {
     .filter(t => t.status === "completed")
     .sort((a, b) => b.timestamp - a.timestamp);
 
-  const formatTime = (timestamp: number): string => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false
-    });
-  };
-
   return (
     <main className={styles.dashboardContainer}>
       <header className={styles.stickyHeader}>
@@ -84,45 +75,17 @@ export default function CompletedHistoryDashboard() {
       </header>
 
       <section className={styles.sectionBlock}>
-        <h2 className={styles.sectionTitle}>⏳ En espera <span className={styles.countBadge}>{waitingAppointments.length}</span></h2>
-        {waitingAppointments.length > 0 ? (
-          <ul className={styles.cardGrid}>
-            {waitingAppointments.map((t) => (
-              <li key={t.id} className={`${styles.appointmentCard} ${styles.waiting}`}> 
-                <div className={styles.cardMain}>
-                  <span className={styles.nombre}>{t.fullName}</span>
-                  <span className={styles.hora}>{formatTime(t.timestamp)}</span>
-                </div>
-                <div className={styles.cardMeta}>
-                  <span className={styles.statusBadge} data-status={t.priority}>
-                    {t.priority === "high" ? "🔴 Alta" : t.priority === "medium" ? "🟡 Media" : "🟢 Baja"}
-                  </span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className={styles.empty}>No hay turnos en espera</p>
-        )}
-      </section>
-
-      <section className={styles.sectionBlock}>
         <h2 className={styles.sectionTitle}>🏥 En consultorio <span className={styles.countBadge}>{calledAppointments.length}</span></h2>
         {calledAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
             {calledAppointments.map((t) => (
-              <li key={t.id} className={`${styles.appointmentCard} ${styles.called}`}> 
-                <div className={styles.cardMain}>
-                  <span className={styles.nombre}>{t.fullName}</span>
-                  <span className={styles.hora}>{formatTime(t.timestamp)}</span>
-                </div>
-                <div className={styles.cardMeta}>
-                  <span className={styles.officeBadge}>Consultorio {t.office}</span>
-                  <span className={styles.statusBadge} data-status={t.priority}>
-                    {t.priority === "high" ? "🔴 Alta" : t.priority === "medium" ? "🟡 Media" : "🟢 Baja"}
-                  </span>
-                </div>
-              </li>
+              <AppointmentCard
+                key={t.id}
+                appointment={t}
+                status="called"
+                showTime={true}
+                timeIcon="🔔"
+              />
             ))}
           </ul>
         ) : (
@@ -131,22 +94,38 @@ export default function CompletedHistoryDashboard() {
       </section>
 
       <section className={styles.sectionBlock}>
+        <h2 className={styles.sectionTitle}>⏳ En espera <span className={styles.countBadge}>{waitingAppointments.length}</span></h2>
+        {waitingAppointments.length > 0 ? (
+          <ul className={styles.cardGrid}>
+            {waitingAppointments.map((t) => (
+              <AppointmentCard
+                key={t.id}
+                appointment={t}
+                status="waiting"
+                showTime={true}
+                timeIcon="📝"
+                consultorioLabel="Pendiente"
+              />
+            ))}
+          </ul>
+        ) : (
+          <p className={styles.empty}>No hay turnos en espera</p>
+        )}
+      </section>
+
+
+      <section className={styles.sectionBlock}>
         <h2 className={styles.sectionTitle}>✅ Completados <span className={styles.countBadge}>{completedAppointments.length}</span></h2>
         {completedAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
             {completedAppointments.map((t) => (
-              <li key={t.id} className={`${styles.appointmentCard} ${styles.atendido}`}> 
-                <div className={styles.cardMain}>
-                  <span className={styles.nombre}>{t.fullName}</span>
-                  <span className={styles.hora}>{formatTime(t.timestamp)}</span>
-                </div>
-                <div className={styles.cardMeta}>
-                  <span className={styles.officeBadge}>Consultorio {t.office}</span>
-                  <span className={styles.statusBadge} data-status={t.priority}>
-                    {t.priority === "high" ? "🔴 Alta" : t.priority === "medium" ? "🟡 Media" : "🟢 Baja"}
-                  </span>
-                </div>
-              </li>
+              <AppointmentCard
+                key={t.id}
+                appointment={t}
+                status="atendido"
+                showTime={true}
+                timeIcon="⏰"
+              />
             ))}
           </ul>
         ) : (
