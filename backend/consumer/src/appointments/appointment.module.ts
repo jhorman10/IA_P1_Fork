@@ -1,49 +1,50 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule, getModelToken } from '@nestjs/mongoose';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppointmentSchema as SchemaDef } from '../schemas/appointment.schema';
-
-import { RegisterAppointmentUseCaseImpl } from '../application/use-cases/register-appointment.use-case.impl';
-import { MongooseAppointmentRepository } from '../infrastructure/persistence/mongoose-appointment.repository';
 import { NestLoggerAdapter } from '../infrastructure/logging/nest-logger.adapter';
 import { SystemClockAdapter } from '../infrastructure/utils/system-clock.adapter';
 import { RmqNotificationAdapter } from '../infrastructure/adapters/rmq-notification.adapter';
 import { NotificationsModule } from '../notifications/notifications.module';
-import { Appointment } from '../domain/entities/appointment.entity';
 import { AppointmentRegisteredHandler, AppointmentAssignedHandler } from '../application/event-handlers/appointment-events.handler';
 import { LocalDomainEventBusAdapter } from '../infrastructure/messaging/local-domain-event-bus.adapter';
-import { MongooseLockRepository } from '../infrastructure/persistence/mongoose-lock.repository';
-import { MaintenanceOrchestratorUseCaseImpl } from '../application/use-cases/maintenance-orchestrator.use-case.impl';
-import { CompleteExpiredAppointmentsUseCaseImpl } from '../application/use-cases/complete-expired-appointments.use-case.impl';
-import { AssignAvailableOfficesUseCaseImpl } from '../application/use-cases/assign-available-offices.use-case.impl';
-import { ConsultationPolicy } from '../domain/policies/consultation.policy';
-import { EventDispatchingAppointmentRepositoryDecorator } from '../infrastructure/persistence/event-dispatching-appointment-repository.decorator';
+import { PoliciesModule } from './policies/policies.module';
+import { RepositoriesModule } from './repositories/repositories.module';
+import { UseCasesModule } from './use-cases/use-cases.module';
 
+/**
+ * @description AppointmentModule is the orchestrator module for appointment management.
+ *
+ * @justification After refactoring into sub-modules (Policies, Repositories, UseCases),
+ * the main AppointmentModule becomes a composition root that:
+ * - Assembles sub-modules (SOLID: OCP - open for extension, closed for modification)
+ * - Manages cross-cutting concerns (Event Bus, Handlers)
+ * - Provides infrastructure adapters (Logger, Clock, Notification)
+ * - Exports public API (use cases, repositories)
+ *
+ * @tradeoff vs monolithic module:
+ *   ✅ SRP: Each sub-module has a single responsibility
+ *   ✅ Testeable: Policies, Repositories, UseCases in isolation
+ *   ✅ Maintainable: Changes localized to specific sub-module
+ *   ✅ Reusable: Sub-modules can be composed differently
+ *   ❌ More files to manage
+ *   ❌ Requires clear dependency flow
+ *
+ * @architecture
+ *   1. Imports: PoliciesModule, RepositoriesModule, UseCasesModule, NotificationsModule
+ *   2. Provides: Event handlers, Event bus, Infrastructure adapters
+ *   3. Exports: Public use cases and repositories
+ *
+ * @relatedPatterns Module Composition, Facade
+ * @seeAlso ADR-001 (Hexagonal Architecture), docs/architecture/modules.md
+ */
 @Module({
     imports: [
-        MongooseModule.forFeature([{ name: Appointment.name, schema: SchemaDef }]),
+        PoliciesModule,
+        RepositoriesModule,
+        UseCasesModule,
         NotificationsModule,
-        ConfigModule, // ⚕️ H-35: Necesario para parametrizar TOTAL_OFFICES
     ],
     providers: [
-        // ⚕️ HUMAN CHECK - Corrección A-08: ConsultationPolicy inyectada en el Repositorio
-        // Permite que el Repositorio delegue la lógica de negocio a la política de dominio
-        // H-34: LoggerPort inyectado para eliminar console.log
-        {
-            provide: 'MongooseAppointmentRepository', // Underlying impl
-            inject: [getModelToken(Appointment.name), ConsultationPolicy, 'LoggerPort'],
-            useFactory: (model, policy, logger) => 
-                new MongooseAppointmentRepository(model, policy, logger),
-        },
-        {
-            provide: 'AppointmentRepository', // Decorated port (H-25)
-            inject: ['MongooseAppointmentRepository', 'DomainEventBus'],
-            useFactory: (inner, bus) => new EventDispatchingAppointmentRepositoryDecorator(inner, bus),
-        },
-        {
-            provide: 'LockRepository',
-            useClass: MongooseLockRepository,
-        },
+        // ⚕️ HUMAN CHECK - Infrastructure Adapters (Ports Implementation)
+        // These are framework-aware implementations that bridge to domain ports
         {
             provide: 'LoggerPort',
             useClass: NestLoggerAdapter,
@@ -56,58 +57,35 @@ import { EventDispatchingAppointmentRepositoryDecorator } from '../infrastructur
             provide: 'NotificationPort',
             useClass: RmqNotificationAdapter,
         },
-        {
-            provide: ConsultationPolicy,
-            useFactory: () => new ConsultationPolicy(),
-        },
+
+        // ⚕️ HUMAN CHECK - Event Handlers (Domain Event Subscribers)
+        // SRP: Each handler reacts to one event type. OCP: New handlers without modifying existing.
         AppointmentRegisteredHandler,
         AppointmentAssignedHandler,
+
+        // ⚕️ HUMAN CHECK - DomainEventBus (Local In-Process Event Dispatcher)
+        // H-25 Fix: Automatic event dispatch after repository save.
+        // Alternative: External message broker (RabbitMQ) for true event-driven architecture.
         {
             provide: 'DomainEventBus',
             inject: [AppointmentRegisteredHandler, AppointmentAssignedHandler],
             useFactory: (registered, assigned) =>
                 new LocalDomainEventBusAdapter([registered, assigned]),
         },
-        {
-            provide: 'CompleteExpiredAppointmentsUseCase',
-            inject: ['AppointmentRepository', 'NotificationPort', 'LoggerPort', 'ClockPort'],
-            useFactory: (repo, notification, logger, clock) =>
-                new CompleteExpiredAppointmentsUseCaseImpl(repo, notification, logger, clock),
-        },
-        {
-            provide: 'AssignAvailableOfficesUseCase',
-            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort', ConsultationPolicy, ConfigService],
-            useFactory: (repo, logger, clock, policy, config: ConfigService) => {
-                const totalOffices = config.get<number>('TOTAL_OFFICES', 5); // ⚕️ H-35: Parametrizado desde env
-                return new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, totalOffices, policy);
-            },
-        },
-        {
-            provide: 'MaintenanceOrchestratorUseCase',
-            inject: [
-                'AssignAvailableOfficesUseCase',
-                'CompleteExpiredAppointmentsUseCase',
-                'LockRepository',
-                'LoggerPort'
-            ],
-            useFactory: (assign, complete, lock, logger) =>
-                new MaintenanceOrchestratorUseCaseImpl(assign, complete, lock, logger),
-        },
-        {
-            provide: 'RegisterAppointmentUseCase',
-            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort'],
-            useFactory: (repo, logger, clock) => new RegisterAppointmentUseCaseImpl(repo, logger, clock),
-        },
     ],
     exports: [
-        'AppointmentRepository',
+        // Public ports (use cases, repositories)
         'RegisterAppointmentUseCase',
+        'CompleteExpiredAppointmentsUseCase',
+        'AssignAvailableOfficesUseCase',
+        'MaintenanceOrchestratorUseCase',
+        'AppointmentRepository',
+        'LockRepository',
+        // Infrastructure adapters (for other modules)
         'LoggerPort',
         'ClockPort',
         'NotificationPort',
         'DomainEventBus',
-        'MaintenanceOrchestratorUseCase',
-        // MongooseModule eliminado: no exportar infraestructura
     ],
 })
-export class AppointmentModule { }
+export class AppointmentModule {}
