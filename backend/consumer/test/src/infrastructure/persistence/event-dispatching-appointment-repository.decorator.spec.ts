@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * 🧪 Tests for EventDispatchingAppointmentRepositoryDecorator
  *
@@ -7,7 +8,6 @@
 import { EventDispatchingAppointmentRepositoryDecorator } from "../../../../src/infrastructure/persistence/event-dispatching-appointment-repository.decorator";
 import { AppointmentRepository } from "../../../../src/domain/ports/outbound/appointment.repository";
 import { DomainEventBus } from "../../../../src/domain/ports/outbound/domain-event-bus.port";
-import { Appointment } from "../../../../src/domain/entities/appointment.entity";
 import { AppointmentRegisteredEvent } from "../../../../src/domain/events/appointment-registered.event";
 
 describe("EventDispatchingAppointmentRepositoryDecorator", () => {

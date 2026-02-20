@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * 🧪 Tests for RabbitMQNotificationAdapter
  *
@@ -8,6 +9,7 @@ import { RabbitMQNotificationAdapter } from "../../../../src/infrastructure/mess
 import { ClientProxy } from "@nestjs/microservices";
 import { Appointment } from "../../../../src/domain/entities/appointment.entity";
 import { of } from "rxjs";
+import { describe, beforeEach, it } from "node:test";
 
 describe("RabbitMQNotificationAdapter", () => {
   let adapter: RabbitMQNotificationAdapter;

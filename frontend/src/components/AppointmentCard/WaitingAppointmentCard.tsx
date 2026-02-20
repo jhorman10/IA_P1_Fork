@@ -30,7 +30,8 @@ function getPriorityBadge(priority: string): string {
 
 export function WaitingAppointmentCard({
   appointment,
-  timeIcon = "📝",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _timeIcon = "📝",
 }: WaitingAppointmentCardProps) {
   return (
     <li className={`${styles.appointmentCard} ${styles.waiting}`}>

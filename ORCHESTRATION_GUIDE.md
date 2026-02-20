@@ -1,6 +1,6 @@
-# 🏗️ Guía de Arquitectura del Sistema de Orquestación
+# Guia de arquitectura del sistema de orquestacion
 
-## Visión General
+## Visión general
 
 El sistema está configurado con **1 Agente Orquestador** + **5 Sub-agentes (Skills)** delegados para tareas específicas. El objetivo es evitar el "Context Overflow" aislando cada tarea en un contexto reducido con instrucciones especializadas.
 
@@ -28,7 +28,7 @@ Este es el **cerebro central** del sistema. Antigravity lo lee automáticamente 
 3. MATCH      → Identificar skill por trigger (ver tabla Skill References)
 4. DELEGAR    → Crear Sub-agente con contexto: {ítem, skill.md, archivos en scope}
 5. RECIBIR    → Resumen de Acción del Sub-agente
-6. ACTUALIZAR → Marcar ítem como ✅ en DEBT_REPORT.md
+6. ACTUALIZAR → Marcar ítem como en DEBT_REPORT.md
 7. PURGAR     → Descartar razonamiento intermedio del SA, conservar solo el resumen
 8. REPETIR    → Siguiente ítem pendiente
 ```
@@ -165,7 +165,7 @@ Script que sincroniza las skills registradas con el orquestador:
 
 | Archivo          | Propósito                                                                                                |
 | ---------------- | -------------------------------------------------------------------------------------------------------- |
-| `DEBT_REPORT.md` | Tabla consolidada con todos los ítems de feedback, deuda técnica, skill asignada, y estado (⬜/🔄/✅/⏸️) |
+| `DEBT_REPORT.md` | Tabla consolidada con todos los ítems de feedback, deuda técnica, skill asignada, y estado (Pending/In progress/Done/Paused) |
 | `AI_WORKFLOW.md` | Documentación de la metodología AI-First para humanos (incluye Prompt Traceability Log)                  |
 | `README.md`      | Documentación general del proyecto                                                                       |
 

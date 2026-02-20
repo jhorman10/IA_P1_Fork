@@ -40,7 +40,7 @@ grep -rn "class.*Service" backend/*/src/ | head -20
 **Anti-patrón a evitar:**
 
 ```typescript
-// ❌ Interface demasiado grande
+// Interface demasiado grande
 interface AppointmentRepository {
   save(a: Appointment): Promise<Appointment>;
   findAll(): Promise<Appointment[]>;
@@ -48,7 +48,7 @@ interface AppointmentRepository {
   generateReport(): Promise<Report>; // ← No pertenece aquí
 }
 
-// ✅ Interfaces segregadas
+// Interfaces segregadas
 interface AppointmentWriter {
   save(a: Appointment): Promise<Appointment>;
 }
@@ -86,7 +86,7 @@ grep -rn "import.*infrastructure\|import.*mongoose\|import.*@nestjs" backend/*/s
 # Script completo de verificación
 echo "=== Domain Isolation ==="
 echo "Imports prohibidos en domain/:"
-grep -rn "import.*mongoose\|import.*@nestjs\|import.*amqplib" backend/*/src/domain/ && echo "❌ FALLÓ" || echo "✅ Domain limpio"
+grep -rn "import.*mongoose\|import.*@nestjs\|import.*amqplib" backend/*/src/domain/ && echo "FALLÓ" || echo "Domain limpio"
 
 echo ""
 echo "=== Ports Defined ==="

@@ -2,10 +2,10 @@
 
 Por favor, asigna tu calificación marcando con una **X** la opción correspondiente o dejando un comentario debajo de la tabla.
 
-| Criterio                                    | 📝 1 - Deficiente <br>(Manual/Caótico)                                       | 😐 3 - Aceptable <br>(Funcional)                                                               | 🚀 5 - Excelente <br>(Cultura AI-First)                                                                                                |
+| Criterio                                    | 1 - Deficiente (Manual/Caótico)                                              | 3 - Aceptable (Funcional)                                                                      | 5 - Excelente (Cultura AI-First)                                                                                                       |
 | :------------------------------------------ | :--------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
 | **Estrategia de IA (AI_WORKFLOW.md)**       | Inexistente o es una copia genérica. No explica la metodología de prompting. | Describe herramientas, pero carece de profundidad sobre cómo iteraron con la IA.               | Documento vivo y detallado. Define protocolos claros, roles de la IA y flujo de trabajo.                                               |
-| **Calidad del Código & 🛡️ HUMAN CHECK**     | Código sucio (_boilerplate_). Sin comentarios de "Human Check" o mal usados. | Código funcional con los 5 "Human Check" requeridos, pero son triviales (ej. cambiar nombres). | Código limpio y optimizado. Los "Human Check" demuestran criterio arquitectónico real (lógica de negocio, seguridad, hilos).           |
+| **Calidad del Código & HUMAN CHECK**     | Código sucio (_boilerplate_). Sin comentarios de "Human Check" o mal usados. | Código funcional con los 5 "Human Check" requeridos, pero son triviales (ej. cambiar nombres). | Código limpio y optimizado. Los "Human Check" demuestran criterio arquitectónico real (lógica de negocio, seguridad, hilos).           |
 | **Transparencia ("Lo que la IA hizo mal")** | Sección vacía o dice "La IA hizo todo bien" (Falso positivo).                | Menciona errores genéricos (sintaxis) sin profundidad técnica.                                 | Expone "alucinaciones" peligrosas (ej. credenciales hardcodeadas, inyección) y cómo el humano lo corrigió. (Alineado al Principio 04). |
 | **Arquitectura & Docker**                   | El _docker-compose_ no levanta. RabbitMQ falla o no conecta.                 | Levanta, pero la configuración es frágil (puertos quemados, sin variables de entorno).         | Despliegue robusto. Uso de variables de entorno, volúmenes y políticas de _retry_ sugeridas por IA.                                    |
 | **Git Flow & Colaboración**                 | Commits gigantes ("Update code"). Trabajo de una sola persona evidente.      | Uso básico de ramas. Mensajes de commit manuales y simples.                                    | Historial limpio. Mensajes semánticos (posiblemente generados por IA). Evidencia clara de trabajo en células.                          |
@@ -24,7 +24,7 @@ Por favor, asigna tu calificación marcando con una **X** la opción correspondi
 
 ---
 
-## 🚀 Optimización AI-First
+## Optimizacion AI-First
 
 Nuestra IA detectó una ineficiencia crítica en el servicio `backend-consumer` que afecta directamente la experiencia del paciente en horas pico.
 

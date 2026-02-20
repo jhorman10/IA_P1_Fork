@@ -202,7 +202,7 @@ describe("SystemClockAdapter", () => {
       const result = adapter.isoNow();
       const date = new Date(result);
 
-      const isoFromDate = date.toISOString();
+      const _isoFromDate = date.toISOString();
 
       // Both should have same structure
       expect(result).toMatch(/^\d{4}/); // Year
@@ -341,9 +341,9 @@ describe("SystemClockAdapter", () => {
       const start = adapter.now();
 
       // Simulate some work
-      let sum = 0;
+      let _sum = 0;
       for (let i = 0; i < 1000000; i++) {
-        sum += i;
+        _sum += i;
       }
 
       const end = adapter.now();

@@ -1,4 +1,4 @@
-# 🛠️ Context: Skill Registry
+# Context: Skill registry
 
 > **Autoinvocación:** Cuando el trigger de una skill coincida con la solicitud del usuario, carga el `skill.md` correspondiente.
 

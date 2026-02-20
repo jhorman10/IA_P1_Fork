@@ -10,7 +10,7 @@
 Use **camelCase** for CSS class names:
 
 ```css
-/* ✅ Correct */
+/* Correct */
 .dashboardContainer {
 }
 .appointmentCard {
@@ -18,7 +18,7 @@ Use **camelCase** for CSS class names:
 .statusBadge {
 }
 
-/* ❌ Incorrect */
+/* Incorrect */
 .dashboard-container {
 }
 .appointment_card {
@@ -37,10 +37,10 @@ export default function Page() {
 
 ## Forbidden
 
-- ❌ No `@import` of external CSS frameworks (Tailwind, Bootstrap)
-- ❌ No global CSS beyond `globals.css` (Next.js default)
-- ❌ No inline `style={{}}` for layout — use CSS Modules
-- ❌ No CSS-in-JS libraries (styled-components, emotion)
+- No `@import` of external CSS frameworks (Tailwind, Bootstrap)
+- No global CSS beyond `globals.css` (Next.js default)
+- No inline `style={{}}` for layout — use CSS Modules
+- No CSS-in-JS libraries (styled-components, emotion)
 
 ## Color Palette
 

@@ -83,7 +83,7 @@ src/
 
 ### Convenciones
 
-- Agregar `// ⚕️ HUMAN CHECK` en cada decisión de separación de capas.
+- Agregar `// HUMAN CHECK` en cada decisión de separación de capas.
 - Documentar qué patrón se usa y por qué en cada archivo con un comentario `// Pattern: <nombre> — <justificación>`.
 - Nombres de puertos descriptivos: `AppointmentRepository`, `MessagePublisher`, `NotificationGateway`.
 

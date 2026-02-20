@@ -8,24 +8,40 @@ import Home from "@/app/page";
 jest.mock("@/hooks/useAppointmentsWebSocket", () => ({
   useAppointmentsWebSocket: () => ({
     appointments: [
-      { id: "1", fullName: "Test Patient", status: "waiting", office: null },
-      { id: "2", fullName: "Active Patient", status: "called", office: "1" },
+      {
+        id: "1",
+        fullName: "Test Patient",
+        status: "waiting",
+        office: null,
+        priority: "medium",
+        timestamp: Date.now(),
+      },
+      {
+        id: "2",
+        fullName: "Active Patient",
+        status: "called",
+        office: "1",
+        priority: "high",
+        timestamp: Date.now(),
+      },
     ],
     error: null,
     connected: true,
+    isConnecting: false,
+    connectionStatus: "connected" as const,
   }),
 }));
 
 describe("Home Page", () => {
-  it("renders the title", () => {
+  it("renders the title in Spanish", () => {
     render(<Home />);
-    const title = screen.getByText(/Appointments/i);
+    const title = screen.getByText(/Turnos Disponibles/i);
     expect(title).toBeInTheDocument();
   });
 
   it("displays connected status", () => {
     render(<Home />);
-    const status = screen.getByText(/Connected/i);
+    const status = screen.getByText(/Conectado/i);
     expect(status).toBeInTheDocument();
   });
 

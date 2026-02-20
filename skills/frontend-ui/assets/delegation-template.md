@@ -51,7 +51,7 @@ ${testingSkill}
 ## Entregables:
 1. Código refactorizado
 2. Tests (unit + integration)
-3. Comentarios // ⚕️ HUMAN CHECK donde aplique
+3. Comentarios // HUMAN CHECK donde aplique
 4. Documentación de cambios
     `,
 });

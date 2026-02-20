@@ -1,4 +1,4 @@
-# 🛡️ Security Check-list (Elite Grade)
+# Security Check-list (Elite Grade)
 
 ## 1. Backend (NestJS)
 

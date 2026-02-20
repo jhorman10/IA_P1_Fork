@@ -45,7 +45,7 @@ ${testingSkill}
 
 ## Restricciones:
 - No romper tests existentes
-- Documentar cada hallazgo con severidad (⛔/🟠/🟡/🟢)
+- Documentar cada hallazgo con severidad (CRITICAL/HIGH/MEDIUM/LOW)
 - Tests de casos maliciosos (>80% coverage en security)
 - Seguir Conventional Commits
 
@@ -95,7 +95,7 @@ Auditoría de seguridad en endpoints de registro de citas:
 ## Checklist Post-Delegación
 
 - [ ] SA ejecutó auditoría siguiendo OWASP Top 10
-- [ ] Hallazgos documentados con severidad (⛔/🟠/🟡/🟢)
+- [ ] Hallazgos documentados con severidad (CRITICAL/HIGH/MEDIUM/LOW)
 - [ ] Plan de remediación priorizado
 - [ ] Security hardening implementado
 - [ ] Tests de seguridad creados (>80% coverage)

@@ -21,10 +21,11 @@ const SKILL_REGISTRY = await read_file("docs/agent-context/SKILL_REGISTRY.md");
 
 **Single Source of Truth:**
 
-- 🏗️ **Arquitectura/Stack:** `PROJECT_CONTEXT.md` (NestJS, Next.js, MongoDB, RabbitMQ)
-- ⚖️ **Reglas/Anti-patrones:** `RULES.md` (SOLID, DRY, KISS, nomenclatura, // ⚕️ HUMAN CHECK)
-- 🔄 **Workflow de 11 pasos:** `WORKFLOW.md` (Leer → Elegir → Match → Planificar → Aprobar → Ejecutar...)
-- 🛠️ **Catálogo de Skills:** `SKILL_REGISTRY.md` (8 skills con triggers, paths, scopes)
+- **Arquitectura/Stack:** `PROJECT_CONTEXT.md` (NestJS, Next.js, MongoDB, RabbitMQ)
+- **Reglas/Anti-patrones:** `RULES.md` (SOLID, DRY, KISS, nomenclatura, // HUMAN CHECK)
+- **Workflow de 11 pasos:** `WORKFLOW.md` (Leer > Elegir > Match > Planificar > Aprobar > Ejecutar...)
+- **Catálogo de Skills:** `SKILL_REGISTRY.md` (8 skills con triggers, paths, scopes)
+- **Estilo Markdown (regla):** `docs/MD_STYLE_GUIDE.md` (sin emoji en headings/tablas, sentence case, vocabulario de estado estandarizado)
 
 ---
 
@@ -48,7 +49,7 @@ const SKILL_REGISTRY = await read_file("docs/agent-context/SKILL_REGISTRY.md");
 
 ### 1.2 — Delegation Algorithm
 
-> **Ref:** Ver `WORKFLOW.md` sección "1. Flujo de Trabajo" (pasos 3-6: MATCH → PLANIFICAR → APROBAR → EJECUTAR)
+> **Ref:** Ver `WORKFLOW.md` sección "1. Flujo de Trabajo" (pasos 3-6: MATCH > PLANIFICAR > APROBAR > EJECUTAR)
 
 ```javascript
 // Algoritmo de Delegación a Sub-Agentes (SA)
@@ -84,10 +85,15 @@ ${content}
 
 # Tarea: ${solicitudUsuario}
 
+# Reglas Estrictas de Código:
+- Ejecutar el linter y asegurar que no hay errores.
+- Todo el código debe estar 100% tipado.
+- PROHIBIDO el uso de \`any\`.
+
 # Entregables:
 1. Código implementado (aplicando skills)
 2. Tests (coverage >80%)
-3. Documentación de cambios (// ⚕️ HUMAN CHECK donde aplique)
+3. Documentación de cambios (// HUMAN CHECK donde aplique)
         `,
   });
 
@@ -111,24 +117,25 @@ ${content}
 
 ### 1.3 — Documentation Protocol
 
-> **Ref:** Ver `WORKFLOW.md` sección "1. Flujo de Trabajo" (pasos 8-9: REGISTRAR → ACTUALIZAR)
+> **Ref:** Ver `WORKFLOW.md` sección "1. Flujo de Trabajo" (pasos 8-9: REGISTRAR > ACTUALIZAR)
 
 **Post-Ejecución Obligatoria:**
 
 1. **AI_WORKFLOW.md:** Registrar interacciones humano-máquina
    - **Paso:** WORKFLOW.md paso 8 (REGISTRAR)
-   - **Debe incluir:** User request → Tipo de tarea → Skills cargadas → SA output → Commits → Human approval
+   - **Debe incluir:** User request > Tipo de tarea > Skills cargadas > SA output > Commits > Human approval
 
 2. **DEBT_REPORT.md:** Si se corrige hallazgo/deuda
    - **Paso:** WORKFLOW.md paso 9 (ACTUALIZAR)
-   - **Debe incluir:** ID hallazgo → Severidad → Solución → Archivos cambiados → Tests validation
+   - **Debe incluir:** ID hallazgo > Severidad > Solución > Archivos cambiados > Tests validation
 
 3. **Checklist:**
    - **Ref:** Ver `RULES.md` sección "2. Reglas de Operación (Anti-patrones)"
-   - ✅ Commits con Conventional Commits
-   - ✅ Documentación actualizada (AI_WORKFLOW.md + DEBT_REPORT.md)
-   - ✅ Tests passing
-   - ✅ Git status limpio
+   - Commits con Conventional Commits
+   - Documentación actualizada (AI_WORKFLOW.md + DEBT_REPORT.md)
+   - Tests passing
+   - Linter ejecutado sin errores (100% tipado, sin usar `any`)
+   - Git status limpio
 
 ### 1.4 — Examples & Templates
 

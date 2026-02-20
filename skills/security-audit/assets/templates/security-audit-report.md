@@ -1,4 +1,4 @@
-# 🛡️ Security Audit Report — [Component Name]
+# Security Audit Report — [Component Name]
 
 ## Executive Summary
 

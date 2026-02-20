@@ -102,10 +102,12 @@ async function request<T>(
         throw new Error("HTTP_ERROR");
       }
 
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data = (await res.json()) as any;
 
       circuit.success();
       return data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       clearTimeout(id);
 
@@ -118,25 +120,22 @@ async function request<T>(
           throw new Error("TIMEOUT");
         }
       } else if (err.message === "SERVER_ERROR") {
-
-      /**
-       * SERVER ERROR → retry + breaker
-       */
+        /**
+         * SERVER ERROR → retry + breaker
+         */
         if (attempt === retries) {
           circuit.fail();
           throw err;
         }
       } else if (err.message === "RATE_LIMIT") {
-
-      /**
-       * RATE LIMIT → no retry agresivo
-       */
+        /**
+         * RATE LIMIT → no retry agresivo
+         */
         throw err;
       } else {
-
-      /**
-       * Otros errores
-       */
+        /**
+         * Otros errores
+         */
         if (attempt === retries) {
           circuit.fail();
           throw err;

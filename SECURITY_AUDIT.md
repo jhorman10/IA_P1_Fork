@@ -1,4 +1,4 @@
-# 🛡️ Security Audit Report — Medical Appointment System
+# Security audit report — Medical appointment system
 
 ## Executive Summary
 

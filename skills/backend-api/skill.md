@@ -23,7 +23,7 @@ This project uses **NestJS** with two microservices:
 1. All DTOs must use `class-validator` decorators with `ValidationPipe` globally enabled.
 2. Field naming in **English**: `idCard`, `fullName`, `officeNumber`, `status`.
 3. Shared event type: `AppointmentEventPayload`.
-4. Every critical decision must include `// ⚕️ HUMAN CHECK` with justification.
+4. Every critical decision must include `// HUMAN CHECK` with justification.
 5. Services should handle errors explicitly — no silent catches.
 6. Consumer must use explicit `ack`/`nack` strategy:
    - `ack` on success only.
@@ -42,7 +42,7 @@ This project uses **NestJS** with two microservices:
 2. Use `grep` to locate all related components before proposing changes.
 3. Consult the one-shot templates in `assets/templates/` for the expected pattern.
 4. Implement the change following the rules above.
-5. Add `// ⚕️ HUMAN CHECK` where applicable.
+5. Add `// HUMAN CHECK` where applicable.
 6. Return a concise Action Summary (see `skills/action-summary-template.md`).
 
 ## Assets

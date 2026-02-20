@@ -71,6 +71,7 @@ export function useAppointmentRegistration() {
     } catch (err: unknown) {
       const errorCode = err instanceof Error ? err.message : "UNKNOWN_ERROR";
       // Si el servidor envió un mensaje específico, mostrarlo directamente
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const serverMessage = (err as any)?.serverMessage;
 
       let userMessage =

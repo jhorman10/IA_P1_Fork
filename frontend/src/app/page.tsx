@@ -29,7 +29,8 @@ export default function AppointmentsScreen() {
     }
   }, []);
 
-  const { appointments, error, connected, isConnecting, connectionStatus } =
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { appointments, error, _connected, isConnecting, connectionStatus } =
     useAppointmentsWebSocket(handleUpdate);
 
   useEffect(() => {

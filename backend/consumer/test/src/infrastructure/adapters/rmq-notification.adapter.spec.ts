@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * 🧪 Tests for RmqNotificationAdapter
  *
@@ -231,7 +232,7 @@ describe("RmqNotificationAdapter", () => {
       });
 
       mockRmqClient.emit.mockImplementation(
-        (pattern: string, data: unknown) => {
+        (_pattern: string, _data: unknown) => {
           callOrder.push("rmq");
           return of(undefined);
         },

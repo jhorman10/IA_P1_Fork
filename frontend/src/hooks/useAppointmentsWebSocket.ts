@@ -43,11 +43,14 @@ export function useAppointmentsWebSocket(
       setIsConnecting(true);
     });
 
-    realTime.onError((err) => {
-      setError("Error de conexión en tiempo real");
-      setConnected(false);
-      setIsConnecting(false);
-    });
+    realTime.onError(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      (_err) => {
+        setError("Error de conexión en tiempo real");
+        setConnected(false);
+        setIsConnecting(false);
+      },
+    );
 
     realTime.onSnapshot((data) => {
       setAppointments(data);

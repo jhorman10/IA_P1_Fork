@@ -25,7 +25,7 @@ The project uses **Jest** with **NestJS Testing Module** for unit tests.
 3. Use `jest.fn()` for method mocks and type them correctly.
 4. Test both success and error paths (especially ack/nack in Consumer).
 5. File naming: `<service-name>.spec.ts` co-located with the source, or in `test/`.
-6. Add `// ⚕️ HUMAN CHECK` for test scenarios that verify business-critical logic.
+6. Add `// HUMAN CHECK` for test scenarios that verify business-critical logic.
 
 ## Tools Permitted
 

@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * 🧪 Tests for NestLoggerAdapter
  *
  * Tests NestJS logger adaptation for domain logger port
  */
 
+import { describe, beforeEach, it } from "node:test";
 import { NestLoggerAdapter } from "../../../../src/infrastructure/logging/nest-logger.adapter";
 import { Logger } from "@nestjs/common";
 
@@ -420,7 +422,7 @@ describe("NestLoggerAdapter", () => {
   });
 
   describe("Concurrent Usage", () => {
-    it("should handle concurrent log calls", (done) => {
+    it("should handle concurrent log calls", () => {
       const promises = [];
 
       for (let i = 0; i < 10; i++) {
@@ -431,26 +433,24 @@ describe("NestLoggerAdapter", () => {
         );
       }
 
-      Promise.all(promises).then(() => {
+      return Promise.all(promises).then(() => {
         expect(mockLogger.log).toHaveBeenCalledTimes(10);
-        done();
       });
     });
 
-    it("should handle mixed log level calls", (done) => {
+    it("should handle mixed log level calls", () => {
       adapter.log("log");
       adapter.error("error");
       adapter.warn("warn");
       adapter.debug("debug");
       adapter.verbose("verbose");
 
-      Promise.resolve().then(() => {
+      return Promise.resolve().then(() => {
         expect(mockLogger.log).toHaveBeenCalledTimes(1);
         expect(mockLogger.error).toHaveBeenCalledTimes(1);
         expect(mockLogger.warn).toHaveBeenCalledTimes(1);
         expect(mockLogger.debug).toHaveBeenCalledTimes(1);
         expect(mockLogger.verbose).toHaveBeenCalledTimes(1);
-        done();
       });
     });
   });

@@ -74,6 +74,6 @@ infrastructure/ ──→ application/ ──→ domain/
      (Adapters)      (Use Cases)      (Entities + Ports)
 ```
 
-- ✅ `infrastructure/` puede importar de `application/` y `domain/`
-- ✅ `application/` puede importar de `domain/`
-- ❌ `domain/` NO puede importar de `application/` ni `infrastructure/`
+- `infrastructure/` puede importar de `application/` y `domain/`
+- `application/` puede importar de `domain/`
+- `domain/` NO puede importar de `application/` ni `infrastructure/`

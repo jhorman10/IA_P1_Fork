@@ -26,7 +26,7 @@ The frontend is a **Next.js** (App Router) application that:
 3. WebSocket connection must use `NEXT_PUBLIC_WS_URL` env var.
 4. Component naming in **English** with PascalCase.
 5. Types must align with `AppointmentEventPayload` from the backend.
-6. Add `// ⚕️ HUMAN CHECK` for business logic decisions in the UI.
+6. Add `// HUMAN CHECK` for business logic decisions in the UI.
 
 ## Tools Permitted
 

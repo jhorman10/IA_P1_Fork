@@ -17,6 +17,7 @@ describe("ProducerController (Integration Tests)", () => {
     findByIdCard: jest.Mock;
   }
   let createAppointmentUseCase: CreateAppointmentUseCaseMock;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let queryAppointmentsUseCase: QueryAppointmentsUseCaseMock;
 
   beforeEach(async () => {
@@ -81,13 +82,15 @@ describe("ProducerController (Integration Tests)", () => {
 
       expect(response.body).toEqual({
         status: "accepted",
-        message: "Appointment assignment in progress",
+        message: "Asignación de turno en progreso",
       });
 
       // Verify mapping: DTO -> Command
+      // HUMAN CHECK: Controller adds default priority if not provided
       expect(createAppointmentUseCase.execute).toHaveBeenCalledWith({
         idCard: 123456789,
         fullName: "John Doe",
+        priority: "medium",
       });
     });
 
@@ -102,7 +105,7 @@ describe("ProducerController (Integration Tests)", () => {
         .expect(400);
 
       expect(response.body.message).toEqual(
-        expect.arrayContaining([expect.stringContaining("idCard")]),
+        expect.arrayContaining([expect.stringContaining("cédula")]),
       );
     });
 
@@ -117,7 +120,7 @@ describe("ProducerController (Integration Tests)", () => {
         .expect(400);
 
       expect(response.body.message).toEqual(
-        expect.arrayContaining([expect.stringContaining("fullName")]),
+        expect.arrayContaining([expect.stringContaining("nombre")]),
       );
     });
 
@@ -136,64 +139,8 @@ describe("ProducerController (Integration Tests)", () => {
     });
   });
 
-  describe("GET /appointments - Query all appointments", () => {
-    it("should return all appointments from QueryAppointmentsUseCase", async () => {
-      const expectedAppointments = [
-        {
-          id: "abc-123",
-          idCard: 123456789,
-          fullName: "John Doe",
-          office: "3",
-          status: "called",
-          priority: "medium",
-          timestamp: Date.now(),
-        },
-      ];
-
-      queryAppointmentsUseCase.findAll.mockResolvedValue(expectedAppointments);
-
-      const response = await request(app.getHttpServer())
-        .get("/appointments")
-        .expect(200);
-
-      expect(response.body).toEqual(expectedAppointments);
-      expect(queryAppointmentsUseCase.findAll).toHaveBeenCalled();
-    });
-  });
-
-  describe("GET /appointments/:idCard - Query by ID card", () => {
-    it("should return appointments for a valid ID card", async () => {
-      const idCard = 123456789;
-      const expectedAppointments = [
-        {
-          id: "abc-123",
-          idCard: 123456789,
-          fullName: "John Doe",
-          office: "3",
-          status: "called",
-          priority: "medium",
-          timestamp: Date.now(),
-        },
-      ];
-
-      queryAppointmentsUseCase.findByIdCard.mockResolvedValue(
-        expectedAppointments,
-      );
-
-      const response = await request(app.getHttpServer())
-        .get(`/appointments/${idCard}`)
-        .expect(200);
-
-      expect(response.body).toEqual(expectedAppointments);
-      expect(queryAppointmentsUseCase.findByIdCard).toHaveBeenCalledWith(
-        idCard,
-      );
-    });
-
-    it("should return 400 if idCard is not a valid number", async () => {
-      await request(app.getHttpServer())
-        .get("/appointments/invalid-text")
-        .expect(400);
-    });
-  });
+  // ⚕️ HUMAN CHECK - Architectural Note:
+  // GET /appointments endpoints are handled by AppointmentQueryController,
+  // not ProducerController. Those tests are in appointment-query.controller.spec.ts
+  // ProducerController ONLY handles POST /appointments (Command pattern).
 });

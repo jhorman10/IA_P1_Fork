@@ -1,28 +1,28 @@
-# � AUDITORÍA HOSTIL MVP — Reporte Completo
+# Auditoria hostil MVP — Reporte completo
 
 **Auditor:** Staff Engineer / Principal Architect (Senior Hostil)
 **Fecha:** 2026-02-20
-**Veredicto Final:** 🟡 **MVP CONDICIONAL** (62/100)
+**Veredicto Final:** **MVP CONDICIONAL** (62/100)
 **Blocker Crítico:** Token WebSocket hardcodeado — REQUIERE REMEDIACIÓN INMEDIATA
 
 ---
 
-## 1. Scorecard por Área
+## 1. Scorecard por area
 
-| Área                 | Puntuación | Peso | Evaluación                                                       | Status                 |
-| -------------------- | :--------: | :--: | ---------------------------------------------------------------- | ---------------------- |
-| **Arquitectura**     |   88/100   | 25%  | Hexagonal Architecture clara, SRP bien aplicado, sin God Objects | ✅ BIEN                |
-| **SOLID Principles** |   85/100   | 25%  | DIP perfecto, OCP bajo switch/case, LSP respetado, ISP segregado | ✅ BIEN                |
-| **Testing Coverage** |   42/100   | 20%  | Backend 23 specs (bueno), Frontend 0 specs (crítico)             | ⚠️ CRÍTICO             |
-| **Infraestructura**  |   65/100   | 15%  | 4 healthchecks OK, pero 1 blocker crítico de seguridad           | 🟡 RIESGOS             |
-| **UX/UI Experience** |   70/100   | 15%  | CSS Modules OK, error handling OK, loading states 6% cobertura   | 🟡 DEFICIENTE          |
-| **TOTAL MVP SCORE**  | **62/100** |  —   | **MVP CONDICIONAL**                                              | 🟡 ACEPTAR CON RIESGOS |
+| Área                 | Puntuación | Peso | Evaluación                                                       | Status              |
+| -------------------- | :--------: | :--: | ---------------------------------------------------------------- | ------------------- |
+| **Arquitectura**     |   88/100   | 25%  | Hexagonal Architecture clara, SRP bien aplicado, sin God Objects | BIEN                |
+| **SOLID Principles** |   85/100   | 25%  | DIP perfecto, OCP bajo switch/case, LSP respetado, ISP segregado | BIEN                |
+| **Testing Coverage** |   42/100   | 20%  | Backend 23 specs (bueno), Frontend 0 specs (crítico)             | CRITICAL            |
+| **Infraestructura**  |   65/100   | 15%  | 4 healthchecks OK, pero 1 blocker crítico de seguridad           | WARNING             |
+| **UX/UI Experience** |   70/100   | 15%  | CSS Modules OK, error handling OK, loading states 6% cobertura   | WARNING             |
+| **TOTAL MVP SCORE**  | **62/100** |  —   | **MVP CONDICIONAL**                                              | ACEPTAR CON RIESGOS |
 
 ---
 
 ## 2. Hallazgos Críticos & Altos
 
-### 🔴 H-S1: Token WebSocket Hardcodeado (BLOCKER CRÍTICO)
+### 2.1 H-S1: Token WebSocket hardcodeado (BLOCKER CRITICAL)
 
 **Archivo:** `backend/producer/src/common/guards/ws-auth.guard.ts:27`
 
@@ -38,7 +38,7 @@ const validToken =
 - Cualquiera puede conectarse conociendo el token: `'elite-hardened-token'`
 - Permite acceso no autorizado a actualizaciones de turnos en tiempo real
 - Incumple estándares mínimos de seguridad
-- 🔴 **SEVERITY:** CRÍTICA — Falha de seguridad perimetral
+- **SEVERITY:** CRITICAL — Falla de seguridad perimetral
 
 **Solución Inmediata (5 minutos):**
 
@@ -51,7 +51,7 @@ const validToken = this.configService.getOrThrow<string>("WS_AUTH_TOKEN");
 
 ---
 
-### 🟠 H-T1: Testing Frontend = 0% (ALTO)
+### 2.2 H-T1: Testing Frontend = 0% (HIGH)
 
 **Métrica:** 0 archivos `.spec.ts` en `frontend/src/`
 
@@ -66,19 +66,19 @@ const validToken = this.configService.getOrThrow<string>("WS_AUTH_TOKEN");
 
 **Impacto:**
 
-- ⚠️ Cambios en frontend sin validación automática
-- ⚠️ Regressions no detectadas
-- ⚠️ Hooks complejos sin unit tests
+- Cambios en frontend sin validación automática
+- Regressions no detectadas
+- Hooks complejos sin unit tests
 
 **Remediación:** Crear 15-20 archivos `.spec.ts` con Jest (estimado 12 horas)
 
 ---
 
-### 🟠 H-U1: Loading States Incompletos (ALTO)
+### 2.3 H-U1: Loading states incompletos (HIGH)
 
 **Métrica:** 3 instancias de loading states vs ~50 async points
 
-**Coverage:** 3/50 = **6%** ⚠️
+**Coverage:** 3/50 = **6%**
 
 **Locations de Async sin feedback:**
 
@@ -93,7 +93,7 @@ const validToken = this.configService.getOrThrow<string>("WS_AUTH_TOKEN");
 
 ---
 
-### 🟠 H-A1: Appointment Module Monolítico (ALTO)
+### 2.4 H-A1: Appointment Module monolitico (HIGH)
 
 **Archivo:** `backend/consumer/src/appointments/appointment.module.ts` (113 líneas)
 
@@ -111,41 +111,41 @@ const validToken = this.configService.getOrThrow<string>("WS_AUTH_TOKEN");
 
 ## 3. Validaciones Ejecutadas
 
-### ✅ Domain Purity (DIP Validado)
+### 3.1 Domain purity (DIP validado)
 
 **Comando:** `grep -rn "import.*@nestjs|import.*mongoose" backend/*/src/domain/`
 **Resultado:** 0 matches
-**Conclusión:** Domain completamente puro, sin dependencias de frameworks ✅
+**Conclusión:** Domain completamente puro, sin dependencias de frameworks.
 
 ---
 
-### ✅ SOLID Compliance
+### 3.2 SOLID compliance
 
-| Principio | Validación                 | Resultado                      |
-| --------- | -------------------------- | ------------------------------ |
-| **S**RP   | grep -rn "extends" domain/ | ✅ Solo 4 base classes legales |
-| **O**CP   | grep -rn "switch\|case:"   | ✅ 2 instancias (bajo)         |
-| **L**SP   | grep -rn "extends" domain/ | ✅ Herencia correcta           |
-| **I**SP   | Interfaces segregadas      | ✅ Port/Adapter pattern        |
-| **D**IP   | Constructor @Inject        | ✅ 0 `new` en domain           |
+| Principio | Validación                 | Resultado                   |
+| --------- | -------------------------- | --------------------------- |
+| **S**RP   | grep -rn "extends" domain/ | Solo 4 base classes legales |
+| **O**CP   | grep -rn "switch\|case:"   | 2 instancias (bajo)         |
+| **L**SP   | grep -rn "extends" domain/ | Herencia correcta           |
+| **I**SP   | Interfaces segregadas      | Port/Adapter pattern        |
+| **D**IP   | Constructor @Inject        | 0 `new` en domain           |
 
-**Conclusión:** SOLID 85/100 ✅
+**Conclusión:** SOLID 85/100.
 
 ---
 
-### ✅ Arquitectura Hexagonal
+### 3.3 Arquitectura hexagonal
 
 **Capas Validadas:**
 
-- 🟢 Domain: Policies, Value Objects, Entities, Events (SRP perfecto)
-- 🟢 Application: Use Cases, DTOs, Mappers (Clean)
-- 🟢 Infrastructure: Repositories, External Services, Persistence (Desacoplado)
+- Domain: Policies, Value Objects, Entities, Events (SRP perfecto)
+- Application: Use Cases, DTOs, Mappers (Clean)
+- Infrastructure: Repositories, External Services, Persistence (Desacoplado)
 
-**Separación:** Producer (REST API) ≠ Consumer (Workers/Queue) ✅
+**Separación:** Producer (REST API) ≠ Consumer (Workers/Queue).
 
 ---
 
-### ⚠️ Testing Metrics
+### 3.4 Testing metrics
 
 **Backend (Excelente):**
 
@@ -160,47 +160,47 @@ const validToken = this.configService.getOrThrow<string>("WS_AUTH_TOKEN");
 - 0 hook tests
 - 0 integration tests
 
-**Cobertura Total:** 42/100 🟡
+**Cobertura Total:** 42/100
 
 ---
 
-### 🔴 Security Check
+### 3.5 Security check
 
 **Comando:** `grep -rn "password|secret|apikey|token" backend/*/src | grep -v ".env"`
 
 **Hallazgos:**
 
-- ❌ Token hardcodeado en ws-auth.guard.ts:27 (**H-S1 BLOCKER**)
-- ✅ Otros archivos usando `configService.get()` correctamente
+- Token hardcodeado en ws-auth.guard.ts:27 (**H-S1 BLOCKER**)
+- Otros archivos usando `configService.get()` correctamente
 
 ---
 
-### 🟡 Infrastructure
+### 3.6 Infrastructure
 
 **Healthchecks (4/4 servicios):**
 
-- ✅ Producer API
-- ✅ Consumer Worker
-- ✅ MongoDB
-- ✅ RabbitMQ
+- Producer API
+- Consumer Worker
+- MongoDB
+- RabbitMQ
 
 **Negativos encontrados:**
 
-- 🟡 Rate limiting ausente
-- 🟡 Helmet security headers no detectados
-- 🟡 Logs no JSON-estructurados
+- Rate limiting ausente
+- Helmet security headers no detectados
+- Logs no JSON-estructurados
 
 ---
 
 ## 4. Veredicto & Recomendaciones
 
-### Verdict: 🟡 MVP CONDICIONAL
+### Verdict: MVP CONDICIONAL
 
 **Aceptable si se remedian:**
 
-1. ⛔ **BLOCKER CRÍTICO (H-S1):** Token hardcodeado → Fix inmediato (5 min)
-2. 🟠 **BLOCKER ALTO (H-T1):** Frontend sin tests → Planning 2 sprints (H-T2)
-3. 🟠 **BLOCKER ALTO (H-U1):** Loading states → Quick wins (H-U2)
+1. **BLOCKER CRITICAL (H-S1):** Token hardcodeado → Fix inmediato (5 min)
+2. **BLOCKER HIGH (H-T1):** Frontend sin tests → Planning 2 sprints (H-T2)
+3. **BLOCKER HIGH (H-U1):** Loading states → Quick wins (H-U2)
 
 **Timeline estimado:** 6-8 horas para blockers + 20 horas para deuda aceptada
 
@@ -218,23 +218,23 @@ const validToken = this.configService.getOrThrow<string>("WS_AUTH_TOKEN");
 
 MVP entrega arquitectura sólida (Hexagonal, SOLID, Event-Driven) pero con vulnerabilidad crítica de seguridad y testing desigual. Recomendación: **Aceptar con mitigaciones**, escalar H-S1 a team líder inmediatamente.
 
-**Auditor:** Staff Engineer Hostil ✔️ 2. **Validación de Entorno:** - **Evidencia:** `src/config/env.ts` lanza errores explícitos si faltan variables `NEXT_PUBLIC_*`, evitando fallos silenciosos en el navegador.
+**Auditor:** Staff Engineer Hostil. 2. **Validación de Entorno:** - **Evidencia:** `src/config/env.ts` lanza errores explícitos si faltan variables `NEXT_PUBLIC_*`, evitando fallos silenciosos en el navegador.
 
 ---
 
 ## 4. Plan de Mejora Escalonado
 
-### 1️⃣ Estrategia de IA & Transparencia
+### 1. Estrategia de IA & Transparencia
 
 - **De 1 → 3:** Crear un archivo `PROMPT_LOG.md` donde se registren al menos las últimas 5 interacciones significativas con la IA.
 - **De 3 → 5:** Implementar una sección en `AI_WORKFLOW.md` que detalle errores específicos de lógica resueltos (ej. "IA generó bucle infinito en useEffect, corregido con useRef").
 
-### 2️⃣ Arquitectura & Docker
+### 2. Arquitectura & Docker
 
 - **De 1 → 3:** Eliminar todos los valores por defecto de credenciales en el `yaml`.
 - **De 3 → 5:** Implementar un Reverse Proxy (Nginx) y definir redes internas separadas para DB/Queue y App.
 
-### 3️⃣ Calidad del Código
+### 3. Calidad del codigo
 
 - **De 1 → 3:** Sincronizar el formulario con el DTO del backend y aplicar diseño básico responsive (CSS Media Queries).
 - **De 3 → 5:** Implementar Unit Tests para el hook `useTurnosWebSocket` y el servicio de sanitización.

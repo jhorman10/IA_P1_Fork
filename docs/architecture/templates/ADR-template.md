@@ -50,15 +50,15 @@ List each serious alternative. For each, include:
 
 ### When to Include Alternatives
 
-- ✅ At least 2-3 alternatives for significant decisions
-- ✅ Alternatives with trade-offs
-- ✅ Why **not** chosen (important for future reviewers)
+- At least 2-3 alternatives for significant decisions
+- Alternatives with trade-offs
+- Why **not** chosen (important for future reviewers)
 
 ### When to Exclude
 
-- ❌ Obvious non-starters
-- ❌ Alternatives lacking research
-- ❌ Trivial decisions (variable naming, etc.)
+- Obvious non-starters
+- Alternatives lacking research
+- Trivial decisions (variable naming, etc.)
 
 ---
 
@@ -66,8 +66,8 @@ List each serious alternative. For each, include:
 
 **Clearly state the decision.** Use imperative language:
 
-- ❌ "We might consider MongoDB"
-- ✅ "Implement MongoDB as the primary data store"
+- "We might consider MongoDB"
+- "Implement MongoDB as the primary data store"
 
 Include:
 
@@ -97,7 +97,7 @@ Architecture/Components:
 
 Describe both positive and negative outcomes.
 
-### Positive Consequences ✅
+### Positive consequences
 
 1. **Benefit 1**
    - Details and examples
@@ -107,7 +107,7 @@ Describe both positive and negative outcomes.
 3. **Benefit 3** (Future Evolution)
    - Enables future capabilities
 
-### Negative Consequences ⚠️
+### Negative consequences
 
 1. **Drawback 1**
    - Impact on team/system
@@ -131,18 +131,18 @@ Describe both positive and negative outcomes.
 
 Track progress of this decision's implementation.
 
-### ✅ Completed
+### Completed
 
 - [x] Component A implemented
 - [x] Tests written
 - [x] Integrated with system
 
-### 📋 In Progress
+### In progress
 
 - [ ] Performance optimization
 - [ ] Documentation
 
-### 🔮 Future Enhancements
+### Future enhancements
 
 - [ ] Scaling to multiple services
 - [ ] Advanced feature X
@@ -215,7 +215,7 @@ Track who approved this decision and when.
 
 ## Writing Guidelines
 
-### ✅ Do's
+### Dos
 
 1. **Be concise** - 1-2 pages typically
 2. **Document the "why"** - Not just "what"
@@ -225,7 +225,7 @@ Track who approved this decision and when.
 6. **Use future tense for consequences** - "Will enable", "Won't require"
 7. **Include metrics if available** - Performance, costs, etc.
 
-### ❌ Don'ts
+### Donts
 
 1. Don't over-explain obvious context
 2. Don't be defensive about the decision
@@ -264,8 +264,8 @@ Implement [X] for [purpose]
 
 ## Consequences
 
-✅ Positive: [benefits]
-⚠️ Negative: [drawbacks + mitigation]
+Positive: [benefits]
+Negative: [drawbacks + mitigation]
 
 ## Related
 

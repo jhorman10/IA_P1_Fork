@@ -21,7 +21,7 @@ Este proyecto maneja datos de pacientes y comunicación asíncrona. La seguridad
 2. **Secret Management**: Los secretos NUNCA deben estar en el código. Verifica `.env.example`.
 3. **OWASP Top 10**: Valida contra inyección, autenticación rota y exposición de datos sensibles.
 4. **Least Privilege**: Los contenedores y procesos deben correr con los permisos mínimos necesarios.
-5. **Human Check**: Todo cambio de seguridad requiere `// 🛡️ HUMAN CHECK`.
+5. **Human Check**: Todo cambio de seguridad requiere `// HUMAN CHECK`.
 
 ## Tools Permitted
 

@@ -55,7 +55,7 @@ ${testingSkill}
 2. Adapters en infrastructure/
 3. Use Cases en application/
 4. Tests (unit + integration)
-5. Comentarios // ⚕️ HUMAN CHECK donde aplique
+5. Comentarios // HUMAN CHECK donde aplique
     `,
 });
 ```

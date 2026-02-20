@@ -61,16 +61,16 @@ Todos los commits de este proyecto DEBEN seguir la especificación [Conventional
 ### Reglas de formato
 
 1. **Descripción en minúsculas** — No iniciar con mayúscula tras el `:`.
-   - ✅ `feat(producer): add validation pipe`
-   - ❌ `feat(producer): Add validation pipe`
+   - `feat(producer): add validation pipe`
+   - `feat(producer): Add validation pipe`
 
 2. **Sin punto final** — No terminar la descripción con `.`
-   - ✅ `fix(consumer): resolve ack/nack race condition`
-   - ❌ `fix(consumer): resolve ack/nack race condition.`
+   - `fix(consumer): resolve ack/nack race condition`
+   - `fix(consumer): resolve ack/nack race condition.`
 
 3. **Imperativo presente** — Usar verbo en imperativo.
-   - ✅ `add`, `fix`, `remove`, `update`, `implement`, `refactor`
-   - ❌ `added`, `fixed`, `removing`, `updates`
+   - `add`, `fix`, `remove`, `update`, `implement`, `refactor`
+   - `added`, `fixed`, `removing`, `updates`
 
 4. **Máximo 72 caracteres** en la primera línea.
 
@@ -91,7 +91,7 @@ Todos los commits de este proyecto DEBEN seguir la especificación [Conventional
    - Create domain/entities/appointment.entity.ts (pure class)
    - Create domain/ports/outbound/appointment.repository.ts (interface)
    - Move validation logic from schema to entity factory
-   - Add // ⚕️ HUMAN CHECK for layer separation decisions
+   - Add // HUMAN CHECK for layer separation decisions
    ```
 
 7. **Actor attribution** — En el cuerpo, indicar actor si es relevante:
@@ -99,17 +99,17 @@ Todos los commits de este proyecto DEBEN seguir la especificación [Conventional
    ```
    fix(consumer): resolve race condition in office assignment
 
-   Co-authored-by: 🤖 Antigravity
+   Co-authored-by: IA Antigravity
    Reviewed-by: 👤 Human
    ```
 
 ### Commits NO permitidos
 
-- ❌ `update files` — Sin tipo ni scope
-- ❌ `WIP` — Commits temporales
-- ❌ `fix stuff` — Descripción vaga
-- ❌ `feat: implement everything` — Demasiado amplio, dividir en commits atómicos
-- ❌ Commits que mezclen feat + fix + refactor — Un tipo por commit
+- `update files` — Sin tipo ni scope
+- `WIP` — Commits temporales
+- `fix stuff` — Descripción vaga
+- `feat: implement everything` — Demasiado amplio, dividir en commits atómicos
+- Commits que mezclen feat + fix + refactor — Un tipo por commit
 
 ## Workflow
 
@@ -135,8 +135,8 @@ git log --oneline -5
 
 Cada commit debe representar **una unidad lógica de cambio**:
 
-- ✅ Un commit por feature/fix/refactor
-- ❌ Un commit gigante con múltiples tipos de cambios mezclados
+- Un commit por feature/fix/refactor
+- Un commit gigante con múltiples tipos de cambios mezclados
 
 Si un cambio toca múltiples archivos pero es la MISMA unidad lógica, es un solo commit.
 Si son cambios INDEPENDIENTES, separar en commits individuales.

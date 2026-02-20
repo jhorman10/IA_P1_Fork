@@ -1,4 +1,4 @@
-# 🏗️ Context: Project & Architecture
+# Context: Project and architecture
 
 ## 1. Project Overview
 

@@ -3,7 +3,7 @@
 > **Sistema de gestión de citas médicas certificado con "Elite DDD" y "Arquitectura Hexagonal".**
 > Construido con NestJS, RabbitMQ, MongoDB y Next.js.
 
-## 🚀 Arquitectura del Sistema
+## 1. Arquitectura del sistema
 
 La arquitectura central desacopla la recepción de turnos del procesamiento utilizando un patrón de **Microservicios Orientados a Eventos**.
 
@@ -33,16 +33,16 @@ sequenceDiagram
     P->>C: 10. Emite evento WebSocket (Tiempo Real)
 ```
 
-## 📚 Documentación y Contexto del Proyecto
+## 2. Documentacion y contexto del proyecto
 
 Este proyecto utiliza una "Meta-Arquitectura" modular donde la documentación es la Fuente Única de Verdad tanto para humanos como para agentes de IA.
 
-| Módulo                       | Descripción                                                     | Ubicación                                                         |
-| ---------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------- |
-| **🏗️ Contexto del Proyecto** | Arquitectura, Stack Tecnológico, Estructura de Carpetas.        | [**PROJECT_CONTEXT.md**](./docs/agent-context/PROJECT_CONTEXT.md) |
-| **⚖️ Reglas y Directrices**  | Convenciones culturales, Anti-patrones, Higiene.                | [**RULES.md**](./docs/agent-context/RULES.md)                     |
-| **🔄 Motor de Flujo**        | Protocolos de interacción, trazabilidad y modelo de delegación. | [**WORKFLOW.md**](./docs/agent-context/WORKFLOW.md)               |
-| **🛠️ Registro de Skills**    | Capacidades disponibles para el Orquestador de IA.              | [**SKILL_REGISTRY.md**](./docs/agent-context/SKILL_REGISTRY.md)   |
+| Módulo                    | Descripción                                                     | Ubicación                                                         |
+| ------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **Contexto del Proyecto** | Arquitectura, Stack Tecnológico, Estructura de Carpetas.        | [**PROJECT_CONTEXT.md**](./docs/agent-context/PROJECT_CONTEXT.md) |
+| **Reglas y Directrices**  | Convenciones culturales, Anti-patrones, Higiene.                | [**RULES.md**](./docs/agent-context/RULES.md)                     |
+| **Motor de Flujo**        | Protocolos de interacción, trazabilidad y modelo de delegación. | [**WORKFLOW.md**](./docs/agent-context/WORKFLOW.md)               |
+| **Registro de Skills**    | Capacidades disponibles para el Orquestador de IA.              | [**SKILL_REGISTRY.md**](./docs/agent-context/SKILL_REGISTRY.md)   |
 
 ### Reportes de Estado
 
@@ -52,7 +52,7 @@ Este proyecto utiliza una "Meta-Arquitectura" modular donde la documentación es
 
 ---
 
-## 🛠️ Inicio Rápido
+## 3. Inicio rapido
 
 ### Prerrequisitos
 
@@ -83,7 +83,7 @@ Este proyecto utiliza una "Meta-Arquitectura" modular donde la documentación es
      ```bash
      podman-compose up -d --build
      ```
-     > ⚠️ **Nota:**
+     > **Nota:**
      >
      > - Podman Compose es compatible con este archivo, pero revisa advertencias sobre volúmenes y puertos si usas rootless Podman.
      > - Si encuentras problemas con permisos en volúmenes, consulta la [documentación oficial de Podman](https://docs.podman.io/en/latest/markdown/podman-compose.1.html).
@@ -95,7 +95,7 @@ Este proyecto utiliza una "Meta-Arquitectura" modular donde la documentación es
 
 ---
 
-## ✨ Características Clave
+## 4. Caracteristicas clave
 
 - **Orientado a Eventos**: Comunicación puramente asíncrona vía RabbitMQ.
 - **Diseño Guiado por el Dominio (DDD)**: Value Objects, Eventos de Dominio, Fábricas, Especificaciones.
@@ -103,7 +103,3 @@ Este proyecto utiliza una "Meta-Arquitectura" modular donde la documentación es
 - **Tiempo Real**: WebSockets para actualizaciones instantáneas de turnos.
 - **Resiliencia**: DLQ (Dead Letter Queue), Políticas de Reintento y Healthchecks.
 - **Seguridad**: Helmet, Rate Limiting, CORS y Política de Cero Hardcodeo.
-
----
-
-**ESTADO: PUREZA ARQUITECTÓNICA ALCANZADA** ✅
