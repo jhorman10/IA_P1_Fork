@@ -1,3 +1,18 @@
+/**
+ * ⚠️ DEPRECATED: Use specialized components instead
+ * 
+ * This generic component violates ISP (Interface Segregation Principle).
+ * It accepts props for all statuses mixed together, making it hard to use correctly.
+ * 
+ * ✅ USE INSTEAD:
+ * - import { WaitingAppointmentCard } from '@/components/AppointmentCard'
+ * - import { CalledAppointmentCard } from '@/components/AppointmentCard'
+ * - import { CompletedAppointmentCard } from '@/components/AppointmentCard'
+ * 
+ * REASON: Each status (waiting, called, completed) has different visual needs
+ * and different props. Specialized components make props type-safe and self-documenting.
+ */
+
 import { Appointment } from "@/domain/Appointment";
 import styles from "@/styles/page.module.css";
 
