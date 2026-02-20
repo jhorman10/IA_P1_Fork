@@ -1,6 +1,6 @@
 /**
- * ⚕️ HUMAN CHECK - Concurrency Port
- * Port for distributed locking to prevent race conditions in horizontal scaling.
+ * ⚕️ HUMAN CHECK - Puerto de Concurrencia
+ * Puerto para bloqueo distribuido que previene condiciones de carrera en escala horizontal.
  */
 export interface LockRepository {
     /**

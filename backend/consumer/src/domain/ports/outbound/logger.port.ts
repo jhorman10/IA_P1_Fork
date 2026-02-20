@@ -1,6 +1,6 @@
 /**
- * ⚕️ HUMAN CHECK - Logger Port: Diagnostic logging contract for the Domain/Application.
- * Allows core logic to log without coupling to a specific framework (NestJS, Winston, etc.).
+ * ⚕️ HUMAN CHECK - Puerto Logger: Contrato de logging diagnóstico para el Dominio/Aplicación.
+ * Permite registrar eventos sin acoplarse a un framework específico (NestJS, Winston, etc.).
  */
 export interface LoggerPort {
     log(message: string, context?: string): void;

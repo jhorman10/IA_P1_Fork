@@ -6,7 +6,7 @@ import { FullName } from '../value-objects/full-name.value-object';
 import { Priority } from '../value-objects/priority.value-object';
 
 // Pattern: Entity — Domain object without infrastructure dependencies
-// ⚕️ HUMAN CHECK - Pure domain entity accurately owning its Identity (H-24)
+// ⚕️ HUMAN CHECK - Entidad de dominio pura que posee con precisión su Identidad (H-24)
 
 export type AppointmentStatus = 'waiting' | 'called' | 'completed';
 

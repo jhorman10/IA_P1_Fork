@@ -4,8 +4,8 @@ import { FullName } from '../value-objects/full-name.value-object';
 import { Priority } from '../value-objects/priority.value-object';
 
 /**
- * ⚕️ HUMAN CHECK - Domain Factory (H-28)
- * Ensures consistency and valid initial state.
+ * ⚕️ HUMAN CHECK - Fábrica de Dominio (H-28)
+ * Garantiza consistencia y estado inicial válido.
  */
 export class AppointmentFactory {
     public static createNew(idCard: IdCard, fullName: FullName, timestamp: number): Appointment {

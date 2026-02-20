@@ -1,6 +1,6 @@
 /**
- * ⚕️ HUMAN CHECK - Domain Error Base
- * Distinguishes business logic violations from technical failures.
+ * ⚕️ HUMAN CHECK - Error de Dominio Base
+ * Distingue violaciones de lógica de negocio de fallos técnicos.
  */
 export abstract class DomainError extends Error {
     constructor(
