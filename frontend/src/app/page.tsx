@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 import { Appointment } from "@/domain/Appointment";
 import { audioService } from "@/services/AudioService";
-import AppointmentCard from "@/components/AppointmentCard/AppointmentCard";
+import { CalledAppointmentCard, WaitingAppointmentCard } from "@/components/AppointmentCard";
 import styles from "@/styles/page.module.css";
 
 /**
@@ -69,21 +69,20 @@ export default function AppointmentsScreen() {
         </header>
 
         <section className={styles.sectionBlock}>
-          <h2 className={styles.sectionTitle}>📢 Llamados <span className={styles.countBadge}>{calledAppointments.length}</span></h2>
+          <h2 className={styles.sectionTitle}>🏥 En consultorio <span className={styles.countBadge}>{calledAppointments.length}</span></h2>
           {calledAppointments.length > 0 ? (
             <ul className={styles.cardGrid}>
               {calledAppointments.map((t) => (
-                <AppointmentCard
+                <CalledAppointmentCard
                   key={t.id}
                   appointment={t}
-                  status="called"
                   showTime={true}
                   timeIcon="🔔"
                 />
               ))}
             </ul>
           ) : (
-            <p className={styles.empty}>No hay turnos llamados</p>
+            <p className={styles.empty}>No hay turnos en consultorio</p>
           )}
         </section>
 
@@ -98,17 +97,14 @@ export default function AppointmentsScreen() {
         )}
       </section>
       <aside className={styles.rightPanel}>
-        <h2 className={styles.sectionTitle}>⏳ Cola de Espera <span className={styles.countBadge}>{waitingAppointments.length}</span></h2>
+        <h2 className={styles.sectionTitle}>⏳ En espera<span className={styles.countBadge}>{waitingAppointments.length}</span></h2>
         {waitingAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
             {waitingAppointments.map((t) => (
-              <AppointmentCard
+              <WaitingAppointmentCard
                 key={t.id}
                 appointment={t}
-                status="waiting"
-                showTime={true}
                 timeIcon="📝"
-                consultorioLabel="Pendiente"
               />
             ))}
           </ul>

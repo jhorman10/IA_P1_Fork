@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 import { Appointment } from "@/domain/Appointment";
 import { audioService } from "@/services/AudioService";
-import AppointmentCard from "@/components/AppointmentCard/AppointmentCard";
+import { WaitingAppointmentCard, CalledAppointmentCard, CompletedAppointmentCard } from "@/components/AppointmentCard";
 import styles from "@/styles/page.module.css";
 
 /**
@@ -79,10 +79,9 @@ export default function CompletedHistoryDashboard() {
         {calledAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
             {calledAppointments.map((t) => (
-              <AppointmentCard
+              <CalledAppointmentCard
                 key={t.id}
                 appointment={t}
-                status="called"
                 showTime={true}
                 timeIcon="🔔"
               />
@@ -98,13 +97,10 @@ export default function CompletedHistoryDashboard() {
         {waitingAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
             {waitingAppointments.map((t) => (
-              <AppointmentCard
+              <WaitingAppointmentCard
                 key={t.id}
                 appointment={t}
-                status="waiting"
-                showTime={true}
                 timeIcon="📝"
-                consultorioLabel="Pendiente"
               />
             ))}
           </ul>
@@ -119,11 +115,9 @@ export default function CompletedHistoryDashboard() {
         {completedAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
             {completedAppointments.map((t) => (
-              <AppointmentCard
+              <CompletedAppointmentCard
                 key={t.id}
                 appointment={t}
-                status="atendido"
-                showTime={true}
                 timeIcon="⏰"
               />
             ))}

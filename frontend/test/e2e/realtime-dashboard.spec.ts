@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test';
 // FRONTEND_URL y API_BASE_URL deben estar configurados correctamente en .env
 
 test.describe('Realtime Frontend-Backend Communication', () => {
-  test('Dashboard actualiza en tiempo real al crear un turno', async ({ page }) => {
+  test('Dashboard actualiza en tiempo real al crear un turno', async ({ page, browser }) => {
     // 1. Abrir dashboard
     await page.goto(process.env.FRONTEND_URL || 'http://localhost:3001');
     await expect(page.locator('text=Panel de Turnos en Tiempo Real')).toBeVisible();
@@ -13,7 +13,7 @@ test.describe('Realtime Frontend-Backend Communication', () => {
     const initialCount = await page.locator('h2:has-text("En espera") + ul > li').count();
 
     // 3. Abrir formulario de registro en otra pestaña y crear turno
-    const context = await page.context().browser().newContext();
+    const context = await browser.newContext();
     const regPage = await context.newPage();
     await regPage.goto(process.env.FRONTEND_URL || 'http://localhost:3001');
     await regPage.fill('input[placeholder="Nombre Completo"]', 'Test Realtime');
@@ -22,6 +22,7 @@ test.describe('Realtime Frontend-Backend Communication', () => {
     await regPage.click('button:has-text("Registrar Ahora")');
     await regPage.waitForSelector('text=Turno registrado exitosamente.', { timeout: 5000 });
     await regPage.close();
+    await context.close();
 
     // 4. Esperar actualización en dashboard original
     await page.waitForTimeout(1500); // Espera procesamiento backend
