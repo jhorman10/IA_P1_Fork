@@ -8,7 +8,7 @@ module.exports = {
   collectCoverageFrom: ["src/**/*.(t|j)s"],
   coverageDirectory: "./coverage",
   testEnvironment: "node",
-  roots: ["<rootDir>/src", "<rootDir>/test", "<rootDir>/../e2e"],
+  roots: ["<rootDir>/src", "<rootDir>/test"],
   moduleNameMapper: {
     "^src/(.*)$": "<rootDir>/src/$1",
   },
