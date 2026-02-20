@@ -3,8 +3,8 @@ import { CreateAppointmentUseCaseImpl } from 'src/application/use-cases/create-a
 import { AppointmentPublisherPort } from 'src/domain/ports/outbound/appointment-publisher.port';
 
 /**
- * ⚕️ HUMAN CHECK - Hexagonal Use Case Test:
- * Tests the use-case implementation, mocking the outbound port.
+ * ⚕️ HUMAN CHECK - Test de Caso de Uso Hexagonal:
+ * Testea la implementación del caso de uso, mockeando el puerto outbound.
  */
 describe('CreateAppointmentUseCaseImpl', () => {
     let useCase: CreateAppointmentUseCaseImpl;

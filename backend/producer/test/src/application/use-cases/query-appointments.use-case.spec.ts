@@ -5,8 +5,8 @@ import { AppointmentEventPayload } from 'src/types/appointment-event';
 import { NotFoundException } from '@nestjs/common';
 
 /**
- * ⚕️ HUMAN CHECK - Hexagonal Use Case Test:
- * Tests the use-case implementation, mocking the outbound port.
+ * ⚕️ HUMAN CHECK - Test de Caso de Uso Hexagonal:
+ * Testea la implementación del caso de uso, mockeando el puerto outbound.
  */
 describe('QueryAppointmentsUseCaseImpl', () => {
     let useCase: QueryAppointmentsUseCaseImpl;

@@ -4,8 +4,8 @@ import { ProducerController } from 'src/producer.controller';
 import * as request from 'supertest';
 
 /**
- * ⚕️ HUMAN CHECK - Hexagonal Integration Test:
- * Controller depends on inbound port tokens, not concrete services.
+ * ⚕️ HUMAN CHECK - Test de Integración Hexagonal:
+ * El Controller depende de tokens de puertos inbound, no de servicios concretos.
  */
 describe('ProducerController (Integration Tests)', () => {
     let app: INestApplication;
@@ -70,8 +70,8 @@ describe('ProducerController (Integration Tests)', () => {
                 fullName: 'John Doe',
             };
 
-            // ⚕️ HUMAN CHECK - SRP: Use Case returns void (Command Pattern).
-            // Controller is responsible for constructing the HTTP response.
+            // ⚕️ HUMAN CHECK - SRP: El Caso de Uso retorna void (Patrón Command).
+            // El Controller es responsable de construir la respuesta HTTP.
             createAppointmentUseCase.execute.mockResolvedValue(undefined);
 
             const response = await request(app.getHttpServer())
