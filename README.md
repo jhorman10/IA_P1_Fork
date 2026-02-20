@@ -53,8 +53,9 @@ Este proyecto utiliza una "Meta-Arquitectura" modular donde la documentación es
 
 ## 🛠️ Inicio Rápido
 
+
 ### Prerrequisitos
-- Docker Engine & Docker Compose v2
+- Docker Engine & Docker Compose v2 **o** Podman + Podman Compose
 
 ### Pasos
 
@@ -70,10 +71,19 @@ Este proyecto utiliza una "Meta-Arquitectura" modular donde la documentación es
    # Editar .env con credenciales seguras (ver .env.example para detalles)
    ```
 
+
 3. **Iniciar infraestructura**
-   ```bash
-   docker compose up -d --build
-   ```
+    - **Con Docker Compose:**
+       ```bash
+       docker compose up -d --build
+       ```
+    - **Con Podman Compose:**
+       ```bash
+       podman-compose up -d --build
+       ```
+       > ⚠️ **Nota:**
+       > - Podman Compose es compatible con este archivo, pero revisa advertencias sobre volúmenes y puertos si usas rootless Podman.
+       > - Si encuentras problemas con permisos en volúmenes, consulta la [documentación oficial de Podman](https://docs.podman.io/en/latest/markdown/podman-compose.1.html).
 
 4. **Acceder a la aplicación**
    - **Frontend:** [http://localhost:3001](http://localhost:3001)

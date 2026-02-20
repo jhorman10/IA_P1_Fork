@@ -1,5 +1,12 @@
-# ⚕️ HUMAN CHECK - Configuración de Docker Compose
-# Revisar puertos expuestos y variables de entorno antes de desplegar
+######################################################################
+# ⚕️ HUMAN CHECK - Configuración de Docker Compose & Podman Compose
+# Este archivo es compatible tanto con Docker Compose v2 como con Podman Compose.
+# - No se usan features exclusivas de Docker Engine.
+# - restart: unless-stopped es soportado por ambos.
+# - Volúmenes y puertos pueden requerir ajustes en rootless Podman.
+# - Para levantar con podman: `podman-compose up -d --build`
+# Revisar puertos expuestos y variables de entorno antes de desplegar.
+######################################################################
 services:
   producer:
     container_name: backend-producer
@@ -14,6 +21,7 @@ services:
     # Verificar que el puerto mapeado no entre en conflicto con otros servicios del host
     ports:
       - "${PRODUCER_PORT:-3000}:3000"
+    restart: unless-stopped
     # ⚕️ HUMAN CHECK - Volúmenes de desarrollo (Hot-Reload)
     # Estos volúmenes montan el código fuente local para desarrollo con recarga en caliente.
     # En producción, eliminar estos volúmenes y usar la imagen construida.
@@ -59,6 +67,7 @@ services:
       - ./backend/consumer:/app
       - /app/node_modules
       - /app/dist
+    restart: unless-stopped
     # ⚕️ HUMAN CHECK - Variables de entorno gestionadas vía .env
     environment:
       - NODE_ENV=${NODE_ENV}
@@ -93,6 +102,7 @@ services:
     command: npm run dev -- -p 3001 -H 0.0.0.0
     ports:
       - "${FRONTEND_PORT:-3001}:3001"
+    restart: unless-stopped
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -124,6 +134,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
     networks:
       - app-network
+    restart: unless-stopped
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "-q", "check_running" ]
       interval: 10s
@@ -147,6 +158,7 @@ services:
       - mongodb_data:/data/db
     networks:
       - app-network
+    restart: unless-stopped
     healthcheck:
       test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 10s
