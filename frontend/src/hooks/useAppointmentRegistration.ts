@@ -32,10 +32,10 @@ export function useAppointmentRegistration() {
     const inFlightRef = useRef(false);
 
     /**
-     * Repository singleton
+     * Repository from DI Context (stable, no need for ref)
+     * ⚕️ HUMAN CHECK - H-36: DependencyContext es estable, no requiere useRef
      */
     const { repository } = useDependencies();
-    const repositoryRef = useRef(repository); // Keep ref for stability or just use repository directly? DependencyContext is stable.
 
     // 🛡️ HUMAN CHECK - DIP: Hook uses injected repository, not class.
 
@@ -66,7 +66,7 @@ export function useAppointmentRegistration() {
         safeSet(setError, null);
 
         try {
-            const res = await repositoryRef.current!.createAppointment(data);
+            const res = await repository.createAppointment(data);
 
             safeSet(
                 setSuccess,
