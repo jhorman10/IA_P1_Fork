@@ -5,7 +5,7 @@ import { DomainError } from './domain.error';
  * Fatal: Should NOT be retried (leads to DLQ).
  */
 export class ValidationError extends DomainError {
-    constructor(message: string, code: string = 'VALIDATION_ERROR', context?: Record<string, any>) {
+    constructor(message: string, code: string = 'VALIDATION_ERROR', context?: Record<string, unknown>) {
         super(message, code, context);
     }
 }
