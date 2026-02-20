@@ -7,6 +7,33 @@ import { IdCard } from '../../../../src/domain/value-objects/id-card.value-objec
 import { FullName } from '../../../../src/domain/value-objects/full-name.value-object';
 import { Priority } from '../../../../src/domain/value-objects/priority.value-object';
 import { ConsultationPolicy } from '../../../../src/domain/policies/consultation.policy';
+import { LoggerPort } from '../../../../src/domain/ports/outbound/logger.port';
+
+/**
+ * Fake Logger for tests
+ */
+class FakeLogger implements LoggerPort {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    log(message: string): void {
+        // Silent in tests
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    error(message: string, trace?: string): void {
+        // Silent in tests
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    warn(message: string): void {
+        // Silent in tests
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    debug(message: string): void {
+        // Silent in tests
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    verbose(message: string, context?: string): void {
+        // Silent in tests
+    }
+}
 
 /**
  * Integration Tests: MongooseAppointmentRepository
@@ -45,7 +72,8 @@ describe('MongooseAppointmentRepository (Integration)', () => {
             // ⚕️ HUMAN CHECK: Cast de tipo de Model necesario por incompatibilidad de versiones @nestjs/mongoose vs mongoose standalone
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             appointmentModel as any,
-            consultationPolicy
+            consultationPolicy,
+            new FakeLogger() // ⚕️ H-34: Agregar logger para cumplir con firma del constructor
         );
     });
 

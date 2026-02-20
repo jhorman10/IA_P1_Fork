@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule, getModelToken } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppointmentSchema as SchemaDef } from '../schemas/appointment.schema';
 
 import { RegisterAppointmentUseCaseImpl } from '../application/use-cases/register-appointment.use-case.impl';
@@ -22,15 +23,17 @@ import { EventDispatchingAppointmentRepositoryDecorator } from '../infrastructur
     imports: [
         MongooseModule.forFeature([{ name: Appointment.name, schema: SchemaDef }]),
         NotificationsModule,
+        ConfigModule, // ⚕️ H-35: Necesario para parametrizar TOTAL_OFFICES
     ],
     providers: [
         // ⚕️ HUMAN CHECK - Corrección A-08: ConsultationPolicy inyectada en el Repositorio
         // Permite que el Repositorio delegue la lógica de negocio a la política de dominio
+        // H-34: LoggerPort inyectado para eliminar console.log
         {
             provide: 'MongooseAppointmentRepository', // Underlying impl
-            inject: [getModelToken(Appointment.name), ConsultationPolicy],
-            useFactory: (model, policy) => 
-                new MongooseAppointmentRepository(model, policy),
+            inject: [getModelToken(Appointment.name), ConsultationPolicy, 'LoggerPort'],
+            useFactory: (model, policy, logger) => 
+                new MongooseAppointmentRepository(model, policy, logger),
         },
         {
             provide: 'AppointmentRepository', // Decorated port (H-25)
@@ -73,9 +76,11 @@ import { EventDispatchingAppointmentRepositoryDecorator } from '../infrastructur
         },
         {
             provide: 'AssignAvailableOfficesUseCase',
-            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort', ConsultationPolicy],
-            useFactory: (repo, logger, clock, policy) =>
-                new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, 5, policy),
+            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort', ConsultationPolicy, ConfigService],
+            useFactory: (repo, logger, clock, policy, config: ConfigService) => {
+                const totalOffices = config.get<number>('TOTAL_OFFICES', 5); // ⚕️ H-35: Parametrizado desde env
+                return new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, totalOffices, policy);
+            },
         },
         {
             provide: 'MaintenanceOrchestratorUseCase',

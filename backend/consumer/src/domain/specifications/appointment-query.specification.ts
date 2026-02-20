@@ -19,23 +19,4 @@ export class AppointmentQuerySpecification {
         priority: 1 as const, // Note: Assumption that 'high' < 'medium' < 'low' strings or mapped values
         timestamp: 1 as const
     };
-
-    /**
-     * Mongoose-specific filter for "Active" (Decoupled naming, coupled structure for adapter usage).
-     */
-    public static getActiveFilter() {
-        return {
-            status: { $in: this.ACTIVE_STATUSES }
-        };
-    }
-
-    /**
-     * Mongoose-specific filter for "Expired Called" appointments.
-     */
-    public static getExpiredCalledFilter(now: number) {
-        return {
-            status: 'called' as AppointmentStatus,
-            completedAt: { $lte: now }
-        };
-    }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AppointmentRepository } from '../../domain/ports/outbound/appointment.repository';
@@ -8,6 +8,8 @@ import { IdCard } from '../../domain/value-objects/id-card.value-object';
 import { AppointmentMapper } from './appointment.mapper';
 import { AppointmentQuerySpecification } from '../../domain/specifications/appointment-query.specification';
 import { ConsultationPolicy } from '../../domain/policies/consultation.policy';
+import { MongooseQueryBuilder } from './mongoose-query.builder';
+import { LoggerPort } from '../../domain/ports/outbound/logger.port';
 
 // Pattern: Adapter + Repository — Bridges Mongoose with the Domain Port
 // ⚕️ HUMAN CHECK - DIP: Implementa el puerto de dominio usando Mongoose de infraestructura
@@ -20,6 +22,8 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
         @InjectModel(AppointmentSchema.name)
         private readonly model: Model<AppointmentDocument>,
         private readonly consultationPolicy: ConsultationPolicy, // ⚕️ Inject domain policy
+        @Inject('LoggerPort')
+        private readonly logger: LoggerPort, // ⚕️ H-34: Logger para eliminar console.log
     ) { }
 
     async findWaiting(): Promise<Appointment[]> {
@@ -27,7 +31,7 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
             .find({ status: 'waiting' })
             .sort(AppointmentQuerySpecification.QUEUE_SORT_ORDER)
             .exec();
-        console.log('[DEBUG] findWaiting() →', docs.length, 'turnos encontrados');
+        this.logger.log(`[DEBUG] findWaiting() → ${docs.length} turnos encontrados`);
         return docs.map(doc => AppointmentMapper.toDomain(doc));
     }
 
@@ -37,7 +41,7 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
             .select('office status')
             .lean()
             .exec();
-        console.log('[DEBUG] findAvailableOffices() →', occupiedDocs.length, 'oficinas ocupadas');
+        this.logger.log(`[DEBUG] findAvailableOffices() → ${occupiedDocs.length} oficinas ocupadas`);
         
         // Build lightweight objects for the policy — only office/status needed
         // ⚕️ HUMAN CHECK - Evitar toDomain() completo en docs lean parciales (solo office+status seleccionados)
@@ -47,7 +51,7 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
 
         // ⚕️ HUMAN CHECK - Lógica de negocio delegada a la política de dominio (corrección A-08)
         const libres = allOfficeIds.filter(id => !occupiedOffices.includes(id));
-        console.log('[DEBUG] findAvailableOffices() → oficinas libres:', libres);
+        this.logger.log(`[DEBUG] findAvailableOffices() → oficinas libres: ${JSON.stringify(libres)}`);
         return libres;
     }
 
@@ -79,14 +83,14 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
     async findByIdCardAndActive(idCard: IdCard): Promise<Appointment | null> {
         const doc = await this.model.findOne({
             idCard: idCard.toValue(),
-            ...AppointmentQuerySpecification.getActiveFilter()
+            ...MongooseQueryBuilder.buildActiveFilter(AppointmentQuerySpecification.ACTIVE_STATUSES)
         }).exec();
         return doc ? AppointmentMapper.toDomain(doc) : null;
     }
 
     async findExpiredCalled(now: number): Promise<Appointment[]> {
         const docs = await this.model.find(
-            AppointmentQuerySpecification.getExpiredCalledFilter(now)
+            MongooseQueryBuilder.buildExpiredCalledFilter(now)
         ).exec();
         return docs.map(doc => AppointmentMapper.toDomain(doc));
     }

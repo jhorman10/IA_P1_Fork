@@ -1,15 +1,14 @@
-import { Injectable } from '@nestjs/common';
 import { Appointment } from '../entities/appointment.entity';
 
 /**
  * Domain Policy: Encapsulates rules for office consultation management.
- * Pure domain logic — no infrastructure dependencies.
+ * Pure domain logic — no infrastructure/framework dependencies.
  * 
- * ⚕️ HUMAN CHECK - SRP: Una sola razón para cambiar (reglas de negocio para consulta)
+ * ⚕️ HUMAN CHECK - H-33: Eliminado @Injectable (dominio no debe conocer NestJS)
+ * SRP: Una sola razón para cambiar (reglas de negocio para consulta)
  * Pattern: Policy Pattern (encapsula reglas de negocio variables)
  * Reference: DDD Tactic — Domain Services for cross-aggregate operations
  */
-@Injectable()
 export class ConsultationPolicy {
     private static readonly MIN_DURATION_SECONDS = 8;
     private static readonly MAX_DURATION_SECONDS = 15;
