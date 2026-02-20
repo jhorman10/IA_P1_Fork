@@ -10,7 +10,7 @@ import { ConsultationPolicy } from '../domain/policies/consultation.policy';
 
 @Module({
     imports: [
-        AppointmentModule,
+        AppointmentModule, // Necesario para providers de casos de uso y LoggerPort
         NotificationsModule,
         ConfigModule,
     ],

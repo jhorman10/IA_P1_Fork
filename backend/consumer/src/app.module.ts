@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -8,6 +8,7 @@ import { HealthController } from './health.controller';
 import { AppointmentModule } from './appointments/appointment.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { SchedulerService } from './scheduler/scheduler.service';
 import { RetryPolicyAdapter } from './infrastructure/messaging/retry-policy.adapter';
 
 @Module({
@@ -43,4 +44,10 @@ import { RetryPolicyAdapter } from './infrastructure/messaging/retry-policy.adap
         },
     ],
 })
-export class AppModule { }
+export class AppModule implements OnModuleInit {
+    constructor(private readonly schedulerService: SchedulerService) {}
+    onModuleInit() {
+        // Forzar la inicialización del SchedulerService
+        void this.schedulerService;
+    }
+}

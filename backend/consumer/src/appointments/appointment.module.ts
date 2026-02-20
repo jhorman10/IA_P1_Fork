@@ -91,7 +91,6 @@ import { EventDispatchingAppointmentRepositoryDecorator } from '../infrastructur
         },
     ],
     exports: [
-
         'AppointmentRepository',
         'RegisterAppointmentUseCase',
         'LoggerPort',
