@@ -8,6 +8,7 @@ export interface Appointment {
     idCard: number;
     office: string | null;
     timestamp: number;
+    completedAt?: number;
     status: AppointmentStatus;
     priority: AppointmentPriority;
 }
