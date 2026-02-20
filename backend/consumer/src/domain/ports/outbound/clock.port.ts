@@ -3,6 +3,6 @@
  * Esencial para testear reglas dependientes del tiempo sin hacks de estado global.
  */
 export interface ClockPort {
-    now(): number;
-    isoNow(): string;
+  now(): number;
+  isoNow(): string;
 }

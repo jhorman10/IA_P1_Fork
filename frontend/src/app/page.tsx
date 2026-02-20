@@ -4,7 +4,10 @@ import { useCallback, useEffect, useState } from "react";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 import { Appointment } from "@/domain/Appointment";
 import { audioService } from "@/services/AudioService";
-import { CalledAppointmentCard, WaitingAppointmentCard } from "@/components/AppointmentCard";
+import {
+  CalledAppointmentCard,
+  WaitingAppointmentCard,
+} from "@/components/AppointmentCard";
 import AppointmentSkeleton from "@/components/AppointmentSkeleton";
 import WebSocketStatus from "@/components/WebSocketStatus";
 import styles from "@/styles/page.module.css";
@@ -26,7 +29,8 @@ export default function AppointmentsScreen() {
     }
   }, []);
 
-  const { appointments, error, connected, isConnecting, connectionStatus } = useAppointmentsWebSocket(handleUpdate);
+  const { appointments, error, connected, isConnecting, connectionStatus } =
+    useAppointmentsWebSocket(handleUpdate);
 
   useEffect(() => {
     audioService.init("/sounds/ding.mp3", 0.6);
@@ -45,10 +49,9 @@ export default function AppointmentsScreen() {
     };
   }, []);
 
-
-  const calledAppointments = appointments.filter(t => t.status === "called");
+  const calledAppointments = appointments.filter((t) => t.status === "called");
   const waitingAppointments = appointments
-    .filter(t => t.status === "waiting")
+    .filter((t) => t.status === "waiting")
     .sort((a, b) => {
       const priorityOrder = { high: 0, medium: 1, low: 2 };
       return priorityOrder[a.priority] - priorityOrder[b.priority];
@@ -59,7 +62,12 @@ export default function AppointmentsScreen() {
       <section className={styles.leftPanel}>
         <header className={styles.stickyHeader}>
           <h1 className={styles.title}>Turnos Disponibles</h1>
-          <WebSocketStatus status={connectionStatus as "connected" | "connecting" | "disconnected"} variant="block" />
+          <WebSocketStatus
+            status={
+              connectionStatus as "connected" | "connecting" | "disconnected"
+            }
+            variant="block"
+          />
           {!audioEnabled && (
             <p className={styles.audioHint}>
               Toca la pantalla para activar sonido 🔔
@@ -69,7 +77,12 @@ export default function AppointmentsScreen() {
         </header>
 
         <section className={styles.sectionBlock}>
-          <h2 className={styles.sectionTitle}>🏥 En consultorio <span className={styles.countBadge}>{calledAppointments.length}</span></h2>
+          <h2 className={styles.sectionTitle}>
+            🏥 En consultorio{" "}
+            <span className={styles.countBadge}>
+              {calledAppointments.length}
+            </span>
+          </h2>
           {calledAppointments.length > 0 ? (
             <ul className={styles.cardGrid}>
               {calledAppointments.map((t) => (
@@ -93,13 +106,16 @@ export default function AppointmentsScreen() {
         )}
 
         {showToast && (
-          <div className={styles.toast}>
-            🔔 Nuevo turno llamado
-          </div>
+          <div className={styles.toast}>🔔 Nuevo turno llamado</div>
         )}
       </section>
       <aside className={styles.rightPanel}>
-        <h2 className={styles.sectionTitle}>⏳ En espera<span className={styles.countBadge}>{waitingAppointments.length}</span></h2>
+        <h2 className={styles.sectionTitle}>
+          ⏳ En espera
+          <span className={styles.countBadge}>
+            {waitingAppointments.length}
+          </span>
+        </h2>
         {waitingAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
             {waitingAppointments.map((t) => (

@@ -5,24 +5,24 @@
 /**
  * Valid states for the appointment lifecycle
  */
-export type AppointmentStatus = 'waiting' | 'called' | 'completed';
+export type AppointmentStatus = "waiting" | "called" | "completed";
 
 /**
  * Valid priorities for office assignment
  */
-export type AppointmentPriority = 'high' | 'medium' | 'low';
+export type AppointmentPriority = "high" | "medium" | "low";
 
 /**
  * Standardized payload for RabbitMQ and WebSocket events.
  * Used by: Consumer (emit), Producer (receive + broadcast), Frontend (receive).
  */
 export interface AppointmentEventPayload {
-    id: string;
-    fullName: string;
-    idCard: number;
-    office: string | null;
-    status: AppointmentStatus;
-    priority: AppointmentPriority;
-    timestamp: number;
-    completedAt?: number;
+  id: string;
+  fullName: string;
+  idCard: number;
+  office: string | null;
+  status: AppointmentStatus;
+  priority: AppointmentPriority;
+  timestamp: number;
+  completedAt?: number;
 }

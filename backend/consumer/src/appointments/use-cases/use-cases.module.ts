@@ -1,12 +1,12 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { RegisterAppointmentUseCaseImpl } from '../../application/use-cases/register-appointment.use-case.impl';
-import { CompleteExpiredAppointmentsUseCaseImpl } from '../../application/use-cases/complete-expired-appointments.use-case.impl';
-import { AssignAvailableOfficesUseCaseImpl } from '../../application/use-cases/assign-available-offices.use-case.impl';
-import { MaintenanceOrchestratorUseCaseImpl } from '../../application/use-cases/maintenance-orchestrator.use-case.impl';
-import { RepositoriesModule } from '../repositories/repositories.module';
-import { PoliciesModule } from '../policies/policies.module';
-import { ConsultationPolicy } from 'src/domain/policies/consultation.policy';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { RegisterAppointmentUseCaseImpl } from "../../application/use-cases/register-appointment.use-case.impl";
+import { CompleteExpiredAppointmentsUseCaseImpl } from "../../application/use-cases/complete-expired-appointments.use-case.impl";
+import { AssignAvailableOfficesUseCaseImpl } from "../../application/use-cases/assign-available-offices.use-case.impl";
+import { MaintenanceOrchestratorUseCaseImpl } from "../../application/use-cases/maintenance-orchestrator.use-case.impl";
+import { RepositoriesModule } from "../repositories/repositories.module";
+import { PoliciesModule } from "../policies/policies.module";
+import { ConsultationPolicy } from "src/domain/policies/consultation.policy";
 
 /**
  * @description UseCasesModule encapsulates all business logic orchestration.
@@ -34,49 +34,77 @@ import { ConsultationPolicy } from 'src/domain/policies/consultation.policy';
  * @seeAlso ADR-001 (Hexagonal Architecture), SOLID (SRP, DIP)
  */
 @Module({
-    imports: [
-        ConfigModule, // ⚕️ HUMAN CHECK - TOTAL_OFFICES parametrization
-        RepositoriesModule,
-        PoliciesModule,
-    ],
-    providers: [
-        {
-            provide: 'RegisterAppointmentUseCase',
-            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort'],
-            useFactory: (repo, logger, clock) =>
-                new RegisterAppointmentUseCaseImpl(repo, logger, clock),
-        },
-        {
-            provide: 'CompleteExpiredAppointmentsUseCase',
-            inject: ['AppointmentRepository', 'NotificationPort', 'LoggerPort', 'ClockPort'],
-            useFactory: (repo, notification, logger, clock) =>
-                new CompleteExpiredAppointmentsUseCaseImpl(repo, notification, logger, clock),
-        },
-        {
-            provide: 'AssignAvailableOfficesUseCase',
-            inject: ['AppointmentRepository', 'LoggerPort', 'ClockPort', 'ConsultationPolicy', ConfigService],
-            useFactory: (repo, logger, clock, policy: ConsultationPolicy, configService: ConfigService) => {
-                const totalOffices = configService.get<number>('TOTAL_OFFICES', 5);
-                return new AssignAvailableOfficesUseCaseImpl(repo, logger, clock, totalOffices, policy);
-            },
-        },
-        {
-            provide: 'MaintenanceOrchestratorUseCase',
-            inject: [
-                'AssignAvailableOfficesUseCase',
-                'CompleteExpiredAppointmentsUseCase',
-                'LockRepository',
-                'LoggerPort',
-            ],
-            useFactory: (assign, complete, lock, logger) =>
-                new MaintenanceOrchestratorUseCaseImpl(assign, complete, lock, logger),
-        },
-    ],
-    exports: [
-        'RegisterAppointmentUseCase',
-        'CompleteExpiredAppointmentsUseCase',
-        'AssignAvailableOfficesUseCase',
-        'MaintenanceOrchestratorUseCase',
-    ],
+  imports: [
+    ConfigModule, // ⚕️ HUMAN CHECK - TOTAL_OFFICES parametrization
+    RepositoriesModule,
+    PoliciesModule,
+  ],
+  providers: [
+    {
+      provide: "RegisterAppointmentUseCase",
+      inject: ["AppointmentRepository", "LoggerPort", "ClockPort"],
+      useFactory: (repo, logger, clock) =>
+        new RegisterAppointmentUseCaseImpl(repo, logger, clock),
+    },
+    {
+      provide: "CompleteExpiredAppointmentsUseCase",
+      inject: [
+        "AppointmentRepository",
+        "NotificationPort",
+        "LoggerPort",
+        "ClockPort",
+      ],
+      useFactory: (repo, notification, logger, clock) =>
+        new CompleteExpiredAppointmentsUseCaseImpl(
+          repo,
+          notification,
+          logger,
+          clock,
+        ),
+    },
+    {
+      provide: "AssignAvailableOfficesUseCase",
+      inject: [
+        "AppointmentRepository",
+        "LoggerPort",
+        "ClockPort",
+        "ConsultationPolicy",
+        ConfigService,
+      ],
+      useFactory: (
+        repo,
+        logger,
+        clock,
+        policy: ConsultationPolicy,
+        configService: ConfigService,
+      ) => {
+        const totalOffices = configService.get<number>("TOTAL_OFFICES", 5);
+        return new AssignAvailableOfficesUseCaseImpl(
+          repo,
+          logger,
+          clock,
+          totalOffices,
+          policy,
+        );
+      },
+    },
+    {
+      provide: "MaintenanceOrchestratorUseCase",
+      inject: [
+        "AssignAvailableOfficesUseCase",
+        "CompleteExpiredAppointmentsUseCase",
+        "LockRepository",
+        "LoggerPort",
+      ],
+      useFactory: (assign, complete, lock, logger) =>
+        new MaintenanceOrchestratorUseCaseImpl(assign, complete, lock, logger),
+    },
+  ],
+  exports: [
+    "RegisterAppointmentUseCase",
+    "CompleteExpiredAppointmentsUseCase",
+    "AssignAvailableOfficesUseCase",
+    "MaintenanceOrchestratorUseCase",
+  ],
 })
 export class UseCasesModule {}

@@ -1,8 +1,9 @@
-import request from 'supertest';
-import { MongoClient } from 'mongodb';
+import request from "supertest";
+import { MongoClient } from "mongodb";
 
-const API_URL = process.env.E2E_API_URL || 'http://localhost:3000';
-const MONGO_URL = process.env.E2E_MONGO_URL || 'mongodb://localhost:27017/appointments_db';
+const API_URL = process.env.E2E_API_URL || "http://localhost:3000";
+const MONGO_URL =
+  process.env.E2E_MONGO_URL || "mongodb://localhost:27017/appointments_db";
 
 let mongo: MongoClient;
 
@@ -17,7 +18,7 @@ afterAll(async () => {
 
 beforeEach(async () => {
   // Limpia la colección antes de cada test
-  await mongo.db().collection('appointments').deleteMany({});
+  await mongo.db().collection("appointments").deleteMany({});
 });
 
 export const utils = {

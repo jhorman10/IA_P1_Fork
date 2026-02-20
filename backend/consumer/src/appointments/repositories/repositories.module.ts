@@ -1,10 +1,13 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Appointment, AppointmentSchema } from '../../schemas/appointment.schema';
-import { MongooseAppointmentRepository } from '../../infrastructure/persistence/mongoose-appointment.repository';
-import { MongooseLockRepository } from '../../infrastructure/persistence/mongoose-lock.repository';
-import { EventDispatchingAppointmentRepositoryDecorator } from '../../infrastructure/persistence/event-dispatching-appointment-repository.decorator';
-import { PoliciesModule } from '../policies/policies.module';
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
+import {
+  Appointment,
+  AppointmentSchema,
+} from "../../schemas/appointment.schema";
+import { MongooseAppointmentRepository } from "../../infrastructure/persistence/mongoose-appointment.repository";
+import { MongooseLockRepository } from "../../infrastructure/persistence/mongoose-lock.repository";
+import { EventDispatchingAppointmentRepositoryDecorator } from "../../infrastructure/persistence/event-dispatching-appointment-repository.decorator";
+import { PoliciesModule } from "../policies/policies.module";
 
 /**
  * @description RepositoriesModule encapsulates all data persistence mechanisms.
@@ -30,43 +33,37 @@ import { PoliciesModule } from '../policies/policies.module';
  * @seeAlso ADR-001 (Hexagonal Architecture), SOLID (DIP), RULES.md
  */
 @Module({
-    imports: [
-        MongooseModule.forFeature([
-            { name: Appointment.name, schema: AppointmentSchema },
-        ]),
-        PoliciesModule, // ⚕️ HUMAN CHECK - Repositories depend on domain policies
-    ],
-    providers: [
-        // ⚕️ HUMAN CHECK - Two-step factory:
-        // 1. Create inner repository (pure Mongoose adapter)
-        // 2. Wrap with event-dispatching decorator (cross-cutting concern)
-        {
-            provide: 'MongooseAppointmentRepository',
-            inject: [
-                'default_MongooseModel_Appointment',
-                'ConsultationPolicy',
-                'LoggerPort',
-            ],
-            useFactory: (model, policy, logger) =>
-                new MongooseAppointmentRepository(model, policy, logger),
-        },
-        {
-            provide: 'AppointmentRepository',
-            inject: [
-                'MongooseAppointmentRepository',
-                'DomainEventBus',
-            ],
-            useFactory: (inner, bus) =>
-                new EventDispatchingAppointmentRepositoryDecorator(inner, bus),
-        },
-        {
-            provide: 'LockRepository',
-            useClass: MongooseLockRepository,
-        },
-    ],
-    exports: [
-        'AppointmentRepository',
-        'LockRepository',
-    ],
+  imports: [
+    MongooseModule.forFeature([
+      { name: Appointment.name, schema: AppointmentSchema },
+    ]),
+    PoliciesModule, // ⚕️ HUMAN CHECK - Repositories depend on domain policies
+  ],
+  providers: [
+    // ⚕️ HUMAN CHECK - Two-step factory:
+    // 1. Create inner repository (pure Mongoose adapter)
+    // 2. Wrap with event-dispatching decorator (cross-cutting concern)
+    {
+      provide: "MongooseAppointmentRepository",
+      inject: [
+        "default_MongooseModel_Appointment",
+        "ConsultationPolicy",
+        "LoggerPort",
+      ],
+      useFactory: (model, policy, logger) =>
+        new MongooseAppointmentRepository(model, policy, logger),
+    },
+    {
+      provide: "AppointmentRepository",
+      inject: ["MongooseAppointmentRepository", "DomainEventBus"],
+      useFactory: (inner, bus) =>
+        new EventDispatchingAppointmentRepositoryDecorator(inner, bus),
+    },
+    {
+      provide: "LockRepository",
+      useClass: MongooseLockRepository,
+    },
+  ],
+  exports: ["AppointmentRepository", "LockRepository"],
 })
 export class RepositoriesModule {}

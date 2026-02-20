@@ -17,64 +17,64 @@
  */
 
 class AudioService {
-    private audio: HTMLAudioElement | null = null;
-    private enabled = false;
-    private ready = false;
+  private audio: HTMLAudioElement | null = null;
+  private enabled = false;
+  private ready = false;
 
-    /**
-     * Inicializa audio una sola vez
-     */
-    init(src: string, volume = 0.6) {
-        if (this.audio) return;
+  /**
+   * Inicializa audio una sola vez
+   */
+  init(src: string, volume = 0.6) {
+    if (this.audio) return;
 
-        this.audio = new Audio(src);
-        this.audio.volume = volume;
-        this.audio.preload = "auto";
+    this.audio = new Audio(src);
+    this.audio.volume = volume;
+    this.audio.preload = "auto";
 
-        // Marca cuando el audio está listo
-        this.audio.addEventListener("canplaythrough", () => {
-            this.ready = true;
-        });
+    // Marca cuando el audio está listo
+    this.audio.addEventListener("canplaythrough", () => {
+      this.ready = true;
+    });
+  }
+
+  /**
+   * Desbloquea audio tras interacción del usuario
+   */
+  async unlock() {
+    if (!this.audio || this.enabled) return;
+
+    try {
+      await this.audio.play();
+      this.audio.pause();
+      this.audio.currentTime = 0;
+      this.enabled = true;
+    } catch {
+      this.enabled = false;
     }
+  }
 
-    /**
-     * Desbloquea audio tras interacción del usuario
-     */
-    async unlock() {
-        if (!this.audio || this.enabled) return;
+  /**
+   * Reproduce sonido si está habilitado
+   */
+  play() {
+    if (!this.audio || !this.enabled || !this.ready) return;
 
-        try {
-            await this.audio.play();
-            this.audio.pause();
-            this.audio.currentTime = 0;
-            this.enabled = true;
-        } catch {
-            this.enabled = false;
-        }
-    }
+    try {
+      this.audio.currentTime = 0;
+      const promise = this.audio.play();
 
-    /**
-     * Reproduce sonido si está habilitado
-     */
-    play() {
-        if (!this.audio || !this.enabled || !this.ready) return;
+      if (promise !== undefined) {
+        promise.catch(() => {});
+      }
+    } catch {}
+  }
 
-        try {
-            this.audio.currentTime = 0;
-            const promise = this.audio.play();
-
-            if (promise !== undefined) {
-                promise.catch(() => { });
-            }
-        } catch { }
-    }
-
-    /**
-     * Estado del audio
-     */
-    isEnabled() {
-        return this.enabled;
-    }
+  /**
+   * Estado del audio
+   */
+  isEnabled() {
+    return this.enabled;
+  }
 }
 
 export const audioService = new AudioService();

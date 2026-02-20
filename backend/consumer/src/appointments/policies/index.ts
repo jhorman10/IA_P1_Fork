@@ -1,1 +1,1 @@
-export { PoliciesModule } from './policies.module';
+export { PoliciesModule } from "./policies.module";

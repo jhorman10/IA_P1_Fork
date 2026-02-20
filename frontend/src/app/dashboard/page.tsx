@@ -4,7 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 import { Appointment } from "@/domain/Appointment";
 import { audioService } from "@/services/AudioService";
-import { WaitingAppointmentCard, CalledAppointmentCard, CompletedAppointmentCard } from "@/components/AppointmentCard";
+import {
+  WaitingAppointmentCard,
+  CalledAppointmentCard,
+  CompletedAppointmentCard,
+} from "@/components/AppointmentCard";
 import AppointmentSkeleton from "@/components/AppointmentSkeleton";
 import WebSocketStatus from "@/components/WebSocketStatus";
 import styles from "@/styles/page.module.css";
@@ -26,7 +30,8 @@ export default function CompletedHistoryDashboard() {
     }
   }, []);
 
-  const { appointments, error, connected, isConnecting, connectionStatus } = useAppointmentsWebSocket(handleUpdate);
+  const { appointments, error, connected, isConnecting, connectionStatus } =
+    useAppointmentsWebSocket(handleUpdate);
 
   useEffect(() => {
     audioService.init("/sounds/ding.mp3", 0.6);
@@ -45,20 +50,23 @@ export default function CompletedHistoryDashboard() {
     };
   }, []);
 
-
   const waitingAppointments = appointments
-    .filter(t => t.status === "waiting")
+    .filter((t) => t.status === "waiting")
     .sort((a, b) => {
-      const priorityOrder: Record<string, number> = { high: 0, medium: 1, low: 2 };
+      const priorityOrder: Record<string, number> = {
+        high: 0,
+        medium: 1,
+        low: 2,
+      };
       return priorityOrder[a.priority] - priorityOrder[b.priority];
     });
 
   const calledAppointments = appointments
-    .filter(t => t.status === "called")
+    .filter((t) => t.status === "called")
     .sort((a, b) => a.timestamp - b.timestamp);
 
   const completedAppointments = appointments
-    .filter(t => t.status === "completed")
+    .filter((t) => t.status === "completed")
     .sort((a, b) => b.timestamp - a.timestamp);
 
   return (
@@ -75,7 +83,10 @@ export default function CompletedHistoryDashboard() {
       </header>
 
       <section className={styles.sectionBlock}>
-        <h2 className={styles.sectionTitle}>🏥 En consultorio <span className={styles.countBadge}>{calledAppointments.length}</span></h2>
+        <h2 className={styles.sectionTitle}>
+          🏥 En consultorio{" "}
+          <span className={styles.countBadge}>{calledAppointments.length}</span>
+        </h2>
         {calledAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
             {calledAppointments.map((t) => (
@@ -95,7 +106,12 @@ export default function CompletedHistoryDashboard() {
       </section>
 
       <section className={styles.sectionBlock}>
-        <h2 className={styles.sectionTitle}>⏳ En espera <span className={styles.countBadge}>{waitingAppointments.length}</span></h2>
+        <h2 className={styles.sectionTitle}>
+          ⏳ En espera{" "}
+          <span className={styles.countBadge}>
+            {waitingAppointments.length}
+          </span>
+        </h2>
         {waitingAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
             {waitingAppointments.map((t) => (
@@ -113,9 +129,13 @@ export default function CompletedHistoryDashboard() {
         )}
       </section>
 
-
       <section className={styles.sectionBlock}>
-        <h2 className={styles.sectionTitle}>✅ Completados <span className={styles.countBadge}>{completedAppointments.length}</span></h2>
+        <h2 className={styles.sectionTitle}>
+          ✅ Completados{" "}
+          <span className={styles.countBadge}>
+            {completedAppointments.length}
+          </span>
+        </h2>
         {completedAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
             {completedAppointments.map((t) => (
@@ -133,11 +153,7 @@ export default function CompletedHistoryDashboard() {
         )}
       </section>
 
-      {showToast && (
-        <div className={styles.toast}>
-          ✅ Turno completado
-        </div>
-      )}
+      {showToast && <div className={styles.toast}>✅ Turno completado</div>}
     </main>
   );
 }

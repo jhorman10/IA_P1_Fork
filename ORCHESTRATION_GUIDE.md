@@ -12,13 +12,13 @@ Este es el **cerebro central** del sistema. Antigravity lo lee automáticamente 
 
 ### Estructura del archivo
 
-| Sección | Propósito |
-|---------|-----------|
-| **System Prompt** | 5 directrices obligatorias: aislamiento de tareas, fuente de verdad cultural, autoinvocación de skills, higiene de contexto, navegación jerárquica |
-| **Project Overview** | Arquitectura del proyecto (Producer → RabbitMQ → Consumer), estructura de carpetas clave |
-| **Tech Stack** | Versiones exactas de cada tecnología (NestJS ^10.x, Next.js ^15.x, MongoDB 7.x, etc.) |
-| **Guidelines** | Convenciones culturales (AI-First) + flujo de trabajo de 8 pasos + anti-patrones |
-| **Skill References** | Tabla auto-generada por `sync.sh` que mapea triggers → skills |
+| Sección              | Propósito                                                                                                                                          |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **System Prompt**    | 5 directrices obligatorias: aislamiento de tareas, fuente de verdad cultural, autoinvocación de skills, higiene de contexto, navegación jerárquica |
+| **Project Overview** | Arquitectura del proyecto (Producer → RabbitMQ → Consumer), estructura de carpetas clave                                                           |
+| **Tech Stack**       | Versiones exactas de cada tecnología (NestJS ^10.x, Next.js ^15.x, MongoDB 7.x, etc.)                                                              |
+| **Guidelines**       | Convenciones culturales (AI-First) + flujo de trabajo de 8 pasos + anti-patrones                                                                   |
+| **Skill References** | Tabla auto-generada por `sync.sh` que mapea triggers → skills                                                                                      |
 
 ### Flujo de trabajo del Orquestador
 
@@ -163,11 +163,11 @@ Script que sincroniza las skills registradas con el orquestador:
 
 ## 5. Archivos de Soporte
 
-| Archivo | Propósito |
-|---------|-----------|
+| Archivo          | Propósito                                                                                                |
+| ---------------- | -------------------------------------------------------------------------------------------------------- |
 | `DEBT_REPORT.md` | Tabla consolidada con todos los ítems de feedback, deuda técnica, skill asignada, y estado (⬜/🔄/✅/⏸️) |
-| `AI_WORKFLOW.md` | Documentación de la metodología AI-First para humanos (incluye Prompt Traceability Log) |
-| `README.md` | Documentación general del proyecto |
+| `AI_WORKFLOW.md` | Documentación de la metodología AI-First para humanos (incluye Prompt Traceability Log)                  |
+| `README.md`      | Documentación general del proyecto                                                                       |
 
 ---
 

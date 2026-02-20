@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { ConsultationPolicy } from '../../domain/policies/consultation.policy';
+import { Module } from "@nestjs/common";
+import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 
 /**
  * @description PoliciesModule encapsulates domain policies that enforce business rules.
@@ -20,15 +20,15 @@ import { ConsultationPolicy } from '../../domain/policies/consultation.policy';
  * @seeAlso ADR-001 (Domain-Driven Design), RULES.md
  */
 @Module({
-    providers: [
-        // ⚕️ HUMAN CHECK - SOLID (SRP): Policy is pure domain logic
-        // No @Injectable decorator needed in ConsultationPolicy itself (it's not framework-aware)
-        // NestJS wraps it here for DI purposes
-        {
-            provide: ConsultationPolicy,
-            useFactory: () => new ConsultationPolicy(),
-        },
-    ],
-    exports: [ConsultationPolicy],
+  providers: [
+    // ⚕️ HUMAN CHECK - SOLID (SRP): Policy is pure domain logic
+    // No @Injectable decorator needed in ConsultationPolicy itself (it's not framework-aware)
+    // NestJS wraps it here for DI purposes
+    {
+      provide: ConsultationPolicy,
+      useFactory: () => new ConsultationPolicy(),
+    },
+  ],
+  exports: [ConsultationPolicy],
 })
 export class PoliciesModule {}

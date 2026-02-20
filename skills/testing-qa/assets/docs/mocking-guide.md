@@ -1,6 +1,7 @@
 # Mocking Guide — NestJS Testing
 
 ## Mock Factory Pattern
+
 Create reusable mock factories to avoid duplicating mock setups:
 
 ```typescript
@@ -17,6 +18,7 @@ const createModelMock = () => ({
 ## Provider Mocking
 
 ### Mongoose Model
+
 ```typescript
 import { getModelToken } from '@nestjs/mongoose';
 
@@ -27,6 +29,7 @@ import { getModelToken } from '@nestjs/mongoose';
 ```
 
 ### ConfigService
+
 ```typescript
 {
   provide: ConfigService,
@@ -43,6 +46,7 @@ import { getModelToken } from '@nestjs/mongoose';
 ```
 
 ### RabbitMQ Client (ClientProxy)
+
 ```typescript
 {
   provide: 'NOTIFICATIONS_SERVICE',
@@ -55,6 +59,7 @@ import { getModelToken } from '@nestjs/mongoose';
 ```
 
 ## Chaining Mongoose Queries
+
 When mocking chained queries like `find().sort().exec()`:
 
 ```typescript
@@ -66,11 +71,14 @@ mockModel.find.mockReturnValue({
 ```
 
 ## Error Path Testing
+
 Always test both success and failure:
 
 ```typescript
-it('should throw on not found', async () => {
+it("should throw on not found", async () => {
   mockModel.findOneAndUpdate.mockResolvedValue(null);
-  await expect(service.assignOffice('id', '1')).rejects.toThrow(NotFoundException);
+  await expect(service.assignOffice("id", "1")).rejects.toThrow(
+    NotFoundException,
+  );
 });
 ```

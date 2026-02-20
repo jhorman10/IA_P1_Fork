@@ -3,10 +3,10 @@ import styles from "@/styles/page.module.css";
 
 /**
  * Component: CalledAppointmentCard
- * 
+ *
  * Specialized component for appointments currently being served (assigned to consultorio).
  * Props are specific to this state: office tracking and optional time display.
- * 
+ *
  * ⚕️ HUMAN CHECK - ISP: Props are ONLY what's relevant for "called" status
  * Not available: appointmentId-based filtering (belongs to container)
  */
@@ -51,11 +51,16 @@ export function CalledAppointmentCard({
       <div className={styles.cardBody}>
         <div className={styles.infoRow}>
           <span className={styles.label}>Consultorio:</span>
-          <span className={styles.officeBadge}>{appointment.office || "N/A"}</span>
+          <span className={styles.officeBadge}>
+            {appointment.office || "N/A"}
+          </span>
         </div>
         <div className={styles.infoRow}>
           <span className={styles.label}>Prioridad:</span>
-          <span className={styles.statusBadge} data-status={appointment.priority}>
+          <span
+            className={styles.statusBadge}
+            data-status={appointment.priority}
+          >
             {getPriorityBadge(appointment.priority)}
           </span>
         </div>
@@ -63,7 +68,9 @@ export function CalledAppointmentCard({
       {showTime && (
         <div className={styles.cardFooter}>
           <span className={styles.horaLabel}>{timeIcon}</span>
-          <span className={styles.hora}>{formatTime(appointment.timestamp)}</span>
+          <span className={styles.hora}>
+            {formatTime(appointment.timestamp)}
+          </span>
         </div>
       )}
     </li>

@@ -3,8 +3,8 @@
  * ⚕️ HUMAN CHECK - DIP: Objeto de dominio puro, desacoplado de los DTOs de la API.
  */
 export interface CreateAppointmentCommand {
-    idCard: number;
-    fullName: string;
+  idCard: number;
+  fullName: string;
 }
 
 /**
@@ -13,5 +13,5 @@ export interface CreateAppointmentCommand {
  * Retorna void (lógica fire-and-forget).
  */
 export interface CreateAppointmentUseCase {
-    execute(command: CreateAppointmentCommand): Promise<void>;
+  execute(command: CreateAppointmentCommand): Promise<void>;
 }

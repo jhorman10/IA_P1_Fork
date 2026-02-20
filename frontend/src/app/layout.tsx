@@ -6,9 +6,7 @@ import { DependencyProvider } from "@/context/DependencyContext";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-
 });
-
 
 export const metadata: Metadata = {
   title: "Turnos Pantalla",
@@ -23,9 +21,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
-        <DependencyProvider>
-          {children}
-        </DependencyProvider>
+        <DependencyProvider>{children}</DependencyProvider>
       </body>
     </html>
   );

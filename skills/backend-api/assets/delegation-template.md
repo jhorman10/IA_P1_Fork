@@ -6,7 +6,9 @@
 
 ```javascript
 // 1. Cargar contextos y skills
-const PROJECT_CONTEXT = await read_file("docs/agent-context/PROJECT_CONTEXT.md");
+const PROJECT_CONTEXT = await read_file(
+  "docs/agent-context/PROJECT_CONTEXT.md",
+);
 const RULES = await read_file("docs/agent-context/RULES.md");
 const backendSkill = await read_file("skills/backend-api/skill.md");
 const refactorSkill = await read_file("skills/refactor-arch/skill.md");
@@ -14,8 +16,8 @@ const testingSkill = await read_file("skills/testing-qa/skill.md");
 
 // 2. Delegar a Sub-Agente con contexto completo
 await runSubagent({
-    description: "[Backend] Implement Use Case XYZ",
-    prompt: `
+  description: "[Backend] Implement Use Case XYZ",
+  prompt: `
 # Contexto del Proyecto:
 ${PROJECT_CONTEXT}
 
@@ -54,7 +56,7 @@ ${testingSkill}
 3. Use Cases en application/
 4. Tests (unit + integration)
 5. Comentarios // ⚕️ HUMAN CHECK donde aplique
-    `
+    `,
 });
 ```
 
@@ -63,10 +65,11 @@ ${testingSkill}
 **Usuario solicita:** "Implementa retry policy con exponential backoff en RabbitMQ"
 
 **AO ejecuta:**
+
 ```javascript
 await runSubagent({
-    description: "[Backend] Implement Retry Policy with Exponential Backoff",
-    prompt: `
+  description: "[Backend] Implement Retry Policy with Exponential Backoff",
+  prompt: `
 # Contexto del Proyecto: [PROJECT_CONTEXT cargado]
 # Reglas Arquitectónicas: [RULES cargadas]
 # Skills: backend-api, refactor-arch, testing-qa
@@ -85,7 +88,7 @@ Implementar retry policy con exponential backoff para RabbitMQ:
 2. ExponentialBackoffRetryAdapter (implementación)
 3. Integración en Publisher
 4. Tests >85% coverage
-    `
+    `,
 });
 ```
 

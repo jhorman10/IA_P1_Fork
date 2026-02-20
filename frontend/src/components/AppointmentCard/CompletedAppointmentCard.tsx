@@ -3,10 +3,10 @@ import styles from "@/styles/page.module.css";
 
 /**
  * Component: CompletedAppointmentCard
- * 
+ *
  * Specialized component for completed appointments.
  * Displays duration rather than real-time tracking.
- * 
+ *
  * ⚕️ HUMAN CHECK - ISP: Props are minimal for read-only status display
  * No showTime prop needed (completedAt is ALWAYS shown for completed status)
  */
@@ -48,7 +48,9 @@ export function CompletedAppointmentCard({
       <div className={styles.cardBody}>
         <div className={styles.infoRow}>
           <span className={styles.label}>Consultorio:</span>
-          <span className={styles.officeBadge}>{appointment.office || "N/A"}</span>
+          <span className={styles.officeBadge}>
+            {appointment.office || "N/A"}
+          </span>
         </div>
         <div className={styles.infoRow}>
           <span className={styles.label}>Duración:</span>
@@ -58,7 +60,10 @@ export function CompletedAppointmentCard({
         </div>
         <div className={styles.infoRow}>
           <span className={styles.label}>Prioridad:</span>
-          <span className={styles.statusBadge} data-status={appointment.priority}>
+          <span
+            className={styles.statusBadge}
+            data-status={appointment.priority}
+          >
             {getPriorityBadge(appointment.priority)}
           </span>
         </div>

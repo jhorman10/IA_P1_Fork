@@ -27,6 +27,7 @@
 ```
 
 **Aplicación en el proyecto:**
+
 - **Puertos Inbound:** `CreateAppointmentPort`, `ProcessAppointmentPort`
 - **Puertos Outbound:** `AppointmentRepository`, `MessagePublisher`, `NotificationGateway`
 - **Adaptadores Inbound:** `AppointmentsController` (REST), `AppointmentsGateway` (WebSocket)
@@ -55,6 +56,7 @@
 **Definición:** Los componentes se comunican mediante eventos asíncronos en lugar de llamadas directas.
 
 **Aplicación en el proyecto:**
+
 - Producer → publica evento `appointment.created` → RabbitMQ Queue → Consumer lo consume
 - Consumer → emite evento WebSocket → Dashboard se actualiza en tiempo real
 
@@ -63,6 +65,7 @@
 **Definición:** El sistema se descompone en servicios independientes que se comunican por red.
 
 **Aplicación en el proyecto:**
+
 - **Producer:** API REST + publicación de eventos
 - **Consumer:** Procesamiento de cola + persistencia + scheduler
 - **Comunicación:** RabbitMQ (async), WebSocket (realtime)
@@ -78,6 +81,7 @@
 **Definición:** Delega la creación de objetos a un método especializado, encapsulando la lógica de construcción y validación.
 
 **Aplicación:**
+
 ```typescript
 // domain/entities/appointment.entity.ts
 // Pattern: Factory Method — Encapsula validación al crear la entidad
@@ -91,7 +95,7 @@ export class Appointment {
 
   static create(props: CreateAppointmentProps): Appointment {
     if (props.idCard < 10000000 || props.idCard > 9999999999) {
-      throw new DomainError('Invalid idCard range');
+      throw new DomainError("Invalid idCard range");
     }
     return new Appointment(
       props.idCard,
@@ -110,6 +114,7 @@ export class Appointment {
 **Definición:** Proporciona una interfaz para crear familias de objetos relacionados sin especificar sus clases concretas.
 
 **Aplicación potencial:**
+
 ```typescript
 // Familia de adaptadores para diferentes entornos
 interface RepositoryFactory {
@@ -138,12 +143,13 @@ export class AppointmentsService { ... }
 **Definición:** Construye objetos complejos paso a paso, separando la construcción de la representación.
 
 **Aplicación potencial:**
+
 ```typescript
 // Builder para queries complejos de appointment
 const query = new AppointmentQueryBuilder()
   .withStatus(AppointmentStatus.PENDING)
   .withPriority(Priority.HIGH)
-  .sortBy('createdAt', 'asc')
+  .sortBy("createdAt", "asc")
   .limit(10)
   .build();
 ```
@@ -165,6 +171,7 @@ const query = new AppointmentQueryBuilder()
 **Definición:** Convierte la interfaz de una clase en otra que el cliente espera. Permite que clases incompatibles trabajen juntas.
 
 **Aplicación:**
+
 ```typescript
 // infrastructure/persistence/mongoose-appointment.repository.ts
 // Pattern: Adapter — Adapta Mongoose al puerto AppointmentRepository del dominio
@@ -190,6 +197,7 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
 **Definición:** Abstrae el acceso a datos detrás de una interfaz de colección, haciendo que la persistencia sea intercambiable.
 
 **Aplicación:**
+
 ```typescript
 // domain/ports/outbound/appointment.repository.ts (Puerto)
 export interface AppointmentRepository {
@@ -210,12 +218,13 @@ export interface AppointmentRepository {
 **Definición:** Controla el acceso a un objeto, añadiendo comportamiento previo o posterior.
 
 **Aplicación:**
+
 ```typescript
 // Pattern: Proxy — Logging automático para operaciones de repositorio
 @Injectable()
 export class LoggingAppointmentRepository implements AppointmentRepository {
   constructor(
-    @Inject('REAL_REPO') private realRepo: AppointmentRepository,
+    @Inject("REAL_REPO") private realRepo: AppointmentRepository,
     private logger: Logger,
   ) {}
 
@@ -248,8 +257,8 @@ export class CreateAppointmentUseCase {
   async execute(dto: CreateAppointmentDto): Promise<Appointment> {
     const appointment = Appointment.create(dto);
     const saved = await this.repo.save(appointment);
-    await this.publisher.publish('appointment.created', saved);
-    this.notifier.notify('new-appointment', saved);
+    await this.publisher.publish("appointment.created", saved);
+    this.notifier.notify("new-appointment", saved);
     return saved;
   }
 }
@@ -292,6 +301,7 @@ export class CreateAppointmentDto {
 **Definición:** Define una relación uno-a-muchos donde cuando un objeto cambia, todos los suscriptores son notificados.
 
 **Aplicación:**
+
 ```typescript
 // infrastructure/web/appointments.gateway.ts
 // Pattern: Observer — Clientes WebSocket suscritos reciben actualizaciones automáticas
@@ -301,11 +311,11 @@ export class AppointmentsGateway {
 
   notifyNewAppointment(appointment: Appointment): void {
     // Notifica a TODOS los clientes suscritos
-    this.server.emit('new-appointment', appointment);
+    this.server.emit("new-appointment", appointment);
   }
 
   notifyStatusChange(appointment: Appointment): void {
-    this.server.emit('appointment-updated', appointment);
+    this.server.emit("appointment-updated", appointment);
   }
 }
 ```
@@ -317,6 +327,7 @@ export class AppointmentsGateway {
 **Definición:** Define una familia de algoritmos intercambiables encapsulados en clases separadas.
 
 **Aplicación:**
+
 ```typescript
 // domain/ports/outbound/error-handling.strategy.ts
 export interface ErrorHandlingStrategy {
@@ -347,6 +358,7 @@ export class TransientErrorStrategy implements ErrorHandlingStrategy {
 **Definición:** Encapsula una solicitud como un objeto, permitiendo parametrizar, encolar y deshacer operaciones.
 
 **Aplicación:**
+
 ```typescript
 // Los mensajes de RabbitMQ actúan como Commands
 // Pattern: Command — Cada mensaje en la cola es un comando serializado
@@ -379,14 +391,15 @@ Request → Guard → Interceptor (pre) → Pipe → Controller → Interceptor 
 **Definición:** Define el esqueleto de un algoritmo, delegando pasos específicos a subclases.
 
 **Aplicación potencial:**
+
 ```typescript
 // Flujo base de procesamiento de mensajes
 abstract class MessageProcessor<T> {
   async process(rawMessage: ConsumeMessage, channel: Channel): Promise<void> {
-    const data = this.deserialize(rawMessage);       // Paso 1: común
-    const validated = this.validate(data);            // Paso 2: específico
-    await this.execute(validated);                    // Paso 3: específico
-    this.acknowledge(rawMessage, channel);            // Paso 4: común
+    const data = this.deserialize(rawMessage); // Paso 1: común
+    const validated = this.validate(data); // Paso 2: específico
+    await this.execute(validated); // Paso 3: específico
+    this.acknowledge(rawMessage, channel); // Paso 4: común
   }
 
   protected abstract validate(data: unknown): T;
@@ -399,20 +412,21 @@ abstract class MessageProcessor<T> {
 **Definición:** Permite que un objeto altere su comportamiento cuando su estado interno cambia.
 
 **Aplicación:**
+
 ```typescript
 // Un Appointment tiene estados con transiciones válidas
 // Pattern: State — Comportamiento diferente según el estado actual
 enum AppointmentStatus {
-  PENDING = 'pending',         // → IN_PROGRESS
-  IN_PROGRESS = 'in_progress', // → COMPLETED
-  COMPLETED = 'completed',     // Estado final
+  PENDING = "pending", // → IN_PROGRESS
+  IN_PROGRESS = "in_progress", // → COMPLETED
+  COMPLETED = "completed", // Estado final
 }
 
 // El dominio valida transiciones de estado
 class Appointment {
   assignOffice(officeNumber: number): void {
     if (this.status !== AppointmentStatus.PENDING) {
-      throw new DomainError('Only pending appointments can be assigned');
+      throw new DomainError("Only pending appointments can be assigned");
     }
     this.officeNumber = officeNumber;
     this.status = AppointmentStatus.IN_PROGRESS;
@@ -430,23 +444,23 @@ class Appointment {
 
 ## 5. Resumen Rápido de Aplicación en el Proyecto
 
-| Categoría | Patrón | ¿Dónde? | Justificación |
-|-----------|--------|---------|---------------|
-| **Architecture** | Hexagonal | Todo el backend | Aislar dominio de infraestructura |
-| **Architecture** | Event-Driven | Producer → RabbitMQ → Consumer | Comunicación asíncrona desacoplada |
-| **Architecture** | Microservices | Producer + Consumer | Servicios independientes y escalables |
-| **Creacional** | Factory | `domain/entities/` | Validación al crear entidades |
-| **Creacional** | Singleton | NestJS `@Injectable()` | Instancia única de servicios |
-| **Creacional** | Builder | Query builders | Construcción de consultas complejas |
-| **Estructural** | Repository | `domain/ports/` → `infra/persistence/` | Abstraer persistencia |
-| **Estructural** | Adapter | `infrastructure/*/` | Conectar tech concreta a puertos |
-| **Estructural** | Facade | `application/use-cases/` | Simplificar orquestación |
-| **Estructural** | Decorator | DTOs con `class-validator` | Validación declarativa |
-| **Estructural** | Proxy | Logging repository | Control de acceso y logging |
-| **Comportamiento** | Observer | WebSocket Gateway | Notificaciones realtime |
-| **Comportamiento** | Strategy | ack/nack handlers | Manejo de errores flexible |
-| **Comportamiento** | Command | Mensajes RabbitMQ | Desacoplar emisor de ejecutor |
-| **Comportamiento** | Chain of Responsibility | NestJS Pipeline | Guards → Pipes → Controllers |
-| **Comportamiento** | State | `AppointmentStatus` | Transiciones de estado válidas |
-| **Comportamiento** | Template Method | Message processors | Flujo base con pasos específicos |
-| **Comportamiento** | Mediator | NestJS Module | Coordinación de dependencias |
+| Categoría          | Patrón                  | ¿Dónde?                                | Justificación                         |
+| ------------------ | ----------------------- | -------------------------------------- | ------------------------------------- |
+| **Architecture**   | Hexagonal               | Todo el backend                        | Aislar dominio de infraestructura     |
+| **Architecture**   | Event-Driven            | Producer → RabbitMQ → Consumer         | Comunicación asíncrona desacoplada    |
+| **Architecture**   | Microservices           | Producer + Consumer                    | Servicios independientes y escalables |
+| **Creacional**     | Factory                 | `domain/entities/`                     | Validación al crear entidades         |
+| **Creacional**     | Singleton               | NestJS `@Injectable()`                 | Instancia única de servicios          |
+| **Creacional**     | Builder                 | Query builders                         | Construcción de consultas complejas   |
+| **Estructural**    | Repository              | `domain/ports/` → `infra/persistence/` | Abstraer persistencia                 |
+| **Estructural**    | Adapter                 | `infrastructure/*/`                    | Conectar tech concreta a puertos      |
+| **Estructural**    | Facade                  | `application/use-cases/`               | Simplificar orquestación              |
+| **Estructural**    | Decorator               | DTOs con `class-validator`             | Validación declarativa                |
+| **Estructural**    | Proxy                   | Logging repository                     | Control de acceso y logging           |
+| **Comportamiento** | Observer                | WebSocket Gateway                      | Notificaciones realtime               |
+| **Comportamiento** | Strategy                | ack/nack handlers                      | Manejo de errores flexible            |
+| **Comportamiento** | Command                 | Mensajes RabbitMQ                      | Desacoplar emisor de ejecutor         |
+| **Comportamiento** | Chain of Responsibility | NestJS Pipeline                        | Guards → Pipes → Controllers          |
+| **Comportamiento** | State                   | `AppointmentStatus`                    | Transiciones de estado válidas        |
+| **Comportamiento** | Template Method         | Message processors                     | Flujo base con pasos específicos      |
+| **Comportamiento** | Mediator                | NestJS Module                          | Coordinación de dependencias          |

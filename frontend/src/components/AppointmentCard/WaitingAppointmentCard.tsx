@@ -3,10 +3,10 @@ import styles from "@/styles/page.module.css";
 
 /**
  * Component: WaitingAppointmentCard
- * 
+ *
  * Specialized component for appointments awaiting assignment to a consultorio.
  * Props are minimal and type-safe: only what this state needs.
- * 
+ *
  * ⚕️ HUMAN CHECK - ISP: This component ONLY accepts props relevant to waiting status
  * Props like showTime are NOT available here (they don't make sense for waiting)
  */
@@ -44,7 +44,10 @@ export function WaitingAppointmentCard({
         </div>
         <div className={styles.infoRow}>
           <span className={styles.label}>Prioridad:</span>
-          <span className={styles.statusBadge} data-status={appointment.priority}>
+          <span
+            className={styles.statusBadge}
+            data-status={appointment.priority}
+          >
             {getPriorityBadge(appointment.priority)}
           </span>
         </div>

@@ -3,15 +3,15 @@
  * ⚕️ HUMAN CHECK - H-04 Fix: Reemplaza el parámetro `any` en ConsumerController.getRetryCount()
  */
 export interface XDeathEntry {
-    count?: number;
-    exchange?: string;
-    queue?: string;
-    reason?: string;
-    'routing-keys'?: string[];
-    time?: { '!': string; value: number };
+  count?: number;
+  exchange?: string;
+  queue?: string;
+  reason?: string;
+  "routing-keys"?: string[];
+  time?: { "!": string; value: number };
 }
 
 export interface RmqHeaders {
-    'x-death'?: XDeathEntry[];
-    [key: string]: unknown;
+  "x-death"?: XDeathEntry[];
+  [key: string]: unknown;
 }

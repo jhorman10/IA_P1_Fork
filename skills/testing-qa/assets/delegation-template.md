@@ -6,7 +6,9 @@
 
 ```javascript
 // 1. Cargar contextos y skills
-const PROJECT_CONTEXT = await read_file("docs/agent-context/PROJECT_CONTEXT.md");
+const PROJECT_CONTEXT = await read_file(
+  "docs/agent-context/PROJECT_CONTEXT.md",
+);
 const RULES = await read_file("docs/agent-context/RULES.md");
 const testingSkill = await read_file("skills/testing-qa/skill.md");
 const refactorSkill = await read_file("skills/refactor-arch/skill.md");
@@ -14,8 +16,8 @@ const solidSkill = await read_file("skills/solid-principles/skill.md");
 
 // 2. Delegar a Sub-Agente con contexto completo
 await runSubagent({
-    description: "[Testing] QA for Feature XYZ",
-    prompt: `
+  description: "[Testing] QA for Feature XYZ",
+  prompt: `
 # Contexto del Proyecto:
 ${PROJECT_CONTEXT}
 
@@ -55,7 +57,7 @@ ${solidSkill}
 3. Tests de edge cases
 4. Coverage report (>80%)
 5. Documentación de escenarios testeados
-    `
+    `,
 });
 ```
 
@@ -64,10 +66,11 @@ ${solidSkill}
 **Usuario solicita:** "Necesito tests completos para el scheduler de consultorios"
 
 **AO ejecuta:**
+
 ```javascript
 await runSubagent({
-    description: "[Testing] Complete Test Suite for Office Scheduler",
-    prompt: `
+  description: "[Testing] Complete Test Suite for Office Scheduler",
+  prompt: `
 # Contexto del Proyecto: [PROJECT_CONTEXT cargado]
 # Reglas Arquitectónicas: [RULES cargadas]
 # Skills: testing-qa, refactor-arch, solid-principles
@@ -91,7 +94,7 @@ Crear suite completa de tests para \`AssignAvailableOfficesUseCase\`:
 1. 15+ tests unitarios (coverage >90%)
 2. 5+ tests de integración
 3. Coverage report
-    `
+    `,
 });
 ```
 

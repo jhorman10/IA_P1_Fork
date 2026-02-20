@@ -1,3 +1,3 @@
 export interface CompleteExpiredAppointmentsUseCase {
-    execute(): Promise<void>;
+  execute(): Promise<void>;
 }

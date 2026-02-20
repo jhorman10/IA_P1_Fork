@@ -1,1 +1,1 @@
-export { UseCasesModule } from './use-cases.module';
+export { UseCasesModule } from "./use-cases.module";

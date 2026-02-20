@@ -1,3 +1,3 @@
 export interface AssignAvailableOfficesUseCase {
-    execute(): Promise<void>;
+  execute(): Promise<void>;
 }

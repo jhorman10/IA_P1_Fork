@@ -3,12 +3,14 @@
 ## Per-Component Analysis
 
 ### SRP — Single Responsibility Principle
+
 - [ ] ¿Cada clase tiene una sola razón para cambiar?
 - [ ] ¿Los controllers solo reciben/responden HTTP, sin lógica de negocio?
 - [ ] ¿Los services de dominio no manejan persistencia ni mensajería?
 - [ ] ¿Los repositories solo hacen operaciones de datos?
 
 **Cómo verificar:**
+
 ```bash
 # Buscar clases que mezclan responsabilidades
 grep -rn "class.*Service" backend/*/src/ | head -20
@@ -16,6 +18,7 @@ grep -rn "class.*Service" backend/*/src/ | head -20
 ```
 
 ### OCP — Open/Closed Principle
+
 - [ ] ¿Se pueden agregar nuevos adaptadores sin modificar el dominio?
 - [ ] ¿Los puertos de salida son interfaces, no clases concretas?
 - [ ] ¿Nuevas features se agregan creando nuevas clases, no editando existentes?
@@ -23,36 +26,45 @@ grep -rn "class.*Service" backend/*/src/ | head -20
 **Evidencia requerida:** Crear un segundo adaptador de repositorio (ej. `InMemoryAppointmentRepository`) y demostrar que funciona sin cambiar el dominio.
 
 ### LSP — Liskov Substitution Principle
+
 - [ ] ¿Los adaptadores pueden sustituirse sin alterar el comportamiento esperado?
 - [ ] ¿El `InMemoryRepository` cumple el mismo contrato que `MongooseRepository`?
 - [ ] ¿No se lanzan excepciones inesperadas en implementaciones alternativas?
 
 ### ISP — Interface Segregation Principle
+
 - [ ] ¿Las interfaces de puertos son pequeñas y específicas?
 - [ ] ¿Ningún adaptador implementa métodos que no necesita?
 - [ ] ¿Se separaron interfaces de lectura y escritura si aplica?
 
 **Anti-patrón a evitar:**
+
 ```typescript
 // ❌ Interface demasiado grande
 interface AppointmentRepository {
   save(a: Appointment): Promise<Appointment>;
   findAll(): Promise<Appointment[]>;
   delete(id: string): Promise<void>;
-  generateReport(): Promise<Report>;  // ← No pertenece aquí
+  generateReport(): Promise<Report>; // ← No pertenece aquí
 }
 
 // ✅ Interfaces segregadas
-interface AppointmentWriter { save(a: Appointment): Promise<Appointment>; }
-interface AppointmentReader { findAll(): Promise<Appointment[]>; }
+interface AppointmentWriter {
+  save(a: Appointment): Promise<Appointment>;
+}
+interface AppointmentReader {
+  findAll(): Promise<Appointment[]>;
+}
 ```
 
 ### DIP — Dependency Inversion Principle
+
 - [ ] ¿El dominio define interfaces (puertos) que la infraestructura implementa?
 - [ ] ¿Se usa inyección de dependencias para conectar puertos con adaptadores?
 - [ ] ¿Ningún `import` en `domain/` apunta a `infrastructure/`?
 
 **Cómo verificar:**
+
 ```bash
 # DEBE dar 0 resultados
 grep -rn "import.*infrastructure\|import.*mongoose\|import.*@nestjs" backend/*/src/domain/
@@ -60,15 +72,16 @@ grep -rn "import.*infrastructure\|import.*mongoose\|import.*@nestjs" backend/*/s
 
 ## Design Patterns Checklist
 
-| Categoría | Patrón | ¿Implementado? | Ubicación | Justificación |
-|-----------|--------|:-:|-----------|---------------|
-| Creacional | Factory | [ ] | `domain/entities/` | Encapsular validación al crear entidades |
-| Estructural | Repository | [ ] | `domain/ports/outbound/` → `infrastructure/persistence/` | Abstraer persistencia |
-| Estructural | Adapter | [ ] | `infrastructure/*/` | Conectar tech concreta a puertos |
-| Comportamiento | Strategy | [ ] | `infrastructure/messaging/` | ack/nack según tipo de error |
-| Comportamiento | Observer | [ ] | `infrastructure/web/` | Notificaciones WebSocket |
+| Categoría      | Patrón     | ¿Implementado? | Ubicación                                                | Justificación                            |
+| -------------- | ---------- | :------------: | -------------------------------------------------------- | ---------------------------------------- |
+| Creacional     | Factory    |      [ ]       | `domain/entities/`                                       | Encapsular validación al crear entidades |
+| Estructural    | Repository |      [ ]       | `domain/ports/outbound/` → `infrastructure/persistence/` | Abstraer persistencia                    |
+| Estructural    | Adapter    |      [ ]       | `infrastructure/*/`                                      | Conectar tech concreta a puertos         |
+| Comportamiento | Strategy   |      [ ]       | `infrastructure/messaging/`                              | ack/nack según tipo de error             |
+| Comportamiento | Observer   |      [ ]       | `infrastructure/web/`                                    | Notificaciones WebSocket                 |
 
 ## Verification Command
+
 ```bash
 # Script completo de verificación
 echo "=== Domain Isolation ==="

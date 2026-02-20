@@ -22,7 +22,7 @@ sequenceDiagram
     Q->>W: 3. Consume mensaje (ack/nack)
     W->>D: 4. Guarda turno (Estado: Esperando)
     W->>Q: 4b. Evento de Dominio → Notificación
-    
+
     loop Cada SCHEDULER_INTERVAL_MS
         S->>D: 5. Busca turnos en espera
         S->>D: 6. Asigna consultorio (duración aleatoria 8-15s)
@@ -37,14 +37,15 @@ sequenceDiagram
 
 Este proyecto utiliza una "Meta-Arquitectura" modular donde la documentación es la Fuente Única de Verdad tanto para humanos como para agentes de IA.
 
-| Módulo | Descripción | Ubicación |
-|--------|-------------|-----------|
-| **🏗️ Contexto del Proyecto** | Arquitectura, Stack Tecnológico, Estructura de Carpetas. | [**PROJECT_CONTEXT.md**](./docs/agent-context/PROJECT_CONTEXT.md) |
-| **⚖️ Reglas y Directrices** | Convenciones culturales, Anti-patrones, Higiene. | [**RULES.md**](./docs/agent-context/RULES.md) |
-| **🔄 Motor de Flujo** | Protocolos de interacción, trazabilidad y modelo de delegación. | [**WORKFLOW.md**](./docs/agent-context/WORKFLOW.md) |
-| **🛠️ Registro de Skills** | Capacidades disponibles para el Orquestador de IA. | [**SKILL_REGISTRY.md**](./docs/agent-context/SKILL_REGISTRY.md) |
+| Módulo                       | Descripción                                                     | Ubicación                                                         |
+| ---------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **🏗️ Contexto del Proyecto** | Arquitectura, Stack Tecnológico, Estructura de Carpetas.        | [**PROJECT_CONTEXT.md**](./docs/agent-context/PROJECT_CONTEXT.md) |
+| **⚖️ Reglas y Directrices**  | Convenciones culturales, Anti-patrones, Higiene.                | [**RULES.md**](./docs/agent-context/RULES.md)                     |
+| **🔄 Motor de Flujo**        | Protocolos de interacción, trazabilidad y modelo de delegación. | [**WORKFLOW.md**](./docs/agent-context/WORKFLOW.md)               |
+| **🛠️ Registro de Skills**    | Capacidades disponibles para el Orquestador de IA.              | [**SKILL_REGISTRY.md**](./docs/agent-context/SKILL_REGISTRY.md)   |
 
 ### Reportes de Estado
+
 - **Deuda Técnica:** [DEBT_REPORT.md](./DEBT_REPORT.md) (Estado: **ELITE GRADE**)
 - **Auditoría de Seguridad:** [SECURITY_AUDIT.md](./SECURITY_AUDIT.md)
 - **Trazabilidad IA:** [AI_WORKFLOW.md](./AI_WORKFLOW.md)
@@ -53,37 +54,39 @@ Este proyecto utiliza una "Meta-Arquitectura" modular donde la documentación es
 
 ## 🛠️ Inicio Rápido
 
-
 ### Prerrequisitos
+
 - Docker Engine & Docker Compose v2 **o** Podman + Podman Compose
 
 ### Pasos
 
 1. **Clonar el repositorio**
+
    ```bash
    git clone https://github.com/jhorman10/IA_P1_Fork.git
    cd IA_P1_Fork
    ```
 
 2. **Configurar entorno**
+
    ```bash
    cp .env.example .env
    # Editar .env con credenciales seguras (ver .env.example para detalles)
    ```
 
-
 3. **Iniciar infraestructura**
-    - **Con Docker Compose:**
-       ```bash
-       docker compose up -d --build
-       ```
-    - **Con Podman Compose:**
-       ```bash
-       podman-compose up -d --build
-       ```
-       > ⚠️ **Nota:**
-       > - Podman Compose es compatible con este archivo, pero revisa advertencias sobre volúmenes y puertos si usas rootless Podman.
-       > - Si encuentras problemas con permisos en volúmenes, consulta la [documentación oficial de Podman](https://docs.podman.io/en/latest/markdown/podman-compose.1.html).
+   - **Con Docker Compose:**
+     ```bash
+     docker compose up -d --build
+     ```
+   - **Con Podman Compose:**
+     ```bash
+     podman-compose up -d --build
+     ```
+     > ⚠️ **Nota:**
+     >
+     > - Podman Compose es compatible con este archivo, pero revisa advertencias sobre volúmenes y puertos si usas rootless Podman.
+     > - Si encuentras problemas con permisos en volúmenes, consulta la [documentación oficial de Podman](https://docs.podman.io/en/latest/markdown/podman-compose.1.html).
 
 4. **Acceder a la aplicación**
    - **Frontend:** [http://localhost:3001](http://localhost:3001)
@@ -102,4 +105,5 @@ Este proyecto utiliza una "Meta-Arquitectura" modular donde la documentación es
 - **Seguridad**: Helmet, Rate Limiting, CORS y Política de Cero Hardcodeo.
 
 ---
+
 **ESTADO: PUREZA ARQUITECTÓNICA ALCANZADA** ✅

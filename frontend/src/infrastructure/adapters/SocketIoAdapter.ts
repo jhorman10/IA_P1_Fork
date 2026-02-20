@@ -4,88 +4,91 @@ import { Appointment } from "@/domain/Appointment";
 import { env } from "@/config/env";
 
 export class SocketIoAdapter implements RealTimePort {
-    private socket: Socket | null = null;
-    private isConnectedFlag = false;
+  private socket: Socket | null = null;
+  private isConnectedFlag = false;
 
-    // Callbacks
-    private onSnapshotCallback: ((data: Appointment[]) => void) | null = null;
-    private onUpdateCallback: ((data: Appointment) => void) | null = null;
-    private onConnectCallback: (() => void) | null = null;
-    private onDisconnectCallback: (() => void) | null = null;
-    private onErrorCallback: ((error: Error) => void) | null = null;
+  // Callbacks
+  private onSnapshotCallback: ((data: Appointment[]) => void) | null = null;
+  private onUpdateCallback: ((data: Appointment) => void) | null = null;
+  private onConnectCallback: (() => void) | null = null;
+  private onDisconnectCallback: (() => void) | null = null;
+  private onErrorCallback: ((error: Error) => void) | null = null;
 
-    connect(): void {
-        if (this.socket) return;
+  connect(): void {
+    if (this.socket) return;
 
-        this.socket = io(`${env.WS_URL}/ws/appointments`, {
-            transports: ["websocket"],
-            reconnection: true,
-            reconnectionDelay: 1000,
-            reconnectionDelayMax: 5000,
-            reconnectionAttempts: Infinity,
-        });
+    this.socket = io(`${env.WS_URL}/ws/appointments`, {
+      transports: ["websocket"],
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: Infinity,
+    });
 
-        this.setupListeners();
+    this.setupListeners();
+  }
+
+  private setupListeners() {
+    if (!this.socket) return;
+
+    this.socket.on("connect", () => {
+      console.log("[SocketIoAdapter] Connected");
+      this.isConnectedFlag = true;
+      this.onConnectCallback?.();
+    });
+
+    this.socket.on("disconnect", (reason) => {
+      console.log(`[SocketIoAdapter] Disconnected: ${reason}`);
+      this.isConnectedFlag = false;
+      this.onDisconnectCallback?.();
+    });
+
+    this.socket.on("connect_error", (err) => {
+      console.error("[SocketIoAdapter] Connection error:", err);
+      this.onErrorCallback?.(err);
+    });
+
+    this.socket.on(
+      "APPOINTMENTS_SNAPSHOT",
+      (payload: { data: Appointment[] }) => {
+        this.onSnapshotCallback?.(payload.data);
+      },
+    );
+
+    this.socket.on("APPOINTMENT_UPDATED", (payload: { data: Appointment }) => {
+      this.onUpdateCallback?.(payload.data);
+    });
+  }
+
+  disconnect(): void {
+    if (this.socket) {
+      this.socket.disconnect();
+      this.socket = null;
+      this.isConnectedFlag = false;
     }
+  }
 
-    private setupListeners() {
-        if (!this.socket) return;
+  onSnapshot(callback: (appointments: Appointment[]) => void): void {
+    this.onSnapshotCallback = callback;
+  }
 
-        this.socket.on("connect", () => {
-            console.log("[SocketIoAdapter] Connected");
-            this.isConnectedFlag = true;
-            this.onConnectCallback?.();
-        });
+  onAppointmentUpdated(callback: (appointment: Appointment) => void): void {
+    this.onUpdateCallback = callback;
+  }
 
-        this.socket.on("disconnect", (reason) => {
-            console.log(`[SocketIoAdapter] Disconnected: ${reason}`);
-            this.isConnectedFlag = false;
-            this.onDisconnectCallback?.();
-        });
+  onConnect(callback: () => void): void {
+    this.onConnectCallback = callback;
+  }
 
-        this.socket.on("connect_error", (err) => {
-            console.error("[SocketIoAdapter] Connection error:", err);
-            this.onErrorCallback?.(err);
-        });
+  onDisconnect(callback: () => void): void {
+    this.onDisconnectCallback = callback;
+  }
 
-        this.socket.on("APPOINTMENTS_SNAPSHOT", (payload: { data: Appointment[] }) => {
-            this.onSnapshotCallback?.(payload.data);
-        });
+  onError(callback: (error: Error) => void): void {
+    this.onErrorCallback = callback;
+  }
 
-        this.socket.on("APPOINTMENT_UPDATED", (payload: { data: Appointment }) => {
-            this.onUpdateCallback?.(payload.data);
-        });
-    }
-
-    disconnect(): void {
-        if (this.socket) {
-            this.socket.disconnect();
-            this.socket = null;
-            this.isConnectedFlag = false;
-        }
-    }
-
-    onSnapshot(callback: (appointments: Appointment[]) => void): void {
-        this.onSnapshotCallback = callback;
-    }
-
-    onAppointmentUpdated(callback: (appointment: Appointment) => void): void {
-        this.onUpdateCallback = callback;
-    }
-
-    onConnect(callback: () => void): void {
-        this.onConnectCallback = callback;
-    }
-
-    onDisconnect(callback: () => void): void {
-        this.onDisconnectCallback = callback;
-    }
-
-    onError(callback: (error: Error) => void): void {
-        this.onErrorCallback = callback;
-    }
-
-    isConnected(): boolean {
-        return this.isConnectedFlag;
-    }
+  isConnected(): boolean {
+    return this.isConnectedFlag;
+  }
 }

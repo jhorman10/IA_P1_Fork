@@ -6,7 +6,9 @@
 
 ```javascript
 // 1. Cargar contextos y skills
-const PROJECT_CONTEXT = await read_file("docs/agent-context/PROJECT_CONTEXT.md");
+const PROJECT_CONTEXT = await read_file(
+  "docs/agent-context/PROJECT_CONTEXT.md",
+);
 const RULES = await read_file("docs/agent-context/RULES.md");
 const securitySkill = await read_file("skills/security-audit/skill.md");
 const refactorSkill = await read_file("skills/refactor-arch/skill.md");
@@ -14,8 +16,8 @@ const testingSkill = await read_file("skills/testing-qa/skill.md");
 
 // 2. Delegar a Sub-Agente con contexto completo
 await runSubagent({
-    description: "[Security] Audit XYZ",
-    prompt: `
+  description: "[Security] Audit XYZ",
+  prompt: `
 # Contexto del Proyecto:
 ${PROJECT_CONTEXT}
 
@@ -53,7 +55,7 @@ ${testingSkill}
 3. Código hardened (middlewares, guards, sanitizers)
 4. Tests de seguridad (malicious inputs, edge cases)
 5. DEBT_REPORT.md actualizado con hallazgos
-    `
+    `,
 });
 ```
 
@@ -62,10 +64,11 @@ ${testingSkill}
 **Usuario solicita:** "Ejecuta auditoría de seguridad en endpoints de registro"
 
 **AO ejecuta:**
+
 ```javascript
 await runSubagent({
-    description: "[Security] Audit Registration Endpoints",
-    prompt: `
+  description: "[Security] Audit Registration Endpoints",
+  prompt: `
 # Contexto del Proyecto: [PROJECT_CONTEXT cargado]
 # Reglas Arquitectónicas: [RULES cargadas]
 # Skills: security-audit, refactor-arch, testing-qa
@@ -85,7 +88,7 @@ Auditoría de seguridad en endpoints de registro de citas:
 3. Schema validation aplicado
 4. 10+ tests de casos maliciosos
 5. DEBT_REPORT.md actualizado con hallazgos
-    `
+    `,
 });
 ```
 

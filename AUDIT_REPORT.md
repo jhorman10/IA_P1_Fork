@@ -9,14 +9,14 @@
 
 ## 1. Scorecard por Área
 
-| Área | Puntuación | Peso | Evaluación | Status |
-|------|:---:|:---:|---|---|
-| **Arquitectura**    | 88/100 | 25% | Hexagonal Architecture clara, SRP bien aplicado, sin God Objects | ✅ BIEN |
-| **SOLID Principles** | 85/100 | 25% | DIP perfecto, OCP bajo switch/case, LSP respetado, ISP segregado | ✅ BIEN |
-| **Testing Coverage** | 42/100 | 20% | Backend 23 specs (bueno), Frontend 0 specs (crítico) | ⚠️ CRÍTICO |
-| **Infraestructura** | 65/100 | 15% | 4 healthchecks OK, pero 1 blocker crítico de seguridad | 🟡 RIESGOS |
-| **UX/UI Experience** | 70/100 | 15% | CSS Modules OK, error handling OK, loading states 6% cobertura | 🟡 DEFICIENTE |
-| **TOTAL MVP SCORE** | **62/100** | — | **MVP CONDICIONAL** | 🟡 ACEPTAR CON RIESGOS |
+| Área                 | Puntuación | Peso | Evaluación                                                       | Status                 |
+| -------------------- | :--------: | :--: | ---------------------------------------------------------------- | ---------------------- |
+| **Arquitectura**     |   88/100   | 25%  | Hexagonal Architecture clara, SRP bien aplicado, sin God Objects | ✅ BIEN                |
+| **SOLID Principles** |   85/100   | 25%  | DIP perfecto, OCP bajo switch/case, LSP respetado, ISP segregado | ✅ BIEN                |
+| **Testing Coverage** |   42/100   | 20%  | Backend 23 specs (bueno), Frontend 0 specs (crítico)             | ⚠️ CRÍTICO             |
+| **Infraestructura**  |   65/100   | 15%  | 4 healthchecks OK, pero 1 blocker crítico de seguridad           | 🟡 RIESGOS             |
+| **UX/UI Experience** |   70/100   | 15%  | CSS Modules OK, error handling OK, loading states 6% cobertura   | 🟡 DEFICIENTE          |
+| **TOTAL MVP SCORE**  | **62/100** |  —   | **MVP CONDICIONAL**                                              | 🟡 ACEPTAR CON RIESGOS |
 
 ---
 
@@ -27,19 +27,23 @@
 **Archivo:** `backend/producer/src/common/guards/ws-auth.guard.ts:27`
 
 **Código Ofensivo:**
+
 ```typescript
-const validToken = this.configService.get<string>('WS_AUTH_TOKEN') || 'elite-hardened-token';
+const validToken =
+  this.configService.get<string>("WS_AUTH_TOKEN") || "elite-hardened-token";
 ```
 
 **Impacto:**
+
 - Cualquiera puede conectarse conociendo el token: `'elite-hardened-token'`
 - Permite acceso no autorizado a actualizaciones de turnos en tiempo real
 - Incumple estándares mínimos de seguridad
 - 🔴 **SEVERITY:** CRÍTICA — Falha de seguridad perimetral
 
 **Solución Inmediata (5 minutos):**
+
 ```typescript
-const validToken = this.configService.getOrThrow<string>('WS_AUTH_TOKEN');
+const validToken = this.configService.getOrThrow<string>("WS_AUTH_TOKEN");
 // Si WS_AUTH_TOKEN no existe, falla en startup → Docker health check lo detecta
 ```
 
@@ -52,6 +56,7 @@ const validToken = this.configService.getOrThrow<string>('WS_AUTH_TOKEN');
 **Métrica:** 0 archivos `.spec.ts` en `frontend/src/`
 
 **Archivos en Riesgo (0 tests cada uno):**
+
 - `frontend/src/app/dashboard/page.tsx` (137 líneas)
 - `frontend/src/app/page.tsx` (117 líneas)
 - `frontend/src/hooks/useAppointmentRegistration.ts` (107 líneas)
@@ -60,6 +65,7 @@ const validToken = this.configService.getOrThrow<string>('WS_AUTH_TOKEN');
 - 15+ componentes sin cobertura
 
 **Impacto:**
+
 - ⚠️ Cambios en frontend sin validación automática
 - ⚠️ Regressions no detectadas
 - ⚠️ Hooks complejos sin unit tests
@@ -75,6 +81,7 @@ const validToken = this.configService.getOrThrow<string>('WS_AUTH_TOKEN');
 **Coverage:** 3/50 = **6%** ⚠️
 
 **Locations de Async sin feedback:**
+
 - WebSocket reconnection (useAppointmentsWebSocket.ts)
 - Dashboard appointments fetch (dashboard/page.tsx)
 - Form submissions (AppointmentRegistrationForm)
@@ -93,6 +100,7 @@ const validToken = this.configService.getOrThrow<string>('WS_AUTH_TOKEN');
 **Problema:** Módulo carga 8+ providers y configura directamente MongoDB
 
 **Propuesta:** Dividir en sub-módulos:
+
 - `policies.module.ts` (ConsultationPolicy)
 - `repositories.module.ts` (Mongoose adapters)
 - `use-cases.module.ts` (Application)
@@ -113,13 +121,13 @@ const validToken = this.configService.getOrThrow<string>('WS_AUTH_TOKEN');
 
 ### ✅ SOLID Compliance
 
-| Principio | Validación | Resultado |
-|-----------|-----------|-----------|
-| **S**RP | grep -rn "extends" domain/ | ✅ Solo 4 base classes legales |
-| **O**CP | grep -rn "switch\|case:" | ✅ 2 instancias (bajo) |
-| **L**SP | grep -rn "extends" domain/ | ✅ Herencia correcta |
-| **I**SP | Interfaces segregadas | ✅ Port/Adapter pattern |
-| **D**IP | Constructor @Inject | ✅ 0 `new` en domain |
+| Principio | Validación                 | Resultado                      |
+| --------- | -------------------------- | ------------------------------ |
+| **S**RP   | grep -rn "extends" domain/ | ✅ Solo 4 base classes legales |
+| **O**CP   | grep -rn "switch\|case:"   | ✅ 2 instancias (bajo)         |
+| **L**SP   | grep -rn "extends" domain/ | ✅ Herencia correcta           |
+| **I**SP   | Interfaces segregadas      | ✅ Port/Adapter pattern        |
+| **D**IP   | Constructor @Inject        | ✅ 0 `new` en domain           |
 
 **Conclusión:** SOLID 85/100 ✅
 
@@ -128,6 +136,7 @@ const validToken = this.configService.getOrThrow<string>('WS_AUTH_TOKEN');
 ### ✅ Arquitectura Hexagonal
 
 **Capas Validadas:**
+
 - 🟢 Domain: Policies, Value Objects, Entities, Events (SRP perfecto)
 - 🟢 Application: Use Cases, DTOs, Mappers (Clean)
 - 🟢 Infrastructure: Repositories, External Services, Persistence (Desacoplado)
@@ -139,11 +148,13 @@ const validToken = this.configService.getOrThrow<string>('WS_AUTH_TOKEN');
 ### ⚠️ Testing Metrics
 
 **Backend (Excelente):**
+
 - 23 archivos `.spec.ts` encontrados
 - Covers: Policies, Value Objects, Use Cases, Integration (MongoDB)
 - Archivo más completo: `mongoose-appointment.repository.integration.spec.ts` (798 líneas)
 
 **Frontend (Crítico):**
+
 - 0 archivos `.spec.ts`
 - 0 component tests
 - 0 hook tests
@@ -158,6 +169,7 @@ const validToken = this.configService.getOrThrow<string>('WS_AUTH_TOKEN');
 **Comando:** `grep -rn "password|secret|apikey|token" backend/*/src | grep -v ".env"`
 
 **Hallazgos:**
+
 - ❌ Token hardcodeado en ws-auth.guard.ts:27 (**H-S1 BLOCKER**)
 - ✅ Otros archivos usando `configService.get()` correctamente
 
@@ -166,12 +178,14 @@ const validToken = this.configService.getOrThrow<string>('WS_AUTH_TOKEN');
 ### 🟡 Infrastructure
 
 **Healthchecks (4/4 servicios):**
+
 - ✅ Producer API
 - ✅ Consumer Worker
 - ✅ MongoDB
 - ✅ RabbitMQ
 
 **Negativos encontrados:**
+
 - 🟡 Rate limiting ausente
 - 🟡 Helmet security headers no detectados
 - 🟡 Logs no JSON-estructurados
@@ -183,6 +197,7 @@ const validToken = this.configService.getOrThrow<string>('WS_AUTH_TOKEN');
 ### Verdict: 🟡 MVP CONDICIONAL
 
 **Aceptable si se remedian:**
+
 1. ⛔ **BLOCKER CRÍTICO (H-S1):** Token hardcodeado → Fix inmediato (5 min)
 2. 🟠 **BLOCKER ALTO (H-T1):** Frontend sin tests → Planning 2 sprints (H-T2)
 3. 🟠 **BLOCKER ALTO (H-U1):** Loading states → Quick wins (H-U2)
@@ -203,25 +218,26 @@ const validToken = this.configService.getOrThrow<string>('WS_AUTH_TOKEN');
 
 MVP entrega arquitectura sólida (Hexagonal, SOLID, Event-Driven) pero con vulnerabilidad crítica de seguridad y testing desigual. Recomendación: **Aceptar con mitigaciones**, escalar H-S1 a team líder inmediatamente.
 
-**Auditor:** Staff Engineer Hostil ✔️
-2.  **Validación de Entorno:**
-    - **Evidencia:** `src/config/env.ts` lanza errores explícitos si faltan variables `NEXT_PUBLIC_*`, evitando fallos silenciosos en el navegador.
+**Auditor:** Staff Engineer Hostil ✔️ 2. **Validación de Entorno:** - **Evidencia:** `src/config/env.ts` lanza errores explícitos si faltan variables `NEXT_PUBLIC_*`, evitando fallos silenciosos en el navegador.
 
 ---
 
 ## 4. Plan de Mejora Escalonado
 
 ### 1️⃣ Estrategia de IA & Transparencia
-*   **De 1 → 3:** Crear un archivo `PROMPT_LOG.md` donde se registren al menos las últimas 5 interacciones significativas con la IA.
-*   **De 3 → 5:** Implementar una sección en `AI_WORKFLOW.md` que detalle errores específicos de lógica resueltos (ej. "IA generó bucle infinito en useEffect, corregido con useRef").
+
+- **De 1 → 3:** Crear un archivo `PROMPT_LOG.md` donde se registren al menos las últimas 5 interacciones significativas con la IA.
+- **De 3 → 5:** Implementar una sección en `AI_WORKFLOW.md` que detalle errores específicos de lógica resueltos (ej. "IA generó bucle infinito en useEffect, corregido con useRef").
 
 ### 2️⃣ Arquitectura & Docker
-*   **De 1 → 3:** Eliminar todos los valores por defecto de credenciales en el `yaml`.
-*   **De 3 → 5:** Implementar un Reverse Proxy (Nginx) y definir redes internas separadas para DB/Queue y App.
+
+- **De 1 → 3:** Eliminar todos los valores por defecto de credenciales en el `yaml`.
+- **De 3 → 5:** Implementar un Reverse Proxy (Nginx) y definir redes internas separadas para DB/Queue y App.
 
 ### 3️⃣ Calidad del Código
-*   **De 1 → 3:** Sincronizar el formulario con el DTO del backend y aplicar diseño básico responsive (CSS Media Queries).
-*   **De 3 → 5:** Implementar Unit Tests para el hook `useTurnosWebSocket` y el servicio de sanitización.
+
+- **De 1 → 3:** Sincronizar el formulario con el DTO del backend y aplicar diseño básico responsive (CSS Media Queries).
+- **De 3 → 5:** Implementar Unit Tests para el hook `useTurnosWebSocket` y el servicio de sanitización.
 
 ---
 

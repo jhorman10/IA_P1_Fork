@@ -1,12 +1,14 @@
 # 🛡️ Security Audit Report — Medical Appointment System
 
 ## Executive Summary
+
 - **Overall Risk Level**: **HIGH**
 - **Total Hallazgos**: 5
 
 ## Hallazgos (Vulnerabilidades)
 
 ### S-01 Permissive CORS Policy
+
 - **Severidad**: Medium
 - **CWE/OWASP**: OWASP A01:2021-Broken Access Control
 - **Ubicación**: `backend/producer/src/main.ts:15`, `backend/producer/src/events/appointments.gateway.ts:15`
@@ -15,6 +17,7 @@
 - **Recomendación**: Restringir `origin` a dominios específicos (ej. la URL del frontend).
 
 ### S-02 Missing WebSocket Authentication
+
 - **Severidad**: **CRITICAL**
 - **CWE/OWASP**: OWASP A01:2021-Broken Access Control
 - **Ubicación**: `backend/producer/src/events/appointments.gateway.ts`
@@ -23,6 +26,7 @@
 - **Recomendación**: Implementar JWT Guards o validación de tokens en `handleConnection`.
 
 ### S-03 Lack of Security Headers (Helmet)
+
 - **Severidad**: Low
 - **CWE/OWASP**: OWASP A05:2021-Security Misconfiguration
 - **Ubicación**: `backend/producer/src/main.ts`
@@ -31,6 +35,7 @@
 - **Recomendación**: Integrar `@nestjs/helmet` en el bootstrap de la aplicación.
 
 ### S-04 Weak Default Credentials
+
 - **Severidad**: High
 - **CWE/OWASP**: OWASP A07:2021-Identification and Authentication Failures
 - **Ubicación**: `.env.example`, `docker-compose.yml`
@@ -39,6 +44,7 @@
 - **Recomendación**: Forzar el cambio de credenciales en el primer despliegue y usar secretos de Docker.
 
 ### S-05 Unprotected Public API (No Rate Limiting)
+
 - **Severidad**: Medium
 - **CWE/OWASP**: OWASP A04:2021-Insecure Design / DoS
 - **Ubicación**: `backend/producer/src/main.ts`
@@ -47,11 +53,14 @@
 - **Recomendación**: Implementar `@nestjs/throttler`.
 
 ---
+
 ## Recomendaciones de Endurecimiento (Hardening)
+
 1. [ ] Implementar `Helmet` en el Producer.
 2. [ ] Configurar `Throttler` para endpoints públicos.
 3. [ ] Asegurar el WebSocket Namespace con un Guard de prueba.
 4. [ ] Restringir CORS al dominio del frontend.
 
 ---
+
 **Auditado por SA Security (Elite Grade)**

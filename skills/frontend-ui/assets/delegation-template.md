@@ -6,7 +6,9 @@
 
 ```javascript
 // 1. Cargar contextos y skills
-const PROJECT_CONTEXT = await read_file("docs/agent-context/PROJECT_CONTEXT.md");
+const PROJECT_CONTEXT = await read_file(
+  "docs/agent-context/PROJECT_CONTEXT.md",
+);
 const RULES = await read_file("docs/agent-context/RULES.md");
 const frontendSkill = await read_file("skills/frontend-ui/skill.md");
 const refactorSkill = await read_file("skills/refactor-arch/skill.md");
@@ -14,8 +16,8 @@ const testingSkill = await read_file("skills/testing-qa/skill.md");
 
 // 2. Delegar a Sub-Agente con contexto completo
 await runSubagent({
-    description: "[Frontend] Refactor Component XYZ",
-    prompt: `
+  description: "[Frontend] Refactor Component XYZ",
+  prompt: `
 # Contexto del Proyecto:
 ${PROJECT_CONTEXT}
 
@@ -51,7 +53,7 @@ ${testingSkill}
 2. Tests (unit + integration)
 3. Comentarios // ⚕️ HUMAN CHECK donde aplique
 4. Documentación de cambios
-    `
+    `,
 });
 ```
 
@@ -60,10 +62,11 @@ ${testingSkill}
 **Usuario solicita:** "Refactoriza el componente AppointmentCard aplicando SRP"
 
 **AO ejecuta:**
+
 ```javascript
 await runSubagent({
-    description: "[Frontend] Refactor AppointmentCard (SRP)",
-    prompt: `
+  description: "[Frontend] Refactor AppointmentCard (SRP)",
+  prompt: `
 # Contexto del Proyecto: [PROJECT_CONTEXT cargado]
 # Reglas Arquitectónicas: [RULES cargadas]
 # Skills: frontend-ui, refactor-arch, testing-qa
@@ -81,7 +84,7 @@ Refactorizar \`AppointmentCard.tsx\` separando responsabilidades:
 2. 3+ sub-componentes
 3. 2+ custom hooks
 4. Tests >85% coverage
-    `
+    `,
 });
 ```
 

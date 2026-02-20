@@ -6,14 +6,14 @@
 
 ## Executive Summary
 
-| Métrica | Valor |
-|---------|-------|
-| **Estado del Proyecto** | ✅ AUDITORÍA MVP HOSTIL COMPLETA — Scorecard 62/100 |
-| **Cobertura SOLID** | 5/5 (SRP✓ OCP✓ LSP✓ ISP✓ DIP✓) |
-| **Deuda Técnica** | 7 hallazgos (1 crítica, 3 altos, 3 medios) |
-| **Tests** | 189 passing / 18 suites — 67.24% stmts (core domain ~100%) |
-| **Última Intervención IA** | 2026-02-20 (Auditoría MVP: 5 áreas, 15+ búsquedas) |
-| **Status Auditoría** | AUDITORÍA MVP COMPLETE: Scorecard 62/100, Veredicto 🟡 CONDICIONAL |
+| Métrica                    | Valor                                                              |
+| -------------------------- | ------------------------------------------------------------------ |
+| **Estado del Proyecto**    | ✅ AUDITORÍA MVP HOSTIL COMPLETA — Scorecard 62/100                |
+| **Cobertura SOLID**        | 5/5 (SRP✓ OCP✓ LSP✓ ISP✓ DIP✓)                                     |
+| **Deuda Técnica**          | 7 hallazgos (1 crítica, 3 altos, 3 medios)                         |
+| **Tests**                  | 189 passing / 18 suites — 67.24% stmts (core domain ~100%)         |
+| **Última Intervención IA** | 2026-02-20 (Auditoría MVP: 5 áreas, 15+ búsquedas)                 |
+| **Status Auditoría**       | AUDITORÍA MVP COMPLETE: Scorecard 62/100, Veredicto 🟡 CONDICIONAL |
 
 **Propósito:** Este documento define la estrategia de interacción con IA, protocolos de colaboración y registro completo de intervenciones críticas. Sirve como evidencia auditable de la metodología **AI-First**.
 
@@ -42,49 +42,49 @@
 
 <!-- INSERTAR NUEVAS MODIFICACIONES AQUÍ -->
 
-| Fecha | Tipo | Descripción | Commit | Actor |
-|-------|------|-------------|--------|-------|
-| 2026-02-19 | fix | **LINTING AUDIT COMPLETE:** 56 problemas consumer (33 errors+23 warnings) → 0. Producer 6 warnings → 0. Hallazgos L-01…L-20 registrados en DEBT_REPORT.md §6. | N/A | 🤖 |
-| 2026-02-19 | refactor | **Tipado estricto:** Eliminados todos los `any` de nivel de producción. `branded.types.ts` usa `unknown`. `id-card.value-object` usa `unknown`. Mocks usan `DomainEvent`, `MongoDoc`, `MongoFilter`. | N/A | 🤖 |
-| 2026-02-19 | config | ESLint configs actualizadas: `argsIgnorePattern: '^_'`, `varsIgnorePattern: '^_'`, `caughtErrorsIgnorePattern: '^_'`, `no-namespace: warn` en consumer y producer. | N/A | 🤖 |
-| 2026-02-19 | fix | Dead imports eliminados: `ClientsModule/Transport` (app.module.ts), 5 imports (scheduler.module.ts), 6 imports (producer.controller.ts). | N/A | 🤖 |
-| 2026-02-19 | test | **PHASE 2 COMPLETE: 189/189 tests passing** — Domain(87)+App(48)+Infra(39)+Ctrl(15). Coverage: 67.24% stmts / 73.17% branch / 63.97% funcs / 68.05% lines. Core domain/app layer ~99%. | N/A | 🤖 |
-| 2026-02-19 | fix | **PRODUCTION BUG FIX:** `findAvailableOffices()` crashed with `Invalid IdCard: undefined` when calling `AppointmentMapper.toDomain()` on lean partial docs. Fixed to extract office strings directly without full mapping. | N/A | 🤖 |
-| 2026-02-19 | test | **TAREA 3.3 COMPLETE:** 27 MongoDB integration tests via `mongodb-memory-server`. Covers: save, findWaiting, findAvailableOffices, findById, findByIdCardAndActive, findExpiredCalled, updateStatus. | N/A | 🤖 |
-| 2026-02-19 | test | **TAREA 3.2 COMPLETE:** 48 application layer tests. RegisterAppointmentUseCase(27), AssignOfficesUseCase(23), CompleteExpiredUseCase(10), Orchestrator(3), EventHandlers(3). | N/A | 🤖 |
-| 2026-02-19 | infra | Installed `mongodb-memory-server` v9 for real in-memory MongoDB integration testing. Created full mock infrastructure: MockLoggerPort, MockClockPort, MockNotificationPort, MockAppointmentRepository, MockConsultationPolicy, MockAppointmentFactory. | N/A | 🤖 |
-| 2026-02-19 | test | **TAREA 3.1 COMPLETE:** 87 Value Object & Policy tests passing (IdCard, Priority, FullName, ConsultationPolicy) | N/A | 🤖 |
-| 2026-02-19 | refactor | **PHASE 1 COMPLETE:** Fixed 3 SOLID violations (A-08→SRP, LSP→IdCard, ISP→Components) | N/A | 🤖 |
-| 2026-02-19 | feature | Created branded types system for IdCard, OfficeNumber, AppointmentId | N/A | 🤖 |
-| 2026-02-19 | refactor | Extracted ConsultationPolicy from Repository for SRP compliance | N/A | 🤖 |
-| 2026-02-19 | feature | Created 3 specialized AppointmentCard components (Waiting/Called/Completed) | N/A | 🤖 |
-| 2026-02-19 | docs | Created PHASE1_COMPLETION_REPORT.md documenting all fixes | N/A | 🤖 |
-| 2026-02-19 | docs | Registra 7 hallazgos de auditoría SOLID en DEBT_REPORT.md | `3996958` | 🤖 |
-| 2026-02-19 | refactor | Elimina exportaciones de MongooseModule y AppointmentsGateway en módulos | `bcbf5ba` | 🤖 |
-| 2026-02-19 | docs | Verificado: emisión de eventos solo vía EventBroadcasterPort | N/A | 🤖 |
-| 2026-02-19 | refactor | Modulariza ProducerController, queries a AppointmentQueryController (SRP) | `44bc19f` | 🤖 |
-| 2026-02-19 | refactor | Extraer política de reintentos a RetryPolicyPort | `0c3bd89` | 🤖 |
-| 2026-02-19 | refactor | Eliminar número mágico en CORS/WebSocket origin | `50997ad` | 🤖 |
-| 2026-02-19 | docs | Documentar excepción de process.env en decorador WebSocketGateway | `280cf7a` | 🤖 |
-| 2026-02-19 | refactor | Eliminar exportación de ClientsModule en NotificationsModule (DIP) | `052df83` | 🤖 |
-| 2026-02-19 | refactor | Centraliza todas las variables de entorno en .env y refuerza HUMAN CHECK en docker-compose.yml. Se elimina configuración directa y se documenta trazabilidad. | N/A | 🤖 |
-| 2026-02-19 | fix | Exporta MaintenanceOrchestratorUseCase en AppointmentModule y corrige inyección de dependencias en SchedulerModule. Servicios corren sin errores de DI. | `14726b5` | 🤖 |
-| 2026-02-19 | test | test(e2e): estructura inicial y primer caso E2E para flujo completo de turnos médicos (API → RabbitMQ → Consumer → MongoDB) | `c112783` | 🤖 |
-| 2026-02-19 | infra | Compatibiliza docker-compose.yml para Docker y Podman Compose; agrega restart policy y comentarios de portabilidad; README actualizado con instrucciones Podman Compose. | N/A | 🤖 |
+| Fecha      | Tipo     | Descripción                                                                                                                                                                                                                                            | Commit    | Actor |
+| ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ----- |
+| 2026-02-19 | fix      | **LINTING AUDIT COMPLETE:** 56 problemas consumer (33 errors+23 warnings) → 0. Producer 6 warnings → 0. Hallazgos L-01…L-20 registrados en DEBT_REPORT.md §6.                                                                                          | N/A       | 🤖    |
+| 2026-02-19 | refactor | **Tipado estricto:** Eliminados todos los `any` de nivel de producción. `branded.types.ts` usa `unknown`. `id-card.value-object` usa `unknown`. Mocks usan `DomainEvent`, `MongoDoc`, `MongoFilter`.                                                   | N/A       | 🤖    |
+| 2026-02-19 | config   | ESLint configs actualizadas: `argsIgnorePattern: '^_'`, `varsIgnorePattern: '^_'`, `caughtErrorsIgnorePattern: '^_'`, `no-namespace: warn` en consumer y producer.                                                                                     | N/A       | 🤖    |
+| 2026-02-19 | fix      | Dead imports eliminados: `ClientsModule/Transport` (app.module.ts), 5 imports (scheduler.module.ts), 6 imports (producer.controller.ts).                                                                                                               | N/A       | 🤖    |
+| 2026-02-19 | test     | **PHASE 2 COMPLETE: 189/189 tests passing** — Domain(87)+App(48)+Infra(39)+Ctrl(15). Coverage: 67.24% stmts / 73.17% branch / 63.97% funcs / 68.05% lines. Core domain/app layer ~99%.                                                                 | N/A       | 🤖    |
+| 2026-02-19 | fix      | **PRODUCTION BUG FIX:** `findAvailableOffices()` crashed with `Invalid IdCard: undefined` when calling `AppointmentMapper.toDomain()` on lean partial docs. Fixed to extract office strings directly without full mapping.                             | N/A       | 🤖    |
+| 2026-02-19 | test     | **TAREA 3.3 COMPLETE:** 27 MongoDB integration tests via `mongodb-memory-server`. Covers: save, findWaiting, findAvailableOffices, findById, findByIdCardAndActive, findExpiredCalled, updateStatus.                                                   | N/A       | 🤖    |
+| 2026-02-19 | test     | **TAREA 3.2 COMPLETE:** 48 application layer tests. RegisterAppointmentUseCase(27), AssignOfficesUseCase(23), CompleteExpiredUseCase(10), Orchestrator(3), EventHandlers(3).                                                                           | N/A       | 🤖    |
+| 2026-02-19 | infra    | Installed `mongodb-memory-server` v9 for real in-memory MongoDB integration testing. Created full mock infrastructure: MockLoggerPort, MockClockPort, MockNotificationPort, MockAppointmentRepository, MockConsultationPolicy, MockAppointmentFactory. | N/A       | 🤖    |
+| 2026-02-19 | test     | **TAREA 3.1 COMPLETE:** 87 Value Object & Policy tests passing (IdCard, Priority, FullName, ConsultationPolicy)                                                                                                                                        | N/A       | 🤖    |
+| 2026-02-19 | refactor | **PHASE 1 COMPLETE:** Fixed 3 SOLID violations (A-08→SRP, LSP→IdCard, ISP→Components)                                                                                                                                                                  | N/A       | 🤖    |
+| 2026-02-19 | feature  | Created branded types system for IdCard, OfficeNumber, AppointmentId                                                                                                                                                                                   | N/A       | 🤖    |
+| 2026-02-19 | refactor | Extracted ConsultationPolicy from Repository for SRP compliance                                                                                                                                                                                        | N/A       | 🤖    |
+| 2026-02-19 | feature  | Created 3 specialized AppointmentCard components (Waiting/Called/Completed)                                                                                                                                                                            | N/A       | 🤖    |
+| 2026-02-19 | docs     | Created PHASE1_COMPLETION_REPORT.md documenting all fixes                                                                                                                                                                                              | N/A       | 🤖    |
+| 2026-02-19 | docs     | Registra 7 hallazgos de auditoría SOLID en DEBT_REPORT.md                                                                                                                                                                                              | `3996958` | 🤖    |
+| 2026-02-19 | refactor | Elimina exportaciones de MongooseModule y AppointmentsGateway en módulos                                                                                                                                                                               | `bcbf5ba` | 🤖    |
+| 2026-02-19 | docs     | Verificado: emisión de eventos solo vía EventBroadcasterPort                                                                                                                                                                                           | N/A       | 🤖    |
+| 2026-02-19 | refactor | Modulariza ProducerController, queries a AppointmentQueryController (SRP)                                                                                                                                                                              | `44bc19f` | 🤖    |
+| 2026-02-19 | refactor | Extraer política de reintentos a RetryPolicyPort                                                                                                                                                                                                       | `0c3bd89` | 🤖    |
+| 2026-02-19 | refactor | Eliminar número mágico en CORS/WebSocket origin                                                                                                                                                                                                        | `50997ad` | 🤖    |
+| 2026-02-19 | docs     | Documentar excepción de process.env en decorador WebSocketGateway                                                                                                                                                                                      | `280cf7a` | 🤖    |
+| 2026-02-19 | refactor | Eliminar exportación de ClientsModule en NotificationsModule (DIP)                                                                                                                                                                                     | `052df83` | 🤖    |
+| 2026-02-19 | refactor | Centraliza todas las variables de entorno en .env y refuerza HUMAN CHECK en docker-compose.yml. Se elimina configuración directa y se documenta trazabilidad.                                                                                          | N/A       | 🤖    |
+| 2026-02-19 | fix      | Exporta MaintenanceOrchestratorUseCase en AppointmentModule y corrige inyección de dependencias en SchedulerModule. Servicios corren sin errores de DI.                                                                                                | `14726b5` | 🤖    |
+| 2026-02-19 | test     | test(e2e): estructura inicial y primer caso E2E para flujo completo de turnos médicos (API → RabbitMQ → Consumer → MongoDB)                                                                                                                            | `c112783` | 🤖    |
+| 2026-02-19 | infra    | Compatibiliza docker-compose.yml para Docker y Podman Compose; agrega restart policy y comentarios de portabilidad; README actualizado con instrucciones Podman Compose.                                                                               | N/A       | 🤖    |
 
 ### 1.2 — Estado de Auditorías
 
 <!-- INSERTAR NUEVOS CIERRES DE AUDITORÍA AQUÍ -->
 
-| Fecha | Auditoría | Estado | Hallazgos | Remediados |
-|-------|-----------|--------|-----------|------------|
+| Fecha      | Auditoría                     | Estado                             | Hallazgos      | Remediados                          |
+| ---------- | ----------------------------- | ---------------------------------- | -------------- | ----------------------------------- |
 | 2026-02-19 | Linting & Strong Typing Audit | ✅ CERRADA — 0 errores lint, 0 tsc | 20 (L-01…L-20) | 19 (L-18 pendiente frontend config) |
-| 2026-02-19 | PHASE 2 Testing | ✅ CERRADA — 189/189 tests passing | 1 prod bug | 1 |
-| 2026-02-19 | SOLID SRP/DIP | ✅ CERRADA | 7 | 7 |
-| 2026-02-19 | Hostile Audit v10 | ✅ CERRADA | 8 | 8 |
-| 2026-02-19 | Hostile Audit v9 | ✅ CERRADA | 4 | 4 |
-| 2026-02-18 | SOLID Round 2 | ✅ CERRADA | 7 | 7 |
-| 2026-02-18 | SOLID Round 1 | ✅ CERRADA | 12 | 12 |
+| 2026-02-19 | PHASE 2 Testing               | ✅ CERRADA — 189/189 tests passing | 1 prod bug     | 1                                   |
+| 2026-02-19 | SOLID SRP/DIP                 | ✅ CERRADA                         | 7              | 7                                   |
+| 2026-02-19 | Hostile Audit v10             | ✅ CERRADA                         | 8              | 8                                   |
+| 2026-02-19 | Hostile Audit v9              | ✅ CERRADA                         | 4              | 4                                   |
+| 2026-02-18 | SOLID Round 2                 | ✅ CERRADA                         | 7              | 7                                   |
+| 2026-02-18 | SOLID Round 1                 | ✅ CERRADA                         | 12             | 12                                  |
 
 ---
 
@@ -92,10 +92,10 @@
 
 ### 2.1 — Modelo de Colaboración Simbionte
 
-| Rol | Responsabilidad |
-|-----|-----------------|
+| Rol                  | Responsabilidad                                                                                                                   |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | **IA (Antigravity)** | Senior Software Engineer / Lead. Genera estructuras, refactoriza, propone patrones DDD/Hexagonal/SOLID, ejecuta implementaciones. |
-| **Equipo Humano** | Arquitecto Principal / Revisor. Define directrices, valida pureza del dominio, aprueba/rechaza planes, audita código. |
+| **Equipo Humano**    | Arquitecto Principal / Revisor. Define directrices, valida pureza del dominio, aprueba/rechaza planes, audita código.             |
 
 ### 2.2 — Diagrama de Interacción
 
@@ -114,29 +114,29 @@ graph TD
 
 ### 2.3 — Protocolo S.C.O.P.E.
 
-| Fase | Descripción |
-|------|-------------|
-| **S**ituation | Contexto de la deuda técnica |
-| **C**onstraints | Reglas innegociables (Hexagonal Pura, Zero Hardcode) |
-| **O**bjective | Resultado técnico/negocio esperado |
-| **P**urity Check | Validación SOLID y pureza del dominio |
-| **E**xecution | Implementación iterativa con aprobación humana |
+| Fase             | Descripción                                          |
+| ---------------- | ---------------------------------------------------- |
+| **S**ituation    | Contexto de la deuda técnica                         |
+| **C**onstraints  | Reglas innegociables (Hexagonal Pura, Zero Hardcode) |
+| **O**bjective    | Resultado técnico/negocio esperado                   |
+| **P**urity Check | Validación SOLID y pureza del dominio                |
+| **E**xecution    | Implementación iterativa con aprobación humana       |
 
 ### 2.4 — Herramientas de Gobernanza
 
-| Herramienta | Propósito |
-|-------------|-----------|
-| `GEMINI.md` | System prompt del Agente Orquestador |
+| Herramienta      | Propósito                                                        |
+| ---------------- | ---------------------------------------------------------------- |
+| `GEMINI.md`      | System prompt del Agente Orquestador                             |
 | `DEBT_REPORT.md` | Estado consolidado de deuda técnica (37 resueltos, 0 pendientes) |
-| `/skills/` | Skills especializadas para Sub-agentes |
+| `/skills/`       | Skills especializadas para Sub-agentes                           |
 
 ### 2.5 — Git Flow
 
-| Rama | Propósito |
-|------|-----------|
-| `main` | Producción estable |
-| `develop` | Integración de microservicios validados |
-| `feature/*` | Desarrollo aislado de componentes |
+| Rama        | Propósito                               |
+| ----------- | --------------------------------------- |
+| `main`      | Producción estable                      |
+| `develop`   | Integración de microservicios validados |
+| `feature/*` | Desarrollo aislado de componentes       |
 
 ---
 
@@ -148,47 +148,47 @@ graph TD
 
 <!-- INSERTAR NUEVOS COMMITS AQUÍ -->
 
-| Hash | Tipo | Descripción | Actor |
-|------|------|-------------|-------|
-| `3996958` | docs | Registra 7 hallazgos de auditoría SOLID en DEBT_REPORT.md | 🤖 |
-| `bcbf5ba` | refactor | Elimina exportaciones de MongooseModule y AppointmentsGateway | 🤖 |
-| `44bc19f` | refactor | Modulariza ProducerController, queries a AppointmentQueryController | 🤖 |
-| `0c3bd89` | refactor | Extraer política de reintentos a RetryPolicyPort | 🤖 |
-| `50997ad` | refactor | Eliminar número mágico en CORS/WebSocket origin | 🤖 |
-| `280cf7a` | docs | Documentar excepción de process.env en WebSocketGateway | 🤖 |
-| `052df83` | refactor | Eliminar exportación de ClientsModule (DIP) | 🤖 |
-| `f7ab75f` | refactor | Hostile Audit v9 & v10: LockRepository, Domain UUID, VO strictness | 🤖 |
-| `c757526` | fix | Enable Shutdown Hooks + Security Hardened Dockerfiles | 🤖 |
-| `0b1f474` | fix | Zero Hardcode in WS Guard + Dynamic Throttling | 🤖 |
-| `c865630` | fix | Implement DomainExceptionFilter in Producer | 🤖 |
-| `5e94dbc` | feat | Implement Value Objects (IdCard, PatientName) and Safe Mappers | 🤖 |
-| `2378344` | refactor | Implement Hexagonal Architecture in Frontend | 🤖 |
-| `8a72569` | feat | Localize user-facing content to Spanish | 🤖 |
-| `45f065c` | refactor | Convert README to Landing Page strategy (DRY) | 🤖 |
-| `e8f9a2b` | refactor | Delete AppointmentService (Dead Code) | 🤖 |
-| `44634f4` | refactor | Decouple CreateAppointmentUseCase from DTOs | 🤖 |
-| `271e5c6` | refactor | 7 findings: EventBroadcasterPort, CORS, typed payloads | 🤖 |
-| `64b54f7` | refactor | Hexagonal completo en Producer | 🤖 |
-| `74bb4e7` | test | 28 nuevos tests: event bus, handlers, policy, mapper | 🤖 |
-| `aa471a7` | refactor | Remediar 12 hallazgos SOLID | 🤖 |
-| `f49ffd8` | docs | Reescribir README.md alineado con arquitectura | 🤖 |
-| `9dcbf47` | fix | Resolver 4 bugs críticos para Elite Grade | 🤖 |
-| `29bce60` | feat | Zero Hardcode Policy | 🤖 + 👤 |
-| `a9d8160` | feat | Security Hardening: Helmet + Throttler + WsAuthGuard | 🤖 + 👤 |
-| `9b6d7eb` | feat | Jerarquía de errores y políticas de resiliencia | 🤖 |
-| `f6d5cc3` | feat | Arquitectura de Domain Events: Observer Pattern | 🤖 |
-| `75b4c76` | feat | Purga total de obsesión primitiva: VOs sincronizados | 🤖 |
-| `6d446eb` | refactor | Introducir ClockPort para tiempo determinístico (DIP) | 🤖 |
-| `523ad20` | refactor | Introducir LoggerPort para desacoplar del NestJS Logger (DIP) | 🤖 |
-| `30ac5fb` | refactor | Extraer lógica de duración a Domain Policy (SRP) | 🤖 |
-| `59dd199` | refactor | Dividir AssignmentUseCase en Complete + Assign (SRP) | 🤖 |
-| `b121454` | refactor | Desacoplar infraestructura de lógica core | 🤖 |
-| `94ad79d` | test | Derrotar "desafío del mock imposible" | 🤖 |
-| `50f5a7f` | refactor | Nomenclatura inglés global (turnos → appointments) | 🤖 + 👤 |
-| `c79343b` | refactor | Implementar arquitectura hexagonal en scheduler | 🤖 + 👤 |
-| `48611bf` | feat | Regla de aprobación humana en GEMINI.md | 👤 |
-| `04aecf3` | feat | Catálogo de patrones de diseño en skill | 🤖 |
-| `38fc2cb` | feat | Crear skill refactor-arch | 🤖 |
+| Hash      | Tipo     | Descripción                                                         | Actor   |
+| --------- | -------- | ------------------------------------------------------------------- | ------- |
+| `3996958` | docs     | Registra 7 hallazgos de auditoría SOLID en DEBT_REPORT.md           | 🤖      |
+| `bcbf5ba` | refactor | Elimina exportaciones de MongooseModule y AppointmentsGateway       | 🤖      |
+| `44bc19f` | refactor | Modulariza ProducerController, queries a AppointmentQueryController | 🤖      |
+| `0c3bd89` | refactor | Extraer política de reintentos a RetryPolicyPort                    | 🤖      |
+| `50997ad` | refactor | Eliminar número mágico en CORS/WebSocket origin                     | 🤖      |
+| `280cf7a` | docs     | Documentar excepción de process.env en WebSocketGateway             | 🤖      |
+| `052df83` | refactor | Eliminar exportación de ClientsModule (DIP)                         | 🤖      |
+| `f7ab75f` | refactor | Hostile Audit v9 & v10: LockRepository, Domain UUID, VO strictness  | 🤖      |
+| `c757526` | fix      | Enable Shutdown Hooks + Security Hardened Dockerfiles               | 🤖      |
+| `0b1f474` | fix      | Zero Hardcode in WS Guard + Dynamic Throttling                      | 🤖      |
+| `c865630` | fix      | Implement DomainExceptionFilter in Producer                         | 🤖      |
+| `5e94dbc` | feat     | Implement Value Objects (IdCard, PatientName) and Safe Mappers      | 🤖      |
+| `2378344` | refactor | Implement Hexagonal Architecture in Frontend                        | 🤖      |
+| `8a72569` | feat     | Localize user-facing content to Spanish                             | 🤖      |
+| `45f065c` | refactor | Convert README to Landing Page strategy (DRY)                       | 🤖      |
+| `e8f9a2b` | refactor | Delete AppointmentService (Dead Code)                               | 🤖      |
+| `44634f4` | refactor | Decouple CreateAppointmentUseCase from DTOs                         | 🤖      |
+| `271e5c6` | refactor | 7 findings: EventBroadcasterPort, CORS, typed payloads              | 🤖      |
+| `64b54f7` | refactor | Hexagonal completo en Producer                                      | 🤖      |
+| `74bb4e7` | test     | 28 nuevos tests: event bus, handlers, policy, mapper                | 🤖      |
+| `aa471a7` | refactor | Remediar 12 hallazgos SOLID                                         | 🤖      |
+| `f49ffd8` | docs     | Reescribir README.md alineado con arquitectura                      | 🤖      |
+| `9dcbf47` | fix      | Resolver 4 bugs críticos para Elite Grade                           | 🤖      |
+| `29bce60` | feat     | Zero Hardcode Policy                                                | 🤖 + 👤 |
+| `a9d8160` | feat     | Security Hardening: Helmet + Throttler + WsAuthGuard                | 🤖 + 👤 |
+| `9b6d7eb` | feat     | Jerarquía de errores y políticas de resiliencia                     | 🤖      |
+| `f6d5cc3` | feat     | Arquitectura de Domain Events: Observer Pattern                     | 🤖      |
+| `75b4c76` | feat     | Purga total de obsesión primitiva: VOs sincronizados                | 🤖      |
+| `6d446eb` | refactor | Introducir ClockPort para tiempo determinístico (DIP)               | 🤖      |
+| `523ad20` | refactor | Introducir LoggerPort para desacoplar del NestJS Logger (DIP)       | 🤖      |
+| `30ac5fb` | refactor | Extraer lógica de duración a Domain Policy (SRP)                    | 🤖      |
+| `59dd199` | refactor | Dividir AssignmentUseCase en Complete + Assign (SRP)                | 🤖      |
+| `b121454` | refactor | Desacoplar infraestructura de lógica core                           | 🤖      |
+| `94ad79d` | test     | Derrotar "desafío del mock imposible"                               | 🤖      |
+| `50f5a7f` | refactor | Nomenclatura inglés global (turnos → appointments)                  | 🤖 + 👤 |
+| `c79343b` | refactor | Implementar arquitectura hexagonal en scheduler                     | 🤖 + 👤 |
+| `48611bf` | feat     | Regla de aprobación humana en GEMINI.md                             | 👤      |
+| `04aecf3` | feat     | Catálogo de patrones de diseño en skill                             | 🤖      |
+| `38fc2cb` | feat     | Crear skill refactor-arch                                           | 🤖      |
 
 ---
 
@@ -200,29 +200,29 @@ graph TD
 
 <!-- INSERTAR NUEVAS FASES AL FINAL -->
 
-| Fase | Descripción Técnica | Commit(s) | Actor |
-|------|---------------------|-----------|-------|
-| 1-7 | Setup inicial, microservicios, Docker, RabbitMQ | `38fc2cb`...`5ba3555` | 👤 + 🤖 |
-| 8 | **Controller Decoupling**: ConsumerController → Application Layer | `e59305f`, `f615079` | 🤖 + 👤 |
-| 9 | **Scheduler Refactor**: Hexagonal Architecture + SRP | `8a379a5` | 🤖 + 👤 |
-| 10 | **Technical Culture Elevation**: SA Senior Identity, Skills upgrade | `9f76e47`, `4b6600a` | 🤖 |
-| 11 | **Value Objects & Factories**: Tactical DDD (IdCard, FullName, Priority) | `08e2eff` | 🤖 + 👤 |
-| 12 | **Repository Decoupling**: Specification + Data Mapper Patterns | `3a2669f` | 🤖 |
-| 13 | **Domain Event Architecture**: Observer Pattern, Event Bus | `f6d5cc3` | 🤖 |
-| 14 | **Primitive Obsession Purge**: Total Value Object Sync | `75b4c76` | 🤖 |
-| 15 | **Resilience Policies**: Domain Error Hierarchy, DLQ retry logic | `9b6d7eb` | 🤖 |
-| 16 | **Security Hardening**: Helmet, Throttler, WsAuthGuard, CORS | `a9d8160` | 🤖 + 👤 |
-| 17 | **Zero Hardcode Policy**: Purga total de credenciales | `29bce60` | 🤖 + 👤 |
-| 18 | **System Verification**: 4 bugs críticos → E2E flow certificado | `9dcbf47` | 🤖 |
-| 19 | **README Rewrite**: Documentación alineada | `f49ffd8` | 🤖 |
-| 20 | **DIP Fix**: Eliminar exportación de ClientsModule | `052df83` | 🤖 |
-| 21 | **Zero Hardcode Doc**: Documentar excepción process.env | `280cf7a` | 🤖 |
-| 22 | **Zero Magic Numbers**: FRONTEND_URL obligatorio | `50997ad` | 🤖 |
-| 23 | **Retry Policy DIP**: Extraer a RetryPolicyPort | `0c3bd89` | 🤖 |
-| 24 | **SRP Modularization**: ProducerController modularizado | `44bc19f` | 🤖 |
-| 25 | **Domain Events DIP**: Verificado EventBroadcasterPort | N/A | 🤖 |
-| 26 | **Infra Exports Purge**: Elimina exportaciones de infra | `bcbf5ba` | 🤖 |
-| 27 | **DEBT_REPORT Sync**: Registra 7 hallazgos SOLID en DEBT_REPORT.md | `3996958` | 🤖 |
+| Fase | Descripción Técnica                                                      | Commit(s)             | Actor   |
+| ---- | ------------------------------------------------------------------------ | --------------------- | ------- |
+| 1-7  | Setup inicial, microservicios, Docker, RabbitMQ                          | `38fc2cb`...`5ba3555` | 👤 + 🤖 |
+| 8    | **Controller Decoupling**: ConsumerController → Application Layer        | `e59305f`, `f615079`  | 🤖 + 👤 |
+| 9    | **Scheduler Refactor**: Hexagonal Architecture + SRP                     | `8a379a5`             | 🤖 + 👤 |
+| 10   | **Technical Culture Elevation**: SA Senior Identity, Skills upgrade      | `9f76e47`, `4b6600a`  | 🤖      |
+| 11   | **Value Objects & Factories**: Tactical DDD (IdCard, FullName, Priority) | `08e2eff`             | 🤖 + 👤 |
+| 12   | **Repository Decoupling**: Specification + Data Mapper Patterns          | `3a2669f`             | 🤖      |
+| 13   | **Domain Event Architecture**: Observer Pattern, Event Bus               | `f6d5cc3`             | 🤖      |
+| 14   | **Primitive Obsession Purge**: Total Value Object Sync                   | `75b4c76`             | 🤖      |
+| 15   | **Resilience Policies**: Domain Error Hierarchy, DLQ retry logic         | `9b6d7eb`             | 🤖      |
+| 16   | **Security Hardening**: Helmet, Throttler, WsAuthGuard, CORS             | `a9d8160`             | 🤖 + 👤 |
+| 17   | **Zero Hardcode Policy**: Purga total de credenciales                    | `29bce60`             | 🤖 + 👤 |
+| 18   | **System Verification**: 4 bugs críticos → E2E flow certificado          | `9dcbf47`             | 🤖      |
+| 19   | **README Rewrite**: Documentación alineada                               | `f49ffd8`             | 🤖      |
+| 20   | **DIP Fix**: Eliminar exportación de ClientsModule                       | `052df83`             | 🤖      |
+| 21   | **Zero Hardcode Doc**: Documentar excepción process.env                  | `280cf7a`             | 🤖      |
+| 22   | **Zero Magic Numbers**: FRONTEND_URL obligatorio                         | `50997ad`             | 🤖      |
+| 23   | **Retry Policy DIP**: Extraer a RetryPolicyPort                          | `0c3bd89`             | 🤖      |
+| 24   | **SRP Modularization**: ProducerController modularizado                  | `44bc19f`             | 🤖      |
+| 25   | **Domain Events DIP**: Verificado EventBroadcasterPort                   | N/A                   | 🤖      |
+| 26   | **Infra Exports Purge**: Elimina exportaciones de infra                  | `bcbf5ba`             | 🤖      |
+| 27   | **DEBT_REPORT Sync**: Registra 7 hallazgos SOLID en DEBT_REPORT.md       | `3996958`             | 🤖      |
 
 ---
 
@@ -232,80 +232,80 @@ graph TD
 
 ### 5.1 — Leyenda
 
-| Marcador | Propósito |
-|----------|-----------|
+| Marcador       | Propósito                                           |
+| -------------- | --------------------------------------------------- |
 | ⚕️ HUMAN CHECK | Decisiones arquitectónicas que requieren validación |
-| 🛡️ HUMAN CHECK | Decisiones de seguridad que requieren auditoría |
+| 🛡️ HUMAN CHECK | Decisiones de seguridad que requieren auditoría     |
 
 ### 5.2 — Capa de Dominio (Consumer)
 
-| Archivo | Contexto | Justificación |
-|---------|----------|---------------|
-| `appointment.entity.ts` | Domain Purity | Bloqueo de DTOs/Mongoose en entidad pura |
-| `logger.port.ts` | Logger Port | Contrato de logging sin dependencia NestJS |
-| `clock.port.ts` | Clock Port | Proveedor abstracto de tiempo testeable |
-| `consultation.policy.ts` | Domain Policy | Reglas de negocio de consultorios |
-| `appointment-event.ts` | Domain types | Tipos compartidos de Appointment |
+| Archivo                  | Contexto      | Justificación                              |
+| ------------------------ | ------------- | ------------------------------------------ |
+| `appointment.entity.ts`  | Domain Purity | Bloqueo de DTOs/Mongoose en entidad pura   |
+| `logger.port.ts`         | Logger Port   | Contrato de logging sin dependencia NestJS |
+| `clock.port.ts`          | Clock Port    | Proveedor abstracto de tiempo testeable    |
+| `consultation.policy.ts` | Domain Policy | Reglas de negocio de consultorios          |
+| `appointment-event.ts`   | Domain types  | Tipos compartidos de Appointment           |
 
 ### 5.3 — Capa de Aplicación (Consumer)
 
-| Archivo | Contexto | Justificación |
-|---------|----------|---------------|
-| `assign-available-offices.use-case.impl.ts` | DIP Delegation | Lógica delegada a Domain Policy |
-| `maintenance-orchestrator.use-case.impl.ts` | Error Severity | Decisión humana sobre errores |
-| `consumer.controller.ts` | Resilience Policy | Política ack/nack configurable |
+| Archivo                                     | Contexto          | Justificación                   |
+| ------------------------------------------- | ----------------- | ------------------------------- |
+| `assign-available-offices.use-case.impl.ts` | DIP Delegation    | Lógica delegada a Domain Policy |
+| `maintenance-orchestrator.use-case.impl.ts` | Error Severity    | Decisión humana sobre errores   |
+| `consumer.controller.ts`                    | Resilience Policy | Política ack/nack configurable  |
 
 ### 5.4 — Capa de Infraestructura (Consumer)
 
-| Archivo | Contexto | Justificación |
-|---------|----------|---------------|
-| `mongoose-appointment.repository.ts` | DIP Adapter | Implementa port con Mongoose |
-| `rabbitmq-notification.adapter.ts` | DIP Notification | Implementa port con ClientProxy |
-| `nest-logger.adapter.ts` | Infrastructure Adapter | Mapea LoggerPort a NestJS Logger |
-| `system-clock.adapter.ts` | Infrastructure Adapter | Mapea ClockPort a tiempo del sistema |
-| `scheduler.service.ts` | Side Effects | Movido a lifecycle hook `onModuleInit` |
+| Archivo                              | Contexto               | Justificación                          |
+| ------------------------------------ | ---------------------- | -------------------------------------- |
+| `mongoose-appointment.repository.ts` | DIP Adapter            | Implementa port con Mongoose           |
+| `rabbitmq-notification.adapter.ts`   | DIP Notification       | Implementa port con ClientProxy        |
+| `nest-logger.adapter.ts`             | Infrastructure Adapter | Mapea LoggerPort a NestJS Logger       |
+| `system-clock.adapter.ts`            | Infrastructure Adapter | Mapea ClockPort a tiempo del sistema   |
+| `scheduler.service.ts`               | Side Effects           | Movido a lifecycle hook `onModuleInit` |
 
 ### 5.5 — Schemas (Consumer)
 
-| Archivo | Contexto | Justificación |
-|---------|----------|---------------|
-| `appointment.schema.ts` | MongoDB Indexes | `idCard` único, `status`, composite |
-| `appointment.schema.ts` | Nullable office | `null` cuando espera asignación |
-| `appointment.schema.ts` | Appointment states | Enum: waiting, called, completed |
-| `appointment.schema.ts` | Appointment priority | Enum: high, medium, low |
+| Archivo                 | Contexto             | Justificación                       |
+| ----------------------- | -------------------- | ----------------------------------- |
+| `appointment.schema.ts` | MongoDB Indexes      | `idCard` único, `status`, composite |
+| `appointment.schema.ts` | Nullable office      | `null` cuando espera asignación     |
+| `appointment.schema.ts` | Appointment states   | Enum: waiting, called, completed    |
+| `appointment.schema.ts` | Appointment priority | Enum: high, medium, low             |
 
 ### 5.6 — Producer (API Gateway)
 
-| Archivo | Contexto | Justificación |
-|---------|----------|---------------|
-| `main.ts` | 🛡️ Helmet Security | Headers HTTP seguros |
-| `main.ts` | 🛡️ CORS Restringido | Origin limitado a FRONTEND_URL |
-| `main.ts` | Swagger Config | Documentación de API |
-| `main.ts` | Hybrid App | HTTP + Microservice |
-| `app.module.ts` | MongoDB Connection | URI desde configService.getOrThrow() |
-| `app.module.ts` | 🛡️ Throttler | Rate limiting global |
+| Archivo         | Contexto            | Justificación                        |
+| --------------- | ------------------- | ------------------------------------ |
+| `main.ts`       | 🛡️ Helmet Security  | Headers HTTP seguros                 |
+| `main.ts`       | 🛡️ CORS Restringido | Origin limitado a FRONTEND_URL       |
+| `main.ts`       | Swagger Config      | Documentación de API                 |
+| `main.ts`       | Hybrid App          | HTTP + Microservice                  |
+| `app.module.ts` | MongoDB Connection  | URI desde configService.getOrThrow() |
+| `app.module.ts` | 🛡️ Throttler        | Rate limiting global                 |
 
 ### 5.7 — Producer (WebSocket & Security)
 
-| Archivo | Contexto | Justificación |
-|---------|----------|---------------|
-| `appointments.gateway.ts` | 🛡️ WS Gateway Hardened | Guard + CORS restringido |
-| `ws-auth.guard.ts` | 🛡️ WS Auth Guard | Mock en dev, JWT en prod |
-| `events.module.ts` | Events Module | Encapsula gateway y controller |
+| Archivo                   | Contexto               | Justificación                  |
+| ------------------------- | ---------------------- | ------------------------------ |
+| `appointments.gateway.ts` | 🛡️ WS Gateway Hardened | Guard + CORS restringido       |
+| `ws-auth.guard.ts`        | 🛡️ WS Auth Guard       | Mock en dev, JWT en prod       |
+| `events.module.ts`        | Events Module          | Encapsula gateway y controller |
 
 ### 5.8 — Docker & Infrastructure
 
-| Archivo | Contexto | Justificación |
-|---------|----------|---------------|
-| `docker-compose.yml` | Docker Config | Revisar puertos y variables |
+| Archivo              | Contexto             | Justificación               |
+| -------------------- | -------------------- | --------------------------- |
+| `docker-compose.yml` | Docker Config        | Revisar puertos y variables |
 | `docker-compose.yml` | RabbitMQ Credentials | No usar guest/guest en prod |
-| `docker-compose.yml` | MongoDB Credentials | Secrets manager en prod |
-| `docker-compose.yml` | RabbitMQ Ports | 15672 NO exponer en prod |
+| `docker-compose.yml` | MongoDB Credentials  | Secrets manager en prod     |
+| `docker-compose.yml` | RabbitMQ Ports       | 15672 NO exponer en prod    |
 
 ### 5.9 — Tests
 
-| Archivo | Contexto | Justificación |
-|---------|----------|---------------|
+| Archivo                          | Contexto                      | Justificación             |
+| -------------------------------- | ----------------------------- | ------------------------- |
 | `architecture-challenge.spec.ts` | El Desafío del Mock Imposible | Demostró pureza hexagonal |
 
 ---
@@ -365,15 +365,15 @@ graph TD
 
 <!-- INSERTAR NUEVAS DECISIONES AQUÍ -->
 
-| Decisión | Justificación | Impacto |
-|----------|---------------|---------|
-| Forzar Hexagonal en Consumer | IA proponía MVC plano | Testabilidad, desacoplamiento |
-| Implementar Value Objects | IA usaba primitivos | Validación encapsulada, inmutabilidad |
-| Zero Hardcode Policy | IA dejaba defaults | Seguridad industrial, compliance |
-| WsAuthGuard obligatorio | IA exponía WS sin auth | Prevención de data leakage |
-| Aprobación Humana Previa | IA ejecutaba sin preguntar | Control total del humano |
-| DLX (Dead Letter Exchange) | IA descartaba mensajes | Recuperabilidad, observabilidad |
-| Hexagonal en ambos micros | IA argumentó over-engineering | Consistencia arquitectónica |
+| Decisión                     | Justificación                 | Impacto                               |
+| ---------------------------- | ----------------------------- | ------------------------------------- |
+| Forzar Hexagonal en Consumer | IA proponía MVC plano         | Testabilidad, desacoplamiento         |
+| Implementar Value Objects    | IA usaba primitivos           | Validación encapsulada, inmutabilidad |
+| Zero Hardcode Policy         | IA dejaba defaults            | Seguridad industrial, compliance      |
+| WsAuthGuard obligatorio      | IA exponía WS sin auth        | Prevención de data leakage            |
+| Aprobación Humana Previa     | IA ejecutaba sin preguntar    | Control total del humano              |
+| DLX (Dead Letter Exchange)   | IA descartaba mensajes        | Recuperabilidad, observabilidad       |
+| Hexagonal en ambos micros    | IA argumentó over-engineering | Consistencia arquitectónica           |
 
 ---
 
@@ -452,8 +452,8 @@ audit completo del proyecto siguiendo OWASP Top 10."
 🤖 IA: [Ejecutó 5 fases de remediación — 18 archivos]
 ```
 
-| Commit | Hash | Descripción |
-|--------|------|-------------|
+| Commit         | Hash      | Descripción                 |
+| -------------- | --------- | --------------------------- |
 | refactor(arch) | `aa471a7` | Remediar 12 hallazgos SOLID |
 
 ### 9.2 — SA-QA Verificación (2026-02-18)
@@ -473,8 +473,8 @@ audit completo del proyecto siguiendo OWASP Top 10."
 🤖 IA: [Creó 5 spec files + actualizó 2 — 28 tests nuevos]
 ```
 
-| Commit | Hash | Descripción |
-|--------|------|-------------|
+| Commit   | Hash      | Descripción                                  |
+| -------- | --------- | -------------------------------------------- |
 | test(qa) | `74bb4e7` | 28 nuevos tests. Total: 70 tests, 0 failures |
 
 ### 9.3 — Producer Hexagonal Completo (2026-02-18)
@@ -494,8 +494,8 @@ audit completo del proyecto siguiendo OWASP Top 10."
    Resultado: 71/71 PASS.
 ```
 
-| Commit | Hash | Descripción |
-|--------|------|-------------|
+| Commit             | Hash      | Descripción                                   |
+| ------------------ | --------- | --------------------------------------------- |
 | refactor(producer) | `64b54f7` | Hexagonal completo: inbound ports + use-cases |
 
 ### 9.4 — Auditoría SOLID Round 2 (2026-02-18)
@@ -514,8 +514,8 @@ audit completo del proyecto siguiendo OWASP Top 10."
    Resultado: 71/71 PASS.
 ```
 
-| Commit | Hash | Descripción |
-|--------|------|-------------|
+| Commit          | Hash      | Descripción           |
+| --------------- | --------- | --------------------- |
 | refactor(solid) | `271e5c6` | 7 findings remediados |
 
 ### 9.5 — Auditoría Single File: CreateAppointmentUseCase (2026-02-18)
@@ -531,8 +531,8 @@ audit completo del proyecto siguiendo OWASP Top 10."
    Resultado: Producer 20/20 ✅.
 ```
 
-| Commit | Hash | Descripción |
-|--------|------|-------------|
+| Commit             | Hash      | Descripción                            |
+| ------------------ | --------- | -------------------------------------- |
 | refactor(producer) | `44634f4` | Decouple from DTOs, introduced Command |
 
 ### 9.6 — Eliminación AppointmentService Dead Code (2026-02-19)
@@ -548,8 +548,8 @@ audit completo del proyecto siguiendo OWASP Top 10."
    Resultado: Consumer 44 tests ✅ PASS.
 ```
 
-| Commit | Hash | Descripción |
-|--------|------|-------------|
+| Commit             | Hash      | Descripción               |
+| ------------------ | --------- | ------------------------- |
 | refactor(consumer) | `e8f9a2b` | Delete AppointmentService |
 
 ### 9.7 — Refactor Meta-Arquitectónico GEMINI.md (2026-02-19)
@@ -564,13 +564,13 @@ audit completo del proyecto siguiendo OWASP Top 10."
 🤖 IA: [Descomposición Modular: Kernel <50 líneas, módulos en docs/agent-context/]
 ```
 
-| Commit | Hash | Descripción |
-|--------|------|-------------|
-| refactor(meta) | `c4d9e1f` | Decompose GEMINI.md into modular Kernel |
-| fix(skills) | `b2d9e1a` | Repair YAML frontmatter in 4 skills |
-| refactor(docs) | `45f065c` | README to Landing Page (DRY) |
-| feat(i18n) | `8a72569` | Localize content to Spanish |
-| refactor(frontend) | `2378344` | Hexagonal Architecture in Frontend |
+| Commit             | Hash      | Descripción                             |
+| ------------------ | --------- | --------------------------------------- |
+| refactor(meta)     | `c4d9e1f` | Decompose GEMINI.md into modular Kernel |
+| fix(skills)        | `b2d9e1a` | Repair YAML frontmatter in 4 skills     |
+| refactor(docs)     | `45f065c` | README to Landing Page (DRY)            |
+| feat(i18n)         | `8a72569` | Localize content to Spanish             |
+| refactor(frontend) | `2378344` | Hexagonal Architecture in Frontend      |
 
 ### 9.8 — Hostile Audit v9: Resiliencia Distribuida (2026-02-19)
 
@@ -596,8 +596,8 @@ audit completo del proyecto siguiendo OWASP Top 10."
 🤖 IA: [Domain Identity UUID, EventDispatching Decorator, findAvailableOffices en Repo]
 ```
 
-| Commit | Hash | Descripción |
-|--------|------|-------------|
+| Commit         | Hash      | Descripción                     |
+| -------------- | --------- | ------------------------------- |
 | refactor(arch) | `f7ab75f` | Hostile Audit v9 & v10 complete |
 
 ### 9.10 — Auditoría SOLID SRP/DIP Final (2026-02-19)
@@ -617,14 +617,14 @@ audit completo del proyecto siguiendo OWASP Top 10."
 Resultado: Auditoría REMEDIADA.
 ```
 
-| Commit | Hash | Descripción |
-|--------|------|-------------|
-| refactor(consumer) | `052df83` | Eliminar exportación ClientsModule |
-| docs(producer) | `280cf7a` | Documentar excepción process.env |
-| refactor(producer) | `50997ad` | Zero Magic Numbers |
-| refactor(consumer) | `0c3bd89` | RetryPolicyPort |
-| refactor(producer) | `44bc19f` | Modularizar ProducerController |
-| refactor(core) | `bcbf5ba` | Eliminar exports de infraestructura |
+| Commit             | Hash      | Descripción                         |
+| ------------------ | --------- | ----------------------------------- |
+| refactor(consumer) | `052df83` | Eliminar exportación ClientsModule  |
+| docs(producer)     | `280cf7a` | Documentar excepción process.env    |
+| refactor(producer) | `50997ad` | Zero Magic Numbers                  |
+| refactor(consumer) | `0c3bd89` | RetryPolicyPort                     |
+| refactor(producer) | `44bc19f` | Modularizar ProducerController      |
+| refactor(core)     | `bcbf5ba` | Eliminar exports de infraestructura |
 
 ### 9.11 — Auditoría Hostil v11: DIP/DDD Violations (2026-02-19)
 
@@ -654,10 +654,10 @@ Resultado: Auditoría REMEDIADA.
    Resultado: 189/189 PASS ✅
 ```
 
-| Commit | Hash | Descripción |
-|--------|------|-------------|
+| Commit             | Hash      | Descripción                                  |
+| ------------------ | --------- | -------------------------------------------- |
 | refactor(consumer) | `152fb14` | Auditoría v11 Backend: H-32 a H-35 (DIP/DDD) |
-| refactor(frontend) | `f3721fa` | Auditoría v11 Frontend: H-36 (ref cleanup) |
+| refactor(frontend) | `f3721fa` | Auditoría v11 Frontend: H-36 (ref cleanup)   |
 
 ### 9.12 — Refactor SRP del Copilot-Instructions.md (2026-02-20)
 
@@ -670,14 +670,14 @@ Resultado: Auditoría REMEDIADA.
 🤖 IA: [Identificó tarea de Architectural Refactor]
    Principio aplicado: SRP (Single Responsibility Principle)
    Objetivo: Hacer copilot-instructions.md pure orchestrator que delega a contextos externos
-   
+
 🤖 IA: [Ejecutó refactor completo]
    - Header refactorizado: Bootstrap con DIP explícito (4 read_file)
    - Single Source of Truth: Delegación a PROJECT_CONTEXT, RULES, WORKFLOW, SKILL_REGISTRY
    - Algoritmo de delegación conciso (50 líneas)
    - Eliminados ejemplos extensos (referenciados a templates externos)
    - Reducción: 558 → 132 líneas (76% menos código)
-   
+
 👤 Human: [Implícito ✅ - solicitud completada]
 
 🤖 IA: [Modificó .gitignore para trackear copilot-instructions.md]
@@ -685,18 +685,20 @@ Resultado: Auditoría REMEDIADA.
 ```
 
 **Arquitectura Aplicada:**
+
 - ✅ SRP: Archivo solo orquesta, no define reglas/contextos
 - ✅ DIP: Bootstrap con inyección de dependencias explícita
 - ✅ DRY: Elimina duplicación con archivos externos
 - ✅ Single Source of Truth: 4 módulos de contexto
 
 **Resultado:**
+
 - Archivo refactorizado: 132 líneas vs 558 previas
 - Mantenibilidad: Cambios a reglas/workflow se hacen en archivos específicos
 - Trazabilidad: Bootstrap muestra explícitamente qué contextos carga
 
-| Commit | Hash | Descripción |
-|--------|------|-------------|
+| Commit         | Hash      | Descripción                                       |
+| -------------- | --------- | ------------------------------------------------- |
 | refactor(docs) | `f2a75c7` | Apply SRP to copilot-instructions (558→132 lines) |
 
 ### 9.13 — Auditoría MVP Hostil Completa (2026-02-20)
@@ -707,7 +709,7 @@ Resultado: Auditoría REMEDIADA.
 👤 Human: "Ejecuta el prompt de auditoría hostil con rol senior"
 
 🤖 IA: [Auditoría de 5 áreas — Bootstrap + 15+ búsquedas]
-   
+
 ÁREA 1 — ARQUITECTURA (88/100):
   ✅ Domain puro: grep -rn "import.*@nestjs" → 0 matches (DIP validado)
   ✅ Sin God Objects: max 798 líneas (integration test)
@@ -753,6 +755,7 @@ Resultado: Auditoría REMEDIADA.
 ```
 
 **Scorcard Final:**
+
 ```
 Arquitectura:        88/100 (25%) = 22.0 ✅
 SOLID Principles:    85/100 (25%) = 21.25 ✅
@@ -764,12 +767,13 @@ TOTAL MVP SCORE:     62/100            🟡 MVP CONDICIONAL
 ```
 
 **Veredicto:** MVP CONDICIONAL — Aceptable si se remedian:
+
 1. H-S1: Token fix (5 min)
 2. H-T1: Frontend tests (12h)
 3. H-U1: Loading states (2h)
 
-| Commit | Hash | Descripción |
-|--------|------|-------------|
+| Commit     | Hash      | Descripción                                           |
+| ---------- | --------- | ----------------------------------------------------- |
 | audit(mvp) | (pending) | Auditoría MVP: 5 áreas, scorecard 62/100, 7 hallazgos |
 
 ---
@@ -778,31 +782,31 @@ TOTAL MVP SCORE:     62/100            🟡 MVP CONDICIONAL
 
 ### 10.1 — Commits Adicionales por Fase
 
-| Hash | Fase | Descripción |
-|------|------|-------------|
-| `5e94dbc` | 11 | Value Objects + Safe Mappers |
-| `c865630` | 15 | DomainExceptionFilter |
-| `0b1f474` | 16 | Zero Hardcode in WS Guard |
-| `c757526` | 18 | Shutdown Hooks + Hardened Dockerfiles |
+| Hash      | Fase | Descripción                           |
+| --------- | ---- | ------------------------------------- |
+| `5e94dbc` | 11   | Value Objects + Safe Mappers          |
+| `c865630` | 15   | DomainExceptionFilter                 |
+| `0b1f474` | 16   | Zero Hardcode in WS Guard             |
+| `c757526` | 18   | Shutdown Hooks + Hardened Dockerfiles |
 
 ### 10.2 — Métricas de Calidad
 
-| Métrica | Producer | Consumer | Total |
-|---------|----------|----------|-------|
-| Test Suites | 6 | 12 | 18 |
-| Tests | 20 | 51 | 71 |
-| Passing | 20 | 51 | 71 |
-| Coverage | 100% | 100% | 100% |
+| Métrica     | Producer | Consumer | Total |
+| ----------- | -------- | -------- | ----- |
+| Test Suites | 6        | 12       | 18    |
+| Tests       | 20       | 51       | 71    |
+| Passing     | 20       | 51       | 71    |
+| Coverage    | 100%     | 100%     | 100%  |
 
 ### 10.3 — Referencias de Documentación
 
-| Documento | Propósito |
-|-----------|-----------|
-| `GEMINI.md` | System Prompt del Agente Orquestador |
-| `DEBT_REPORT.md` | Estado de Deuda Técnica |
-| `SECURITY_AUDIT.md` | Hallazgos de Seguridad |
-| `/skills/*.md` | Skills especializadas |
-| `/docs/agent-context/` | Módulos de contexto modular |
+| Documento              | Propósito                            |
+| ---------------------- | ------------------------------------ |
+| `GEMINI.md`            | System Prompt del Agente Orquestador |
+| `DEBT_REPORT.md`       | Estado de Deuda Técnica              |
+| `SECURITY_AUDIT.md`    | Hallazgos de Seguridad               |
+| `/skills/*.md`         | Skills especializadas                |
+| `/docs/agent-context/` | Módulos de contexto modular          |
 
 ---
 
@@ -810,7 +814,6 @@ TOTAL MVP SCORE:     62/100            🟡 MVP CONDICIONAL
 
 ---
 
-> *Documento generado y mantenido bajo metodología AI-First con trazabilidad completa.*
-> 
-> *Última actualización: 2026-02-19*
-
+> _Documento generado y mantenido bajo metodología AI-First con trazabilidad completa._
+>
+> _Última actualización: 2026-02-19_
