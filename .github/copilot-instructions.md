@@ -35,13 +35,13 @@ const SKILL_REGISTRY  = await read_file("docs/agent-context/SKILL_REGISTRY.md");
 |---|---|
 | **Frontend (UI/UX)** | `frontend-ui`, `refactor-arch`, `testing-qa` |
 | **Backend (API/Logic)** | `backend-api`, `refactor-arch`, `testing-qa` |
-| **Refactor Arquitectónico** | `refactor-arch`, `solid-principles`, `testing-qa` |
-| **Microservicios** | `microservices-patterns`, `backend-api`, `testing-qa` |
+| **Refactor Arquitectónico** | `refactor-arch`, `testing-qa` |
+| **Microservicios** | `backend-api`, `refactor-arch`, `testing-qa` |
 | **Security/Auditoría** | `security-audit`, `refactor-arch`, `testing-qa` |
-| **Testing/QA** | `testing-qa`, `refactor-arch`, `solid-principles` |
+| **Testing/QA** | `testing-qa`, `refactor-arch` |
 | **Docker/Infra** | `docker-infra`, `backend-api`, `testing-qa` |
-| **Commits/Docs** | `conventional-commits`, `skill-creator` (opcional) | Mensajes semánticos + documentación estructurada |
-| **Creación de Skills** | `skill-creator`, `refactor-arch`, `testing-qa` | Framework de skills + arquitectura + validación |
+| **Commits/Docs** | `conventional-commits`, `skill-creator` (opcional) |
+| **Creación de Skills** | `skill-creator`, `refactor-arch`, `testing-qa` |
 
 ### 1.2 — Delegation Algorithm
 
@@ -49,14 +49,13 @@ const SKILL_REGISTRY  = await read_file("docs/agent-context/SKILL_REGISTRY.md");
 
 ```javascript
 // Algoritmo de Delegación a Sub-Agentes (SA)
+// NOTA: Asume que PROJECT_CONTEXT, RULES, WORKFLOW, SKILL_REGISTRY ya están cargados (Bootstrap sección 0)
 async function delegarTarea(solicitudUsuario) {
-    // 1. Identificar tipo de tarea (consultar SKILL_REGISTRY.md)
+    // 1. Identificar tipo de tarea (consultar SKILL_REGISTRY ya cargado)
     const tipo = identificarTipo(solicitudUsuario);
     const skillsRequeridas = SKILL_REGISTRY[tipo].requiredSkills; // 2-3 skills mínimo
     
-    // 2. Cargar contexts + skills
-    const PROJECT_CONTEXT = await read_file("docs/agent-context/PROJECT_CONTEXT.md");
-    const RULES = await read_file("docs/agent-context/RULES.md");
+    // 2. Cargar skills específicas (contextos ya disponibles del Bootstrap)
     const skills = {};
     for (const skillName of skillsRequeridas) {
         skills[skillName] = await read_file(`skills/${skillName}/skill.md`);
@@ -127,7 +126,7 @@ ${content}
 > - Security: Ver `skills/security-audit/assets/delegation-template.md`
 > - Testing: Ver `skills/testing-qa/assets/delegation-template.md`
 > 
-> **Ejemplos ejecutados:** Ver `AI_WORKFLOW.md` secciones 9.1-9.14
+> **Ejemplos ejecutados:** Ver `AI_WORKFLOW.md` secciones 9.1-9.12
 
 ---
 **STATUS:** COPILOT ADAPTER ACTIVE. LOAD CONTEXT MODULES TO PROCEED.
