@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-import { Connection } from 'mongoose';
+import { Connection, Types } from 'mongoose';
 import { LockRepository } from '../../domain/ports/outbound/lock.repository';
 
 // Pattern: Adapter (Infrastructure)
@@ -20,10 +20,11 @@ export class MongooseLockRepository implements LockRepository {
         const now = Date.now();
 
         try {
-            // Upsert with condition: Either doesn't exist or is expired
+            // ⚕️ HUMAN CHECK - Usar lockName como string _id en vez de ObjectId
+            // ObjectId requiere 24 hex chars; lockName es arbitrario
             const result = await collection.findOneAndUpdate(
                 {
-                    _id: lockName as any,
+                    _id: lockName as unknown as Types.ObjectId,
                     $or: [
                         { expiresAt: { $lt: now } },
                         { expiresAt: { $exists: false } }
@@ -31,7 +32,7 @@ export class MongooseLockRepository implements LockRepository {
                 },
                 {
                     $set: {
-                        _id: lockName as any,
+                        _id: lockName as unknown as Types.ObjectId,
                         expiresAt: now + ttlMs,
                         acquiredAt: now
                     }
@@ -39,16 +40,20 @@ export class MongooseLockRepository implements LockRepository {
                 { upsert: true, returnDocument: 'after' }
             );
 
+            this.logger.log(`Lock '${lockName}' acquired: ${!!result}`);
             return !!result;
         } catch (error) {
             // Duplicate key error means someone else has the lock
+            this.logger.warn(`Failed to acquire lock '${lockName}': ${error}`);
             return false;
         }
     }
 
     async release(lockName: string): Promise<void> {
         try {
-            await this.connection.collection(this.collectionName).deleteOne({ _id: lockName as any });
+            // ⚕️ HUMAN CHECK - Usar lockName como string _id
+            await this.connection.collection(this.collectionName).deleteOne({ _id: lockName as unknown as Types.ObjectId });
+            this.logger.log(`Lock '${lockName}' released`);
         } catch (error) {
             this.logger.error(`Failed to release lock ${lockName}: ${error}`);
         }

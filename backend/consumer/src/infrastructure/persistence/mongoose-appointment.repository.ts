@@ -22,8 +22,9 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
     async findWaiting(): Promise<Appointment[]> {
         const docs = await this.model
             .find({ status: 'waiting' })
-            .sort(AppointmentQuerySpecification.QUEUE_SORT_ORDER as any)
+            .sort(AppointmentQuerySpecification.QUEUE_SORT_ORDER)
             .exec();
+        console.log('[DEBUG] findWaiting() →', docs.length, 'turnos encontrados');
         return docs.map(doc => AppointmentMapper.toDomain(doc));
     }
 
@@ -33,16 +34,19 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
             .select('office')
             .lean()
             .exec();
-
+        console.log('[DEBUG] findAvailableOffices() →', occupiedDocs.length, 'oficinas ocupadas');
         const occupiedIds = occupiedDocs.map(d => String(d.office));
-        return allOfficeIds.filter(id => !occupiedIds.includes(id));
+        const libres = allOfficeIds.filter(id => !occupiedIds.includes(id));
+        console.log('[DEBUG] findAvailableOffices() → oficinas libres:', libres);
+        return libres;
     }
 
     async save(appointment: Appointment): Promise<Appointment> {
         const persistenceData = AppointmentMapper.toPersistence(appointment);
 
-        // Try to find by domainId
-        const existing = await this.model.findOne({ domainId: appointment.id }).exec();
+        // Use domainId for lookup (never appointment.id, which may be a new UUID)
+        const domainId = appointment.id;
+        const existing = await this.model.findOne({ domainId }).exec();
         if (!existing) {
             const created = await this.model.create(persistenceData);
             return AppointmentMapper.toDomain(created);
@@ -50,7 +54,7 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
 
         // Existing entity → update in place
         const updated = await this.model.findOneAndUpdate(
-            { domainId: appointment.id },
+            { domainId },
             persistenceData,
             { new: true, upsert: true },
         ).exec();

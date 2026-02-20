@@ -15,6 +15,7 @@ export class AppointmentMapper {
      * Maps a Mongoose document to a Domain Entity.
      */
     public static toDomain(doc: AppointmentDocument): Appointment {
+        // Usar siempre doc.domainId como id de la entidad
         return new Appointment(
             new IdCard(doc.idCard),
             new FullName(doc.fullName),
@@ -23,7 +24,7 @@ export class AppointmentMapper {
             doc.office,
             doc.timestamp,
             doc.completedAt ?? undefined,
-            doc.domainId // Use domainId for domain identity
+            doc.domainId // Garantiza que el id de dominio es persistente
         );
     }
 
