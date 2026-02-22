@@ -258,4 +258,81 @@ Si el humano rechaza el plan:
 >
 > **Ejemplos ejecutados:** Ver `AI_WORKFLOW.md` secciones 9.1-9.12
 
+## 2. Model selection policy
+
+> **Ref:** Politica objetiva para seleccion de modelo segun tipo de tarea.
+> Basada en 4 dimensiones: output window, razonamiento, input window, costo.
+
+### 2.1 — Umbrales minimos para SA Senior
+
+| Dimension         | Umbral minimo              | Justificacion                                                               |
+| ----------------- | -------------------------- | --------------------------------------------------------------------------- |
+| Output window     | >=32K tokens               | SA genera controller + tests + summary (~10-25K tokens en tareas complejas) |
+| Input window      | >=100K tokens              | 4 modulos + 3 skills + tarea + codigo fuente (~35-40K tokens)               |
+| Razonamiento      | Tier Sonnet/Pro o superior | SOLID, DDD, Hexagonal, tipado 100%, `// HUMAN CHECK` con justificacion      |
+| Costo por request | <=1x para rutina           | Delegaciones frecuentes a 3x no son sostenibles                             |
+
+### 2.2 — Clasificacion por tier
+
+**Tier 1 — Recomendado para AO y SA (tareas de cualquier complejidad):**
+
+| Modelo            | Input | Output | Razonamiento | Costo | Notas                                     |
+| ----------------- | ----- | ------ | ------------ | ----- | ----------------------------------------- |
+| GPT-5.3-Codex     | 272K  | 128K   | Top          | 1x    | Mejor relacion capacidad/costo            |
+| GPT-5.2-Codex     | 272K  | 128K   | Top          | 1x    | Input masivo para contextos grandes       |
+| GPT-5.1-Codex-Max | 128K  | 128K   | Top          | 1x    | Output maximo en familia GPT              |
+| GPT-5.1-Codex     | 128K  | 128K   | Alto         | 1x    | Solido para SA de codigo                  |
+| Claude Opus 4.6   | 128K  | 64K    | Top          | 3x    | Solo para tareas de arquitectura compleja |
+
+**Tier 2 — Bueno para SA rutinario (code changes, tests, bug fixes):**
+
+| Modelo            | Input | Output | Razonamiento | Costo | Notas                                     |
+| ----------------- | ----- | ------ | ------------ | ----- | ----------------------------------------- |
+| Claude Opus 4.5   | 128K  | 32K    | Top          | 3x    | Razonamiento top pero caro y output justo |
+| GPT-5.2           | 128K  | 64K    | Alto         | 1x    | Buen balance general                      |
+| GPT-5.1           | 128K  | 64K    | Alto         | 1x    | Buen balance general                      |
+| Claude Sonnet 4.5 | 128K  | 32K    | Alto         | 1x    | Mejor relacion calidad/costo en Claude    |
+| Claude Sonnet 4.6 | 128K  | 32K    | Alto         | 1x    | Equivalente a Sonnet 4.5                  |
+| Gemini 2.5 Pro    | 109K  | 64K    | Alto         | 1x    | Buen output, input ligeramente menor      |
+| Gemini 3 Pro      | 109K  | 64K    | Alto         | 1x    | Preview — monitorear estabilidad          |
+
+**Tier 3 — Solo para tareas simples (linting, renaming, commits, formatting):**
+
+| Modelo             | Input | Output | Razonamiento | Costo | Notas                                 |
+| ------------------ | ----- | ------ | ------------ | ----- | ------------------------------------- |
+| Claude Haiku 4.5   | 128K  | 32K    | Medio        | 0.33x | Barato pero puede fallar en SOLID/DDD |
+| Gemini 3 Flash     | 109K  | 64K    | Medio        | 0.33x | Preview, buen output para su costo    |
+| GPT-5.1-Codex-Mini | 128K  | 128K   | Medio        | 0.33x | Output enorme, razonamiento medio     |
+
+### 2.3 — Anti-patrones de seleccion de modelo
+
+- Anti-pattern: Usar modelos con output <32K para tareas de generacion de codigo multi-archivo
+- Anti-pattern: Usar modelos Tier 3 para tareas que requieran razonamiento arquitectonico (DDD, Hexagonal, refactoring)
+- Anti-pattern: Usar Opus (3x) para tareas rutinarias que un Sonnet/GPT-5.x resuelve igual
+- Anti-pattern: Usar modelos Preview en produccion sin monitorear resultados
+
+### 2.4 — Modelos prohibidos para este proyecto
+
+> **Razon:** No cumplen umbrales minimos de la seccion 2.1.
+
+| Modelo          | Input | Output | Razon de exclusion                                  |
+| --------------- | ----- | ------ | --------------------------------------------------- |
+| GPT-4o          | 64K   | 4K     | Output inutilizable (no cabe 1 test completo)       |
+| GPT-4.1         | 111K  | 16K    | Output insuficiente para generacion multi-archivo   |
+| Claude Sonnet 4 | 128K  | 16K    | Output insuficiente para SA senior                  |
+| GPT-5 mini      | 128K  | 64K    | Razonamiento insuficiente para nivel senior exigido |
+
+### 2.5 — Regla de seleccion rapida
+
+```plaintext
+IF tarea == arquitectura compleja (refactor, DDD, security audit)
+   → Tier 1 (preferir GPT-5.x-Codex por costo, Opus solo si se necesita razonamiento superior)
+ELSE IF tarea == codigo rutinario (tests, bugfix, feature simple)
+   → Tier 2 (preferir Sonnet 4.5/4.6 o GPT-5.1/5.2 por balance)
+ELSE IF tarea == mecanica simple (lint fix, rename, commit message)
+   → Tier 3 aceptable (Haiku, Flash, Codex-Mini)
+ELSE
+   → Tier 2 por defecto
+```
+
 **STATUS:** COPILOT ADAPTER ACTIVE. LOAD CONTEXT MODULES TO PROCEED.
