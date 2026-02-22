@@ -2,7 +2,7 @@
 name: testing-qa (Senior Level)
 description: Aseguramiento de calidad técnica mediante TDD, mocking de alta precisión y validación de escenarios críticos.
 trigger: When feedback mentions tests, specs, unit testing, mocking, coverage, test failures, or QA validation.
-scope: backend/producer/test/, backend/consumer/src/**/*.spec.ts, backend/producer/src/**/*.spec.ts
+scope: backend/producer/test/, backend/consumer/test/, backend/consumer/src/**/*.spec.ts, backend/producer/src/**/*.spec.ts
 author: "IA_P1_Fork Team"
 version: "2.0.0 (Senior Grade)"
 license: "MIT"
@@ -16,7 +16,7 @@ autoinvoke: true
 The project uses **Jest** with **NestJS Testing Module** for unit tests.
 
 - Producer tests: `backend/producer/test/`
-- Consumer tests: `backend/consumer/src/**/*.spec.ts`
+- Consumer tests: `backend/consumer/test/` and `backend/consumer/src/**/*.spec.ts`
 
 ## Rules
 

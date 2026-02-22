@@ -12,10 +12,11 @@ Sistema de gestión de turnos médicos en tiempo real. Los pacientes registran c
 ### Estructura de carpetas clave
 
 ```
-├── GEMINI.md                ← Kernel (Orquestador)
-├── docs/agent-context/      ← Módulos de Contexto (Project, Rules, Workflow)
-├── DEBT_REPORT.md           ← Estado consolidado de feedback y deuda técnica
-├── AI_WORKFLOW.md           ← Documentación de metodología para humanos
+├── .github/copilot-instructions.md  ← Orquestador (Copilot)
+├── GEMINI.md                        ← Orquestador (Gemini Kernel)
+├── docs/agent-context/              ← Módulos de Contexto (Project, Rules, Workflow)
+├── DEBT_REPORT.md                   ← Estado consolidado de feedback y deuda técnica
+├── AI_WORKFLOW.md                   ← Documentación de metodología para humanos
 ├── skills/                  ← Skills para sub-agentes
 ├── backend/
 │   ├── producer/src/        ← API REST, DTOs, WebSocket Gateway

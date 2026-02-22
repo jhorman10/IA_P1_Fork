@@ -794,13 +794,15 @@ Estatus: DEUDA TÉCNICA RESUELTA
 
 ### 10.3 — Referencias de Documentación
 
-| Documento              | Propósito                            |
-| ---------------------- | ------------------------------------ |
-| `GEMINI.md`            | System Prompt del Agente Orquestador |
-| `DEBT_REPORT.md`       | Estado de Deuda Técnica              |
-| `SECURITY_AUDIT.md`    | Hallazgos de Seguridad               |
-| `/skills/*.md`         | Skills especializadas                |
-| `/docs/agent-context/` | Módulos de contexto modular          |
+| Documento                         | Propósito                                       |
+| --------------------------------- | ----------------------------------------------- |
+| `GEMINI.md`                       | Orquestador principal (Kernel — Gemini/otros)   |
+| `.github/copilot-instructions.md` | Orquestador para GitHub Copilot (Adapter)       |
+| `ORCHESTRATION_GUIDE.md`          | Guía arquitectónica del sistema de orquestación |
+| `DEBT_REPORT.md`                  | Estado de Deuda Técnica                         |
+| `SECURITY_AUDIT.md`               | Hallazgos de Seguridad                          |
+| `/skills/*.md`                    | Skills especializadas (8 skills)                |
+| `/docs/agent-context/`            | Módulos de contexto modular (4 módulos)         |
 
 ## 11. Configuración de Linter y Formateo on Save
 

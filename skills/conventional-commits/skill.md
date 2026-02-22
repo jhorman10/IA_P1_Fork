@@ -45,18 +45,18 @@ Todos los commits de este proyecto DEBEN seguir la especificación [Conventional
 
 ### Scopes del proyecto
 
-| Scope          | Aplica a                                                 |
-| -------------- | -------------------------------------------------------- |
-| `producer`     | `backend/producer/src/`                                  |
-| `consumer`     | `backend/consumer/src/`                                  |
-| `frontend`     | `frontend/src/`                                          |
-| `docker`       | `docker-compose.yml`, `Dockerfile`s                      |
-| `orchestrator` | `GEMINI.md`, sistema de orquestación                     |
-| `skills`       | `skills/*/`                                              |
-| `scripts`      | `scripts/`                                               |
-| `docs`         | `AI_WORKFLOW.md`, `DEBT_REPORT.md`, `README.md`, etc.    |
-| `arch`         | Cambios de arquitectura hexagonal, puertos y adaptadores |
-| `deps`         | package.json, dependencias                               |
+| Scope          | Aplica a                                                                |
+| -------------- | ----------------------------------------------------------------------- |
+| `producer`     | `backend/producer/src/`                                                 |
+| `consumer`     | `backend/consumer/src/`                                                 |
+| `frontend`     | `frontend/src/`                                                         |
+| `docker`       | `docker-compose.yml`, `Dockerfile`s                                     |
+| `orchestrator` | `.github/copilot-instructions.md`, `GEMINI.md`, sistema de orquestación |
+| `skills`       | `skills/*/`                                                             |
+| `scripts`      | `scripts/`                                                              |
+| `docs`         | `AI_WORKFLOW.md`, `DEBT_REPORT.md`, `README.md`, etc.                   |
+| `arch`         | Cambios de arquitectura hexagonal, puertos y adaptadores                |
+| `deps`         | package.json, dependencias                                              |
 
 ### Reglas de formato
 
@@ -99,8 +99,8 @@ Todos los commits de este proyecto DEBEN seguir la especificación [Conventional
    ```
    fix(consumer): resolve race condition in office assignment
 
-   Co-authored-by: IA Antigravity
-   Reviewed-by: 👤 Human
+   Co-authored-by: IA Agent
+   Reviewed-by: Human
    ```
 
 ### Commits NO permitidos
