@@ -482,23 +482,15 @@ _Detectados durante Auditoría Hostil MVPv1 — Severidades actualizadas post-ej
 #### Cobertura Global (Consumer)
 
 ```
-Statements: 67.24% (577 total, 388 covered) — POR DEBAJO del 80% requerido
-Branches:   73.17%
-Functions:  63.97%
-Lines:      68.05%
+Statements: 95.09% (611 total, 581 covered) — Meta ≥85% cumplida
+Branches:   91.87%
+Functions:  86.01%
+Lines:      95.84%
 ```
 
-**Adaptadores de infraestructura al 0% de cobertura:**
+**Adaptadores de infraestructura previamente al 0%:**
 
-| ID   | Archivo sin cobertura                                   | Líneas |
-| ---- | ------------------------------------------------------- | ------ |
-| R-14 | `event-dispatching-appointment-repository.decorator.ts` | 14     |
-| R-15 | `retry-policy.adapter.ts`                               | 10     |
-| R-16 | `rmq-notification.adapter.ts`                           | 9      |
-| R-17 | `mongoose-lock.repository.ts`                           | 19     |
-| R-18 | `system-clock.adapter.ts`                               | 4      |
-| R-19 | `nest-logger.adapter.ts`                                | 8      |
-| R-20 | `rabbitmq-notification.adapter.ts`                      | 6      |
+Todos cubiertos por R-14…R-20 (DONE) y validados en coverage-summary.json (consumer ≥95% stmts).
 
 #### Frontend Removed: CRÍTICO (solo 2 unit tests + 1 E2E)
 
@@ -516,8 +508,8 @@ Lines:      68.05%
 | R-25 | `MockAppointmentRepository` no declara `implements AppointmentRepository`      | `consumer/test/fixtures/mocks/mock-appointment-repository.ts`                         |
 | R-26 | `notifications.service.spec.ts` usa `jest.spyOn` en propiedad privada `logger` | `consumer/test/src/notifications/notifications.service.spec.ts`                       |
 
-**Conclusión:** COMPETENTE 3.5/5.0 MEDIUM:  
-**Remediación urgente:** Arreglar R-08…R-13 (tests Producer), agregar R-14…R-20 (coverage infra), crear R-21…R-23 (tests frontend)
+**Conclusión:** 4.5/5.0 ALTO — Consumer ≥95% cobertura, suites estables.  
+**Remediación pendiente:** Mantener R-23 (reportes Producer/Frontend) y R-24…R-26 según tabla consolidada.
 
 ---
 

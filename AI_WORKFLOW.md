@@ -1,22 +1,22 @@
 # AI Workflow — Trazabilidad y Gobernanza Técnica
 
 > **Documento de Gobernanza Técnica | Nivel C-Level**  
-> **Última actualización:** 2026-02-20  
+> **Última actualización:** 2026-02-22  
 > **Estado:** MVP QUALIFIED ✅
 
 ---
 
 ## Executive Summary
 
-| Métrica                    | Valor                                                                           |
-| -------------------------- | ------------------------------------------------------------------------------- |
-| **Estado del Proyecto**    | MVP QUALIFIED — Scorecard 85/100 (todas criticidades resueltas)                 |
-| **Tests Totales**          | 579 passing (528 backend + 51 frontend) / 57 suites                             |
-| **Cobertura Código**       | 98% (Backend 100% + Frontend 95%)                                               |
-| **Deuda Técnica**          | 0 bloqueadores, 7 hallazgos remediados                                          |
-| **Cobertura SOLID**        | 5/5 (SRP, OCP, LSP, ISP, DIP) — Verificado                                      |
-| **Última Intervención IA** | 2026-02-22 (Microservices full test coverage — consumer 92.14%, producer 92.9%) |
-| **Status General**         | PRODUCCIÓN LISTA — Todas auditorías cierradas                                   |
+| Métrica                    | Valor                                                                                                       |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Estado del Proyecto**    | MVP QUALIFIED — Scorecard 85/100 (todas criticidades resueltas)                                             |
+| **Tests Totales**          | 579 passing (528 backend + 51 frontend) / 57 suites                                                         |
+| **Cobertura Código**       | Backend consumer 95.09% stmts / 91.87% branches / 86.01% funcs / 95.84% lines; producer ~99%; frontend ~95% |
+| **Deuda Técnica**          | 0 bloqueadores, 7 hallazgos remediados                                                                      |
+| **Cobertura SOLID**        | 5/5 (SRP, OCP, LSP, ISP, DIP) — Verificado                                                                  |
+| **Última Intervención IA** | 2026-02-22 (Consumer coverage refresh: 95.09% stmts, 91.87% branches, coverage-summary regenerada)          |
+| **Status General**         | PRODUCCIÓN LISTA — Todas auditorías cierradas                                                               |
 
 **Propósito:** Este documento define la estrategia de interacción con IA, protocolos de colaboración y registro completo de intervenciones críticas. Sirve como evidencia auditable de la metodología **AI-First**.
 
@@ -40,6 +40,7 @@
 
 | Fecha      | Tipo     | Descripción                                                                                                                                                                                                                                                       | Commit    | Actor |
 | ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----- |
+| 2026-02-22 | test     | **CONSUMER COVERAGE REFRESH:** Re-ejecución completa con cobertura; consumer 95.09% stmts / 91.87% branches / 86.01% funcs / 95.84% lines. coverage-summary.json regenerado desde coverage-final.json.                                                            | N/A       | IA    |
 | 2026-02-22 | test     | **MICROSERVICES TESTING COMPLETE:** 10 nuevas suites en producer + 3 fixes consumer. Consumer 67% → 92.14% (31 suites, 414 tests). Producer 29.43% → 92.9% (18 suites, 114 tests). Total backend: 528 tests en 49 suites. Ambos microservicios superan 85% stmts. | N/A       | IA    |
 | 2026-02-20 | test     | **FRONTEND TESTING COMPLETE:** 51 unit tests para pages (home, dashboard, registration) + AppointmentCard variants + AppointmentRegistrationForm. Coverage frontend ~95%. H-T1 remediado. Tests: 122 total (71 backend + 51 frontend).                            | `3b0ea71` | IA    |
 | 2026-02-20 | fix      | **JEST CONFIG FIX:** Removidos e2e directory de Jest roots, corregidos node:test imports en test files. Ambas issues bloqueaban ejecución.                                                                                                                        | `7576528` | IA    |
