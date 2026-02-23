@@ -725,44 +725,44 @@ Despues de cada tarea completada, verificar:
 
 ### 12.1 Umbrales minimos para SA
 
-| Dimension      | Minimo                    | Justificacion                                                                |
-| -------------- | ------------------------- | ---------------------------------------------------------------------------- |
-| Ventana output | >=32K tokens              | SA genera controlador + tests + resumen (~10-25K tokens en tareas complejas) |
-| Ventana input  | >=100K tokens             | 4 modulos + 3 skills + tarea + codigo fuente (~35-40K tokens)                |
-| Razonamiento   | Tier Sonnet/Pro o superior | SOLID, DDD, Hexagonal, tipado 100%, `// HUMAN CHECK` con justificacion      |
-| Costo          | <=1x rutinario            | Delegaciones frecuentes a 3x no son sostenibles                              |
+| Dimension      | Minimo                     | Justificacion                                                                |
+| -------------- | -------------------------- | ---------------------------------------------------------------------------- |
+| Ventana output | >=32K tokens               | SA genera controlador + tests + resumen (~10-25K tokens en tareas complejas) |
+| Ventana input  | >=100K tokens              | 4 modulos + 3 skills + tarea + codigo fuente (~35-40K tokens)                |
+| Razonamiento   | Tier Sonnet/Pro o superior | SOLID, DDD, Hexagonal, tipado 100%, `// HUMAN CHECK` con justificacion       |
+| Costo          | <=1x rutinario             | Delegaciones frecuentes a 3x no son sostenibles                              |
 
 ### 12.2 Clasificacion por tier
 
 **Tier 1 -- Recomendado para AO y SA (tareas de cualquier complejidad):**
 
-| Modelo            | Input | Output | Razonamiento | Costo | Notas                             |
-| ----------------- | ----- | ------ | ------------ | ----- | --------------------------------- |
-| GPT-5.3-Codex     | 272K  | 128K   | Top          | 1x    | Mejor ratio capacidad/costo       |
-| GPT-5.2-Codex     | 272K  | 128K   | Top          | 1x    | Input masivo para contextos grandes|
-| GPT-5.1-Codex-Max | 128K  | 128K   | Top          | 1x    | Maximo output en familia GPT      |
-| GPT-5.1-Codex     | 128K  | 128K   | Alto         | 1x    | Solido para SA de codigo          |
-| Claude Opus 4.6   | 128K  | 64K    | Top          | 3x    | Solo para arquitectura compleja   |
+| Modelo            | Input | Output | Razonamiento | Costo | Notas                               |
+| ----------------- | ----- | ------ | ------------ | ----- | ----------------------------------- |
+| GPT-5.3-Codex     | 272K  | 128K   | Top          | 1x    | Mejor ratio capacidad/costo         |
+| GPT-5.2-Codex     | 272K  | 128K   | Top          | 1x    | Input masivo para contextos grandes |
+| GPT-5.1-Codex-Max | 128K  | 128K   | Top          | 1x    | Maximo output en familia GPT        |
+| GPT-5.1-Codex     | 128K  | 128K   | Alto         | 1x    | Solido para SA de codigo            |
+| Claude Opus 4.6   | 128K  | 64K    | Top          | 3x    | Solo para arquitectura compleja     |
 
 **Tier 2 -- Bueno para SA rutinario (cambios de codigo, tests, bug fixes):**
 
-| Modelo            | Input | Output | Razonamiento | Costo | Notas                                      |
-| ----------------- | ----- | ------ | ------------ | ----- | ------------------------------------------ |
-| Claude Opus 4.5   | 128K  | 32K    | Top          | 3x    | Top razonamiento pero costoso y output justo|
-| GPT-5.2           | 128K  | 64K    | Alto         | 1x    | Buen equilibrio general                    |
-| GPT-5.1           | 128K  | 64K    | Alto         | 1x    | Buen equilibrio general                    |
-| Claude Sonnet 4.5 | 128K  | 32K    | Alto         | 1x    | Mejor ratio calidad/costo en Claude        |
-| Claude Sonnet 4.6 | 128K  | 32K    | Alto         | 1x    | Equivalente a Sonnet 4.5                   |
-| Gemini 2.5 Pro    | 109K  | 64K    | Alto         | 1x    | Buen output, input ligeramente menor       |
-| Gemini 3 Pro      | 109K  | 64K    | Alto         | 1x    | Preview -- monitorear estabilidad          |
+| Modelo            | Input | Output | Razonamiento | Costo | Notas                                        |
+| ----------------- | ----- | ------ | ------------ | ----- | -------------------------------------------- |
+| Claude Opus 4.5   | 128K  | 32K    | Top          | 3x    | Top razonamiento pero costoso y output justo |
+| GPT-5.2           | 128K  | 64K    | Alto         | 1x    | Buen equilibrio general                      |
+| GPT-5.1           | 128K  | 64K    | Alto         | 1x    | Buen equilibrio general                      |
+| Claude Sonnet 4.5 | 128K  | 32K    | Alto         | 1x    | Mejor ratio calidad/costo en Claude          |
+| Claude Sonnet 4.6 | 128K  | 32K    | Alto         | 1x    | Equivalente a Sonnet 4.5                     |
+| Gemini 2.5 Pro    | 109K  | 64K    | Alto         | 1x    | Buen output, input ligeramente menor         |
+| Gemini 3 Pro      | 109K  | 64K    | Alto         | 1x    | Preview -- monitorear estabilidad            |
 
 **Tier 3 -- Solo para tareas simples (linting, renombrado, commits, formato):**
 
-| Modelo             | Input | Output | Razonamiento | Costo | Notas                               |
-| ------------------ | ----- | ------ | ------------ | ----- | ----------------------------------- |
-| Claude Haiku 4.5   | 128K  | 32K    | Medio        | 0.33x | Barato pero puede fallar en SOLID/DDD|
-| Gemini 3 Flash     | 109K  | 64K    | Medio        | 0.33x | Preview, buen output para su costo  |
-| GPT-5.1-Codex-Mini | 128K  | 128K   | Medio        | 0.33x | Output masivo, razonamiento medio   |
+| Modelo             | Input | Output | Razonamiento | Costo | Notas                                 |
+| ------------------ | ----- | ------ | ------------ | ----- | ------------------------------------- |
+| Claude Haiku 4.5   | 128K  | 32K    | Medio        | 0.33x | Barato pero puede fallar en SOLID/DDD |
+| Gemini 3 Flash     | 109K  | 64K    | Medio        | 0.33x | Preview, buen output para su costo    |
+| GPT-5.1-Codex-Mini | 128K  | 128K   | Medio        | 0.33x | Output masivo, razonamiento medio     |
 
 ### 12.3 Regla rapida de seleccion
 
@@ -781,12 +781,12 @@ SI NO
 
 > **Razon:** No cumplen los umbrales minimos de la seccion 12.1.
 
-| Modelo          | Input | Output | Razon de exclusion                                     |
-| --------------- | ----- | ------ | ------------------------------------------------------ |
-| GPT-4o          | 64K   | 4K     | Output inutilizable (no cabe 1 test completo)          |
-| GPT-4.1         | 111K  | 16K    | Output insuficiente para generacion multi-archivo       |
-| Claude Sonnet 4 | 128K  | 16K    | Output insuficiente para SA senior                     |
-| GPT-5 mini      | 128K  | 64K    | Razonamiento insuficiente para nivel senior requerido  |
+| Modelo          | Input | Output | Razon de exclusion                                    |
+| --------------- | ----- | ------ | ----------------------------------------------------- |
+| GPT-4o          | 64K   | 4K     | Output inutilizable (no cabe 1 test completo)         |
+| GPT-4.1         | 111K  | 16K    | Output insuficiente para generacion multi-archivo     |
+| Claude Sonnet 4 | 128K  | 16K    | Output insuficiente para SA senior                    |
+| GPT-5 mini      | 128K  | 64K    | Razonamiento insuficiente para nivel senior requerido |
 
 ### 12.5 Selector automatico (pseudocodigo)
 
@@ -843,12 +843,12 @@ function chooseModel(role, taskType, budget = "normal") {
 
 > **Formula:** Costo total = costo(AO) + costo(SA)
 
-| Tipo de tarea    | AO recomendado         | SA recomendado          | Costo total |
-| ---------------- | ---------------------- | ----------------------- | ----------- |
-| Arquitectura     | GPT-5.1 (1x)          | GPT-5.1-Codex-Max (1x) | 2x          |
-| Backend/Frontend | GPT-5.1 (1x)          | GPT-5.1 (1x)           | 2x          |
-| Tests/Bug fixes  | Claude Sonnet 4.6 (1x)| Claude Sonnet 4.6 (1x) | 2x          |
-| Lint/Commits     | Claude Sonnet 4.6 (1x)| Haiku 4.5 (0.33x)      | 1.33x       |
+| Tipo de tarea    | AO recomendado         | SA recomendado         | Costo total |
+| ---------------- | ---------------------- | ---------------------- | ----------- |
+| Arquitectura     | GPT-5.1 (1x)           | GPT-5.1-Codex-Max (1x) | 2x          |
+| Backend/Frontend | GPT-5.1 (1x)           | GPT-5.1 (1x)           | 2x          |
+| Tests/Bug fixes  | Claude Sonnet 4.6 (1x) | Claude Sonnet 4.6 (1x) | 2x          |
+| Lint/Commits     | Claude Sonnet 4.6 (1x) | Haiku 4.5 (0.33x)      | 1.33x       |
 
 - Anti-pattern: AO con Opus (3x) + SA con Opus (3x) = 6x por tarea
 - Anti-pattern: AO con Codex-Max (128K output) cuando solo genera ~3K tokens
