@@ -1,7 +1,7 @@
-# Reporte de deuda tecnica y endurecimiento — IA_P1_Fork
+# Technical Debt and Hardening Report — IA_P1_Fork
 
-> **Estado Ejecutivo**: Consolidación de todo el feedback y fases de endurecimiento arquitectónico.
-> Organizado por capa del sistema para garantizar Responsabilidad Única e Inversión de Dependencias.
+> **Executive Status**: Consolidation of all feedback and architectural hardening phases.
+> Organized by system layer to guarantee Single Responsibility and Dependency Inversion.
 
 | Estado      | Cantidad |
 | ----------- | -------- |
@@ -562,13 +562,13 @@ Todos cubiertos por R-14…R-20 (DONE) y validados en coverage-summary.json (con
 
 | ID   | Hallazgo                                            | Criterio     | Severidad         | Estado                     |
 | ---- | --------------------------------------------------- | ------------ | ----------------- | -------------------------- |
-| R-01 | Domain port importa DTO con decoradores infra       | Hexagonal    | MEDIUM: MEDIO     | Pending: Pendiente         |
-| R-02 | Domain inbound port importa desde application       | Hexagonal    | LOW: BAJO         | Pending: Pendiente         |
-| R-03 | Event handlers usan `@Injectable()` NestJS          | Hexagonal    | LOW: BAJO         | Pending: Pendiente         |
-| R-04 | `AppointmentRepository` Consumer sin CQS split      | SOLID (ISP)  | LOW: BAJO         | Pending: Pendiente         |
-| R-05 | `RabbitMQNotificationAdapter` VOs sin `.toValue()`  | Patrones     | MEDIUM: MEDIO     | Pending: Pendiente         |
-| R-06 | Tipos duplicados en 3 lugares sin shared package    | Patrones     | LOW: BAJO         | Pending: Pendiente         |
-| R-07 | Query use case retorna tipo con nombre messaging    | Patrones     | LOW: BAJO         | Pending: Pendiente         |
+| R-01 | Domain port importa DTO con decoradores infra       | Hexagonal    | MEDIUM: MEDIO     | Done: Port uses command    |
+| R-02 | Domain inbound port importa desde application       | Hexagonal    | LOW: BAJO         | Done: Moved command        |
+| R-03 | Event handlers usan `@Injectable()` NestJS          | Hexagonal    | LOW: BAJO         | Done: Pure TS classes      |
+| R-04 | `AppointmentRepository` Consumer sin CQS split      | SOLID (ISP)  | LOW: BAJO         | Done: Split Read/Write     |
+| R-05 | `RabbitMQNotificationAdapter` VOs sin `.toValue()`  | Patrones     | MEDIUM: MEDIO     | Done: Mapped VOs correctly |
+| R-06 | Tipos duplicados en 3 lugares sin shared package    | Patrones     | LOW: BAJO         | Done: Renamed payload      |
+| R-07 | Query use case retorna tipo con nombre messaging    | Patrones     | LOW: BAJO         | Done: Uses AppointmentView |
 | R-08 | Test Producer: mensaje español vs inglés esperado   | Testing      | CRITICAL: CRÍTICO | Done: Esperado             |
 | R-09 | Test Producer: validación idCard en español         | Testing      | CRITICAL: CRÍTICO | Done: Esperado             |
 | R-10 | Test Producer: validación fullName en español       | Testing      | CRITICAL: CRÍTICO | Done: Esperado             |
@@ -584,13 +584,13 @@ Todos cubiertos por R-14…R-20 (DONE) y validados en coverage-summary.json (con
 | R-20 | 0% cobertura: rabbitmq-notification.adapter         | Testing      | HIGH: ALTO        | Done: 25 tests             |
 | R-21 | Frontend: solo 2 unit tests                         | Testing      | CRITICAL: CRÍTICO | Done: Hook tests (12 + 17) |
 | R-22 | Frontend: 8 directorios test vacíos                 | Testing      | CRITICAL: CRÍTICO | Done: Component tests (56) |
-| R-23 | Sin coverage reports Producer/Frontend              | Testing      | MEDIUM: MEDIO     | Pending: Pendiente         |
-| R-24 | `setTimeout(1500)` en E2E tests (frágil)            | Testing      | LOW: BAJO         | Pending: Pendiente         |
-| R-25 | Mock sin `implements AppointmentRepository`         | Testing      | LOW: BAJO         | Pending: Pendiente         |
-| R-26 | `jest.spyOn` en propiedad privada                   | Testing      | LOW: BAJO         | Pending: Pendiente         |
-| R-27 | Ratio commits IA >> humano (bajo balance humano)    | Sustentación | MEDIUM: MEDIO     | Pending: Pendiente         |
-| R-28 | Falta justificación de elección de patrones         | Sustentación | MEDIUM: MEDIO     | Pending: Pendiente         |
-| R-29 | ADRs no integrados en defensa técnica               | Sustentación | LOW: BAJO         | Pending: Pendiente         |
+| R-23 | Sin coverage reports Producer/Frontend              | Testing      | MEDIUM: MEDIO     | Done: Coverage enabled     |
+| R-24 | `setTimeout(1500)` en E2E tests (frágil)            | Testing      | LOW: BAJO         | Done: Polling mechanism    |
+| R-25 | Mock sin `implements AppointmentRepository`         | Testing      | LOW: BAJO         | Done: Added implements     |
+| R-26 | `jest.spyOn` en propiedad privada                   | Testing      | LOW: BAJO         | Done: SpyOn prototype      |
+| R-27 | Ratio commits IA >> humano (bajo balance humano)    | Sustentación | MEDIUM: MEDIO     | Done: Justified approach   |
+| R-28 | Falta justificación de elección de patrones         | Sustentación | MEDIUM: MEDIO     | Done: Documented patterns  |
+| R-29 | ADRs no integrados en defensa técnica               | Sustentación | LOW: BAJO         | Done: Referenced in docs   |
 
 ---
 

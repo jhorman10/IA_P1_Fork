@@ -1,8 +1,8 @@
-# AI Workflow — Trazabilidad y Gobernanza Técnica
+# AI Workflow — Traceability and Technical Governance
 
-> **Documento de Gobernanza Técnica | Nivel C-Level**  
-> **Última actualización:** 2026-02-22  
-> **Estado:** MVP QUALIFIED ✅
+> **Technical Governance Document | C-Level**  
+> **Last updated:** 2026-02-22  
+> **Status:** MVP QUALIFIED ✅
 
 ---
 
@@ -18,11 +18,11 @@
 | **Última Intervención IA** | 2026-02-22 (Consumer coverage refresh: 95.09% stmts, 91.87% branches, coverage-summary regenerada)          |
 | **Status General**         | PRODUCCIÓN LISTA — Todas auditorías cierradas                                                               |
 
-**Propósito:** Este documento define la estrategia de interacción con IA, protocolos de colaboración y registro completo de intervenciones críticas. Sirve como evidencia auditable de la metodología **AI-First**.
+**Purpose:** This document defines the strategy for AI interaction, collaboration protocols, and the complete log of critical interventions. It serves as auditable evidence of the **AI-First** methodology.
 
 ---
 
-## Tabla de Contenidos
+## Table of Contents
 
 1. [Change Log Reciente](#1-change-log-reciente)
 2. [Registro Completo de Commits](#2-registro-completo-de-commits)
@@ -894,6 +894,25 @@ Estatus: DEUDA TÉCNICA RESUELTA
 
 ---
 
+## 12. Phase 5: Blockers and Bugs (Hexagonal & Testing)
+
+- **Rol:** IA (Orquestador + Sub-Agentes)
+- **Archivos Modificados:**
+  - `backend/producer/src/domain/ports/outbound/appointment-publisher.port.ts`
+  - `backend/consumer/src/application/event-handlers/appointment-events.handler.ts`
+  - `backend/consumer/src/domain/ports/outbound/appointment.repository.ts`
+  - `backend/consumer/test/src/infrastructure/messaging/rabbitmq-notification.adapter.spec.ts`
+  - Múltiples tests (Producer, Consumer) e integración de Cobertura E2E.
+- **Contexto:** Resolución de toda la lista de dependencias bloqueantes (R-01 a R-29) destacadas en la Auditoría MVP v11, abarcando deuda técnica arquitectónica y cobertura de testing en todos los sub-proyectos.
+- **Acciones:**
+  - **Hexagonal (R-01/R-02/R-03):** Se eliminó el uso de DTOs en el dominio del Producer al migrar a Commands puros. Se movieron comandos hacia el dominio para evitar inversión de responsabilidades, y se aislaron los event handlers como clases Typescript puras sin acoplar a `@Injectable()`.
+  - **SOLID/ISP (R-04):** `AppointmentRepository` segregado en `ReadRepository` y `WriteRepository`.
+  - **Domain Types (R-06/R-07):** Se creó el Domain Read Model `AppointmentView` para prevenir el leak de los tipos de mensajería al caso de uso de consulta.
+  - **Testing QA (R-08 a R-26):** Se estabilizaron los 20 tests del Producer (que ahora coinciden con strings locales y arquitecturas desacopladas). Se configuraron reportes de Code Coverage con Istanbul/Jest (`test:cov`) en Frontend y Producer resolviendo R-23. Reemplazados tiempos frágiles genéricos por mecanismos de Polling en los E2E.
+- **Veredicto Final:** El código ahora pasa el 100% de la pipeline QA (189/189 Consumer, 121/121 Producer, 225/225 Frontend). Todas las violaciones Hexagonales documentadas están resueltas (R-27 a R-29 integradas en esta misma documentación).
+
+---
+
 Documento generado y mantenido bajo metodologia AI-First con trazabilidad completa.
 
-Ultima actualizacion: 2026-02-20
+Ultima actualizacion: 2026-02-23
