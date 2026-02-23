@@ -5,11 +5,48 @@
 
 ---
 
+## PRE-RESPONSE PROTOCOL (mandatory on every prompt)
+
+> **HARD RULE:** Before processing ANY user request — without exception — execute the following steps in order. If any step fails, stop immediately and report the failure. Do NOT proceed to the user's task until all steps pass.
+
+**Step A — Verify working directory:**
+The active working directory MUST be `/home/jhorman.orozco/Documentos/IA_P1_Fork`.
+If it differs, abort with: `CWD ERROR: expected /home/jhorman.orozco/Documentos/IA_P1_Fork, got <actual cwd>. Do NOT proceed.`
+
+**Step B — Execute Bootstrap (Step 0):**
+Read and validate all four context modules as defined in section 0 below.
+Confirm loading with the following acknowledgement block before answering:
+
+```
+[CONTEXTO CARGADO]
+- PROJECT_CONTEXT.md: OK
+- RULES.md: OK
+- WORKFLOW.md: OK
+- SKILL_REGISTRY.md: OK
+[DIRECTIVA: respuesta en español formal]
+```
+
+**Step C — Enforce workflow before execution:**
+
+- Never execute code changes without first presenting an Action Plan (WORKFLOW step 4: PLANIFICAR) and receiving explicit approval (step 5: APROBAR).
+- If the user requests execution without an approved plan, respond: `Se requiere presentar el Plan de Accion antes de ejecutar cambios. ¿Desea que presente el plan ahora?`
+
+**Step D — Output language enforcement:**
+All responses, code comments, documentation, and commit messages MUST be in strictly formal Spanish.
+Internal reasoning may proceed in English.
+
+**Fallback — If the model skips this protocol:**
+Re-send the prompt prepending: `BOOTSTRAP OBLIGATORIO: ejecuta el protocolo PRE-RESPONSE completo antes de responder.`
+If it persists after two retries, restart the session and verify the four context files exist on disk.
+
+---
+
 ## 0. BOOTSTRAP: Mandatory context loading
 
 > **CRITICAL:** Before executing any task, you **MUST** load the 4 context modules **WITH VALIDATION**.
 
 # CRITICAL COMMUNICATION DIRECTIVE
+
 - **Internal Reasoning:** You must process all rules, code, and logical workflows in English.
 - **Output Language:** ALL user-facing responses, code comments, documentation (e.g., AI_WORKFLOW.md, DEBT_REPORT.md), and commit messages MUST be generated in strictly formal Spanish. Never output explanations to the user in English.
 
@@ -51,17 +88,17 @@ const SKILL_REGISTRY = await read_file("docs/agent-context/SKILL_REGISTRY.md");
 
 **Full reference:** `SKILL_REGISTRY.md` (8 available skills)
 
-| Task Type               | Required Skills (minimum 2-3)                      |
-| ----------------------- | -------------------------------------------------- |
-| Frontend (UI/UX)        | `frontend-ui`, `refactor-arch`, `testing-qa`       |
-| Backend (API/Logic)     | `backend-api`, `refactor-arch`, `testing-qa`       |
-| Architectural Refactor  | `refactor-arch`, `testing-qa`                      |
-| Microservices           | `backend-api`, `refactor-arch`, `testing-qa`       |
-| Security/Audit          | `security-audit`, `refactor-arch`, `testing-qa`    |
-| Testing/QA              | `testing-qa`, `refactor-arch`                      |
-| Docker/Infra            | `docker-infra`, `backend-api`, `testing-qa`        |
-| Commits/Docs            | `conventional-commits`, `skill-creator` (optional) |
-| Skill Creation          | `skill-creator`, `refactor-arch`, `testing-qa`     |
+| Task Type              | Required Skills (minimum 2-3)                      |
+| ---------------------- | -------------------------------------------------- |
+| Frontend (UI/UX)       | `frontend-ui`, `refactor-arch`, `testing-qa`       |
+| Backend (API/Logic)    | `backend-api`, `refactor-arch`, `testing-qa`       |
+| Architectural Refactor | `refactor-arch`, `testing-qa`                      |
+| Microservices          | `backend-api`, `refactor-arch`, `testing-qa`       |
+| Security/Audit         | `security-audit`, `refactor-arch`, `testing-qa`    |
+| Testing/QA             | `testing-qa`, `refactor-arch`                      |
+| Docker/Infra           | `docker-infra`, `backend-api`, `testing-qa`        |
+| Commits/Docs           | `conventional-commits`, `skill-creator` (optional) |
+| Skill Creation         | `skill-creator`, `refactor-arch`, `testing-qa`     |
 
 ### 1.2 — Skill dependency graph
 
@@ -178,12 +215,7 @@ ${skills[name]}
   }
 
   // 8. Document (WORKFLOW.md steps 8-9)
-  await registerInAI_WORKFLOW(
-    taskType,
-    requiredSkills,
-    userRequest,
-    result,
-  );
+  await registerInAI_WORKFLOW(taskType, requiredSkills, userRequest, result);
   if (isArchitecturalFinding(result)) {
     await updateDEBT_REPORT(result);
   }
@@ -200,24 +232,24 @@ ${skills[name]}
 
 > **Ref:** If the SA produces errors, this strategy protects the codebase.
 
-| Scenario              | Action                                                      | Max retries         |
-| --------------------- | ----------------------------------------------------------- | ------------------- |
-| Scope violation       | `git checkout -- .` + escalate to human                     | 0 (immediate fail)  |
-| Failed tests          | `git checkout -- .` + retry with error context              | 2                   |
-| Linter with errors    | `git checkout -- .` + retry with error context              | 2                   |
-| SA cannot complete    | Register in AI_WORKFLOW.md + escalate to human              | 0                   |
-| Human rejects plan    | Re-plan with new constraints (WORKFLOW.md step 5)           | 3                   |
+| Scenario           | Action                                            | Max retries        |
+| ------------------ | ------------------------------------------------- | ------------------ |
+| Scope violation    | `git checkout -- .` + escalate to human           | 0 (immediate fail) |
+| Failed tests       | `git checkout -- .` + retry with error context    | 2                  |
+| Linter with errors | `git checkout -- .` + retry with error context    | 2                  |
+| SA cannot complete | Register in AI_WORKFLOW.md + escalate to human    | 0                  |
+| Human rejects plan | Re-plan with new constraints (WORKFLOW.md step 5) | 3                  |
 
 ### 1.5 — Context budget
 
 > **Ref:** Prevents Context Overflow in sub-agents.
 
-| Resource                  | Limit        | If exceeded                                   |
-| ------------------------- | ------------ | --------------------------------------------- |
-| Source files in prompt    | 5 max per SA | Divide task into sub-tasks                    |
-| Loaded skills             | 3 max per SA | Prioritize by dependency graph                |
-| Total context lines       | 500 max      | Summarize large files, use selective grep     |
-| Retries per task          | 2 max        | Escalate to human review                      |
+| Resource               | Limit        | If exceeded                               |
+| ---------------------- | ------------ | ----------------------------------------- |
+| Source files in prompt | 5 max per SA | Divide task into sub-tasks                |
+| Loaded skills          | 3 max per SA | Prioritize by dependency graph            |
+| Total context lines    | 500 max      | Summarize large files, use selective grep |
+| Retries per task       | 2 max        | Escalate to human review                  |
 
 ### 1.6 — Documentation protocol
 
@@ -273,24 +305,24 @@ If the human rejects the plan:
 
 ### 2.1 — Minimum thresholds for Senior SA
 
-| Dimension         | Minimum threshold          | Justification                                                               |
-| ----------------- | -------------------------- | --------------------------------------------------------------------------- |
-| Output window     | >=32K tokens               | SA generates controller + tests + summary (~10-25K tokens in complex tasks) |
-| Input window      | >=100K tokens              | 4 modules + 3 skills + task + source code (~35-40K tokens)                  |
-| Reasoning         | Tier Sonnet/Pro or higher  | SOLID, DDD, Hexagonal, 100% typing, `// HUMAN CHECK` with justification     |
-| Cost per request  | <=1x for routine           | Frequent delegations at 3x are not sustainable                              |
+| Dimension        | Minimum threshold         | Justification                                                               |
+| ---------------- | ------------------------- | --------------------------------------------------------------------------- |
+| Output window    | >=32K tokens              | SA generates controller + tests + summary (~10-25K tokens in complex tasks) |
+| Input window     | >=100K tokens             | 4 modules + 3 skills + task + source code (~35-40K tokens)                  |
+| Reasoning        | Tier Sonnet/Pro or higher | SOLID, DDD, Hexagonal, 100% typing, `// HUMAN CHECK` with justification     |
+| Cost per request | <=1x for routine          | Frequent delegations at 3x are not sustainable                              |
 
 ### 2.2 — Classification by tier
 
 **Tier 1 — Recommended for AO and SA (tasks of any complexity):**
 
-| Model             | Input | Output | Reasoning | Cost | Notes                                     |
-| ----------------- | ----- | ------ | --------- | ---- | ----------------------------------------- |
-| GPT-5.3-Codex     | 272K  | 128K   | Top       | 1x   | Best capacity/cost ratio                  |
-| GPT-5.2-Codex     | 272K  | 128K   | Top       | 1x   | Massive input for large contexts          |
-| GPT-5.1-Codex-Max | 128K  | 128K   | Top       | 1x   | Maximum output in GPT family              |
-| GPT-5.1-Codex     | 128K  | 128K   | High      | 1x   | Solid for code SA                         |
-| Claude Opus 4.6   | 128K  | 64K    | Top       | 3x   | Only for complex architecture tasks       |
+| Model             | Input | Output | Reasoning | Cost | Notes                               |
+| ----------------- | ----- | ------ | --------- | ---- | ----------------------------------- |
+| GPT-5.3-Codex     | 272K  | 128K   | Top       | 1x   | Best capacity/cost ratio            |
+| GPT-5.2-Codex     | 272K  | 128K   | Top       | 1x   | Massive input for large contexts    |
+| GPT-5.1-Codex-Max | 128K  | 128K   | Top       | 1x   | Maximum output in GPT family        |
+| GPT-5.1-Codex     | 128K  | 128K   | High      | 1x   | Solid for code SA                   |
+| Claude Opus 4.6   | 128K  | 64K    | Top       | 3x   | Only for complex architecture tasks |
 
 **Tier 2 — Good for routine SA (code changes, tests, bug fixes):**
 
@@ -306,11 +338,11 @@ If the human rejects the plan:
 
 **Tier 3 — Only for simple tasks (linting, renaming, commits, formatting):**
 
-| Model              | Input | Output | Reasoning | Cost  | Notes                                 |
-| ------------------ | ----- | ------ | --------- | ----- | ------------------------------------- |
-| Claude Haiku 4.5   | 128K  | 32K    | Medium    | 0.33x | Cheap but might fail on SOLID/DDD     |
-| Gemini 3 Flash     | 109K  | 64K    | Medium    | 0.33x | Preview, good output for its cost     |
-| GPT-5.1-Codex-Mini | 128K  | 128K   | Medium    | 0.33x | Massive output, medium reasoning      |
+| Model              | Input | Output | Reasoning | Cost  | Notes                             |
+| ------------------ | ----- | ------ | --------- | ----- | --------------------------------- |
+| Claude Haiku 4.5   | 128K  | 32K    | Medium    | 0.33x | Cheap but might fail on SOLID/DDD |
+| Gemini 3 Flash     | 109K  | 64K    | Medium    | 0.33x | Preview, good output for its cost |
+| GPT-5.1-Codex-Mini | 128K  | 128K   | Medium    | 0.33x | Massive output, medium reasoning  |
 
 ### 2.3 — Model selection anti-patterns
 
@@ -323,12 +355,12 @@ If the human rejects the plan:
 
 > **Reason:** They do not meet minimum thresholds from section 2.1.
 
-| Model           | Input | Output | Exclusion Reason                                    |
-| --------------- | ----- | ------ | --------------------------------------------------- |
-| GPT-4o          | 64K   | 4K     | Unusable output (cannot fit 1 full test)            |
-| GPT-4.1         | 111K  | 16K    | Insufficient output for multi-file generation       |
-| Claude Sonnet 4 | 128K  | 16K    | Insufficient output for senior SA                   |
-| GPT-5 mini      | 128K  | 64K    | Insufficient reasoning for required senior level    |
+| Model           | Input | Output | Exclusion Reason                                 |
+| --------------- | ----- | ------ | ------------------------------------------------ |
+| GPT-4o          | 64K   | 4K     | Unusable output (cannot fit 1 full test)         |
+| GPT-4.1         | 111K  | 16K    | Insufficient output for multi-file generation    |
+| Claude Sonnet 4 | 128K  | 16K    | Insufficient output for senior SA                |
+| GPT-5 mini      | 128K  | 64K    | Insufficient reasoning for required senior level |
 
 ### 2.5 — Quick selection rule
 
@@ -403,14 +435,49 @@ function chooseModel(role, taskType, budget = "normal") {
 
 > **Formula:** Total cost = cost(AO) + cost(SA)
 
-| Task Type        | Recommended AO         | Recommended SA         | Total Cost  |
-| ---------------- | ---------------------- | ---------------------- | ----------- |
-| Architecture     | GPT-5.1 (1x)           | GPT-5.1-Codex-Max (1x) | 2x          |
-| Backend/Frontend | GPT-5.1 (1x)           | GPT-5.1 (1x)           | 2x          |
-| Tests/Bug fixes  | Claude Sonnet 4.6 (1x) | Claude Sonnet 4.6 (1x) | 2x          |
-| Lint/Commits     | Claude Sonnet 4.6 (1x) | Haiku 4.5 (0.33x)      | 1.33x       |
+| Task Type        | Recommended AO         | Recommended SA         | Total Cost |
+| ---------------- | ---------------------- | ---------------------- | ---------- |
+| Architecture     | GPT-5.1 (1x)           | GPT-5.1-Codex-Max (1x) | 2x         |
+| Backend/Frontend | GPT-5.1 (1x)           | GPT-5.1 (1x)           | 2x         |
+| Tests/Bug fixes  | Claude Sonnet 4.6 (1x) | Claude Sonnet 4.6 (1x) | 2x         |
+| Lint/Commits     | Claude Sonnet 4.6 (1x) | Haiku 4.5 (0.33x)      | 1.33x      |
 
 - Anti-pattern: AO with Opus (3x) + SA with Opus (3x) = 6x per task
 - Anti-pattern: AO with Codex-Max (128K output) when it only generates ~3K tokens
+
+---
+
+## 3. Reusable prompt template
+
+> **Use this block at the beginning of every user prompt to guarantee context loading and rule enforcement.**
+
+```
+BOOTSTRAP OBLIGATORIO: ejecuta el protocolo PRE-RESPONSE completo antes de responder.
+- CWD: /home/jhorman.orozco/Documentos/IA_P1_Fork
+- Leer y validar: docs/agent-context/PROJECT_CONTEXT.md, RULES.md, WORKFLOW.md, SKILL_REGISTRY.md
+- Confirmar con bloque [CONTEXTO CARGADO] antes de responder
+- Idioma de salida: español formal
+- NO ejecutar cambios sin Plan de Accion aprobado por el humano
+
+SOLICITUD:
+<descripcion de la tarea aqui>
+```
+
+---
+
+## 4. Post-response verification checklist
+
+> **After every response, verify compliance with the following items before delivering the answer.**
+
+- [ ] Se ejecutó el protocolo PRE-RESPONSE completo (pasos A, B, C, D)
+- [ ] Se confirmó la carga de los cuatro módulos con el bloque `[CONTEXTO CARGADO]`
+- [ ] La respuesta está en español formal (sin mezclar idiomas)
+- [ ] Si implica cambios de código: se presentó Plan de Acción antes de ejecutar
+- [ ] Si implica cambios de código: el plan fue aprobado explícitamente por el humano
+- [ ] Ningún archivo fue modificado fuera del scope del skill seleccionado
+- [ ] Se registró la interacción en `AI_WORKFLOW.md` (WORKFLOW paso 8)
+- [ ] Si se resolvió deuda técnica: se actualizó `DEBT_REPORT.md` (WORKFLOW paso 9)
+- [ ] Los commits siguen la convención `conventional-commits`
+- [ ] El linter no reporta errores y el tipado es 100% (sin `any`)
 
 **STATUS:** COPILOT ADAPTER ACTIVE. LOAD CONTEXT MODULES TO PROCEED.
