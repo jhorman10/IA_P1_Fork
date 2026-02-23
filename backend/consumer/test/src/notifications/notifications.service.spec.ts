@@ -1,3 +1,4 @@
+import { Logger } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { NotificationsService } from "src/notifications/notifications.service";
 
@@ -17,16 +18,13 @@ describe("NotificationsService", () => {
   });
 
   it("should log notification", async () => {
-    type LoggerType = { log: (...args: unknown[]) => void };
-    const loggerSpy = jest.spyOn(
-      (service as unknown as { logger: LoggerType }).logger,
-      "log",
-    );
+    const loggerSpy = jest.spyOn(Logger.prototype, "log").mockImplementation(() => undefined);
     await service.sendNotification(12345678, "1");
     expect(loggerSpy).toHaveBeenCalledWith(
       expect.stringContaining(
         "📩 Notification sent to patient 12345678: Your appointment has been assigned to office 1",
-      ),
+      )
     );
+    loggerSpy.mockRestore();
   });
 });

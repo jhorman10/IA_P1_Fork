@@ -34,10 +34,7 @@ test.describe("Realtime Frontend-Backend Communication", () => {
     await context.close();
 
     // 4. Esperar actualización en dashboard original
-    await page.waitForTimeout(1500); // Espera procesamiento backend
-    const newCount = await page
-      .locator('h2:has-text("En espera") + ul > li')
-      .count();
-    expect(newCount).toBe(initialCount + 1);
+    // Playwright `toHaveCount` automatically polls and waits for the condition to be met
+    await expect(page.locator('h2:has-text("En espera") + ul > li')).toHaveCount(initialCount + 1);
   });
 });

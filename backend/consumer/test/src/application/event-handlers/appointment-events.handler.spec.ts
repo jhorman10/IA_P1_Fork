@@ -7,6 +7,7 @@ import {
 import { Appointment } from "../../../../src/domain/entities/appointment.entity";
 import { AppointmentAssignedEvent } from "../../../../src/domain/events/appointment-assigned.event";
 import { AppointmentRegisteredEvent } from "../../../../src/domain/events/appointment-registered.event";
+import { LoggerPort } from "../../../../src/domain/ports/outbound/logger.port";
 import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
 import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
 import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
@@ -20,6 +21,8 @@ describe("AppointmentEventsHandlers (Split OCP Handlers)", () => {
     notifyAppointmentUpdated: jest.Mock<Promise<void>, [Appointment]>;
   }
   let mockNotificationPort: NotificationPortMock;
+  let mockLoggerPort: LoggerPort;
+
   const dummyAppointment = new Appointment(
     new IdCard(12345678),
     new FullName("John Doe"),
@@ -35,6 +38,13 @@ describe("AppointmentEventsHandlers (Split OCP Handlers)", () => {
     mockNotificationPort = {
       notifyAppointmentUpdated: jest.fn().mockResolvedValue(undefined),
     };
+    mockLoggerPort = {
+      log: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      debug: jest.fn(),
+      verbose: jest.fn(),
+    };
   });
 
   afterEach(() => {
@@ -44,16 +54,10 @@ describe("AppointmentEventsHandlers (Split OCP Handlers)", () => {
   describe("AppointmentRegisteredHandler", () => {
     let handler: AppointmentRegisteredHandler;
 
-    beforeEach(async () => {
-      const module: TestingModule = await Test.createTestingModule({
-        providers: [
-          AppointmentRegisteredHandler,
-          { provide: "NotificationPort", useValue: mockNotificationPort },
-        ],
-      }).compile();
-
-      handler = module.get<AppointmentRegisteredHandler>(
-        AppointmentRegisteredHandler,
+    beforeEach(() => {
+      handler = new AppointmentRegisteredHandler(
+        mockNotificationPort as any,
+        mockLoggerPort as any,
       );
     });
 
@@ -75,16 +79,10 @@ describe("AppointmentEventsHandlers (Split OCP Handlers)", () => {
   describe("AppointmentAssignedHandler", () => {
     let handler: AppointmentAssignedHandler;
 
-    beforeEach(async () => {
-      const module: TestingModule = await Test.createTestingModule({
-        providers: [
-          AppointmentAssignedHandler,
-          { provide: "NotificationPort", useValue: mockNotificationPort },
-        ],
-      }).compile();
-
-      handler = module.get<AppointmentAssignedHandler>(
-        AppointmentAssignedHandler,
+    beforeEach(() => {
+      handler = new AppointmentAssignedHandler(
+        mockNotificationPort as any,
+        mockLoggerPort as any,
       );
     });
 

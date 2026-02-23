@@ -14,15 +14,19 @@ describe("E2E: Appointment Flow", () => {
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty("id");
 
-    // 2. Esperar procesamiento asíncrono (RabbitMQ → Consumer)
-    await new Promise((r) => setTimeout(r, 1500));
+    // 2. Esperar procesamiento asíncrono (RabbitMQ → Consumer) con polling
+    let doc = null;
+    for (let i = 0; i < 20; i++) {
+      doc = await utils.mongo
+        .db()
+        .collection("appointments")
+        .findOne({ idCard: payload.idCard });
+      if (doc) break;
+      await new Promise((r) => setTimeout(r, 200));
+    }
 
     // 3. Verificar persistencia en MongoDB
-    const doc = await utils.mongo
-      .db()
-      .collection("appointments")
-      .findOne({ idCard: payload.idCard });
     expect(doc).toBeTruthy();
-    expect(doc.fullName).toBe(payload.fullName);
+    expect(doc?.fullName).toBe(payload.fullName);
   });
 });

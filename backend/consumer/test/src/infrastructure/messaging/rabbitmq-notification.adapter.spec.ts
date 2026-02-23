@@ -153,9 +153,9 @@ describe("RabbitMQNotificationAdapter", () => {
       expect(payload.completedAt).toBe(1000000000);
     });
 
-    it("should include value object references (not ToValue() calls)", async () => {
+    it("should include primitive values from value objects in payload", async () => {
       const mockFullNameVO = { toValue: jest.fn(() => "Jane Doe") };
-      const mockIdCardVO = { toValue: jest.fn(() => "555555555") };
+      const mockIdCardVO = { toValue: jest.fn(() => 555555555) };
       const mockPriorityVO = { toValue: jest.fn(() => "low") };
 
       const appointment = createMockAppointment({
@@ -168,15 +168,15 @@ describe("RabbitMQNotificationAdapter", () => {
 
       const payload = mockRmqClient.emit.mock.calls[0][1] as any;
 
-      // Payload should have VO objects, not toValue() results
-      expect(payload.fullName).toBe(mockFullNameVO);
-      expect(payload.idCard).toBe(mockIdCardVO);
-      expect(payload.priority).toBe(mockPriorityVO);
+      // Payload should have primitive values from toValue() results
+      expect(payload.fullName).toBe("Jane Doe");
+      expect(payload.idCard).toBe(555555555);
+      expect(payload.priority).toBe("low");
 
-      // toValue() should NOT have been called
-      expect(mockFullNameVO.toValue).not.toHaveBeenCalled();
-      expect(mockIdCardVO.toValue).not.toHaveBeenCalled();
-      expect(mockPriorityVO.toValue).not.toHaveBeenCalled();
+      // toValue() should have been called
+      expect(mockFullNameVO.toValue).toHaveBeenCalled();
+      expect(mockIdCardVO.toValue).toHaveBeenCalled();
+      expect(mockPriorityVO.toValue).toHaveBeenCalled();
     });
   });
 
@@ -335,9 +335,7 @@ describe("RabbitMQNotificationAdapter", () => {
       expect(pattern).toBe("appointment_updated");
     });
 
-    it("should include VO objects in payload (not mapped primitives)", async () => {
-      // RmqNotificationAdapter maps VOs to primitives via .toValue()
-      // RabbitMQNotificationAdapter includes VO objects directly
+    it("should include primitive values in payload (mapped from VOs)", async () => {
       const mockVO = { toValue: jest.fn(() => "value") };
       const appointment = createMockAppointment({
         fullName: mockVO as any,
@@ -347,9 +345,9 @@ describe("RabbitMQNotificationAdapter", () => {
 
       const payload = mockRmqClient.emit.mock.calls[0][1] as any;
 
-      // Should have VO object, not toValue() result
-      expect(payload.fullName).toBe(mockVO);
-      expect(mockVO.toValue).not.toHaveBeenCalled();
+      // Should have primitive value
+      expect(payload.fullName).toBe("value");
+      expect(mockVO.toValue).toHaveBeenCalled();
     });
   });
 

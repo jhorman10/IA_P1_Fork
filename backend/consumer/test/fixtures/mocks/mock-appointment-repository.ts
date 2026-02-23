@@ -1,10 +1,11 @@
 import { Appointment } from "../../../src/domain/entities/appointment.entity";
+import { AppointmentRepository } from "../../../src/domain/ports/outbound/appointment.repository";
 import { IdCard } from "../../../src/domain/value-objects/id-card.value-object";
 
 /**
  * MockAppointmentRepository: Simulates AppointmentRepository for testing Use Cases.
  */
-export class MockAppointmentRepository {
+export class MockAppointmentRepository implements AppointmentRepository {
   findWaitingResult: Appointment[] = [];
   findCalledResult: Appointment[] = [];
   findAllResult: Appointment[] = [];
