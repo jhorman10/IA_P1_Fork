@@ -1,11 +1,11 @@
-# Template de Delegación: Testing & QA
+# Delegation Template: Testing & QA
 
-> **Skills Requeridas:** `testing-qa`, `refactor-arch`, `solid-principles`
+> **Required Skills:** `testing-qa`, `refactor-arch`, `solid-principles`
 
-## Estructura de Delegación a Sub-Agente
+## Sub-Agent Delegation Structure
 
 ```javascript
-// 1. Cargar contextos y skills
+// 1. Load contexts and skills
 const PROJECT_CONTEXT = await read_file(
   "docs/agent-context/PROJECT_CONTEXT.md",
 );
@@ -14,17 +14,17 @@ const testingSkill = await read_file("skills/testing-qa/skill.md");
 const refactorSkill = await read_file("skills/refactor-arch/skill.md");
 const solidSkill = await read_file("skills/solid-principles/skill.md");
 
-// 2. Delegar a Sub-Agente con contexto completo
+// 2. Delegate to Sub-Agent with full context
 await runSubagent({
   description: "[Testing] QA for Feature XYZ",
   prompt: `
-# Contexto del Proyecto:
+# Project Context:
 ${PROJECT_CONTEXT}
 
-# Reglas Arquitectónicas:
+# Architectural Rules:
 ${RULES}
 
-# Skills Cargadas:
+# Loaded Skills:
 
 ## 1. Testing & QA (Jest/Playwright):
 ${testingSkill}
@@ -35,77 +35,77 @@ ${refactorSkill}
 ## 3. SOLID Principles:
 ${solidSkill}
 
-# Tarea: [Descripción de la tarea de testing/QA]
+# Task: [Description of testing/QA task]
 
-## Objetivo:
-- Crear tests unitarios (coverage >80%)
-- Crear tests de integración (flujos críticos)
-- Aplicar AAA pattern (Arrange-Act-Assert)
-- Aplicar Test-Driven Development (TDD) cuando aplique
-- Validar edge cases y casos maliciosos
+## Objective:
+- Create unit tests (>80% coverage)
+- Create integration tests (critical flows)
+- Apply AAA pattern (Arrange-Act-Assert)
+- Apply Test-Driven Development (TDD) when applicable
+- Validate edge cases and malicious cases
 
-## Restricciones:
-- Tests deben ser independientes (no dependencias entre tests)
-- Usar mocks/stubs para dependencias externas (MongoDB, RabbitMQ)
-- Tests deterministicos (no flaky tests)
-- Cobertura >80% obligatoria
-- Seguir Conventional Commits
+## Constraints:
+- Tests must be independent (no dependencies between tests)
+- Use mocks/stubs for external dependencies (MongoDB, RabbitMQ)
+- Deterministic tests (no flaky tests)
+- >80% coverage mandatory
+- Follow Conventional Commits
 
-## Entregables:
-1. Tests unitarios (unit tests)
-2. Tests de integración (integration tests)
-3. Tests de edge cases
+## Deliverables:
+1. Unit tests
+2. Integration tests
+3. Edge case tests
 4. Coverage report (>80%)
-5. Documentación de escenarios testeados
+5. Documentation of tested scenarios
     `,
 });
 ```
 
-## Ejemplo de Uso Real
+## Real Use Case Example
 
-**Usuario solicita:** "Necesito tests completos para el scheduler de consultorios"
+**User requests:** "I need complete tests for the office scheduler"
 
-**AO ejecuta:**
+**AO executes:**
 
 ```javascript
 await runSubagent({
   description: "[Testing] Complete Test Suite for Office Scheduler",
   prompt: `
-# Contexto del Proyecto: [PROJECT_CONTEXT cargado]
-# Reglas Arquitectónicas: [RULES cargadas]
+# Project Context: [PROJECT_CONTEXT loaded]
+# Architectural Rules: [RULES loaded]
 # Skills: testing-qa, refactor-arch, solid-principles
 
-# Tarea:
-Crear suite completa de tests para \`AssignAvailableOfficesUseCase\`:
-1. Tests unitarios:
-   - Happy path: 4 consultorios, 4 citas → 1 cita por consultorio
-   - Edge case: 4 consultorios, 10 citas → distribución equitativa
-   - Edge case: 3 consultorios disponibles, 12 citas → uso de modulo
-   - Error case: 0 consultorios disponibles → throw error
-2. Tests de integración:
-   - Mock de ConsultationPolicy (isAvailable)
-   - Verificar actualización de estado en repositorio
-   - Validar transacciones (rollback en caso de error)
-3. Tests de casos límite:
-   - Citas con horarios conflictivos
-   - ConsultationPolicy rechaza todos los consultorios
+# Task:
+Create complete test suite for \`AssignAvailableOfficesUseCase\`:
+1. Unit tests:
+   - Happy path: 4 offices, 4 appointments → 1 appointment per office
+   - Edge case: 4 offices, 10 appointments → equitable distribution
+   - Edge case: 3 available offices, 12 appointments → use modulo
+   - Error case: 0 available offices → throw error
+2. Integration tests:
+   - Mock of ConsultationPolicy (isAvailable)
+   - Verify state update in repository
+   - Validate transactions (rollback in case of error)
+3. Limit case tests:
+   - Appointments with conflicting schedules
+   - ConsultationPolicy rejects all offices
 
-# Entregables:
-1. 15+ tests unitarios (coverage >90%)
-2. 5+ tests de integración
+# Deliverables:
+1. 15+ unit tests (>90% coverage)
+2. 5+ integration tests
 3. Coverage report
     `,
 });
 ```
 
-## Checklist Post-Delegación
+## Post-Delegation Checklist
 
-- [ ] SA creó tests unitarios (>80% coverage)
-- [ ] SA creó tests de integración (flujos críticos)
-- [ ] SA aplicó AAA pattern (Arrange-Act-Assert)
-- [ ] Tests son independientes (no interdependencias)
-- [ ] Tests son deterministicos (no flaky)
-- [ ] Edge cases cubiertos
-- [ ] Commits con Conventional Commits
-- [ ] Documentado en AI_WORKFLOW.md
-- [ ] DEBT_REPORT.md actualizado (si se corrigió deuda)
+- [ ] SA created unit tests (>80% coverage)
+- [ ] SA created integration tests (critical flows)
+- [ ] SA applied AAA pattern (Arrange-Act-Assert)
+- [ ] Tests are independent (no interdependencies)
+- [ ] Tests are deterministic (no flaky tests)
+- [ ] Edge cases covered
+- [ ] Commits with Conventional Commits
+- [ ] Documented in AI_WORKFLOW.md
+- [ ] DEBT_REPORT.md updated (if debt was fixed)

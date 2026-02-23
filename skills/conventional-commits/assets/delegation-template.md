@@ -1,76 +1,76 @@
-# Template de delegacion: Conventional Commits
+# Delegation Template: Conventional Commits
 
-> **Skills requeridas:** `conventional-commits`, `skill-creator` (opcional)
+> **Required Skills:** `conventional-commits`, `skill-creator` (optional)
 
-## Estructura de delegacion a sub-agente
+## Sub-Agent Delegation Structure
 
 ```javascript
-// 1. Cargar contextos y skills
+// 1. Load contexts and skills
 const PROJECT_CONTEXT = await read_file(
   "docs/agent-context/PROJECT_CONTEXT.md",
 );
 const RULES = await read_file("docs/agent-context/RULES.md");
 const commitsSkill = await read_file("skills/conventional-commits/skill.md");
 
-// 2. Delegar a Sub-Agente con contexto completo
+// 2. Delegate to Sub-Agent with full context
 await runSubagent({
   description: "[Commits] Format and create commits for XYZ",
   prompt: `
-# Contexto del Proyecto:
+# Project Context:
 ${PROJECT_CONTEXT}
 
-# Reglas Arquitectonicas:
+# Architectural Rules:
 ${RULES}
 
-# Skills Cargadas:
+# Loaded Skills:
 
 ## 1. Conventional Commits:
 ${commitsSkill}
 
-# Tarea: [Descripcion de los commits a crear]
+# Task: [Description of commits to create]
 
-## Objetivo:
-- Crear commits atomicos siguiendo Conventional Commits 1.0.0
-- Un tipo por commit (no mezclar feat + fix + refactor)
-- Scope correcto segun tabla de scopes del proyecto
-- Descripcion en minusculas, imperativo presente, max 72 chars, sin punto final
+## Objective:
+- Create atomic commits following Conventional Commits 1.0.0
+- One type per commit (do not mix feat + fix + refactor)
+- Correct scope based on the project's scope table
+- Description in lowercase, imperative mood, max 72 chars, no trailing period
 
-## Restricciones:
-- Formato: <tipo>(<scope>): <descripcion>
-- Tipos permitidos: feat, fix, refactor, docs, test, chore, build, ci, perf, style, revert
-- Breaking changes con ! o BREAKING CHANGE: en footer
-- Prohibido: WIP, update files, fix stuff, mensajes vagos
+## Constraints:
+- Format: <type>(<scope>): <description>
+- Allowed types: feat, fix, refactor, docs, test, chore, build, ci, perf, style, revert
+- Breaking changes with ! or BREAKING CHANGE: in footer
+- Forbidden: WIP, update files, fix stuff, vague messages
 
-## Entregables:
-1. Commits formateados y ejecutados
-2. Breaking changes documentados (si aplica)
+## Deliverables:
+1. Formatted and executed commits
+2. Breaking changes documented (if applicable)
     `,
 });
 ```
 
-## Ejemplo de uso real
+## Real Use Case Example
 
-**Usuario solicita:** "Crea los commits para los cambios de refactoring de la entidad Appointment"
+**User requests:** "Create the commits for the Appointment entity refactoring changes"
 
-**AO ejecuta:**
+**AO executes:**
 
 ```javascript
 await runSubagent({
   description: "[Commits] Create atomic commits for Appointment refactor",
   prompt: `
-# Contexto del Proyecto: [PROJECT_CONTEXT cargado]
-# Reglas Arquitectonicas: [RULES cargadas]
+# Project Context: [PROJECT_CONTEXT loaded]
+# Architectural Rules: [RULES loaded]
 # Skills: conventional-commits
 
-# Tarea:
-Crear commits atomicos para los siguientes cambios:
-1. Nueva entidad de dominio Appointment (domain/entities/)
-2. Nuevo puerto AppointmentRepository (domain/ports/)
-3. Adaptador MongooseAppointmentRepository (infrastructure/)
-4. Tests unitarios de la entidad
-5. Documentacion actualizada
+# Task:
+Create atomic commits for the following changes:
+1. New domain entity Appointment (domain/entities/)
+2. New port AppointmentRepository (domain/ports/)
+3. Adapter MongooseAppointmentRepository (infrastructure/)
+4. Unit tests for the entity
+5. Updated documentation
 
-# Commits esperados:
+# Expected commits:
 - refactor(consumer): extract appointment entity to domain layer
 - refactor(consumer): create appointment repository port
 - refactor(consumer): implement mongoose appointment adapter
@@ -80,12 +80,12 @@ Crear commits atomicos para los siguientes cambios:
 });
 ```
 
-## Checklist post-delegacion
+## Post-Delegation Checklist
 
-- [ ] Cada commit tiene tipo y scope validos
-- [ ] Descripcion en minusculas, imperativo, sin punto final
-- [ ] Max 72 caracteres en primera linea
-- [ ] Un tipo por commit (atomico)
-- [ ] Breaking changes documentados con ! o BREAKING CHANGE:
-- [ ] git log --oneline muestra formato correcto
-- [ ] Documentado en AI_WORKFLOW.md
+- [ ] Each commit has a valid type and scope
+- [ ] Description in lowercase, imperative, no trailing period
+- [ ] Max 72 characters on the first line
+- [ ] One type per commit (atomic)
+- [ ] Breaking changes documented with ! or BREAKING CHANGE:
+- [ ] \`git log --oneline\` shows correct format
+- [ ] Documented in AI_WORKFLOW.md

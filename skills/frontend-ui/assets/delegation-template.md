@@ -1,11 +1,11 @@
-# Template de Delegación: Frontend (UI/UX)
+# Delegation Template: Frontend (UI/UX)
 
-> **Skills Requeridas:** `frontend-ui`, `refactor-arch`, `testing-qa`
+> **Required Skills:** `frontend-ui`, `refactor-arch`, `testing-qa`
 
-## Estructura de Delegación a Sub-Agente
+## Sub-Agent Delegation Structure
 
 ```javascript
-// 1. Cargar contextos y skills
+// 1. Load contexts and skills
 const PROJECT_CONTEXT = await read_file(
   "docs/agent-context/PROJECT_CONTEXT.md",
 );
@@ -14,17 +14,17 @@ const frontendSkill = await read_file("skills/frontend-ui/skill.md");
 const refactorSkill = await read_file("skills/refactor-arch/skill.md");
 const testingSkill = await read_file("skills/testing-qa/skill.md");
 
-// 2. Delegar a Sub-Agente con contexto completo
+// 2. Delegate to Sub-Agent with full context
 await runSubagent({
   description: "[Frontend] Refactor Component XYZ",
   prompt: `
-# Contexto del Proyecto:
+# Project Context:
 ${PROJECT_CONTEXT}
 
-# Reglas Arquitectónicas:
+# Architectural Rules:
 ${RULES}
 
-# Skills Cargadas:
+# Loaded Skills:
 
 ## 1. Frontend UI (Vercel React Best Practices):
 ${frontendSkill}
@@ -35,64 +35,64 @@ ${refactorSkill}
 ## 3. Testing & QA:
 ${testingSkill}
 
-# Tarea: [Descripción de la tarea de frontend]
+# Task: [Frontend task description]
 
-## Objetivo:
-- Refactorizar componentes aplicando React patterns (hooks, composition, memoization)
-- Aplicar Clean Architecture (SRP, DIP) en capa de presentación
-- Crear tests unitarios y de integración
+## Objective:
+- Refactor components applying React patterns (hooks, composition, memoization)
+- Apply Clean Architecture (SRP, DIP) in presentation layer
+- Create unit and integration tests
 
-## Restricciones:
-- No usar class components (usar functional components)
+## Constraints:
+- Do not use class components (use functional components)
 - TypeScript strict mode
-- Cobertura de tests >80%
-- Seguir Conventional Commits
+- Test coverage >80%
+- Follow Conventional Commits
 
-## Entregables:
-1. Código refactorizado
+## Deliverables:
+1. Refactored code
 2. Tests (unit + integration)
-3. Comentarios // HUMAN CHECK donde aplique
-4. Documentación de cambios
+3. // HUMAN CHECK comments where applicable
+4. Change documentation
     `,
 });
 ```
 
-## Ejemplo de Uso Real
+## Real Use Case Example
 
-**Usuario solicita:** "Refactoriza el componente AppointmentCard aplicando SRP"
+**User requests:** "Refactor the AppointmentCard component applying SRP"
 
-**AO ejecuta:**
+**AO executes:**
 
 ```javascript
 await runSubagent({
   description: "[Frontend] Refactor AppointmentCard (SRP)",
   prompt: `
-# Contexto del Proyecto: [PROJECT_CONTEXT cargado]
-# Reglas Arquitectónicas: [RULES cargadas]
+# Project Context: [PROJECT_CONTEXT loaded]
+# Architectural Rules: [RULES loaded]
 # Skills: frontend-ui, refactor-arch, testing-qa
 
-# Tarea: 
-Refactorizar \`AppointmentCard.tsx\` separando responsabilidades:
-- Extraer sub-componentes (AppointmentStatus, AppointmentInfo, AppointmentActions)
-- Crear custom hooks (useAppointmentActions, useAppointmentData)
-- Modularizar estilos en CSS Modules separados
-- Agregar tests unitarios de cada sub-componente
-- Tests de integración del flujo completo
+# Task: 
+Refactor \`AppointmentCard.tsx\` separating responsibilities:
+- Extract sub-components (AppointmentStatus, AppointmentInfo, AppointmentActions)
+- Create custom hooks (useAppointmentActions, useAppointmentData)
+- Modularize styles into separate CSS Modules
+- Add unit tests for each sub-component
+- Integration tests for the complete flow
 
-# Entregables:
-1. AppointmentCard refactorizado (SRP aplicado)
-2. 3+ sub-componentes
+# Deliverables:
+1. Refactored AppointmentCard (SRP applied)
+2. 3+ sub-components
 3. 2+ custom hooks
 4. Tests >85% coverage
     `,
 });
 ```
 
-## Checklist Post-Delegación
+## Post-Delegation Checklist
 
-- [ ] SA aplicó principios React (hooks, composition, memoization)
-- [ ] SA aplicó Clean Architecture (SRP, DIP)
-- [ ] Tests creados (>80% coverage)
-- [ ] Commits con Conventional Commits
-- [ ] Documentado en AI_WORKFLOW.md
-- [ ] DEBT_REPORT.md actualizado (si aplica)
+- [ ] SA applied React principles (hooks, composition, memoization)
+- [ ] SA applied Clean Architecture (SRP, DIP)
+- [ ] Tests created (>80% coverage)
+- [ ] Commits with Conventional Commits
+- [ ] Documented in AI_WORKFLOW.md
+- [ ] DEBT_REPORT.md updated (if applicable)

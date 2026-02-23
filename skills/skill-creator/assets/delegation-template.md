@@ -1,11 +1,11 @@
-# Template de delegacion: Creacion de skills
+# Delegation Template: Skill Creation
 
-> **Skills requeridas:** `skill-creator`, `refactor-arch`, `testing-qa`
+> **Required Skills:** `skill-creator`, `refactor-arch`, `testing-qa`
 
-## Estructura de delegacion a sub-agente
+## Sub-Agent Delegation Structure
 
 ```javascript
-// 1. Cargar contextos y skills
+// 1. Load contexts and skills
 const PROJECT_CONTEXT = await read_file(
   "docs/agent-context/PROJECT_CONTEXT.md",
 );
@@ -14,94 +14,94 @@ const creatorSkill = await read_file("skills/skill-creator/skill.md");
 const refactorSkill = await read_file("skills/refactor-arch/skill.md");
 const testingSkill = await read_file("skills/testing-qa/skill.md");
 
-// 2. Delegar a Sub-Agente con contexto completo
+// 2. Delegate to Sub-Agent with full context
 await runSubagent({
   description: "[Skill] Create new skill for XYZ",
   prompt: `
-# Contexto del Proyecto:
+# Project Context:
 ${PROJECT_CONTEXT}
 
-# Reglas Arquitectonicas:
+# Architectural Rules:
 ${RULES}
 
-# Skills Cargadas:
+# Loaded Skills:
 
 ## 1. Skill Creator (meta-skill):
 ${creatorSkill}
 
-## 2. Architecture Patterns (para estructura):
+## 2. Architecture Patterns (for structure):
 ${refactorSkill}
 
-## 3. Testing & QA (para calidad):
+## 3. Testing & QA (for quality):
 ${testingSkill}
 
-# Tarea: [Descripcion de la nueva skill a crear]
+# Task: [Description of the new skill to create]
 
-## Objetivo:
-- Identificar gap: que tipo de tarea no esta cubierta
-- Verificar que no existe skill con overlap (grep triggers en skills/)
-- Crear directorio skills/<nombre>/
-- Crear skill.md con YAML frontmatter + Context/Rules/Tools/Workflow/Assets
-- Crear assets/templates/ con al menos un ejemplo
-- Crear assets/docs/ con documentacion relevante
+## Objective:
+- Identify gap: what type of task is not covered
+- Verify no overlapping skill exists (grep triggers in skills/)
+- Create directory skills/<name>/
+- Create skill.md with YAML frontmatter + Context/Rules/Tools/Workflow/Assets
+- Create assets/templates/ with at least one example
+- Create assets/docs/ with relevant documentation
 
-## Restricciones:
-- YAML frontmatter obligatorio (name, description, trigger, scope, author, version, license, autoinvoke)
-- Secciones obligatorias: Context, Rules, Tools Permitted, Workflow, Assets
-- No crear skills que se solapen con las 8 existentes
-- Incluir delegation-template.md en assets/
-- Ejecutar bash scripts/sync.sh despues de crear
+## Constraints:
+- Mandatory YAML frontmatter (name, description, trigger, scope, author, version, license, autoinvoke)
+- Mandatory sections: Context, Rules, Tools Permitted, Workflow, Assets
+- Do not create skills that overlap with the existing 8
+- Include delegation-template.md in assets/
+- Execute bash scripts/sync.sh after creation
 
-## Entregables:
-1. skills/<nombre>/skill.md (completo)
-2. skills/<nombre>/assets/templates/<ejemplo> (minimo 1)
-3. skills/<nombre>/assets/docs/<doc> (minimo 1)
-4. skills/<nombre>/assets/delegation-template.md
-5. SKILL_REGISTRY.md actualizado (via sync.sh)
+## Deliverables:
+1. skills/<name>/skill.md (complete)
+2. skills/<name>/assets/templates/<example> (minimum 1)
+3. skills/<name>/assets/docs/<doc> (minimum 1)
+4. skills/<name>/assets/delegation-template.md
+5. Updated SKILL_REGISTRY.md (via sync.sh)
     `,
 });
 ```
 
-## Ejemplo de uso real
+## Real Use Case Example
 
-**Usuario solicita:** "Necesito una skill para gestionar migraciones de base de datos"
+**User requests:** "I need a skill to manage database migrations"
 
-**AO ejecuta:**
+**AO executes:**
 
 ```javascript
 await runSubagent({
   description: "[Skill] Create database-migrations skill",
   prompt: `
-# Contexto del Proyecto: [PROJECT_CONTEXT cargado]
-# Reglas Arquitectonicas: [RULES cargadas]
+# Project Context: [PROJECT_CONTEXT loaded]
+# Architectural Rules: [RULES loaded]
 # Skills: skill-creator, refactor-arch, testing-qa
 
-# Tarea:
-Crear nueva skill 'database-migrations' que cubra:
+# Task:
+Create new skill 'database-migrations' covering:
 1. Trigger: migrations, schema changes, database versioning, data seeding
 2. Scope: backend/*/src/infrastructure/persistence/, scripts/
-3. Rules: versionado de schemas, rollback de migraciones, seed data separado
-4. Templates: migracion de referencia, script de rollback
-5. Docs: guia de migraciones, checklist de validacion
+3. Rules: schema versioning, migration rollback, separate seed data
+4. Templates: reference migration, rollback script
+5. Docs: migrations guide, validation checklist
 
-# Verificacion previa:
-- grep -r "migration" skills/*/skill.md (confirmar no overlap)
+# Pre-verification:
+- grep -r "migration" skills/*/skill.md (confirm no overlap)
 
-# Post-creacion:
+# Post-creation:
 - bash scripts/sync.sh
     `,
 });
 ```
 
-## Checklist post-delegacion
+## Post-Delegation Checklist
 
-- [ ] YAML frontmatter completo y valido
-- [ ] Todas las secciones presentes (Context, Rules, Tools, Workflow, Assets)
-- [ ] No hay overlap con skills existentes (triggers unicos)
-- [ ] assets/templates/ tiene al menos 1 ejemplo
-- [ ] assets/docs/ tiene al menos 1 documento
-- [ ] assets/delegation-template.md creado
-- [ ] bash scripts/sync.sh ejecutado exitosamente
-- [ ] SKILL_REGISTRY.md refleja la nueva skill
-- [ ] Commits con Conventional Commits
-- [ ] Documentado en AI_WORKFLOW.md
+- [ ] Complete and valid YAML frontmatter
+- [ ] All sections present (Context, Rules, Tools, Workflow, Assets)
+- [ ] No overlap with existing skills (unique triggers)
+- [ ] \`assets/templates/\` has at least 1 example
+- [ ] \`assets/docs/\` has at least 1 document
+- [ ] \`assets/delegation-template.md\` created
+- [ ] \`bash scripts/sync.sh\` successfully executed
+- [ ] SKILL_REGISTRY.md reflects the new skill
+- [ ] Commits with Conventional Commits
+- [ ] Documented in AI_WORKFLOW.md

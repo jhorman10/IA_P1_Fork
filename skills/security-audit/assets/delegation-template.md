@@ -1,11 +1,11 @@
-# Template de Delegación: Security Audit
+# Delegation Template: Security Audit
 
-> **Skills Requeridas:** `security-audit`, `refactor-arch`, `testing-qa`
+> **Required Skills:** `security-audit`, `refactor-arch`, `testing-qa`
 
-## Estructura de Delegación a Sub-Agente
+## Sub-Agent Delegation Structure
 
 ```javascript
-// 1. Cargar contextos y skills
+// 1. Load contexts and skills
 const PROJECT_CONTEXT = await read_file(
   "docs/agent-context/PROJECT_CONTEXT.md",
 );
@@ -14,17 +14,17 @@ const securitySkill = await read_file("skills/security-audit/skill.md");
 const refactorSkill = await read_file("skills/refactor-arch/skill.md");
 const testingSkill = await read_file("skills/testing-qa/skill.md");
 
-// 2. Delegar a Sub-Agente con contexto completo
+// 2. Delegate to Sub-Agent with full context
 await runSubagent({
   description: "[Security] Audit XYZ",
   prompt: `
-# Contexto del Proyecto:
+# Project Context:
 ${PROJECT_CONTEXT}
 
-# Reglas Arquitectónicas:
+# Architectural Rules:
 ${RULES}
 
-# Skills Cargadas:
+# Loaded Skills:
 
 ## 1. Security Audit (OWASP Top 10):
 ${securitySkill}
@@ -35,70 +35,70 @@ ${refactorSkill}
 ## 3. Testing & QA:
 ${testingSkill}
 
-# Tarea: [Descripción de la auditoría de seguridad]
+# Task: [Security audit description]
 
-## Objetivo:
-- Ejecutar auditoría siguiendo OWASP Top 10
-- Detectar vulnerabilidades (XSS, SQL Injection, CSRF, etc.)
-- Proponer plan de remediación con priorización
-- Implementar hardening (Helmet, Rate Limiting, Sanitization)
+## Objective:
+- Execute audit following OWASP Top 10
+- Detect vulnerabilities (XSS, SQL Injection, CSRF, etc.)
+- Propose remediation plan with prioritization
+- Implement hardening (Helmet, Rate Limiting, Sanitization)
 
-## Restricciones:
-- No romper tests existentes
-- Documentar cada hallazgo con severidad (CRITICAL/HIGH/MEDIUM/LOW)
-- Tests de casos maliciosos (>80% coverage en security)
-- Seguir Conventional Commits
+## Constraints:
+- Do not break existing tests
+- Document each finding with severity (CRITICAL/HIGH/MEDIUM/LOW)
+- Tests for malicious cases (>80% coverage in security)
+- Follow Conventional Commits
 
-## Entregables:
-1. SECURITY_AUDIT.md con hallazgos detallados
-2. Plan de remediación priorizado
-3. Código hardened (middlewares, guards, sanitizers)
-4. Tests de seguridad (malicious inputs, edge cases)
-5. DEBT_REPORT.md actualizado con hallazgos
+## Deliverables:
+1. SECURITY_AUDIT.md with detailed findings
+2. Prioritized remediation plan
+3. Hardened code (middlewares, guards, sanitizers)
+4. Security tests (malicious inputs, edge cases)
+5. Updated DEBT_REPORT.md with findings
     `,
 });
 ```
 
-## Ejemplo de Uso Real
+## Real Use Case Example
 
-**Usuario solicita:** "Ejecuta auditoría de seguridad en endpoints de registro"
+**User requests:** "Execute security audit on registration endpoints"
 
-**AO ejecuta:**
+**AO executes:**
 
 ```javascript
 await runSubagent({
   description: "[Security] Audit Registration Endpoints",
   prompt: `
-# Contexto del Proyecto: [PROJECT_CONTEXT cargado]
-# Reglas Arquitectónicas: [RULES cargadas]
+# Project Context: [PROJECT_CONTEXT loaded]
+# Architectural Rules: [RULES loaded]
 # Skills: security-audit, refactor-arch, testing-qa
 
-# Tarea:
-Auditoría de seguridad en endpoints de registro de citas:
-1. Detectar vulnerabilidades OWASP Top 10 en \`/api/appointments\`
-2. Verificar validación de inputs (XSS, SQL Injection, NoSQL Injection)
-3. Verificar rate limiting y protección CSRF
-4. Implementar sanitization middleware
-5. Agregar validación de esquemas con Joi/Zod
-6. Tests de casos maliciosos (payloads XSS, SQL injection)
+# Task:
+Security audit on appointment registration endpoints:
+1. Detect OWASP Top 10 vulnerabilities in \`/api/appointments\`
+2. Verify input validation (XSS, SQL Injection, NoSQL Injection)
+3. Verify rate limiting and CSRF protection
+4. Implement sanitization middleware
+5. Add schema validation with Joi/Zod
+6. Tests for malicious cases (XSS payloads, SQL injection)
 
-# Entregables:
-1. Lista de vulnerabilidades detectadas (H-XX con severidad)
-2. Sanitization middleware implementado
-3. Schema validation aplicado
-4. 10+ tests de casos maliciosos
-5. DEBT_REPORT.md actualizado con hallazgos
+# Deliverables:
+1. List of detected vulnerabilities (H-XX with severity)
+2. Implemented sanitization middleware
+3. Schema validation applied
+4. 10+ tests for malicious cases
+5. Updated DEBT_REPORT.md with findings
     `,
 });
 ```
 
-## Checklist Post-Delegación
+## Post-Delegation Checklist
 
-- [ ] SA ejecutó auditoría siguiendo OWASP Top 10
-- [ ] Hallazgos documentados con severidad (CRITICAL/HIGH/MEDIUM/LOW)
-- [ ] Plan de remediación priorizado
-- [ ] Security hardening implementado
-- [ ] Tests de seguridad creados (>80% coverage)
-- [ ] Commits con Conventional Commits
-- [ ] SECURITY_AUDIT.md actualizado
-- [ ] DEBT_REPORT.md actualizado con hallazgos H-XX
+- [ ] SA executed audit following OWASP Top 10
+- [ ] Findings documented with severity (CRITICAL/HIGH/MEDIUM/LOW)
+- [ ] Prioritized remediation plan
+- [ ] Security hardening implemented
+- [ ] Security tests created (>80% coverage)
+- [ ] Commits with Conventional Commits
+- [ ] SECURITY_AUDIT.md updated
+- [ ] DEBT_REPORT.md updated with H-XX findings

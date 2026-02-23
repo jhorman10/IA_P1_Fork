@@ -1,11 +1,11 @@
-# Template de delegacion: Docker e infraestructura
+# Delegation Template: Docker and Infrastructure
 
-> **Skills requeridas:** `docker-infra`, `backend-api`, `testing-qa`
+> **Required Skills:** `docker-infra`, `backend-api`, `testing-qa`
 
-## Estructura de delegacion a sub-agente
+## Sub-Agent Delegation Structure
 
 ```javascript
-// 1. Cargar contextos y skills
+// 1. Load contexts and skills
 const PROJECT_CONTEXT = await read_file(
   "docs/agent-context/PROJECT_CONTEXT.md",
 );
@@ -14,17 +14,17 @@ const dockerSkill = await read_file("skills/docker-infra/skill.md");
 const backendSkill = await read_file("skills/backend-api/skill.md");
 const testingSkill = await read_file("skills/testing-qa/skill.md");
 
-// 2. Delegar a Sub-Agente con contexto completo
+// 2. Delegate to Sub-Agent with full context
 await runSubagent({
   description: "[Docker] Harden infrastructure for XYZ",
   prompt: `
-# Contexto del Proyecto:
+# Project Context:
 ${PROJECT_CONTEXT}
 
-# Reglas Arquitectonicas:
+# Architectural Rules:
 ${RULES}
 
-# Skills Cargadas:
+# Loaded Skills:
 
 ## 1. Docker & Infrastructure:
 ${dockerSkill}
@@ -35,67 +35,67 @@ ${backendSkill}
 ## 3. Testing & QA:
 ${testingSkill}
 
-# Tarea: [Descripcion de la tarea de infraestructura]
+# Task: [Infrastructure task description]
 
-## Objetivo:
-- Aplicar cambios de infraestructura Docker/Compose
-- Validar healthchecks, secretos, puertos y volumes
-- Asegurar que credenciales usen variables de entorno
-- Verificar depends_on con condition: service_healthy
+## Objective:
+- Apply Docker/Compose infrastructural changes
+- Validate healthchecks, secrets, ports, and volumes
+- Ensure credentials use environment variables
+- Verify depends_on with condition: service_healthy
 
-## Restricciones:
-- NUNCA hardcodear credenciales (usar \${VAR:-default} con .env)
-- Todo servicio DEBE tener healthcheck
-- Puertos de management (15672, 27017) marcados con // HUMAN CHECK
-- Configs de desarrollo (volumes, start:dev) documentadas para remocion en produccion
-- Usar redes nombradas (app-network) y volumes nombrados
+## Constraints:
+- NEVER hardcode credentials (use \${VAR:-default} with .env)
+- Every service MUST have a healthcheck
+- Management ports (15672, 27017) marked with // HUMAN CHECK
+- Development configs (volumes, start:dev) documented for removal in production
+- Use named networks (app-network) and named volumes
 
-## Entregables:
-1. docker-compose.yml actualizado
-2. .env.example actualizado (sin secretos reales)
-3. Dockerfiles optimizados (si aplica)
-4. Comentarios // HUMAN CHECK en configs sensibles
+## Deliverables:
+1. Updated docker-compose.yml
+2. Updated .env.example (without real secrets)
+3. Optimized Dockerfiles (if applicable)
+4. // HUMAN CHECK comments on sensitive configs
     `,
 });
 ```
 
-## Ejemplo de uso real
+## Real Use Case Example
 
-**Usuario solicita:** "Agregar healthcheck a MongoDB y mejorar seguridad de credenciales"
+**User requests:** "Add healthcheck to MongoDB and improve credential security"
 
-**AO ejecuta:**
+**AO executes:**
 
 ```javascript
 await runSubagent({
   description: "[Docker] Add MongoDB healthcheck and harden credentials",
   prompt: `
-# Contexto del Proyecto: [PROJECT_CONTEXT cargado]
-# Reglas Arquitectonicas: [RULES cargadas]
+# Project Context: [PROJECT_CONTEXT loaded]
+# Architectural Rules: [RULES loaded]
 # Skills: docker-infra, backend-api, testing-qa
 
-# Tarea:
-1. Agregar healthcheck a servicio MongoDB en docker-compose.yml
-2. Mover credenciales de MongoDB a variables de entorno
-3. Actualizar .env.example con las variables nuevas
-4. Agregar condition: service_healthy en depends_on de producer y consumer
-5. Marcar puerto 27017 con // HUMAN CHECK: no exponer en produccion
+# Task:
+1. Add healthcheck to MongoDB service in docker-compose.yml
+2. Move MongoDB credentials to environment variables
+3. Update .env.example with the new variables
+4. Add condition: service_healthy in depends_on for producer and consumer
+5. Mark port 27017 with // HUMAN CHECK: do not expose in production
 
-# Entregables:
-1. docker-compose.yml con healthcheck y variables
-2. .env.example actualizado
-3. // HUMAN CHECK en puertos sensibles
+# Deliverables:
+1. docker-compose.yml with healthcheck and variables
+2. Updated .env.example
+3. // HUMAN CHECK on sensitive ports
     `,
 });
 ```
 
-## Checklist post-delegacion
+## Post-Delegation Checklist
 
-- [ ] Ninguna credencial hardcodeada en docker-compose.yml
-- [ ] Todo servicio tiene healthcheck definido
-- [ ] depends_on usa condition: service_healthy
-- [ ] .env.example actualizado (sin secretos)
-- [ ] Puertos de management marcados con // HUMAN CHECK
-- [ ] docker compose config valida sin errores
-- [ ] Commits con Conventional Commits
-- [ ] Documentado en AI_WORKFLOW.md
-- [ ] DEBT_REPORT.md actualizado (si aplica)
+- [ ] No hardcoded credentials in docker-compose.yml
+- [ ] Every service has a defined healthcheck
+- [ ] \`depends_on\` uses \`condition: service_healthy\`
+- [ ] \`.env.example\` updated (no secrets)
+- [ ] Management ports marked with // HUMAN CHECK
+- [ ] \`docker compose config\` validates without errors
+- [ ] Commits with Conventional Commits
+- [ ] Documented in AI_WORKFLOW.md
+- [ ] DEBT_REPORT.md updated (if applicable)

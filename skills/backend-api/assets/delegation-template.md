@@ -1,11 +1,11 @@
-# Template de Delegación: Backend (API/Logic)
+# Delegation Template: Backend (API/Logic)
 
-> **Skills Requeridas:** `backend-api`, `refactor-arch`, `testing-qa`
+> **Required Skills:** `backend-api`, `refactor-arch`, `testing-qa`
 
-## Estructura de Delegación a Sub-Agente
+## Sub-Agent Delegation Structure
 
 ```javascript
-// 1. Cargar contextos y skills
+// 1. Load contexts and skills
 const PROJECT_CONTEXT = await read_file(
   "docs/agent-context/PROJECT_CONTEXT.md",
 );
@@ -14,17 +14,17 @@ const backendSkill = await read_file("skills/backend-api/skill.md");
 const refactorSkill = await read_file("skills/refactor-arch/skill.md");
 const testingSkill = await read_file("skills/testing-qa/skill.md");
 
-// 2. Delegar a Sub-Agente con contexto completo
+// 2. Delegate to Sub-Agent with full context
 await runSubagent({
   description: "[Backend] Implement Use Case XYZ",
   prompt: `
-# Contexto del Proyecto:
+# Project Context:
 ${PROJECT_CONTEXT}
 
-# Reglas Arquitectónicas:
+# Architectural Rules:
 ${RULES}
 
-# Skills Cargadas:
+# Loaded Skills:
 
 ## 1. Backend API Best Practices:
 ${backendSkill}
@@ -35,69 +35,69 @@ ${refactorSkill}
 ## 3. Testing & QA:
 ${testingSkill}
 
-# Tarea: [Descripción de la tarea de backend]
+# Task: [Backend task description]
 
-## Objetivo:
-- Implementar lógica de negocio siguiendo DDD (Entities, Value Objects, Aggregates)
-- Aplicar Hexagonal Architecture (Ports & Adapters)
-- Respetar DIP (Domain no depende de frameworks)
-- Crear tests unitarios y de integración
+## Objective:
+- Implement business logic following DDD (Entities, Value Objects, Aggregates)
+- Apply Hexagonal Architecture (Ports & Adapters)
+- Respect DIP (Domain does not depend on frameworks)
+- Create unit and integration tests
 
-## Restricciones:
-- Seguir estructura: domain → application → infrastructure
-- DIP estricto: domain no conoce MongoDB/NestJS/RabbitMQ
-- Configuración via environment variables
-- Cobertura de tests >85%
-- Seguir Conventional Commits
+## Constraints:
+- Follow structure: domain → application → infrastructure
+- Strict DIP: domain does not know MongoDB/NestJS/RabbitMQ
+- Configuration via environment variables
+- Test coverage >85%
+- Follow Conventional Commits
 
-## Entregables:
-1. Ports (interfaces) en domain/
-2. Adapters en infrastructure/
-3. Use Cases en application/
+## Deliverables:
+1. Ports (interfaces) in domain/
+2. Adapters in infrastructure/
+3. Use Cases in application/
 4. Tests (unit + integration)
-5. Comentarios // HUMAN CHECK donde aplique
+5. // HUMAN CHECK comments where applicable
     `,
 });
 ```
 
-## Ejemplo de Uso Real
+## Real Use Case Example
 
-**Usuario solicita:** "Implementa retry policy con exponential backoff en RabbitMQ"
+**User requests:** "Implement retry policy with exponential backoff in RabbitMQ"
 
-**AO ejecuta:**
+**AO executes:**
 
 ```javascript
 await runSubagent({
   description: "[Backend] Implement Retry Policy with Exponential Backoff",
   prompt: `
-# Contexto del Proyecto: [PROJECT_CONTEXT cargado]
-# Reglas Arquitectónicas: [RULES cargadas]
+# Project Context: [PROJECT_CONTEXT loaded]
+# Architectural Rules: [RULES loaded]
 # Skills: backend-api, refactor-arch, testing-qa
 
-# Tarea:
-Implementar retry policy con exponential backoff para RabbitMQ:
-1. Crear \`RetryPolicyPort\` en domain/ports/outbound/
-2. Implementar \`ExponentialBackoffRetryAdapter\` en infrastructure/
-3. Integrar en \`RabbitMQPublisher\` con configuración (max retries, base delay)
-4. Agregar logging de reintentos vía LoggerPort
-5. Tests unitarios de estrategia de backoff
-6. Tests de integración con RabbitMQ mock
+# Task:
+Implement retry policy with exponential backoff for RabbitMQ:
+1. Create \`RetryPolicyPort\` in domain/ports/outbound/
+2. Implement \`ExponentialBackoffRetryAdapter\` in infrastructure/
+3. Integrate into \`RabbitMQPublisher\` with configuration (max retries, base delay)
+4. Add retry logging via LoggerPort
+5. Unit tests for backoff strategy
+6. Integration tests with RabbitMQ mock
 
-# Entregables:
+# Deliverables:
 1. RetryPolicyPort (interface)
-2. ExponentialBackoffRetryAdapter (implementación)
-3. Integración en Publisher
+2. ExponentialBackoffRetryAdapter (implementation)
+3. Integration in Publisher
 4. Tests >85% coverage
     `,
 });
 ```
 
-## Checklist Post-Delegación
+## Post-Delegation Checklist
 
-- [ ] SA aplicó DDD (Entities, VOs, Aggregates correctamente ubicados)
-- [ ] SA aplicó Hexagonal Architecture (Ports & Adapters)
-- [ ] Domain no depende de frameworks (DIP validado)
-- [ ] Tests creados (>85% coverage)
-- [ ] Commits con Conventional Commits
-- [ ] Documentado en AI_WORKFLOW.md
-- [ ] DEBT_REPORT.md actualizado (si aplica)
+- [ ] SA applied DDD (Entities, VOs, Aggregates correctly located)
+- [ ] SA applied Hexagonal Architecture (Ports & Adapters)
+- [ ] Domain does not depend on frameworks (DIP validated)
+- [ ] Tests created (>85% coverage)
+- [ ] Commits with Conventional Commits
+- [ ] Documented in AI_WORKFLOW.md
+- [ ] DEBT_REPORT.md updated (if applicable)
