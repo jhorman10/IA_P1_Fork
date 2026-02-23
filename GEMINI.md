@@ -150,7 +150,21 @@ async function delegateTask(userRequest, retryCount = 0) {
   // 4. Calculate allowed scope (union of scopes from all skills)
   const allowedScope = mergeScopes(orderedSkills.map((s) => skills[s].scope));
 
-  // 5. Delegate to SA with full context + guardrails
+  // 4.5. Technology Discovery — SA MUST detect stack before writing code
+  // The SA inspects config files within the allowed scope to build a TechProfile.
+  // This makes the SA agnostic: it adapts to ANY language/framework.
+  const techProfile = await detectTechStack(allowedScope);
+  // techProfile = {
+  //   language:       "TypeScript" | "Python" | "Java" | ...,
+  //   framework:      "NestJS" | "Next.js" | "FastAPI" | "Spring" | ...,
+  //   packageManager: "npm" | "yarn" | "pnpm" | "pip" | "maven" | ...,
+  //   testRunner:     "jest" | "vitest" | "pytest" | "junit" | ...,
+  //   linter:         "eslint" | "prettier" | "pylint" | "checkstyle" | ...,
+  //   configFiles:    ["package.json", "tsconfig.json", ...],
+  //   typingEnforced: true | false,
+  // }
+
+  // 5. Delegate to SA with full context + guardrails + tech profile
   const result = await runSubagent({
     description: `[Type: ${taskType}] ${extractShortTitle(userRequest)}`,
     prompt: `
@@ -170,10 +184,36 @@ ${skills[name]}
 
 # Task: ${userRequest}
 
-# Strict Code Guardrails:
-- Run the linter and ensure there are no errors.
-- All code must be 100% typed.
-- FORBIDDEN use of \`any\`.
+# Technology Discovery Protocol (mandatory before writing code):
+> The SA MUST NOT assume any specific language or framework.
+> Before writing a single line of code, execute these discovery steps:
+
+1. **Inspect config files** within the allowed scope:
+   - Read \`package.json\`, \`tsconfig.json\`, \`requirements.txt\`, \`pom.xml\`,
+     \`build.gradle\`, \`pyproject.toml\`, \`Cargo.toml\`, or equivalent.
+2. **Identify the tech profile:**
+   - Language: Determine from file extensions (\`.ts\`, \`.js\`, \`.py\`, \`.java\`, etc.)
+   - Framework: Determine from imports, decorators, and config (NestJS, Next.js, FastAPI, Spring, etc.)
+   - Package manager: \`npm\`, \`yarn\`, \`pnpm\`, \`pip\`, \`maven\`, etc.
+   - Test runner: \`jest\`, \`vitest\`, \`pytest\`, \`junit\`, etc.
+   - Linter/formatter: \`eslint\`, \`prettier\`, \`pylint\`, \`checkstyle\`, etc.
+3. **Adapt all code output** to the detected stack:
+   - Use the import style, decorators, and patterns native to the detected framework.
+   - Follow the typing conventions of the detected language.
+   - Use the detected test runner for test files.
+   - Use the detected linter command for validation.
+4. **Report detected stack** at the beginning of the Action Summary:
+   \`Detected stack: [language] + [framework] | Tests: [runner] | Linter: [tool]\`
+
+# Detected Tech Profile: ${JSON.stringify(techProfile)}
+
+# Strict Code Guardrails (adapted to detected stack):
+- Run the detected linter (\`${techProfile.linter}\`) and ensure there are no errors.
+- If the language supports static typing (TypeScript, Java, Kotlin, etc.): all code must be 100% typed.
+- If the language is TypeScript: FORBIDDEN use of \`any\`.
+- If the language is Python: use type hints on all function signatures.
+- If the language is Java/Kotlin: no raw types.
+- Adapt guardrails to the detected language; do NOT apply TypeScript rules to non-TypeScript code.
 
 # SCOPE LIMIT (guardrail):
 - Only modify files within: ${allowedScope.join(", ")}
