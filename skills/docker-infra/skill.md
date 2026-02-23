@@ -1,6 +1,6 @@
 ---
 name: docker-infra (Senior Level)
-description: Orquestación de infraestructura resiliente, optimización de imágenes y seguridad en despliegue.
+description: Resilient infrastructure orchestration, image optimization, and deployment security.
 trigger: When feedback mentions Docker, healthchecks, credentials, environment variables, ports, volumes, deployment, or infrastructure security.
 scope: docker-compose.yml, .env, .env.example, backend/producer/Dockerfile, backend/consumer/Dockerfile, frontend/Dockerfile
 author: "IA_P1_Fork Team"

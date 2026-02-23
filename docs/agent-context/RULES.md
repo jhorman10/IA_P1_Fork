@@ -1,25 +1,25 @@
 # Context: Rules and directives
 
-## 1. Convenciones Culturales (Senior Grade)
+## 1. Cultural Conventions (Senior Grade)
 
-- La IA actúa como **Senior Software Engineer / Lead**; el humano es el Arquitecto Principal/Revisor.
-- Todo cambio crítico DEBE llevar `// HUMAN CHECK` justifying the architectural trade-off.
-- Se exige cumplimiento estricto de **SOLID, DRY, KISS** y patrones de diseño.
-- **Nomenclatura en inglés** (ej: `Appointment`, `idCard`, `fullName`).
-- **No** frameworks CSS externos. Solo `page.module.css`.
-- Tipos compartidos vía `AppointmentEventPayload`.
+- The AI acts as **Senior Software Engineer / Lead**; the human is the Principal Architect/Reviewer.
+- Every critical change MUST include `// HUMAN CHECK` justifying the architectural trade-off.
+- Strict compliance with **SOLID, DRY, KISS** and design patterns is demanded.
+- **English nomenclature** (e.g., `Appointment`, `idCard`, `fullName`).
+- **No** external CSS frameworks. Only `page.module.css`.
+- Shared types via `AppointmentEventPayload`.
 
-## 2. Reglas de Operación (Anti-patrones)
+## 2. Operation Rules (Anti-patterns)
 
-- Anti-pattern: Acumular contexto técnico de múltiples feedback en una sola sesión
-- Anti-pattern: Modificar archivos sin consultar la skill correspondiente
-- Anti-pattern: Ignorar `// HUMAN CHECK` en cambios de seguridad o lógica de negocio
-- Anti-pattern: Usar CSS externo (Tailwind, Bootstrap, etc.)
-- Anti-pattern: Mezclar nomenclatura español/inglés
-- Anti-pattern: Superar 500 líneas en archivos de contexto
-- Anti-pattern: **Ejecutar cambios sin presentar Plan de Acción al humano primero**
-- Anti-pattern: **Omitir el registro de interacciones en AI_WORKFLOW.md**
-- Anti-pattern: **Omitir la actualización de DEBT_REPORT.md tras resolver un hallazgo**
+- Anti-pattern: Accumulating technical context from multiple feedbacks in a single session
+- Anti-pattern: Modifying files without consulting the corresponding skill
+- Anti-pattern: Ignoring `// HUMAN CHECK` on security or business logic changes
+- Anti-pattern: Using external CSS (Tailwind, Bootstrap, etc.)
+- Anti-pattern: Mixing Spanish/English nomenclature
+- Anti-pattern: Exceeding 500 lines in context files
+- Anti-pattern: **Executing changes without presenting an Action Plan to the human first**
+- Anti-pattern: **Omitting the registration of interactions in AI_WORKFLOW.md**
+- Anti-pattern: **Omitting the update of DEBT_REPORT.md after resolving a finding**
 
 ## 3. Markdown Style (mandatory)
 
@@ -31,7 +31,7 @@
 - Anti-pattern: More than one horizontal rule (`---`) per file
 - When creating or editing any `.md` file, run the checklist in `MD_STYLE_GUIDE.md` section 11 before finishing.
 
-## 4. Higiene de Contexto
+## 4. Context Hygiene
 
-- Al concluir una tarea, purgar los detalles de implementación, conservar solo el resumen.
-- Nunca acumules contexto técnico de múltiples feedback en una sola sesión.
+- When concluding a task, purge the implementation details, keep only the summary.
+- Never accumulate technical context from multiple feedbacks in a single session.

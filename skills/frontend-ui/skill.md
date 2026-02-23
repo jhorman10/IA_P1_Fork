@@ -1,6 +1,6 @@
 ---
 name: frontend-ui (Senior Level)
-description: Interfaces de alto rendimiento, accesibilidad (A11y), y gestión de estado reactiva y desacoplada.
+description: High-performance interfaces, accessibility (A11y), and reactive and decoupled state management.
 trigger: When feedback mentions UI components, WebSocket, CSS, styling, pages, dashboard, or frontend behavior.
 scope: frontend/src/
 author: "IA_P1_Fork Team"

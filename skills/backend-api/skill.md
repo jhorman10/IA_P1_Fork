@@ -1,6 +1,6 @@
 ---
 name: backend-api (Senior Level)
-description: Desarrollo de microservicios NestJS de alto rendimiento, orquestación de mensajes y lógica de dominio pura.
+description: Development of high-performance NestJS microservices, message orchestration, and pure domain logic.
 trigger: When feedback mentions services, controllers, DTOs, validation, message queues, ack/nack, or business logic in the backend.
 scope: backend/producer/src/, backend/consumer/src/
 author: "IA_P1_Fork Team"

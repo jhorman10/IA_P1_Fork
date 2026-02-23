@@ -1,6 +1,6 @@
 ---
 name: refactor-arch (Senior Level)
-description: Refactorización avanzada hacia Hexagonal Architecture, aplicando SOLID, patrones de diseño y análisis de trade-offs técnicos.
+description: Advanced refactoring towards Hexagonal Architecture, applying SOLID, design patterns, and technical trade-off analysis.
 trigger: When feedback mentions architecture refactoring, hexagonal architecture, SOLID principles, design patterns, ports and adapters, domain isolation, coupling, decoupling, or dependency inversion.
 scope: backend/producer/src/, backend/consumer/src/, frontend/src/
 author: "IA_P1_Fork Team"
@@ -13,27 +13,27 @@ autoinvoke: true
 
 ## Context
 
-Este proyecto exige una **arquitectura de grado empresarial**: desacoplada, testeable, mantenible y lista para escalar. No se aceptan soluciones "código spaghetti".
+This project demands an **enterprise-grade architecture**: decoupled, testable, maintainable, and ready to scale. "Spaghetti code" solutions are not accepted.
 
-- **Arquitectura Hexagonal**: Puertos y Adaptadores estrictos.
-- **SOLID**: El estándar mínimo aceptable.
-- **Patrones de Diseño**: Uso consciente de patrones creacionales, estructurales y de comportamiento.
+- **Hexagonal Architecture**: Strict Ports and Adapters.
+- **SOLID**: The minimum acceptable standard.
+- **Design Patterns**: Conscious use of creational, structural, and behavioral patterns.
 
-### Arquitectura objetivo
+### Target Architecture
 
 ```
 src/
-├── domain/              ← Núcleo puro (sin imports de infraestructura)
-│   ├── entities/        ← Entidades de dominio (Appointment, Office)
-│   ├── value-objects/   ← Objetos de valor (IdCard, Priority)
-│   ├── ports/           ← Interfaces (contratos)
-│   │   ├── inbound/     ← Puertos de entrada (use cases)
-│   │   └── outbound/    ← Puertos de salida (repositorios, messaging)
-│   └── services/        ← Lógica de dominio pura
-├── application/         ← Casos de uso (orquestación)
-│   ├── use-cases/       ← Implementaciones de puertos inbound
+├── domain/              ← Pure core (no infrastructure imports)
+│   ├── entities/        ← Domain entities (Appointment, Office)
+│   ├── value-objects/   ← Value objects (IdCard, Priority)
+│   ├── ports/           ← Interfaces (contracts)
+│   │   ├── inbound/     ← Inbound ports (use cases)
+│   │   └── outbound/    ← Outbound ports (repositories, messaging)
+│   └── services/        ← Pure domain logic
+├── application/         ← Use cases (orchestration)
+│   ├── use-cases/       ← Inbound port implementations
 │   └── dtos/            ← Data Transfer Objects
-├── infrastructure/      ← Adaptadores concretos
+├── infrastructure/      ← Concrete adapters
 │   ├── persistence/     ← Mongoose models, repositories
 │   ├── messaging/       ← RabbitMQ adapters
 │   ├── web/             ← Controllers, WebSocket Gateways
@@ -42,69 +42,69 @@ src/
 
 ## Rules
 
-### Separación estricta de capas
+### Strict Layer Separation
 
-1. **domain/** NO puede importar de `infrastructure/`, `@nestjs/*`, `mongoose`, `amqplib`, ni ninguna librería de infraestructura.
-2. **application/** puede importar de `domain/` pero NO de `infrastructure/`.
-3. **infrastructure/** implementa los puertos definidos en `domain/ports/`.
-4. Toda dependencia fluye hacia adentro: `infra → app → domain`.
+1. **domain/** CANNOT import from `infrastructure/`, `@nestjs/*`, `mongoose`, `amqplib`, or any infrastructure library.
+2. **application/** can import from `domain/` but NOT from `infrastructure/`.
+3. **infrastructure/** implements the ports defined in `domain/ports/`.
+4. All dependencies flow inwards: `infra → app → domain`.
 
-### Principios SOLID obligatorios
+### Mandatory SOLID Principles
 
-| Principio | Aplicación                                                                                |
+| Principle | Application                                                                               |
 | --------- | ----------------------------------------------------------------------------------------- |
-| **SRP**   | Cada clase tiene una única responsabilidad. Separar lógica de negocio de orquestación.    |
-| **OCP**   | Nuevas features se agregan creando nuevos adaptadores, no modificando el dominio.         |
-| **LSP**   | Los adaptadores deben cumplir el contrato del puerto sin alterar comportamiento esperado. |
-| **ISP**   | Interfaces de puertos pequeñas y específicas. No forzar implementaciones innecesarias.    |
-| **DIP**   | El dominio define interfaces (puertos). La infraestructura las implementa (adaptadores).  |
+| **SRP**   | Each class has a single responsibility. Separate business logic from orchestration.       |
+| **OCP**   | New features are added by creating new adapters, not modifying the domain.                |
+| **LSP**   | Adapters must fulfill the port contract without altering expected behavior.               |
+| **ISP**   | Small and specific port interfaces. Do not force unnecessary implementations.             |
+| **DIP**   | The domain defines interfaces (ports). The infrastructure implements them (adapters).     |
 
-### Patrones de diseño a aplicar
+### Design Patterns to Apply
 
-| Categoría          | Patrón                  | Uso en el proyecto                                           |
+| Category           | Pattern                 | Use in the project                                           |
 | ------------------ | ----------------------- | ------------------------------------------------------------ |
-| **Creacional**     | Factory                 | Crear entidades de dominio con validación encapsulada        |
-| **Creacional**     | Singleton               | NestJS `@Injectable()` — instancia única de servicios        |
-| **Creacional**     | Builder                 | Construcción de queries complejos paso a paso                |
-| **Estructural**    | Repository              | Abstraer persistencia detrás de un puerto de salida          |
-| **Estructural**    | Adapter                 | Conectar infraestructura (Mongoose, RabbitMQ) a los puertos  |
-| **Estructural**    | Facade                  | Use Cases simplifican la orquestación de múltiples servicios |
-| **Estructural**    | Decorator               | DTOs con `class-validator` — validación declarativa          |
-| **Estructural**    | Proxy                   | Logging/caching automático sobre repositorios                |
-| **Comportamiento** | Observer                | Notificaciones WebSocket vía eventos de dominio              |
-| **Comportamiento** | Strategy                | Estrategias de ack/nack en consumer según tipo de error      |
-| **Comportamiento** | Command                 | Mensajes RabbitMQ como comandos serializados                 |
-| **Comportamiento** | Chain of Responsibility | NestJS Pipeline (Guards → Pipes → Controllers)               |
-| **Comportamiento** | State                   | Transiciones de `AppointmentStatus` con validación           |
-| **Comportamiento** | Template Method         | Flujo base de procesamiento de mensajes                      |
-| **Comportamiento** | Mediator                | NestJS Modules como coordinadores de dependencias            |
+| **Creational**     | Factory                 | Create domain entities with encapsulated validation          |
+| **Creational**     | Singleton               | NestJS `@Injectable()` — single instance of services         |
+| **Creational**     | Builder                 | Step-by-step construction of complex queries                 |
+| **Structural**     | Repository              | Abstract persistence behind an outbound port                 |
+| **Structural**     | Adapter                 | Connect infrastructure (Mongoose, RabbitMQ) to ports         |
+| **Structural**     | Facade                  | Use Cases simplify orchestration of multiple services        |
+| **Structural**     | Decorator               | DTOs with `class-validator` — declarative validation         |
+| **Structural**     | Proxy                   | Automatic logging/caching over repositories                  |
+| **Behavioral**     | Observer                | WebSocket notifications via domain events                    |
+| **Behavioral**     | Strategy                | ack/nack strategies in consumer based on error type          |
+| **Behavioral**     | Command                 | RabbitMQ messages as serialized commands                     |
+| **Behavioral**     | Chain of Responsibility | NestJS Pipeline (Guards → Pipes → Controllers)               |
+| **Behavioral**     | State                   | `AppointmentStatus` transitions with validation              |
+| **Behavioral**     | Template Method         | Base flow for message processing                             |
+| **Behavioral**     | Mediator                | NestJS Modules as dependency coordinators                    |
 
-> **Referencia completa:** Ver `assets/docs/architecture-patterns-catalog.md` para definiciones, ejemplos de código y justificaciones técnicas de cada patrón.
+> **Complete reference:** See `assets/docs/architecture-patterns-catalog.md` for definitions, code examples, and technical justifications for each pattern.
 
-### Convenciones
+### Conventions
 
-- Agregar `// HUMAN CHECK` en cada decisión de separación de capas.
-- Documentar qué patrón se usa y por qué en cada archivo con un comentario `// Pattern: <nombre> — <justificación>`.
-- Nombres de puertos descriptivos: `AppointmentRepository`, `MessagePublisher`, `NotificationGateway`.
+- Add `// HUMAN CHECK` on each layer separation decision.
+- Document which pattern is used and why in each file with a `// Pattern: <name> — <justification>` comment.
+- Descriptive port names: `AppointmentRepository`, `MessagePublisher`, `NotificationGateway`.
 
 ## Tools Permitted
 
-- **Read/Write:** Archivos dentro del scope definido en `backend/*/src/` y `frontend/src/`
-- **Explore:** `grep`/`glob` para detectar imports prohibidos cruzando capas
+- **Read/Write:** Files within the defined scope in `backend/*/src/` and `frontend/src/`
+- **Explore:** `grep`/`glob` to detect prohibited imports crossing layers
 - **Terminal:** `npm run build`, `npm run test`, `npm run lint`
 
 ## Workflow
 
-### Paso 1 — Diagnóstico de acoplamiento
+### Step 1 — Coupling Diagnosis
 
 ```bash
-# Detectar imports de infraestructura en lógica de negocio
+# Detect infrastructure imports in business logic
 grep -rn "import.*mongoose\|import.*@nestjs\|import.*amqplib" backend/*/src/
 ```
 
-### Paso 2 — Definir puertos (interfaces)
+### Step 2 — Define ports (interfaces)
 
-Crear las interfaces en `domain/ports/` antes de mover código:
+Create interfaces in `domain/ports/` before moving code:
 
 ```typescript
 // domain/ports/outbound/appointment.repository.ts
@@ -115,13 +115,13 @@ export interface AppointmentRepository {
 }
 ```
 
-### Paso 3 — Extraer entidades de dominio
+### Step 3 — Extract domain entities
 
-Mover entidades de los schemas de Mongoose a clases puras en `domain/entities/`:
+Move entities from Mongoose schemas to pure classes in `domain/entities/`:
 
 ```typescript
 // domain/entities/appointment.entity.ts
-// Pattern: Entity — Clase de dominio sin dependencias de infraestructura
+// Pattern: Entity — Domain class without infrastructure dependencies
 export class Appointment {
   constructor(
     public readonly idCard: number,
@@ -132,13 +132,13 @@ export class Appointment {
 }
 ```
 
-### Paso 4 — Crear adaptadores
+### Step 4 — Create adapters
 
-Implementar los puertos con las tecnologías concretas:
+Implement the ports with concrete technologies:
 
 ```typescript
 // infrastructure/persistence/mongoose-appointment.repository.ts
-// Pattern: Adapter + Repository — Implementa el puerto con Mongoose
+// Pattern: Adapter + Repository — Implements the port with Mongoose
 @Injectable()
 export class MongooseAppointmentRepository implements AppointmentRepository {
   constructor(
@@ -152,24 +152,24 @@ export class MongooseAppointmentRepository implements AppointmentRepository {
 }
 ```
 
-### Paso 5 — Verificar aislamiento
+### Step 5 — Verify isolation
 
 ```bash
-# El dominio NO debe tener imports de infraestructura
+# The domain MUST NOT have infrastructure imports
 grep -rn "import.*mongoose\|import.*@nestjs\|import.*amqplib" backend/*/src/domain/
-# Resultado esperado: 0 matches
+# Expected result: 0 matches
 ```
 
-### Paso 6 — Tests unitarios puros
+### Step 6 — Pure unit tests
 
-Los tests deben mockear los puertos de salida, no las implementaciones concretas.
+Tests should mock outbound ports, not concrete implementations.
 
-### Paso 7 — Resumen de Acción
+### Step 7 — Action Summary
 
-Entregar resumen usando `skills/action-summary-template.md`.
+Deliver summary using `skills/action-summary-template.md`.
 
 ## Assets
 
-- `assets/templates/hexagonal-structure.md` — Estructura de directorios de referencia
-- `assets/docs/solid-checklist.md` — Checklist de verificación SOLID por componente
-- `assets/docs/architecture-patterns-catalog.md` — Catálogo completo: 4 arquitecturas + 14 patrones de diseño con ejemplos
+- `assets/templates/hexagonal-structure.md` — Reference directory structure
+- `assets/docs/solid-checklist.md` — SOLID verification checklist per component
+- `assets/docs/architecture-patterns-catalog.md` — Complete catalog: 4 architectures + 14 design patterns with examples

@@ -1,35 +1,35 @@
 # Context: Workflow and traceability
 
-## 1. Flujo de trabajo (The Algorithm)
+## 1. Workflow (The Algorithm)
 
-1.  **LEER** → `DEBT_REPORT.md` (estado actual)
-2.  **ELEGIR** → Siguiente ítem pendiente (status: Pending)
-3.  **MATCH** → Identificar skill por trigger (ver `SKILL_REGISTRY.md`)
-4.  **PLANIFICAR** → SA presenta Plan de Acción al humano:
-    - Archivos a modificar
-    - Cambios propuestos (qué y por qué)
-    - Patrones/principios aplicados
-    - Riesgos o breaking changes
-5.  **APROBAR** → El humano valida, corrige o rechaza el plan:
-    - Aprobado → SA procede a ejecutar
-    - Corregido → SA ajusta plan y vuelve a paso 5
-    - Rechazado → SA descarta y vuelve a paso 2
-6.  **EJECUTAR** → SA implementa los cambios aprobados
-7.  **RECIBIR** → Resumen de Acción del SA
-8.  **REGISTRAR** → Actualizar `AI_WORKFLOW.md` con la interacción y commits
-9.  **ACTUALIZAR** → Marcar ítem como Done en `DEBT_REPORT.md`
-10. **PURGAR** → Descartar razonamiento intermedio del SA, conservar solo el resumen
-11. **REPETIR** → Siguiente ítem
+1.  **READ** → `DEBT_REPORT.md` (current status)
+2.  **CHOOSE** → Next pending item (status: Pending)
+3.  **MATCH** → Identify skill by trigger (see `SKILL_REGISTRY.md`)
+4.  **PLAN** → SA presents an Action Plan to the human:
+    - Files to modify
+    - Proposed changes (what and why)
+    - Patterns/principles applied
+    - Risks or breaking changes
+5.  **APPROVE** → The human validates, corrects, or rejects the plan:
+    - Approved → SA proceeds to execute
+    - Corrected → SA adjusts plan and returns to step 5
+    - Rejected → SA discards and returns to step 2
+6.  **EXECUTE** → SA implements the approved changes
+7.  **RECEIVE** → Action Summary from the SA
+8.  **REGISTER** → Update `AI_WORKFLOW.md` with the interaction and commits
+9.  **UPDATE** → Mark item as Done in `DEBT_REPORT.md`
+10. **PURGE** → Discard the SA's intermediate reasoning, keep only the summary
+11. **REPEAT** → Next item
 
-## 2. Trazabilidad (AI_WORKFLOW.md)
+## 2. Traceability (AI_WORKFLOW.md)
 
-- **Cada interacción** (pregunta, corrección, generación de código) se registra.
-- **Cada commit** se registra con: hash, fecha, tipo, descripción, actor (Humano / IA).
-- **Cada decisión humana crítica** se documenta con contexto y justificación.
-- Este archivo es la **evidencia auditable** de la colaboración Humano-IA.
+- **Every interaction** (question, correction, code generation) is logged.
+- **Every commit** is logged with: hash, date, type, description, actor (Human / AI).
+- **Every critical human decision** is documented with context and justification.
+- This file is the **auditable evidence** of Human-AI collaboration.
 
-## 3. Delegación obligatoria
+## 3. Mandatory Delegation
 
-- Por cada ítem de feedback, instancia un **Sub-agente (SA)**.
-- Prohibido realizar cambios extensos tú mismo.
-- Cada SA recibe: ítem específico, skill aplicable, archivos en scope.
+- For every feedback item, instantiate a **Sub-Agent (SA)**.
+- Forbidden from making extensive changes yourself.
+- Each SA receives: specific item, applicable skill, in-scope files.

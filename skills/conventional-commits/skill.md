@@ -1,6 +1,6 @@
 ---
 name: conventional-commits (Senior Level)
-description: Gestión de historial semántico, alineación con CI/CD y automatización de versionado.
+description: Semantic history management, CI/CD alignment, and versioning automation.
 trigger: When creating commits, pushing code, formatting commit messages, or when feedback mentions git history, commit hygiene, or semantic versioning.
 scope: .git/, scripts/
 author: "IA_P1_Fork Team"
@@ -13,68 +13,68 @@ autoinvoke: true
 
 ## Context
 
-Todos los commits de este proyecto DEBEN seguir la especificación [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/). Esto garantiza un historial legible, trazable y compatible con semantic versioning.
+All commits in this project MUST follow the [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) specification. This guarantees a readable, traceable history compatible with semantic versioning.
 
 ## Rules
 
-### Formato obligatorio
+### Mandatory Format
 
 ```
-<tipo>(<scope>): <descripción>
+<type>(<scope>): <description>
 
-[cuerpo opcional]
+[optional body]
 
-[footer opcional]
+[optional footer]
 ```
 
-### Tipos permitidos
+### Allowed Types
 
-| Tipo       | Cuándo usar                                         | Ejemplo                                                           |
+| Type       | When to use                                         | Example                                                           |
 | ---------- | --------------------------------------------------- | ----------------------------------------------------------------- |
-| `feat`     | Nueva funcionalidad visible al usuario              | `feat(consumer): implement randomized attention duration`         |
-| `fix`      | Corrección de bugs                                  | `fix(producer): resolve validation pipe not catching DTO errors`  |
-| `refactor` | Cambio de código sin alterar comportamiento externo | `refactor(orchestrator): consolidate to single GEMINI.md`         |
-| `docs`     | Cambios solo en documentación                       | `docs(traceability): rewrite AI_WORKFLOW.md with interaction log` |
-| `test`     | Agregar o corregir tests                            | `test(producer): add 36 unit tests for appointments service`      |
-| `chore`    | Tareas de mantenimiento (deps, configs, cleanup)    | `chore(cleanup): remove obsolete DEBT_REPORT.MD`                  |
-| `build`    | Cambios en sistema de build o dependencias          | `build(docker): update Node.js image from alpine to slim`         |
-| `ci`       | Cambios en CI/CD pipelines                          | `ci(github): add lint workflow on pull requests`                  |
-| `perf`     | Mejoras de rendimiento                              | `perf(scheduler): precalculate office array in constructor`       |
-| `style`    | Cambios de formato (espacios, semicolons, etc.)     | `style(frontend): fix indentation in page.module.css`             |
-| `revert`   | Revierte un commit anterior                         | `revert: feat(consumer): implement randomized attention`          |
+| `feat`     | New user-facing feature                             | `feat(consumer): implement randomized attention duration`         |
+| `fix`      | Bug fix                                             | `fix(producer): resolve validation pipe not catching DTO errors`  |
+| `refactor` | Code change without altering external behavior      | `refactor(orchestrator): consolidate to single GEMINI.md`         |
+| `docs`     | Documentation changes only                          | `docs(traceability): rewrite AI_WORKFLOW.md with interaction log` |
+| `test`     | Adding or correcting tests                          | `test(producer): add 36 unit tests for appointments service`      |
+| `chore`    | Maintenance tasks (deps, configs, cleanup)          | `chore(cleanup): remove obsolete DEBT_REPORT.MD`                  |
+| `build`    | Changes in build system or dependencies             | `build(docker): update Node.js image from alpine to slim`         |
+| `ci`       | CI/CD pipeline changes                              | `ci(github): add lint workflow on pull requests`                  |
+| `perf`     | Performance improvements                            | `perf(scheduler): precalculate office array in constructor`       |
+| `style`    | Formatting changes (spaces, semicolons, etc.)       | `style(frontend): fix indentation in page.module.css`             |
+| `revert`   | Reverts a previous commit                           | `revert: feat(consumer): implement randomized attention`          |
 
-### Scopes del proyecto
+### Project Scopes
 
-| Scope          | Aplica a                                                                |
+| Scope          | Applies to                                                              |
 | -------------- | ----------------------------------------------------------------------- |
 | `producer`     | `backend/producer/src/`                                                 |
 | `consumer`     | `backend/consumer/src/`                                                 |
 | `frontend`     | `frontend/src/`                                                         |
 | `docker`       | `docker-compose.yml`, `Dockerfile`s                                     |
-| `orchestrator` | `.github/copilot-instructions.md`, `GEMINI.md`, sistema de orquestación |
+| `orchestrator` | `.github/copilot-instructions.md`, `GEMINI.md`, orchestration system    |
 | `skills`       | `skills/*/`                                                             |
 | `scripts`      | `scripts/`                                                              |
 | `docs`         | `AI_WORKFLOW.md`, `DEBT_REPORT.md`, `README.md`, etc.                   |
-| `arch`         | Cambios de arquitectura hexagonal, puertos y adaptadores                |
-| `deps`         | package.json, dependencias                                              |
+| `arch`         | Hexagonal architecture changes, ports and adapters                      |
+| `deps`         | package.json, dependencies                                              |
 
-### Reglas de formato
+### Formatting Rules
 
-1. **Descripción en minúsculas** — No iniciar con mayúscula tras el `:`.
-   - `feat(producer): add validation pipe`
-   - `feat(producer): Add validation pipe`
+1. **Lowercase description** — Do not start with a capital letter after the `:`.
+   - Good: `feat(producer): add validation pipe`
+   - Bad: `feat(producer): Add validation pipe`
 
-2. **Sin punto final** — No terminar la descripción con `.`
-   - `fix(consumer): resolve ack/nack race condition`
-   - `fix(consumer): resolve ack/nack race condition.`
+2. **No trailing period** — Do not end the description with `.`
+   - Good: `fix(consumer): resolve ack/nack race condition`
+   - Bad: `fix(consumer): resolve ack/nack race condition.`
 
-3. **Imperativo presente** — Usar verbo en imperativo.
-   - `add`, `fix`, `remove`, `update`, `implement`, `refactor`
-   - `added`, `fixed`, `removing`, `updates`
+3. **Present imperative** — Use the imperative mood.
+   - Good: `add`, `fix`, `remove`, `update`, `implement`, `refactor`
+   - Bad: `added`, `fixed`, `removing`, `updates`
 
-4. **Máximo 72 caracteres** en la primera línea.
+4. **Maximum 72 characters** on the first line.
 
-5. **Breaking changes** — Usar `!` después del scope o `BREAKING CHANGE:` en el footer.
+5. **Breaking changes** — Use `!` after the scope or `BREAKING CHANGE:` in the footer.
 
    ```
    feat(producer)!: rename cedula to idCard across all DTOs
@@ -83,7 +83,7 @@ Todos los commits de este proyecto DEBEN seguir la especificación [Conventional
    from 'cedula' to 'idCard' and 'nombre' to 'fullName'.
    ```
 
-6. **Múltiples cambios** — Si un commit abarca múltiples archivos, usar cuerpo con `-` para listar:
+6. **Multiple changes** — If a commit spans multiple files, use the body with `-` to list them:
 
    ```
    refactor(arch): extract domain entities from mongoose schemas
@@ -94,7 +94,7 @@ Todos los commits de este proyecto DEBEN seguir la especificación [Conventional
    - Add // HUMAN CHECK for layer separation decisions
    ```
 
-7. **Actor attribution** — En el cuerpo, indicar actor si es relevante:
+7. **Actor attribution** — In the body, indicate the actor if relevant:
 
    ```
    fix(consumer): resolve race condition in office assignment
@@ -103,50 +103,50 @@ Todos los commits de este proyecto DEBEN seguir la especificación [Conventional
    Reviewed-by: Human
    ```
 
-### Commits NO permitidos
+### Forbidden Commits
 
-- `update files` — Sin tipo ni scope
-- `WIP` — Commits temporales
-- `fix stuff` — Descripción vaga
-- `feat: implement everything` — Demasiado amplio, dividir en commits atómicos
-- Commits que mezclen feat + fix + refactor — Un tipo por commit
+- `update files` — No type or scope
+- `WIP` — Temporary commits
+- `fix stuff` — Vague description
+- `feat: implement everything` — Too broad, split into atomic commits
+- Commits mixing feat + fix + refactor — One type per commit
 
 ## Workflow
 
-### Antes de commitear
+### Before Committing
 
-1. Ejecutar `git diff --staged` para revisar cambios
-2. Clasificar el tipo de cambio (feat, fix, refactor, etc.)
-3. Identificar el scope correcto
-4. Redactar mensaje siguiendo el formato
-5. Si hay breaking changes, documentar con `!` o `BREAKING CHANGE:`
+1. Run `git diff --staged` to review changes
+2. Classify the type of change (feat, fix, refactor, etc.)
+3. Identify the correct scope
+4. Write the message following the format
+5. If there are breaking changes, document with `!` or `BREAKING CHANGE:`
 
-### Validación pre-push
+### Pre-push Validation
 
 ```bash
-# Verificar que los últimos N commits siguen el formato
+# Verify that the last N commits follow the format
 git log --oneline -5
 
-# Patrón esperado:
-# <hash> <tipo>(<scope>): <descripción en minúsculas sin punto>
+# Expected pattern:
+# <hash> <type>(<scope>): <lowercase description without period>
 ```
 
-### Commits atómicos
+### Atomic Commits
 
-Cada commit debe representar **una unidad lógica de cambio**:
+Each commit must represent **one logical unit of change**:
 
-- Un commit por feature/fix/refactor
-- Un commit gigante con múltiples tipos de cambios mezclados
+- One commit per feature/fix/refactor
+- NOT one giant commit with multiple types of mixed changes
 
-Si un cambio toca múltiples archivos pero es la MISMA unidad lógica, es un solo commit.
-Si son cambios INDEPENDIENTES, separar en commits individuales.
+If a change touches multiple files but is the SAME logical unit, it's a single commit.
+If they are INDEPENDENT changes, separate them into individual commits.
 
 ## Tools Permitted
 
 - **Read:** `git log`, `git diff`, `git status`
 - **Write:** `git add`, `git commit`
-- **Validate:** Revisar formato antes de ejecutar
+- **Validate:** Review format before executing
 
 ## Assets
 
-- Esta skill no requiere assets adicionales — las reglas están autocontenidas.
+- This skill does not require additional assets — the rules are self-contained.

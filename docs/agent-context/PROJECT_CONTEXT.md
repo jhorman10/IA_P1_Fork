@@ -2,26 +2,26 @@
 
 ## 1. Project Overview
 
-Sistema de gestión de turnos médicos en tiempo real. Los pacientes registran citas vía API REST, se procesan asincrónicamente mediante colas de mensajes, y se visualizan en un dashboard con actualizaciones WebSocket en tiempo real.
+Real-time medical appointment management system. Patients register appointments via REST API, they are processed asynchronously through message queues, and displayed on a dashboard with real-time WebSocket updates.
 
-### Arquitectura
+### Architecture
 
-- **Patrón:** Microservicios Event-Driven (Producer → RabbitMQ → Consumer)
-- **Flujo:** API REST → Publish → Queue → Consume → MongoDB → WebSocket → Dashboard
+- **Pattern:** Event-Driven Microservices (Producer → RabbitMQ → Consumer)
+- **Flow:** REST API → Publish → Queue → Consume → MongoDB → WebSocket → Dashboard
 
-### Estructura de carpetas clave
+### Key Folder Structure
 
 ```
-├── .github/copilot-instructions.md  ← Orquestador (Copilot)
-├── GEMINI.md                        ← Orquestador (Gemini Kernel)
-├── docs/agent-context/              ← Módulos de Contexto (Project, Rules, Workflow)
-├── DEBT_REPORT.md                   ← Estado consolidado de feedback y deuda técnica
-├── AI_WORKFLOW.md                   ← Documentación de metodología para humanos
-├── skills/                  ← Skills para sub-agentes
+├── .github/copilot-instructions.md  ← Orchestrator (Copilot Adapter)
+├── GEMINI.md                        ← Orchestrator (Gemini Kernel)
+├── docs/agent-context/              ← Context Modules (Project, Rules, Workflow)
+├── DEBT_REPORT.md                   ← Consolidated status of feedback and technical debt
+├── AI_WORKFLOW.md                   ← Methodology documentation for humans
+├── skills/                  ← Skills for sub-agents
 ├── backend/
-│   ├── producer/src/        ← API REST, DTOs, WebSocket Gateway
-│   └── consumer/src/        ← Scheduler, lógica de asignación
-├── frontend/src/            ← Páginas Next.js, componentes
+│   ├── producer/src/        ← REST API, DTOs, WebSocket Gateway
+│   └── consumer/src/        ← Scheduler, assignment logic
+├── frontend/src/            ← Next.js pages, components
 └── docker-compose.yml
 ```
 
@@ -29,11 +29,11 @@ Sistema de gestión de turnos médicos en tiempo real. Los pacientes registran c
 
 | Layer          | Technology      | Version        | Notes                          |
 | -------------- | --------------- | -------------- | ------------------------------ |
-| Backend        | NestJS          | ^10.x          | TypeScript, dos microservicios |
+| Backend        | NestJS          | ^10.x          | TypeScript, two microservices  |
 | Frontend       | Next.js         | ^15.x          | App Router, CSS Modules        |
 | Database       | MongoDB         | 7.x            | Mongoose ODM                   |
 | Messaging      | RabbitMQ        | 3.x-management | amqplib, durable queues        |
-| Real-time      | Socket.IO       | ^4.x           | WebSocket Gateway en Producer  |
+| Real-time      | Socket.IO       | ^4.x           | WebSocket Gateway in Producer  |
 | Infrastructure | Docker Compose  | v2             | Multi-container orchestration  |
 | Testing        | Jest            | ^29.x          | NestJS Testing Module          |
-| Validation     | class-validator | ^0.14.x        | DTOs con decoradores           |
+| Validation     | class-validator | ^0.14.x        | DTOs with decorators           |

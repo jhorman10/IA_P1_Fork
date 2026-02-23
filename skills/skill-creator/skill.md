@@ -1,6 +1,6 @@
 ---
 name: skill-creator (Senior Level)
-description: Diseño y creación de nuevas capacidades de SA, orquestación de workflows y gobernanza de skills.
+description: Design and creation of new SA capabilities, workflow orchestration, and skill governance.
 trigger: When a task requires a specific capability not covered by existing skills in /skills.
 scope: skills/, .agent/workflows/
 author: "IA_P1_Fork Team"
@@ -30,7 +30,7 @@ This meta-skill is used to define new skills when the orchestrator encounters fe
 5. Write `skill.md` with YAML frontmatter + rules + workflow.
 6. Create `assets/templates/` with at least one one-shot example.
 7. Create `assets/docs/` with relevant documentation.
-8. Run `bash scripts/sync.sh` to register the new skill in `agent.md`.
+8. Run `bash scripts/sync.sh` to register the new skill in `SKILL_REGISTRY.md`.
 9. Return Action Summary (see `skills/action-summary-template.md`).
 
 ## Template — Required Metadata
