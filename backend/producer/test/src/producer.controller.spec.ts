@@ -138,6 +138,30 @@ describe("ProducerController (Integration Tests)", () => {
 
       expect(response.body.error).toBe("Bad Request");
     });
+
+    it("should forward provided priority without overriding it", async () => {
+      createAppointmentUseCase.execute.mockResolvedValue(undefined);
+
+      const response = await request(app.getHttpServer())
+        .post("/appointments")
+        .send({
+          idCard: 987654321,
+          fullName: "Jane Smith",
+          priority: "high",
+        })
+        .expect(202);
+
+      expect(response.body).toEqual({
+        status: "accepted",
+        message: "Asignación de turno en progreso",
+      });
+
+      expect(createAppointmentUseCase.execute).toHaveBeenCalledWith({
+        idCard: 987654321,
+        fullName: "Jane Smith",
+        priority: "high",
+      });
+    });
   });
 
   // ⚕️ HUMAN CHECK - Architectural Note:
