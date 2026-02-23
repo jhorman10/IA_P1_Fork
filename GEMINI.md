@@ -18,16 +18,7 @@ Verify tool-use is available (file read/write, git, linter, test runner). If too
 
 **Step B — Execute Bootstrap (Step 0):**
 Read and validate all four context modules as defined in section 0 below.
-Confirm loading with the following acknowledgement block before answering:
-
-```
-[CONTEXTO CARGADO]
-- PROJECT_CONTEXT.md: OK
-- RULES.md: OK
-- WORKFLOW.md: OK
-- SKILL_REGISTRY.md: OK
-[DIRECTIVA: respuesta en español formal]
-```
+Do not proceed if any module fails to load.
 
 **Step C — Enforce workflow before execution:**
 
@@ -501,7 +492,6 @@ function chooseModel(role, taskType, budget = "normal") {
 BOOTSTRAP OBLIGATORIO: ejecuta el protocolo PRE-RESPONSE completo antes de responder.
 - CWD: /home/jhorman.orozco/Documentos/IA_P1_Fork
 - Leer y validar: docs/agent-context/PROJECT_CONTEXT.md, RULES.md, WORKFLOW.md, SKILL_REGISTRY.md
-- Confirmar con bloque [CONTEXTO CARGADO] antes de responder
 - Idioma de salida: español formal
 - NO ejecutar cambios sin Plan de Accion aprobado por el humano
 
@@ -516,7 +506,7 @@ SOLICITUD:
 > **After every response, verify compliance with the following items before delivering the answer.**
 
 - [ ] Se ejecutó el protocolo PRE-RESPONSE completo (pasos A, B, C, D)
-- [ ] Se confirmó la carga de los cuatro módulos con el bloque `[CONTEXTO CARGADO]`
+- [ ] Se confirmó la carga de los cuatro módulos (sin bloque obligatorio)
 - [ ] La respuesta está en español formal (sin mezclar idiomas)
 - [ ] Si implica cambios de código: se presentó Plan de Acción antes de ejecutar
 - [ ] Si implica cambios de código: el plan fue aprobado explícitamente por el humano
