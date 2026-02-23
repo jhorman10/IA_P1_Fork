@@ -1,7 +1,7 @@
 import { Controller, Inject, Logger } from "@nestjs/common";
 import { Ctx, EventPattern, Payload, RmqContext } from "@nestjs/microservices";
 
-import { RegisterAppointmentCommand } from "./application/commands/register-appointment.command";
+import { RegisterAppointmentCommand } from "./domain/commands/register-appointment.command";
 import { RegisterAppointmentUseCase } from "./domain/ports/inbound/register-appointment.use-case";
 import { RetryPolicyPort } from "./domain/ports/outbound/retry-policy.port";
 import { CreateAppointmentDto } from "./dto/create-appointment.dto";

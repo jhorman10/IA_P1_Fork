@@ -1,10 +1,10 @@
-import { AppointmentEventPayload } from "../../../types/appointment-event";
+import { AppointmentView } from "../../models/appointment-view";
 
 /**
  * Port: Outbound — Read-only repository for appointments.
  * ⚕️ HUMAN CHECK - DIP: El Producer depende de esta abstracción, no de Mongoose.
  */
 export interface AppointmentReadRepository {
-  findAll(): Promise<AppointmentEventPayload[]>;
-  findByIdCard(idCard: number): Promise<AppointmentEventPayload[]>;
+  findAll(): Promise<AppointmentView[]>;
+  findByIdCard(idCard: number): Promise<AppointmentView[]>;
 }

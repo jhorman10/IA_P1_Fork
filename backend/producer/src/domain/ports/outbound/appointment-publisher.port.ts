@@ -1,5 +1,9 @@
-import { CreateAppointmentDto } from "../../../dto/create-appointment.dto";
+export interface PublishAppointmentCommand {
+  idCard: number;
+  fullName: string;
+  priority?: "high" | "medium" | "low";
+}
 
 export interface AppointmentPublisherPort {
-  publishAppointmentCreated(data: CreateAppointmentDto): Promise<void>;
+  publishAppointmentCreated(command: PublishAppointmentCommand): Promise<void>;
 }

@@ -64,8 +64,19 @@ import { UseCasesModule } from "./use-cases/use-cases.module";
 
     // ⚕️ HUMAN CHECK - Event Handlers (Domain Event Subscribers)
     // SRP: Each handler reacts to one event type. OCP: New handlers without modifying existing.
-    AppointmentRegisteredHandler,
-    AppointmentAssignedHandler,
+    // Fixed R-03: Using Factory pattern instead of @Injectable decorator for framework agnosticism
+    {
+      provide: AppointmentRegisteredHandler,
+      inject: ["NotificationPort", "LoggerPort"],
+      useFactory: (notificationPort, loggerPort) => 
+        new AppointmentRegisteredHandler(notificationPort, loggerPort),
+    },
+    {
+      provide: AppointmentAssignedHandler,
+      inject: ["NotificationPort", "LoggerPort"],
+      useFactory: (notificationPort, loggerPort) => 
+        new AppointmentAssignedHandler(notificationPort, loggerPort),
+    },
 
     // ⚕️ HUMAN CHECK - DomainEventBus (Local In-Process Event Dispatcher)
     // H-25 Fix: Automatic event dispatch after repository save.

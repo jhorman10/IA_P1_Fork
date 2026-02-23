@@ -7,7 +7,7 @@ import {
   Appointment,
   AppointmentDocument,
 } from "../../../schemas/appointment.schema";
-import { AppointmentEventPayload } from "../../../types/appointment-event";
+import { AppointmentView } from "../../../domain/models/appointment-view";
 
 /**
  * Adapter: Infrastructure — Mongoose implementation of AppointmentReadRepository.
@@ -21,7 +21,7 @@ export class MongooseAppointmentReadRepository implements AppointmentReadReposit
     private readonly appointmentModel: Model<AppointmentDocument>,
   ) {}
 
-  async findAll(): Promise<AppointmentEventPayload[]> {
+  async findAll(): Promise<AppointmentView[]> {
     const docs = await this.appointmentModel
       .find()
       .sort({ timestamp: 1 })
@@ -29,7 +29,7 @@ export class MongooseAppointmentReadRepository implements AppointmentReadReposit
     return docs.map((doc) => this.toPayload(doc));
   }
 
-  async findByIdCard(idCard: number): Promise<AppointmentEventPayload[]> {
+  async findByIdCard(idCard: number): Promise<AppointmentView[]> {
     const docs = await this.appointmentModel
       .find({ idCard })
       .sort({ createdAt: -1 })
@@ -48,7 +48,7 @@ export class MongooseAppointmentReadRepository implements AppointmentReadReposit
    * Maps a Mongoose document to the standardized event payload DTO.
    * SRP: Mapping responsibility isolated here, not in the service.
    */
-  private toPayload(doc: AppointmentDocument): AppointmentEventPayload {
+  private toPayload(doc: AppointmentDocument): AppointmentView {
     return {
       id: String(doc._id),
       fullName: doc.fullName,

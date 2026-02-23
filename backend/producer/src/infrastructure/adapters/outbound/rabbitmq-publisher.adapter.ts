@@ -1,8 +1,10 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 
-import { AppointmentPublisherPort } from "../../../domain/ports/outbound/appointment-publisher.port";
-import { CreateAppointmentDto } from "../../../dto/create-appointment.dto";
+import {
+  AppointmentPublisherPort,
+  PublishAppointmentCommand,
+} from "../../../domain/ports/outbound/appointment-publisher.port";
 
 @Injectable()
 export class RabbitMQPublisherAdapter implements AppointmentPublisherPort {
@@ -12,9 +14,11 @@ export class RabbitMQPublisherAdapter implements AppointmentPublisherPort {
     @Inject("APPOINTMENTS_SERVICE") private readonly client: ClientProxy,
   ) {}
 
-  async publishAppointmentCreated(data: CreateAppointmentDto): Promise<void> {
+  async publishAppointmentCreated(
+    command: PublishAppointmentCommand,
+  ): Promise<void> {
     try {
-      this.client.emit("create_appointment", data);
+      this.client.emit("create_appointment", command);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       this.logger.error(`Failed to publish message to RabbitMQ: ${message}`);
