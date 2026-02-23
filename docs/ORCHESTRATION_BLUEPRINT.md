@@ -8,16 +8,16 @@ Guia universal para construir un sistema Orquestador + Sub-agentes (skills) en c
 2. Requisitos previos
 3. Estructura de carpetas
 4. Modulos de contexto
-5. Archivo orquestador
-6. Creacion de skills (sub-agentes)
+5. Archivo orquestador (5.1 PRE-RESPONSE, 5.2 Bootstrap, 5.3 Algoritmo de delegacion, 5.4 Matriz de skills, 5.5 Grafo de dependencia, 5.6 Presupuesto de contexto)
+6. Creacion de skills (6.1 Plantilla, 6.2 Assets, 6.3 Skills recomendadas, 6.4 Delegation templates)
 7. Technology Discovery Protocol
 8. Guardrails dinamicos y quality gates
-9. Rollback y manejo de fallos
+9. Rollback y manejo de fallos (9.1 Protocolo de rechazo)
 10. Script de sincronizacion de skills
-11. Documentacion y trazabilidad
-12. Politica de seleccion de modelos
+11. Documentacion y trazabilidad (11.1 AI_WORKFLOW, 11.2 DEBT_REPORT, 11.3 Action Summary, 11.4 Checklist post-ejecucion)
+12. Politica de seleccion de modelos (12.1 Umbrales, 12.2 Tiers, 12.3 Regla rapida, 12.4 Modelos prohibidos, 12.5 Selector automatico, 12.6 Costo total, 12.7 Anti-patrones)
 13. Plantillas reutilizables
-14. Checklist de verificacion final
+14. Checklist de verificacion final (14.1 Setup, 14.2 Runtime por respuesta)
 
 ## 1. Vision general y principios
 
@@ -72,6 +72,14 @@ Crear esta estructura en la raiz del repositorio:
 ## 4. Modulos de contexto
 
 Crear cuatro archivos en `docs/agent-context/`. Mantenerlos concisos (menos de 100 lineas cada uno).
+
+**Single Source of Truth (referencia obligatoria):**
+
+- **Architecture/Stack:** `PROJECT_CONTEXT.md`
+- **Rules/Anti-patterns:** `RULES.md`
+- **N-step Workflow:** `WORKFLOW.md`
+- **Skill Catalog:** `SKILL_REGISTRY.md` (auto-generado)
+- **Markdown Style:** `docs/MD_STYLE_GUIDE.md` (sin emojis en encabezados/tablas, vocabulario de estado estandarizado)
 
 ### 4.1 PROJECT_CONTEXT.md
 
@@ -213,6 +221,11 @@ and receiving explicit approval.
 **Step D -- Output language enforcement:**
 [Definir idioma de salida]
 
+> **CRITICAL COMMUNICATION DIRECTIVE:**
+>
+> - **Internal reasoning:** The model processes all rules, code, and logic in English.
+> - **Output language:** ALL user-facing responses, code comments, documentation, and commit messages MUST be in the configured output language. Never output explanations in a different language.
+
 **Step E -- Context budget enforcement:**
 Prefer selective loading of modules and skills to avoid overflow.
 
@@ -252,14 +265,14 @@ const SKILL_REGISTRY = await read_file("docs/agent-context/SKILL_REGISTRY.md");
 async function delegateTask(userRequest, retryCount = 0) {
   const MAX_RETRIES = 2;
 
-  // 1. Identify task type from SKILL_REGISTRY
+  // 1. Identify task type (consult loaded SKILL_REGISTRY)
   const taskType = identifyType(userRequest);
-  const requiredSkills = SKILL_REGISTRY[taskType].requiredSkills;
+  const requiredSkills = SKILL_REGISTRY[taskType].requiredSkills; // 2-3 skills minimum
 
-  // 2. Validate skills exist on disk
+  // 2. FAIL-FAST: Validate that ALL skills exist on disk
   for (const skillName of requiredSkills) {
     if (!(await file_exists(`skills/${skillName}/skill.md`))) {
-      STOP(`Skill "${skillName}" not found. Use skill-creator first.`);
+      STOP(`Skill "${skillName}" not found on disk. Use skill-creator first.`);
     }
   }
 
@@ -270,29 +283,89 @@ async function delegateTask(userRequest, retryCount = 0) {
     skills[skillName] = await read_file(`skills/${skillName}/skill.md`);
   }
 
-  // 4. Calculate allowed scope
+  // 4. Calculate allowed scope (union of scopes from all skills)
   const allowedScope = mergeScopes(orderedSkills.map((s) => skills[s].scope));
 
-  // 4.5. Technology Discovery -- detect stack before writing code
+  // 4.5. Technology Discovery -- SA MUST detect stack before writing code
+  // The SA inspects config files within the allowed scope to build a TechProfile.
+  // This makes the SA agnostic: it adapts to ANY language/framework.
   const techProfile = await detectTechStack(allowedScope);
 
-  // 5. Delegate to SA with context + guardrails + tech profile
+  // 5. Delegate to SA with full context + guardrails + tech profile
   const result = await runSubagent({
-    projectContext: PROJECT_CONTEXT,
-    rules: RULES,
-    skills: orderedSkills.map((name) => skills[name]),
-    task: userRequest,
-    techProfile: techProfile,
-    allowedScope: allowedScope,
+    description: `[Type: ${taskType}] ${extractShortTitle(userRequest)}`,
+    prompt: `
+# Project Context: ${PROJECT_CONTEXT}
+
+# Architectural Rules: ${RULES}
+
+# Loaded Skills (in execution order):
+${orderedSkills
+  .map(
+    (name, i) => `
+## ${i + 1}. ${name}:
+${skills[name]}
+`,
+  )
+  .join("\n")}
+
+# Task: ${userRequest}
+
+# Technology Discovery Protocol (mandatory before writing code):
+> The SA MUST NOT assume any specific language or framework.
+> Before writing a single line of code, execute these discovery steps:
+
+1. **Inspect config files** within the allowed scope:
+   - Read package.json, tsconfig.json, requirements.txt, pom.xml,
+     build.gradle, pyproject.toml, Cargo.toml, or equivalent.
+2. **Identify the tech profile:**
+   - Language: Determine from file extensions (.ts, .js, .py, .java, etc.)
+   - Framework: Determine from imports, decorators, and config
+   - Package manager: npm, yarn, pnpm, pip, maven, etc.
+   - Test runner: jest, vitest, pytest, junit, etc.
+   - Linter/formatter: eslint, prettier, pylint, checkstyle, etc.
+3. **Adapt all code output** to the detected stack:
+   - Use the import style, decorators, and patterns native to the detected framework.
+   - Follow the typing conventions of the detected language.
+   - Use the detected test runner for test files.
+   - Use the detected linter command for validation.
+4. **Report detected stack** at the beginning of the Action Summary:
+   Detected stack: [language] + [framework] | Tests: [runner] | Linter: [tool]
+
+# Detected Tech Profile: ${JSON.stringify(techProfile)}
+
+# Strict Code Guardrails (adapted to detected stack):
+- Run the detected linter (${techProfile.linter}) and ensure there are no errors.
+- If the language supports static typing: all code must be 100% typed.
+- If TypeScript: FORBIDDEN use of any.
+- If Python: use type hints on all function signatures.
+- If Java/Kotlin: no raw types.
+- Adapt guardrails to the detected language; do NOT apply TypeScript rules to non-TS code.
+
+# SCOPE LIMIT (guardrail):
+- Only modify files within: ${allowedScope.join(", ")}
+- If you need to modify files OUTSIDE the scope -> STOP and report to the orchestrator.
+- Max 5 source files + skill.md + RULES.md per SA context.
+
+# Deliverables:
+1. Implemented code (applying skills in order)
+2. Tests (coverage >80%)
+3. Change documentation (// HUMAN CHECK where applicable)
+4. Action Summary (format: skills/action-summary-template.md)
+5. Recommended model: Evaluate task complexity and recommend
+   the optimal model according to section 12 (Model selection policy).
+   Format: "Recommended model for this task: [model] (Tier X) -- [reason]"
+        `,
   });
 
-  // 6. Scope enforcement
+  // 6. SCOPE ENFORCEMENT: Validate that SA did not modify out of scope
   if (result.filesChanged.some((f) => !isInScope(f, allowedScope))) {
-    await rollback();
-    ESCALATE("SA modified files outside allowed scope.");
+    await rollback(); // git checkout -- .
+    await registerFailure("SCOPE_VIOLATION", result);
+    ESCALATE("SA modified files outside allowed scope. Human review required.");
   }
 
-  // 7. Quality gates
+  // 7. QUALITY GATES: Validate tests and linter
   const testsPass = await runTests(result.filesChanged);
   const lintClean = await runLinter(result.filesChanged);
 
@@ -302,13 +375,21 @@ async function delegateTask(userRequest, retryCount = 0) {
       return delegateTask(userRequest, retryCount + 1);
     }
     await rollback();
-    ESCALATE(`Quality gates failed after ${MAX_RETRIES} retries.`);
+    ESCALATE(
+      `Quality gates failed after ${MAX_RETRIES} retries. Human review required.`,
+    );
   }
 
-  // 8. Document and commit
+  // 8. Document (WORKFLOW steps 8-9)
   await registerInAI_WORKFLOW(taskType, requiredSkills, userRequest, result);
+  if (isArchitecturalFinding(result)) {
+    await updateDEBT_REPORT(result);
+  }
+
+  // 9. Commits (conventional-commits skill -- always LAST)
   await createCommits(result.changes);
 
+  // 10. Purge SA context, keep only Action Summary
   return result.actionSummary;
 }
 ```
@@ -318,15 +399,17 @@ async function delegateTask(userRequest, retryCount = 0) {
 Definir una tabla que mapee tipos de tarea a skills requeridas (minimo 2-3):
 
 ```markdown
-| Task type              | Required skills (minimum 2-3)                |
-| ---------------------- | -------------------------------------------- |
-| Frontend (UI/UX)       | `frontend-ui`, `refactor-arch`, `testing`    |
-| Backend (API/Logic)    | `backend-api`, `refactor-arch`, `testing`    |
-| Architectural refactor | `refactor-arch`, `testing`                   |
-| Security/Audit         | `security-audit`, `refactor-arch`, `testing` |
-| Testing/QA             | `testing`, `refactor-arch`                   |
-| Infrastructure         | `infra`, `backend-api`, `testing`            |
-| Commits/Docs           | `conventional-commits`                       |
+| Task type              | Required skills (minimum 2-3)                 |
+| ---------------------- | --------------------------------------------- |
+| Frontend (UI/UX)       | `frontend-ui`, `refactor-arch`, `testing`     |
+| Backend (API/Logic)    | `backend-api`, `refactor-arch`, `testing`     |
+| Architectural refactor | `refactor-arch`, `testing`                    |
+| Security/Audit         | `security-audit`, `refactor-arch`, `testing`  |
+| Microservices          | `backend-api`, `refactor-arch`, `testing`     |
+| Testing/QA             | `testing`, `refactor-arch`                    |
+| Infrastructure         | `infra`, `backend-api`, `testing`             |
+| Commits/Docs           | `conventional-commits`, `skill-creator` (opt) |
+| Skill creation         | `skill-creator`, `refactor-arch`, `testing`   |
 ```
 
 ### 5.5 Grafo de dependencia de skills
@@ -425,6 +508,25 @@ Dependiendo del tipo de proyecto, crear al menos estas skills:
 | `conventional-commits` | Historial semantico de Git                  |
 | `skill-creator`        | Meta-skill para crear nuevas skills         |
 
+### 6.4 Delegation templates por skill
+
+Cada skill puede incluir un archivo `assets/delegation-template.md` que define la estructura de delegacion esperada para ese tipo de tarea. El AO referencia estos templates al construir el prompt del SA:
+
+```markdown
+> **Delegation templates by task type:**
+>
+> - Frontend: See skills/frontend-ui/assets/delegation-template.md
+> - Backend: See skills/backend-api/assets/delegation-template.md
+> - Security: See skills/security-audit/assets/delegation-template.md
+> - Testing: See skills/testing-qa/assets/delegation-template.md
+>
+> **Action Summary template:** See skills/action-summary-template.md
+>
+> **Executed examples:** See AI_WORKFLOW.md
+```
+
+Estos templates proveen one-shot examples que guian al SA a producir codigo consistente con el patron del proyecto.
+
 ## 7. Technology Discovery Protocol
 
 El SA no debe asumir ninguna tecnologia. Antes de escribir codigo, ejecuta estos pasos:
@@ -501,6 +603,17 @@ Los guardrails se adaptan al stack detectado:
 | SA no puede completar | Registrar en AI_WORKFLOW.md + escalar         | 0          |
 | Humano rechaza plan   | Re-planificar con nuevas restricciones        | 3          |
 
+### 9.1 Protocolo de rechazo del plan
+
+Cuando el humano rechaza el Plan de Accion, seguir estos pasos:
+
+1. **Registrar** la razon del rechazo en `AI_WORKFLOW.md`.
+2. **Solicitar** clarificacion especifica al humano sobre que ajustar.
+3. **Re-planificar** con las nuevas restricciones (volver al paso 4: PLAN del workflow).
+4. **Maximo 3 rechazos** por tarea. Si se superan, cambiar completamente el enfoque o escalar a revision humana con contexto completo de los intentos previos.
+
+> **Anti-pattern:** Reintentar el mismo plan sin incorporar el feedback del rechazo.
+
 ## 10. Script de sincronizacion de skills
 
 Crear `scripts/sync.sh` que:
@@ -552,15 +665,16 @@ echo "Sync complete."
 
 ### 11.1 AI_WORKFLOW.md
 
-Registra cada interaccion humano-maquina:
+Registra cada interaccion humano-maquina. Cada entrada **debe incluir:**
 
-- Solicitud del usuario
-- Tipo de tarea
-- Skills cargadas
-- Modelo AO y SA utilizado
-- Resumen de accion del SA
-- Commits generados
-- Aprobacion humana
+- Solicitud del usuario (texto original)
+- Tipo de tarea identificado
+- Skills cargadas (en orden de ejecucion)
+- **Modelo AO** utilizado (e.g., Claude Sonnet 4.6)
+- **Modelo SA** utilizado (e.g., GPT-5.1-Codex-Max)
+- Resumen de accion del SA (Action Summary)
+- Commits generados (hash, tipo, descripcion)
+- Aprobacion humana (aprobado/corregido/rechazado + razon)
 
 ### 11.2 DEBT_REPORT.md
 
@@ -584,6 +698,7 @@ Cada SA reporta usando la plantilla `skills/action-summary-template.md`:
 - **Skill:** [skill usada]
 - **AO Model:** [modelo del orquestador]
 - **SA Model:** [modelo del sub-agente]
+- **Recommended Model:** [modelo optimo para esta tarea segun seccion 12, e.g. Claude Sonnet 4.6 (Tier 2) -- razon]
 - **Files Changed:**
   - `path/to/file` -- [descripcion breve]
 - **What Was Done:** [1-2 oraciones]
@@ -593,35 +708,156 @@ Cada SA reporta usando la plantilla `skills/action-summary-template.md`:
 - **Breaking Changes:** [Si/No -- impacto]
 ```
 
+### 11.4 Checklist post-ejecucion (obligatoria)
+
+Despues de cada tarea completada, verificar:
+
+- [ ] Commits con Conventional Commits
+- [ ] Documentacion actualizada (AI_WORKFLOW.md + DEBT_REPORT.md si aplica)
+- [ ] Tests pasando
+- [ ] Linter ejecutado sin errores (tipado 100%, sin `any` en TypeScript)
+- [ ] Git status limpio
+- [ ] Scope enforcement validado (ningun archivo fuera del scope)
+
 ## 12. Politica de seleccion de modelos
+
+> Basada en 4 dimensiones: ventana de output, razonamiento, ventana de input, costo.
 
 ### 12.1 Umbrales minimos para SA
 
-| Dimension      | Minimo         | Justificacion                                   |
-| -------------- | -------------- | ----------------------------------------------- |
-| Ventana output | >=32K tokens   | SA genera codigo + tests + resumen              |
-| Ventana input  | >=100K tokens  | 4 modulos + 3 skills + tarea + codigo fuente    |
-| Razonamiento   | Tier medio+    | SOLID, DDD, tipado estricto                     |
-| Costo          | <=1x rutinario | Delegaciones frecuentes a 3x no son sostenibles |
+| Dimension      | Minimo                    | Justificacion                                                                |
+| -------------- | ------------------------- | ---------------------------------------------------------------------------- |
+| Ventana output | >=32K tokens              | SA genera controlador + tests + resumen (~10-25K tokens en tareas complejas) |
+| Ventana input  | >=100K tokens             | 4 modulos + 3 skills + tarea + codigo fuente (~35-40K tokens)                |
+| Razonamiento   | Tier Sonnet/Pro o superior | SOLID, DDD, Hexagonal, tipado 100%, `// HUMAN CHECK` con justificacion      |
+| Costo          | <=1x rutinario            | Delegaciones frecuentes a 3x no son sostenibles                              |
 
-### 12.2 Regla rapida de seleccion
+### 12.2 Clasificacion por tier
+
+**Tier 1 -- Recomendado para AO y SA (tareas de cualquier complejidad):**
+
+| Modelo            | Input | Output | Razonamiento | Costo | Notas                             |
+| ----------------- | ----- | ------ | ------------ | ----- | --------------------------------- |
+| GPT-5.3-Codex     | 272K  | 128K   | Top          | 1x    | Mejor ratio capacidad/costo       |
+| GPT-5.2-Codex     | 272K  | 128K   | Top          | 1x    | Input masivo para contextos grandes|
+| GPT-5.1-Codex-Max | 128K  | 128K   | Top          | 1x    | Maximo output en familia GPT      |
+| GPT-5.1-Codex     | 128K  | 128K   | Alto         | 1x    | Solido para SA de codigo          |
+| Claude Opus 4.6   | 128K  | 64K    | Top          | 3x    | Solo para arquitectura compleja   |
+
+**Tier 2 -- Bueno para SA rutinario (cambios de codigo, tests, bug fixes):**
+
+| Modelo            | Input | Output | Razonamiento | Costo | Notas                                      |
+| ----------------- | ----- | ------ | ------------ | ----- | ------------------------------------------ |
+| Claude Opus 4.5   | 128K  | 32K    | Top          | 3x    | Top razonamiento pero costoso y output justo|
+| GPT-5.2           | 128K  | 64K    | Alto         | 1x    | Buen equilibrio general                    |
+| GPT-5.1           | 128K  | 64K    | Alto         | 1x    | Buen equilibrio general                    |
+| Claude Sonnet 4.5 | 128K  | 32K    | Alto         | 1x    | Mejor ratio calidad/costo en Claude        |
+| Claude Sonnet 4.6 | 128K  | 32K    | Alto         | 1x    | Equivalente a Sonnet 4.5                   |
+| Gemini 2.5 Pro    | 109K  | 64K    | Alto         | 1x    | Buen output, input ligeramente menor       |
+| Gemini 3 Pro      | 109K  | 64K    | Alto         | 1x    | Preview -- monitorear estabilidad          |
+
+**Tier 3 -- Solo para tareas simples (linting, renombrado, commits, formato):**
+
+| Modelo             | Input | Output | Razonamiento | Costo | Notas                               |
+| ------------------ | ----- | ------ | ------------ | ----- | ----------------------------------- |
+| Claude Haiku 4.5   | 128K  | 32K    | Medio        | 0.33x | Barato pero puede fallar en SOLID/DDD|
+| Gemini 3 Flash     | 109K  | 64K    | Medio        | 0.33x | Preview, buen output para su costo  |
+| GPT-5.1-Codex-Mini | 128K  | 128K   | Medio        | 0.33x | Output masivo, razonamiento medio   |
+
+### 12.3 Regla rapida de seleccion
 
 ```
-SI tarea == arquitectura compleja (refactor, DDD, security)
-   -> Tier 1 (maximo razonamiento y output)
+SI tarea == arquitectura compleja (refactor, DDD, security audit)
+   -> Tier 1 (preferir GPT-5.x-Codex por costo, Opus solo si se necesita razonamiento superior)
 SI tarea == codigo rutinario (tests, bugfix, feature simple)
-   -> Tier 2 (buen equilibrio calidad/costo)
-SI tarea == mecanica simple (lint, rename, commit)
-   -> Tier 3 aceptable (rapido, economico)
+   -> Tier 2 (preferir Sonnet 4.5/4.6 o GPT-5.1/5.2 por equilibrio)
+SI tarea == mecanica simple (lint fix, rename, commit message)
+   -> Tier 3 aceptable (Haiku, Flash, Codex-Mini)
 SI NO
    -> Tier 2 por defecto
 ```
 
-### 12.3 Anti-patrones de seleccion
+### 12.4 Modelos prohibidos
+
+> **Razon:** No cumplen los umbrales minimos de la seccion 12.1.
+
+| Modelo          | Input | Output | Razon de exclusion                                     |
+| --------------- | ----- | ------ | ------------------------------------------------------ |
+| GPT-4o          | 64K   | 4K     | Output inutilizable (no cabe 1 test completo)          |
+| GPT-4.1         | 111K  | 16K    | Output insuficiente para generacion multi-archivo       |
+| Claude Sonnet 4 | 128K  | 16K    | Output insuficiente para SA senior                     |
+| GPT-5 mini      | 128K  | 64K    | Razonamiento insuficiente para nivel senior requerido  |
+
+### 12.5 Selector automatico (pseudocodigo)
+
+> **Principio clave:** El AO y SA tienen requerimientos diferentes.
+> El AO solo orquesta (bajo output, alto razonamiento).
+> El SA genera codigo (alto output, razonamiento variable por tarea).
+>
+> **IMPORTANTE:** Esta funcion es una guia de decision para el humano, NO ejecucion automatica.
+> El humano selecciona el modelo en el IDE consultando esta tabla. El AO y SA deben
+> registrar que modelo se uso en el Action Summary (seccion 11.3, trazabilidad obligatoria).
+
+```javascript
+function chooseModel(role, taskType, budget = "normal") {
+  // AO (Orchestrator): siempre Tier 2
+  // - Output real: ~2-5K tokens (prompt de delegacion + validacion)
+  // - No necesita output masivo, SI necesita alto razonamiento
+  // - Anti-pattern: Usar Tier 1 (128K output) u Opus (3x) para AO
+  if (role === "AO") {
+    return budget === "tight"
+      ? "Claude Sonnet 4.6" // 32K output, 1x -- minimo viable para AO
+      : "GPT-5.1"; // 64K output, 1x -- optimo para AO
+  }
+
+  // SA (Sub-Agent): tier variable segun tipo de tarea
+  // - Output real: ~10-25K tokens (codigo + tests + resumen)
+
+  // SA Tier 1: Arquitectura / seguridad / refactor complejo
+  if (["architecture", "refactor", "security"].includes(taskType)) {
+    return budget === "tight"
+      ? "GPT-5.1-Codex" // 128K output, alto razonamiento, 1x
+      : "GPT-5.1-Codex-Max"; // 128K output, top razonamiento, 1x
+  }
+
+  // SA Tier 2: Backend / Frontend / Tests / Bug fixes
+  if (["backend", "frontend", "tests", "bugfix"].includes(taskType)) {
+    return budget === "tight"
+      ? "Claude Sonnet 4.6" // 32K output, alto razonamiento, 1x
+      : "GPT-5.1"; // 64K output, alto razonamiento, 1x
+  }
+
+  // SA Tier 3: Tareas mecanicas (lint, rename, commits)
+  if (["lint", "rename", "commit"].includes(taskType)) {
+    return budget === "very_tight"
+      ? "Claude Haiku 4.5" // 32K output, medio razonamiento, 0.33x
+      : "GPT-5.1-Codex-Mini"; // 128K output, medio razonamiento, 0.33x
+  }
+
+  // Default seguro para SA
+  return "Claude Sonnet 4.6"; // 32K output, alto razonamiento, 1x
+}
+```
+
+### 12.6 Costo total por tarea (AO + SA)
+
+> **Formula:** Costo total = costo(AO) + costo(SA)
+
+| Tipo de tarea    | AO recomendado         | SA recomendado          | Costo total |
+| ---------------- | ---------------------- | ----------------------- | ----------- |
+| Arquitectura     | GPT-5.1 (1x)          | GPT-5.1-Codex-Max (1x) | 2x          |
+| Backend/Frontend | GPT-5.1 (1x)          | GPT-5.1 (1x)           | 2x          |
+| Tests/Bug fixes  | Claude Sonnet 4.6 (1x)| Claude Sonnet 4.6 (1x) | 2x          |
+| Lint/Commits     | Claude Sonnet 4.6 (1x)| Haiku 4.5 (0.33x)      | 1.33x       |
+
+- Anti-pattern: AO con Opus (3x) + SA con Opus (3x) = 6x por tarea
+- Anti-pattern: AO con Codex-Max (128K output) cuando solo genera ~3K tokens
+
+### 12.7 Anti-patrones de seleccion
 
 - Usar modelos con output menor a 32K para generacion multi-archivo.
-- Usar Tier 3 para tareas que requieren razonamiento arquitectonico.
-- Usar el modelo mas costoso para tareas rutinarias.
+- Usar Tier 3 para tareas que requieren razonamiento arquitectonico (DDD, Hexagonal, refactoring).
+- Usar Opus (3x) para tareas rutinarias que un Sonnet/GPT-5.x resuelve igual.
 - Usar modelos Preview en produccion sin monitorear resultados.
 
 ## 13. Plantillas reutilizables
@@ -650,6 +886,8 @@ Copiar los archivos `.github/copilot-instructions.md` o `GEMINI.md` del proyecto
 
 ## 14. Checklist de verificacion final
 
+### 14.1 Checklist de setup (una vez al configurar el sistema)
+
 Antes de considerar el sistema operativo, verificar:
 
 - [ ] Los 4 modulos de contexto existen y tienen contenido valido
@@ -663,3 +901,18 @@ Antes de considerar el sistema operativo, verificar:
 - [ ] AI_WORKFLOW.md existe para registrar interacciones
 - [ ] DEBT_REPORT.md existe para rastrear hallazgos
 - [ ] El Technology Discovery Protocol detecta el stack correctamente al intervenir codigo
+
+### 14.2 Checklist por respuesta (runtime, en cada interaccion del agente)
+
+Despues de cada respuesta, verificar cumplimiento antes de entregar al humano:
+
+- [ ] Se ejecuto el protocolo PRE-RESPONSE completo (pasos A, A.1, B, C, D, E)
+- [ ] Se confirmo la carga de los cuatro modulos
+- [ ] La respuesta esta en el idioma configurado (sin mezclar idiomas)
+- [ ] Si implica cambios de codigo: se presento Plan de Accion antes de ejecutar
+- [ ] Si implica cambios de codigo: el plan fue aprobado explicitamente por el humano
+- [ ] Ningun archivo fue modificado fuera del scope del skill seleccionado
+- [ ] Se registro la interaccion en `AI_WORKFLOW.md` (WORKFLOW paso 8)
+- [ ] Si se resolvio deuda tecnica: se actualizo `DEBT_REPORT.md` (WORKFLOW paso 9)
+- [ ] Los commits siguen la convencion `conventional-commits`
+- [ ] El linter no reporta errores y el tipado es 100%
