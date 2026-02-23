@@ -30,6 +30,13 @@ Antes de ejecutar cualquier tarea, el orquestador **DEBE** cargar estos 4 modulo
 
 **Archivo adicional obligatorio:** `docs/MD_STYLE_GUIDE.md` (sin emoji en headings/tablas, sentence case, vocabulario de estado estandarizado).
 
+**Pre-response protocol (resumen operativo):**
+
+- Verificar CWD usando `${workspaceRoot}` (o la carpeta del archivo); abortar si difiere.
+- Verificar disponibilidad de herramientas (file I/O, git, linter, tests); sin tooling → abortar.
+- Cargar los 4 modulos y confirmar con el bloque `[CONTEXTO CARGADO]` antes de responder.
+- Aplicar control de presupuesto de contexto: cargar secciones relevantes de forma selectiva para evitar overflow.
+
 ### Flujo de trabajo del orquestador (11 pasos)
 
 > **Referencia completa:** `docs/agent-context/WORKFLOW.md`
@@ -46,6 +53,8 @@ Antes de ejecutar cualquier tarea, el orquestador **DEBE** cargar estos 4 modulo
  9. ACTUALIZAR  -> Marcar item en DEBT_REPORT.md con estado correcto
 10. COMMIT      -> Crear commits con Conventional Commits (skill: conventional-commits)
 11. PURGAR      -> Descartar razonamiento intermedio del SA, conservar solo el resumen
+
+**Nota:** El algoritmo incluye un paso 4.5 de Technology Discovery (en los orquestadores) para detectar lenguaje, framework, gestor de paquetes, linter y test runner antes de escribir codigo, y adaptar guardrails dinamicamente (p. ej., prohibir `any` solo si es TypeScript, exigir type hints si es Python).
 ```
 
 ### Directrices obligatorias
