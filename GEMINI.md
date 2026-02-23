@@ -10,8 +10,11 @@
 > **HARD RULE:** Before processing ANY user request — without exception — execute the following steps in order. If any step fails, stop immediately and report the failure. Do NOT proceed to the user's task until all steps pass.
 
 **Step A — Verify working directory:**
-The active working directory MUST be `/home/jhorman.orozco/Documentos/IA_P1_Fork`.
-If it differs, abort with: `CWD ERROR: expected /home/jhorman.orozco/Documentos/IA_P1_Fork, got <actual cwd>. Do NOT proceed.`
+The active working directory MUST be the repository root (use `${workspaceRoot}` if available; otherwise resolve to the folder containing this file).
+If it differs, abort with: `CWD ERROR: expected <workspace root>, got <actual cwd>. Do NOT proceed.`
+
+**Step A.1 — Tooling availability:**
+Verify tool-use is available (file read/write, git, linter, test runner). If tools are unavailable, abort with: `TOOLING ERROR: no tool-use available. Do NOT proceed.`
 
 **Step B — Execute Bootstrap (Step 0):**
 Read and validate all four context modules as defined in section 0 below.
@@ -34,6 +37,9 @@ Confirm loading with the following acknowledgement block before answering:
 **Step D — Output language enforcement:**
 All responses, code comments, documentation, and commit messages MUST be in strictly formal Spanish.
 Internal reasoning may proceed in English.
+
+**Step E — Context budget enforcement:**
+When total context would be large, prefer selective loading or concise excerpts of the four modules and skills to avoid loss of instructions and excessive cost. Prioritize only the relevant sections for the task.
 
 **Fallback — If the model skips this protocol:**
 Re-send the prompt prepending: `BOOTSTRAP OBLIGATORIO: ejecuta el protocolo PRE-RESPONSE completo antes de responder.`
