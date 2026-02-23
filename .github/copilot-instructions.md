@@ -144,6 +144,10 @@ ${skills[name]}
 2. Tests (coverage >80%)
 3. Documentacion de cambios (// HUMAN CHECK donde aplique)
 4. Action Summary (formato: skills/action-summary-template.md)
+5. Modelo recomendado: Evalua la complejidad de la tarea y recomienda
+   el modelo optimo segun seccion 2 (Model selection policy).
+   Formato: "Modelo recomendado para esta tarea: [modelo] (Tier X) — [razon]"
+   Ejemplo: "Modelo recomendado para esta tarea: GPT-5.1-Codex-Max (Tier 1) — refactor DDD con 4 archivos"
         `,
   });
 
@@ -219,7 +223,7 @@ ${skills[name]}
 
 1. **AI_WORKFLOW.md:** Registrar interacciones humano-maquina
    - **Paso:** WORKFLOW.md paso 8 (REGISTRAR)
-   - **Debe incluir:** User request > Tipo de tarea > Skills cargadas > SA output > Commits > Human approval
+   - **Debe incluir:** User request > Tipo de tarea > Skills cargadas > **Modelo AO** > **Modelo SA** > SA output > Commits > Human approval
 
 2. **DEBT_REPORT.md:** Si se corrige hallazgo/deuda
    - **Paso:** WORKFLOW.md paso 9 (ACTUALIZAR)
@@ -334,5 +338,75 @@ ELSE IF tarea == mecanica simple (lint fix, rename, commit message)
 ELSE
    → Tier 2 por defecto
 ```
+
+### 2.6 — Selector automatico (pseudocodigo)
+
+> **Principio clave:** El AO y el SA tienen requisitos distintos.
+> El AO solo orquesta (output bajo, razonamiento alto).
+> El SA genera codigo (output alto, razonamiento variable por tarea).
+>
+> **IMPORTANTE:** Esta funcion es una guia de decision para el humano, NO ejecucion automatica.
+> El humano selecciona el modelo en el IDE consultando esta tabla. El AO y SA deben
+> registrar que modelo se uso en el Action Summary (seccion 1.6, trazabilidad obligatoria).
+
+```javascript
+function elegirModelo(role, taskType, presupuesto = "normal") {
+  // ═══════════════════════════════════════════════════════
+  // AO (Orquestador): siempre Tier 2
+  // - Output real: ~2-5K tokens (prompt de delegacion + validacion)
+  // - No necesita output masivo, SI necesita razonamiento alto
+  // - Anti-pattern: Usar Tier 1 (128K output) o Opus (3x) para AO
+  // ═══════════════════════════════════════════════════════
+  if (role === "AO") {
+    return presupuesto === "ajustado"
+      ? "Claude Sonnet 4.6" // 32K output, 1x — minimo viable para AO
+      : "GPT-5.1"; // 64K output, 1x — optimo para AO
+  }
+
+  // ═══════════════════════════════════════════════════════
+  // SA (Sub-Agente): tier variable segun tipo de tarea
+  // - Output real: ~10-25K tokens (codigo + tests + summary)
+  // - Razonamiento variable: top para DDD/Hexagonal, medio para lint
+  // ═══════════════════════════════════════════════════════
+
+  // SA Tier 1: Arquitectura / seguridad / refactor complejo
+  if (["arquitectura", "refactor", "security"].includes(taskType)) {
+    return presupuesto === "ajustado"
+      ? "GPT-5.1-Codex" // 128K output, alto razonamiento, 1x
+      : "GPT-5.1-Codex-Max"; // 128K output, top razonamiento, 1x
+  }
+
+  // SA Tier 2: Backend / Frontend / Tests / Bug fixes
+  if (["backend", "frontend", "tests", "bugfix"].includes(taskType)) {
+    return presupuesto === "ajustado"
+      ? "Claude Sonnet 4.6" // 32K output, alto razonamiento, 1x
+      : "GPT-5.1"; // 64K output, alto razonamiento, 1x
+  }
+
+  // SA Tier 3: Tareas mecanicas (lint, rename, commits)
+  if (["lint", "rename", "commit"].includes(taskType)) {
+    return presupuesto === "muy_ajustado"
+      ? "Claude Haiku 4.5" // 32K output, razonamiento medio, 0.33x
+      : "GPT-5.1-Codex-Mini"; // 128K output, razonamiento medio, 0.33x
+  }
+
+  // Default seguro para SA
+  return "Claude Sonnet 4.6"; // 32K output, alto razonamiento, 1x
+}
+```
+
+### 2.7 — Costo total por tarea (AO + SA)
+
+> **Formula:** Costo total = costo(AO) + costo(SA)
+
+| Tipo de tarea    | AO recomendado         | SA recomendado         | Costo total |
+| ---------------- | ---------------------- | ---------------------- | ----------- |
+| Arquitectura     | GPT-5.1 (1x)           | GPT-5.1-Codex-Max (1x) | 2x          |
+| Backend/Frontend | GPT-5.1 (1x)           | GPT-5.1 (1x)           | 2x          |
+| Tests/Bug fixes  | Claude Sonnet 4.6 (1x) | Claude Sonnet 4.6 (1x) | 2x          |
+| Lint/Commits     | Claude Sonnet 4.6 (1x) | Haiku 4.5 (0.33x)      | 1.33x       |
+
+- Anti-pattern: AO con Opus (3x) + SA con Opus (3x) = 6x por tarea
+- Anti-pattern: AO con Codex-Max (128K output) cuando solo genera ~3K tokens
 
 **STATUS:** COPILOT ADAPTER ACTIVE. LOAD CONTEXT MODULES TO PROCEED.
