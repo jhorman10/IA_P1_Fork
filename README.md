@@ -33,22 +33,21 @@ sequenceDiagram
     P->>C: 10. Emite evento WebSocket (Tiempo Real)
 ```
 
-## 2. Documentacion y contexto del proyecto
+## 2. Documentacion del proyecto
 
-Este proyecto utiliza una "Meta-Arquitectura" modular donde la documentación es la Fuente Única de Verdad tanto para humanos como para agentes de IA.
+La documentación activa del proyecto se concentra en los artefactos técnicos y funcionales necesarios para mantener, desplegar y validar la solución.
 
-| Módulo                    | Descripción                                                     | Ubicación                                                         |
-| ------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------- |
-| **Contexto del Proyecto** | Arquitectura, Stack Tecnológico, Estructura de Carpetas.        | [**PROJECT_CONTEXT.md**](./docs/agent-context/PROJECT_CONTEXT.md) |
-| **Reglas y Directrices**  | Convenciones culturales, Anti-patrones, Higiene.                | [**RULES.md**](./docs/agent-context/RULES.md)                     |
-| **Motor de Flujo**        | Protocolos de interacción, trazabilidad y modelo de delegación. | [**WORKFLOW.md**](./docs/agent-context/WORKFLOW.md)               |
-| **Registro de Skills**    | Capacidades disponibles para el Orquestador de IA.              | [**SKILL_REGISTRY.md**](./docs/agent-context/SKILL_REGISTRY.md)   |
+| Documento                   | Descripción                                            | Ubicación                                                        |
+| --------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------- |
+| **Arquitectura**            | Decisiones arquitectónicas y ADRs del sistema.         | [**docs/architecture/README.md**](./docs/architecture/README.md) |
+| **Auditoría de Seguridad**  | Hallazgos y recomendaciones de seguridad.              | [**SECURITY_AUDIT.md**](./SECURITY_AUDIT.md)                     |
+| **Resumen de Pruebas**      | Evidencia de cobertura y validación funcional.         | [**TESTING_SUMMARY.md**](./TESTING_SUMMARY.md)                   |
+| **Guía de estilo Markdown** | Reglas editoriales para documentación del repositorio. | [**docs/MD_STYLE_GUIDE.md**](./docs/MD_STYLE_GUIDE.md)           |
 
 ### Reportes de Estado
 
-- **Deuda Técnica:** [DEBT_REPORT.md](./DEBT_REPORT.md) (Estado: **ELITE GRADE**)
 - **Auditoría de Seguridad:** [SECURITY_AUDIT.md](./SECURITY_AUDIT.md)
-- **Trazabilidad IA:** [AI_WORKFLOW.md](./AI_WORKFLOW.md)
+- **Pruebas y Validación:** [TESTING_SUMMARY.md](./TESTING_SUMMARY.md)
 
 ---
 

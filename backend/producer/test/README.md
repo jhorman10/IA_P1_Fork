@@ -102,7 +102,7 @@ Abre inspector de Node para debugging profundo.
 | Métrica         | Valor              |
 | --------------- | ------------------ |
 | **Total Tests** | 36                 |
-| **Pasadas**     | 20+             |
+| **Pasadas**     | 20+                |
 | **Pass Rate**   | 100% (DTO+Service) |
 | **Tiempo**      | ~7 segundos        |
 | **Coverage**    | 80%+               |
@@ -230,6 +230,6 @@ Validaciones específicas del comportamiento esperado.
 
 ---
 
-**Creado por**: QA Agent  
+**Creado por**: Equipo de QA  
 **Fecha**: 11 de febrero de 2026  
 **Estado**: Listo para usar

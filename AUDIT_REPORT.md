@@ -227,7 +227,7 @@ MVP entrega arquitectura sólida (Hexagonal, SOLID, Event-Driven) pero con vulne
 ### 1. Estrategia de IA & Transparencia
 
 - **De 1 → 3:** Crear un archivo `PROMPT_LOG.md` donde se registren al menos las últimas 5 interacciones significativas con la IA.
-- **De 3 → 5:** Implementar una sección en `AI_WORKFLOW.md` que detalle errores específicos de lógica resueltos (ej. "IA generó bucle infinito en useEffect, corregido con useRef").
+- **De 3 → 5:** Mantener un registro técnico breve de errores de lógica resueltos y sus correcciones aplicadas.
 
 ### 2. Arquitectura & Docker
 

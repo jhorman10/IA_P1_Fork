@@ -37,4 +37,3 @@ yarn-debug.log*
 yarn-error.log*
 
 # GitHub workflows / configs
-# Note: .github/copilot-instructions.md is tracked as it's part of the Agent Orchestrator architecture

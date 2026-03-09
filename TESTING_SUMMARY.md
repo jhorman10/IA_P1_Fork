@@ -404,7 +404,7 @@ Time:        17.1 s
 - [x] **R-18:** SystemClockAdapter (33 tests) — PASSING
 - [x] **R-19:** NestLoggerAdapter (48 tests) — PASSING ⭐ Highest count
 - [x] **R-20:** RabbitMQNotificationAdapter (25 tests) — PASSING
-- [x] **DEBT_REPORT.md:** Updated R-14...R-20 status from Pending → Done
+- [x] **Seguimiento documental:** Estado de R-14...R-20 actualizado
 - [x] **Git Commit:** All tests committed with comprehensive message
 - [x] **Coverage Validation:** 371/371 consumer tests passing (100%)
 
@@ -441,7 +441,7 @@ Time:        17.1 s
 
 | File                                                   | Purpose                         | Status         |
 | ------------------------------------------------------ | ------------------------------- | -------------- |
-| DEBT_REPORT.md                                         | Overall project status tracking | Updated        |
+| Documentación de seguimiento                           | Overall project status tracking | Updated        |
 | backend/consumer/test/src/infrastructure/\*/\*.spec.ts | 7 adapter test suites           | ✅ All Passing |
 | backend/consumer/jest.config.js                        | Jest configuration with aliases | Configured     |
 | _git commit: 2c67a18_                                  | FASE 3 completion checkpoint    | Committed      |

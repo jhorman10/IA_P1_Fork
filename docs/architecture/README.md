@@ -152,15 +152,14 @@ ADR-004 (MongoDB) ──→ Domain Entities (ADR-001)
 
 ## Related Documentation
 
-- [DEBT_REPORT.md](../DEBT_REPORT.md) - Technical debt tracking
-- [PROJECT_CONTEXT.md](../agent-context/PROJECT_CONTEXT.md) - Project overview
-- [RULES.md](../agent-context/RULES.md) - Operational guidelines
+- [../../README.md](../../README.md) - Project overview
+- [../../SECURITY_AUDIT.md](../../SECURITY_AUDIT.md) - Security findings and hardening notes
 
 ## Revision History
 
-| Date       | Author   | Change                                         |
-| ---------- | -------- | ---------------------------------------------- |
-| 2026-02-20 | AI Agent | Initial ADR documentation (ADR-001 to ADR-005) |
+| Date       | Author       | Change                                         |
+| ---------- | ------------ | ---------------------------------------------- |
+| 2026-02-20 | Project team | Initial ADR documentation (ADR-001 to ADR-005) |
 
 ---
 

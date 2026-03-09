@@ -39,11 +39,11 @@
 
 ---
 
-## 1. Estrategia de IA (AI_WORKFLOW.md) Opinion de Antigravity
+## 1. Estrategia de documentacion tecnica - Opinion de Antigravity
 
 **Calificación: 5 - Excelente**
 
-El archivo `AI_WORKFLOW.md` es un documento vivo y detallado. Cumple con todos los criterios de la metodología AI-First:
+La documentación técnica evaluada es detallada y estructurada. Cumple con varios criterios de una metodología de trabajo asistida:
 
 - Define claramente los roles ("AI as Junior Developer", "Human as Architect").
 - Establece un protocolo de interacción y revisión.
@@ -51,18 +51,18 @@ El archivo `AI_WORKFLOW.md` es un documento vivo y detallado. Cumple con todos l
 - Define dinámicas de interacción y CSS guidelines.
 - Es un excelente ejemplo de documentación de procesos con IA.
 
-## 1. Estrategia de IA (AI_WORKFLOW.md) Opinion de German
+## 1. Estrategia de documentacion tecnica - Opinion de German
 
 **Calificación: 3 - Aceptable (Genérico, falta evidencia)**
 
-El archivo `AI_WORKFLOW.md` **explica la intención** del enfoque AI-First y lista etapas del proceso (uso de IA, revisión humana, validación, etc.), pero actualmente se queda en un nivel **descriptivo** y **no auditable**: no demuestra con evidencia _cómo_ se aplicó realmente en este repo ni deja una guía replicable para otro equipo.
+La documentación evaluada **explica la intención** del enfoque de trabajo y lista etapas del proceso, pero actualmente se queda en un nivel **descriptivo** y **no auditable**: no demuestra con evidencia _cómo_ se aplicó realmente en este repo ni deja una guía replicable para otro equipo.
 
 ### Observaciones clave (QA)
 
 - **Falta trazabilidad:** no incluye referencias a commits/PRs, decisiones verificables o ejemplos reales (ruta de archivo + snippet) que soporten lo descrito.
 - **Prompts inexistentes o vagos:** no presenta prompts reales (ni variaciones), por lo que no se entiende la estrategia de interacción con IA ni cómo iteraron cuando falló.
 - **HUMAN CHECK sin muestras:** menciona revisión humana, pero no evidencia “Sentinel Comments” reales (`// 🛡️ HUMAN CHECK`) ni criterios de aceptación aplicados.
-  - El equipo sí aplicó la práctica, pero falló la documentación del proceso (AI_WORKFLOW quedó incompleto / genérico).
+  - El equipo sí aplicó la práctica, pero falló la documentación del proceso, que quedó incompleta o genérica.
 - **“Lo que la IA hizo mal” sin método:** lista fallos típicos, pero no muestra el patrón de detección → fix → prevención (reglas, checklist, automatización).
 
 ### Recomendación mínima para cumplir rúbrica
