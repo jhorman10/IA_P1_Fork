@@ -8,7 +8,7 @@ FROM node:20-slim AS development
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
@@ -20,7 +20,7 @@ FROM node:20-slim AS build
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 COPY . .
 RUN npm run build
@@ -31,7 +31,7 @@ FROM node:20-slim AS production
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install --only=production
+RUN npm install --omit=dev --legacy-peer-deps
 
 COPY --chown=node:node --from=build /app/dist ./dist
 
