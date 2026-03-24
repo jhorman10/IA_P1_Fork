@@ -1,71 +1,243 @@
-# 📋 Informe de Auditoría Técnica de Calidad - Proyecto IA_P1 (Modo Estricto)
+# Auditoria hostil MVP — Reporte completo
 
-**Auditor:** Auditor Técnico Senior (Antigravity)
-**Fecha:** 2026-02-13
-**Estado General:** 🟠 Aceptable con Riesgos Estructurales
-**Riesgo Global:** **CRÍTICO**
-
----
-
-## 1. Resumen Ejecutivo Técnico
-El proyecto presenta una arquitectura sólida basada en microservicios y comunicación reactiva (WebSockets/RabbitMQ). Sin embargo, falla en el cumplimiento de los protocolos de auditoría estricta, especialmente en la **transparencia del uso de IA** y **seguridad de infraestructura**. Se han detectado discrepancias entre lo que el Backend requiere y lo que el Frontend ofrece, además de una alarmante falta de trazabilidad en el flujo de trabajo AI-First.
+**Auditor:** Staff Engineer / Principal Architect (Senior Hostil)
+**Fecha:** 2026-02-20
+**Veredicto Final:** **MVP CONDICIONAL** (62/100)
+**Blocker Crítico:** Token WebSocket hardcodeado — REQUIERE REMEDIACIÓN INMEDIATA
 
 ---
 
-## 2. Matriz de Evaluación
+## 1. Scorecard por area
 
-| Criterio | Puntuación | Severidad | Justificación Técnica |
-| :--- | :---: | :---: | :--- |
-| **Estrategia de IA** | 3 | 🟠 Media | Existe documentación (`AI_WORKFLOW.md`), pero no se evidencia el registro de prompts solicitado en las reglas críticas. |
-| **Calidad del Código** | 3 | 🟠 Media | Separación de responsabilidades correcta, pero nomenclatura en español y omisión de campos obligatorios en UI (`priority`). |
-| **Transparencia** | 1 | 🔴 Alta | No existe una sección de "Lo que la IA hizo mal" basada en logs reales; la documentación es genérica y no cita errores específicos corregidos. |
-| **Arquitectura & Docker** | 3 | 🟠 Media | Orquestación funcional, pero con credenciales hardcodeadas por defecto y falta de healthchecks. |
-| **Git Flow** | 1 | 🔴 Alta | Commits caóticos detectados (`3db9d85`, `b96bb14`), sin seguir una convención semántica estricta. |
+| Área                 | Puntuación | Peso | Evaluación                                                       | Status              |
+| -------------------- | :--------: | :--: | ---------------------------------------------------------------- | ------------------- |
+| **Arquitectura**     |   88/100   | 25%  | Hexagonal Architecture clara, SRP bien aplicado, sin God Objects | BIEN                |
+| **SOLID Principles** |   85/100   | 25%  | DIP perfecto, OCP bajo switch/case, LSP respetado, ISP segregado | BIEN                |
+| **Testing Coverage** |   42/100   | 20%  | Backend 23 specs (bueno), Frontend 0 specs (crítico)             | CRITICAL            |
+| **Infraestructura**  |   65/100   | 15%  | 4 healthchecks OK, pero 1 blocker crítico de seguridad           | WARNING             |
+| **UX/UI Experience** |   70/100   | 15%  | CSS Modules OK, error handling OK, loading states 6% cobertura   | WARNING             |
+| **TOTAL MVP SCORE**  | **62/100** |  —   | **MVP CONDICIONAL**                                              | ACEPTAR CON RIESGOS |
 
 ---
 
-## 3. Hallazgos Clasificados
+## 2. Hallazgos Críticos & Altos
 
-### 🔴 Críticos
-1.  **Credenciales Hardcodeadas:** 
-    - **Evidencia:** `docker-compose.yml` líneas 30, 35, 62, 71 usan valores por defecto (`guest/guest`, `admin123`).
-    - **Impacto:** Riesgo de seguridad masivo; incumple la regla crítica de manejo seguro de credenciales.
-    - **Recomendación:** Mover todas las credenciales a un archivo `.env` no trackeado y usar variables obligatorias.
-2.  **Inconsistencia de Negocio Frontend/Backend:**
-    - **Evidencia:** `RegistroTurnoForm.tsx` no incluye el campo `priority`, el cual es consumido y validado por `create-turno.dto.ts` en el backend.
-    - **Impacto:** Degradación de la funcionalidad del sistema de turnos; el usuario no puede elegir prioridad.
-    - **Recomendación:** Implementar `Select` de prioridad en el formulario.
+### 2.1 H-S1: Token WebSocket hardcodeado (BLOCKER CRITICAL)
 
-### 🟠 Funcionales
-1.  **Nomenclatura inconsistente:**
-    - **Evidencia:** Uso de español (`cedula`, `nombre`, `RegistroTurnoForm`) en un entorno técnico que debería estandarizarse a inglés para escalabilidad.
-    - **Recomendación:** Refactorizar el dominio y componentes a inglés (`idCard`, `fullName`, `QueueRegistryForm`).
-2.  **Ausencia de Healthchecks:**
-    - **Evidencia:** Ningún servicio en `docker-compose.yml` cuenta con instrucción `healthcheck`.
-    - **Impacto:** `depends_on` solo espera a que el contenedor inicie, no a que el servicio esté listo (ej. RabbitMQ puede tardar en aceptar conexiones).
-    - **Recomendación:** Añadir healthchecks basados en `curl` o comandos internos de cada imagen.
+**Archivo:** `backend/producer/src/common/guards/ws-auth.guard.ts:27`
 
-### 🟢 Excelentes
-1.  **Manejo de WebSockets:**
-    - **Evidencia:** `useTurnosWebSocket.ts` implementa correctamente el cleanup de efectos, reconexión automática y manejo de snapshots.
-2.  **Validación de Entorno:**
-    - **Evidencia:** `src/config/env.ts` lanza errores explícitos si faltan variables `NEXT_PUBLIC_*`, evitando fallos silenciosos en el navegador.
+**Código Ofensivo:**
+
+```typescript
+const validToken =
+  this.configService.get<string>("WS_AUTH_TOKEN") || "elite-hardened-token";
+```
+
+**Impacto:**
+
+- Cualquiera puede conectarse conociendo el token: `'elite-hardened-token'`
+- Permite acceso no autorizado a actualizaciones de turnos en tiempo real
+- Incumple estándares mínimos de seguridad
+- **SEVERITY:** CRITICAL — Falla de seguridad perimetral
+
+**Solución Inmediata (5 minutos):**
+
+```typescript
+const validToken = this.configService.getOrThrow<string>("WS_AUTH_TOKEN");
+// Si WS_AUTH_TOKEN no existe, falla en startup → Docker health check lo detecta
+```
+
+**Verificación:** `grep -rn "elite-hardened-token" backend/` → Reemplazar por variable `.env` obligatoria.
+
+---
+
+### 2.2 H-T1: Testing Frontend = 0% (HIGH)
+
+**Métrica:** 0 archivos `.spec.ts` en `frontend/src/`
+
+**Archivos en Riesgo (0 tests cada uno):**
+
+- `frontend/src/app/dashboard/page.tsx` (137 líneas)
+- `frontend/src/app/page.tsx` (117 líneas)
+- `frontend/src/hooks/useAppointmentRegistration.ts` (107 líneas)
+- `frontend/src/hooks/useAppointmentsRealtime.ts` (124 líneas)
+- `frontend/src/hooks/useAppointmentsWebSocket.ts` (98 líneas)
+- 15+ componentes sin cobertura
+
+**Impacto:**
+
+- Cambios en frontend sin validación automática
+- Regressions no detectadas
+- Hooks complejos sin unit tests
+
+**Remediación:** Crear 15-20 archivos `.spec.ts` con Jest (estimado 12 horas)
+
+---
+
+### 2.3 H-U1: Loading states incompletos (HIGH)
+
+**Métrica:** 3 instancias de loading states vs ~50 async points
+
+**Coverage:** 3/50 = **6%**
+
+**Locations de Async sin feedback:**
+
+- WebSocket reconnection (useAppointmentsWebSocket.ts)
+- Dashboard appointments fetch (dashboard/page.tsx)
+- Form submissions (AppointmentRegistrationForm)
+- Real-time updates (useAppointmentsRealtime.ts)
+
+**Impacto:** UX pobre, usuarios no saben si aplicación está procesando
+
+**Quick Win:** Agregar `isLoading && <Spinner />` en 10+ componentes (2-3 horas)
+
+---
+
+### 2.4 H-A1: Appointment Module monolitico (HIGH)
+
+**Archivo:** `backend/consumer/src/appointments/appointment.module.ts` (113 líneas)
+
+**Problema:** Módulo carga 8+ providers y configura directamente MongoDB
+
+**Propuesta:** Dividir en sub-módulos:
+
+- `policies.module.ts` (ConsultationPolicy)
+- `repositories.module.ts` (Mongoose adapters)
+- `use-cases.module.ts` (Application)
+
+**Impacto:** Mejora testability, reduce acoplamiento
+
+---
+
+## 3. Validaciones Ejecutadas
+
+### 3.1 Domain purity (DIP validado)
+
+**Comando:** `grep -rn "import.*@nestjs|import.*mongoose" backend/*/src/domain/`
+**Resultado:** 0 matches
+**Conclusión:** Domain completamente puro, sin dependencias de frameworks.
+
+---
+
+### 3.2 SOLID compliance
+
+| Principio | Validación                 | Resultado                   |
+| --------- | -------------------------- | --------------------------- |
+| **S**RP   | grep -rn "extends" domain/ | Solo 4 base classes legales |
+| **O**CP   | grep -rn "switch\|case:"   | 2 instancias (bajo)         |
+| **L**SP   | grep -rn "extends" domain/ | Herencia correcta           |
+| **I**SP   | Interfaces segregadas      | Port/Adapter pattern        |
+| **D**IP   | Constructor @Inject        | 0 `new` en domain           |
+
+**Conclusión:** SOLID 85/100.
+
+---
+
+### 3.3 Arquitectura hexagonal
+
+**Capas Validadas:**
+
+- Domain: Policies, Value Objects, Entities, Events (SRP perfecto)
+- Application: Use Cases, DTOs, Mappers (Clean)
+- Infrastructure: Repositories, External Services, Persistence (Desacoplado)
+
+**Separación:** Producer (REST API) ≠ Consumer (Workers/Queue).
+
+---
+
+### 3.4 Testing metrics
+
+**Backend (Excelente):**
+
+- 23 archivos `.spec.ts` encontrados
+- Covers: Policies, Value Objects, Use Cases, Integration (MongoDB)
+- Archivo más completo: `mongoose-appointment.repository.integration.spec.ts` (798 líneas)
+
+**Frontend (Crítico):**
+
+- 0 archivos `.spec.ts`
+- 0 component tests
+- 0 hook tests
+- 0 integration tests
+
+**Cobertura Total:** 42/100
+
+---
+
+### 3.5 Security check
+
+**Comando:** `grep -rn "password|secret|apikey|token" backend/*/src | grep -v ".env"`
+
+**Hallazgos:**
+
+- Token hardcodeado en ws-auth.guard.ts:27 (**H-S1 BLOCKER**)
+- Otros archivos usando `configService.get()` correctamente
+
+---
+
+### 3.6 Infrastructure
+
+**Healthchecks (4/4 servicios):**
+
+- Producer API
+- Consumer Worker
+- MongoDB
+- RabbitMQ
+
+**Negativos encontrados:**
+
+- Rate limiting ausente
+- Helmet security headers no detectados
+- Logs no JSON-estructurados
+
+---
+
+## 4. Veredicto & Recomendaciones
+
+### Verdict: MVP CONDICIONAL
+
+**Aceptable si se remedian:**
+
+1. **BLOCKER CRITICAL (H-S1):** Token hardcodeado → Fix inmediato (5 min)
+2. **BLOCKER HIGH (H-T1):** Frontend sin tests → Planning 2 sprints (H-T2)
+3. **BLOCKER HIGH (H-U1):** Loading states → Quick wins (H-U2)
+
+**Timeline estimado:** 6-8 horas para blockers + 20 horas para deuda aceptada
+
+---
+
+### Top 3 Acciones Inmediatas
+
+1. **FIX TOKEN (5 min):** `configService.getOrThrow('WS_AUTH_TOKEN')`
+2. **ADD LOADING STATES (2-3 hrs):** Spinners en 10+ componentes
+3. **PLAN FRONTEND TESTS (3-4 sprints):** 15+ tests para pages/hooks
+
+---
+
+## 5. Conclusión
+
+MVP entrega arquitectura sólida (Hexagonal, SOLID, Event-Driven) pero con vulnerabilidad crítica de seguridad y testing desigual. Recomendación: **Aceptar con mitigaciones**, escalar H-S1 a team líder inmediatamente.
+
+**Auditor:** Staff Engineer Hostil. 2. **Validación de Entorno:** - **Evidencia:** `src/config/env.ts` lanza errores explícitos si faltan variables `NEXT_PUBLIC_*`, evitando fallos silenciosos en el navegador.
 
 ---
 
 ## 4. Plan de Mejora Escalonado
 
-### 1️⃣ Estrategia de IA & Transparencia
-*   **De 1 → 3:** Crear un archivo `PROMPT_LOG.md` donde se registren al menos las últimas 5 interacciones significativas con la IA.
-*   **De 3 → 5:** Implementar una sección en `AI_WORKFLOW.md` que detalle errores específicos de lógica resueltos (ej. "IA generó bucle infinito en useEffect, corregido con useRef").
+### 1. Estrategia de IA & Transparencia
 
-### 2️⃣ Arquitectura & Docker
-*   **De 1 → 3:** Eliminar todos los valores por defecto de credenciales en el `yaml`.
-*   **De 3 → 5:** Implementar un Reverse Proxy (Nginx) y definir redes internas separadas para DB/Queue y App.
+- **De 1 → 3:** Crear un archivo `PROMPT_LOG.md` donde se registren al menos las últimas 5 interacciones significativas con la IA.
+- **De 3 → 5:** Mantener un registro técnico breve de errores de lógica resueltos y sus correcciones aplicadas.
 
-### 3️⃣ Calidad del Código
-*   **De 1 → 3:** Sincronizar el formulario con el DTO del backend y aplicar diseño básico responsive (CSS Media Queries).
-*   **De 3 → 5:** Implementar Unit Tests para el hook `useTurnosWebSocket` y el servicio de sanitización.
+### 2. Arquitectura & Docker
+
+- **De 1 → 3:** Eliminar todos los valores por defecto de credenciales en el `yaml`.
+- **De 3 → 5:** Implementar un Reverse Proxy (Nginx) y definir redes internas separadas para DB/Queue y App.
+
+### 3. Calidad del codigo
+
+- **De 1 → 3:** Sincronizar el formulario con el DTO del backend y aplicar diseño básico responsive (CSS Media Queries).
+- **De 3 → 5:** Implementar Unit Tests para el hook `useTurnosWebSocket` y el servicio de sanitización.
 
 ---
 

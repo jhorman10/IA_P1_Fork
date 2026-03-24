@@ -33,10 +33,13 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --only=production
 
-COPY --from=build /app/dist ./dist
+COPY --chown=node:node --from=build /app/dist ./dist
 
 # ⚕️ HUMAN CHECK - Variables de Entorno
 # El Consumer no expone puerto HTTP necesariamente, pero se puede monitorear
 # EXPOSE 3000
+
+# 🛡️ HUMAN CHECK - Security: Run as non-root user (H-16)
+USER node
 
 CMD ["node", "dist/main.js"]

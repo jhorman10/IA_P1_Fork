@@ -1,24 +1,40 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+import {
+  CalledAppointmentCard,
+  CompletedAppointmentCard,
+  WaitingAppointmentCard,
+} from "@/components/AppointmentCard";
+import AppointmentSkeleton from "@/components/AppointmentSkeleton";
+import WebSocketStatus from "@/components/WebSocketStatus";
+import { Appointment } from "@/domain/Appointment";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 import { audioService } from "@/services/AudioService";
 import styles from "@/styles/page.module.css";
 
 /**
- * Dashboard for attended appointments — Full history via WebSocket
- * Shows all appointments that have been attended with date and time
+ * Dashboard for completed appointments history.
  */
-export default function AttendedHistoryDashboard() {
-  const { appointments, error, connected } = useAppointmentsWebSocket();
-
-  const lastCountRef = useRef<number | null>(null);
+export default function CompletedHistoryDashboard() {
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
-  /**
-   * Initializes audio and waits for user gesture
-   */
+  const handleUpdate = useCallback((appointment: Appointment) => {
+    if (appointment.status === "completed") {
+      if (audioService.isEnabled()) {
+        audioService.play();
+      }
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2600);
+    }
+  }, []);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { appointments, error, _connected, isConnecting, connectionStatus } =
+    useAppointmentsWebSocket(handleUpdate);
+
   useEffect(() => {
     audioService.init("/sounds/ding.mp3", 0.6);
 
@@ -36,91 +52,110 @@ export default function AttendedHistoryDashboard() {
     };
   }, []);
 
-  /**
-   * Detects new attended appointment → plays sound
-   */
-  useEffect(() => {
-    // First render → only save snapshot
-    if (lastCountRef.current === null) {
-      const attendedCount = appointments.filter(t => t.estado === "atendido").length;
-      lastCountRef.current = attendedCount;
-      return;
-    }
+  const waitingAppointments = appointments
+    .filter((t) => t.status === "waiting")
+    .sort((a, b) => {
+      const priorityOrder: Record<string, number> = {
+        high: 0,
+        medium: 1,
+        low: 2,
+      };
+      return priorityOrder[a.priority] - priorityOrder[b.priority];
+    });
 
-    const attendedCount = appointments.filter(t => t.estado === "atendido").length;
-    if (attendedCount > lastCountRef.current) {
-      if (audioService.isEnabled()) {
-        audioService.play();
-      }
+  const calledAppointments = appointments
+    .filter((t) => t.status === "called")
+    .sort((a, b) => a.timestamp - b.timestamp);
 
-      // Elegant visual toast
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2600);
-    }
-
-    lastCountRef.current = attendedCount;
-  }, [appointments]);
-
-  // Filter only attended appointments and sort by timestamp descending
-  const attendedAppointments = appointments
-    .filter(t => t.estado === "atendido")
+  const completedAppointments = appointments
+    .filter((t) => t.status === "completed")
     .sort((a, b) => b.timestamp - a.timestamp);
 
-  /**
-   * Formats timestamp to readable time (HH:MM:SS)
-   */
-  const formatTime = (timestamp: number): string => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false
-    });
-  };
-
   return (
-    <main className={styles.container}>
-      <h1 className={styles.title}>Historial de Turnos Atendidos</h1>
+    <main className={styles.dashboardContainer}>
+      <header className={styles.stickyHeader}>
+        <h1 className={styles.title}>Panel de Turnos en Tiempo Real</h1>
+        <WebSocketStatus status={connectionStatus} variant="block" />
+        {!audioEnabled && (
+          <p className={styles.audioHint}>
+            Toca la pantalla para activar sonido 🔔
+          </p>
+        )}
+        {error && <p className={styles.error}>{error}</p>}
+      </header>
 
-      {/* WebSocket Connection Indicator */}
-      <p className={connected ? styles.connected : styles.disconnected}>
-        {connected ? "🟢 Conectado en tiempo real" : "🔴 Desconectado — reconectando..."}
-      </p>
-
-      {!audioEnabled && (
-        <p className={styles.audioHint}>
-          Toca la pantalla para habilitar el sonido 🔔
-        </p>
-      )}
-
-      {error && <p className={styles.error}>{error}</p>}
-
-      {/* Attended appointments with time */}
-      {attendedAppointments.length > 0 && (
-        <>
-          <h2 className={styles.sectionTitle}>✅ Atendidos ({attendedAppointments.length})</h2>
-          <ul className={styles.list}>
-            {attendedAppointments.map((t) => (
-              <li key={t.id} className={`${styles.item} ${styles.atendido}`}>
-                <span className={styles.nombre}>{t.nombre}</span>
-                <span className={styles.hora}>{formatTime(t.timestamp)}</span>
-                <span>Consultorio {t.consultorio}</span>
-              </li>
+      <section className={styles.sectionBlock}>
+        <h2 className={styles.sectionTitle}>
+          🏥 En consultorio{" "}
+          <span className={styles.countBadge}>{calledAppointments.length}</span>
+        </h2>
+        {calledAppointments.length > 0 ? (
+          <ul className={styles.cardGrid}>
+            {calledAppointments.map((t) => (
+              <CalledAppointmentCard
+                key={t.id}
+                appointment={t}
+                showTime={true}
+                timeIcon="🔔"
+              />
             ))}
           </ul>
-        </>
-      )}
+        ) : isConnecting ? (
+          <AppointmentSkeleton count={2} />
+        ) : (
+          <p className={styles.empty}>No hay turnos siendo atendidos</p>
+        )}
+      </section>
 
-      {attendedAppointments.length === 0 && !error && (
-        <p className={styles.empty}>No hay turnos atendidos</p>
-      )}
+      <section className={styles.sectionBlock}>
+        <h2 className={styles.sectionTitle}>
+          ⏳ En espera{" "}
+          <span className={styles.countBadge}>
+            {waitingAppointments.length}
+          </span>
+        </h2>
+        {waitingAppointments.length > 0 ? (
+          <ul className={styles.cardGrid}>
+            {waitingAppointments.map((t) => (
+              <WaitingAppointmentCard
+                key={t.id}
+                appointment={t}
+                timeIcon="📝"
+              />
+            ))}
+          </ul>
+        ) : isConnecting ? (
+          <AppointmentSkeleton count={3} />
+        ) : (
+          <p className={styles.empty}>No hay turnos en espera</p>
+        )}
+      </section>
 
-      {showToast && (
-        <div className={styles.toast}>
-          ✅ Turno completado
-        </div>
-      )}
+      <section className={styles.sectionBlock}>
+        <h2 className={styles.sectionTitle}>
+          ✅ Completados{" "}
+          <span className={styles.countBadge}>
+            {completedAppointments.length}
+          </span>
+        </h2>
+        {completedAppointments.length > 0 ? (
+          <ul className={styles.cardGrid}>
+            {completedAppointments.map((t) => (
+              <CompletedAppointmentCard
+                key={t.id}
+                appointment={t}
+                timeIcon="⏰"
+              />
+            ))}
+          </ul>
+        ) : isConnecting ? (
+          <AppointmentSkeleton count={2} />
+        ) : (
+          <p className={styles.empty}>No hay turnos completados aún</p>
+        )}
+      </section>
+
+      {showToast && <div className={styles.toast}>✅ Turno completado</div>}
     </main>
   );
 }

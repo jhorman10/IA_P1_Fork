@@ -1,29 +1,32 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { NotificationsService } from './notifications.service';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ClientsModule, Transport } from "@nestjs/microservices";
+
+import { NotificationsService } from "./notifications.service";
 
 @Module({
-    imports: [
-        ClientsModule.registerAsync([
-            {
-                name: 'TURNOS_NOTIFICATIONS',
-                imports: [ConfigModule],
-                useFactory: async (configService: ConfigService) => ({
-                    transport: Transport.RMQ,
-                    options: {
-                        urls: [configService.get<string>('RABBITMQ_URL') || 'amqp://guest:guest@localhost:5672'],
-                        queue: configService.get<string>('RABBITMQ_NOTIFICATIONS_QUEUE') || 'turnos_notifications',
-                        queueOptions: {
-                            durable: true,
-                        },
-                    },
-                }),
-                inject: [ConfigService],
+  imports: [
+    ClientsModule.registerAsync([
+      {
+        name: "APPOINTMENT_NOTIFICATIONS",
+        imports: [ConfigModule],
+        useFactory: async (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [configService.getOrThrow<string>("RABBITMQ_URL")],
+            queue: configService.getOrThrow<string>(
+              "RABBITMQ_NOTIFICATIONS_QUEUE",
+            ),
+            queueOptions: {
+              durable: true,
             },
-        ]),
-    ],
-    providers: [NotificationsService],
-    exports: [NotificationsService, ClientsModule],
+          },
+        }),
+        inject: [ConfigService],
+      },
+    ]),
+  ],
+  providers: [NotificationsService],
+  exports: [NotificationsService, ClientsModule],
 })
-export class NotificationsModule { }
+export class NotificationsModule {}

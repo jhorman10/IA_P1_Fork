@@ -1,27 +1,36 @@
-import { Controller, Logger } from '@nestjs/common';
-import { EventPattern, Payload } from '@nestjs/microservices';
-import { TurnosGateway } from './turnos.gateway';
-import { TurnoEventPayload } from '../types/turno-event';
+import { Controller, Inject, Logger } from "@nestjs/common";
+import { EventPattern, Payload } from "@nestjs/microservices";
 
-// ⚕️ HUMAN CHECK - Controlador de eventos RabbitMQ → WebSocket
-// Escucha eventos del Consumer y los reenvía por WebSocket a los clientes
-// ⚕️ HUMAN CHECK - Eliminado uso de `any` en los handlers
-// Ahora usa TurnoEventPayload para garantizar type safety end-to-end
+import { EventBroadcasterPort } from "../domain/ports/outbound/event-broadcaster.port";
+import { AppointmentEventPayload } from "../types/appointment-event";
+
+// ⚕️ HUMAN CHECK - DIP: Depende de EventBroadcasterPort, no del AppointmentsGateway concreto
 @Controller()
 export class EventsController {
-    private readonly logger = new Logger(EventsController.name);
+  private readonly logger = new Logger(EventsController.name);
 
-    constructor(private readonly turnosGateway: TurnosGateway) { }
+  constructor(
+    @Inject("EventBroadcasterPort")
+    private readonly broadcaster: EventBroadcasterPort,
+  ) {}
 
-    @EventPattern('turno_creado')
-    async handleTurnoCreado(@Payload() data: TurnoEventPayload): Promise<void> {
-        this.logger.log(`Evento turno_creado recibido: ${data.id} — ${data.nombre}`);
-        this.turnosGateway.broadcastTurnoActualizado(data);
-    }
+  @EventPattern("appointment_created")
+  async handleAppointmentCreated(
+    @Payload() data: AppointmentEventPayload,
+  ): Promise<void> {
+    this.logger.log(
+      `Event appointment_created received: ${data.id} — ${data.fullName}`,
+    );
+    this.broadcaster.broadcastAppointmentUpdated(data);
+  }
 
-    @EventPattern('turno_actualizado')
-    async handleTurnoActualizado(@Payload() data: TurnoEventPayload): Promise<void> {
-        this.logger.log(`Evento turno_actualizado recibido: ${data.id} — ${data.nombre} → ${data.estado}`);
-        this.turnosGateway.broadcastTurnoActualizado(data);
-    }
+  @EventPattern("appointment_updated")
+  async handleAppointmentUpdated(
+    @Payload() data: AppointmentEventPayload,
+  ): Promise<void> {
+    this.logger.log(
+      `Event appointment_updated received: ${data.id} — ${data.fullName} → ${data.status}`,
+    );
+    this.broadcaster.broadcastAppointmentUpdated(data);
+  }
 }

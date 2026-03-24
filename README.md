@@ -1,130 +1,104 @@
 # IA_P1 - Sistema de Turnos Médicos en Tiempo Real
 
-> Sistema de gestión de turnos médicos basado en **Microservicios**, **Event-Driven Architecture** y **WebSockets**.
+> **Sistema de gestión de citas médicas certificado con "Elite DDD" y "Arquitectura Hexagonal".**
+> Construido con NestJS, RabbitMQ, MongoDB y Next.js.
 
-## 🚀 Arquitectura y Flujo
+## 1. Arquitectura del sistema
 
-El sistema desacopla la recepción de turnos de su procesamiento para garantizar alta disponibilidad y escalabilidad.
+La arquitectura central desacopla la recepción de turnos del procesamiento utilizando un patrón de **Microservicios Orientados a Eventos**.
 
 ```mermaid
 sequenceDiagram
     participant C as Cliente (Frontend)
-    participant P as Producer (API + WS)
+    participant P as Productor (API + WS)
     participant Q as RabbitMQ
-    participant W as Consumer (Worker)
-    participant S as Scheduler (Consumer)
+    participant W as Consumidor (Worker)
+    participant S as Planificador (Consumer)
     participant D as MongoDB
 
-    C->>P: 1. POST /turnos (HTTP)
-    P->>Q: 2. Publica 'crear_turno'
+    C->>P: 1. POST /appointments (HTTP)
+    P->>Q: 2. Publica 'create_appointment'
     P-->>C: 202 Accepted
-    Q->>W: 3. Consume mensaje
-    W->>D: 4. Guarda turno (Estado: Espera)
-    
-    loop Cada 15s (Scheduler)
+    Q->>W: 3. Consume mensaje (ack/nack)
+    W->>D: 4. Guarda turno (Estado: Esperando)
+    W->>Q: 4b. Evento de Dominio → Notificación
+
+    loop Cada SCHEDULER_INTERVAL_MS
         S->>D: 5. Busca turnos en espera
-        S->>D: 6. Asigna consultorio (Atomic Update)
-        S->>Q: 7. Publica 'turno_actualizado'
+        S->>D: 6. Asigna consultorio (duración aleatoria 8-15s)
+        S->>Q: 8. Publica 'appointment_created'
     end
 
-    Q->>P: 8. Consume evento 'turno_actualizado'
-    P->>C: 9. Emite evento WebSocket (Real-time)
+    Q->>P: 9. Consume evento de notificación
+    P->>C: 10. Emite evento WebSocket (Tiempo Real)
 ```
 
-## 🧩 Servicios
+## 2. Documentacion del proyecto
 
-| Servicio | Tecnología | Puerto | Responsabilidad |
-|---|---|---|---|
-| **Producer** | NestJS | `3000` | API Gateway, Validación de entrada, WebSocket Gateway,Swagger Documentation. |
-| **Consumer** | NestJS | — | Procesamiento asíncrono, Scheduler de asignación, Persistencia en DB. |
-| **Frontend** | Next.js | `3001` | Interfaz de usuario Reactiva, Cliente WebSocket, Diseño moderno. |
-| **RabbitMQ** | RabbitMQ 3 | `5672` | Broker de mensajería (Colas: `turnos_queue`, `turnos_notifications`). |
-| **MongoDB** | MongoDB 7 | `27017` | Base de datos NoSQL persistente. |
+La documentación activa del proyecto se concentra en los artefactos técnicos y funcionales necesarios para mantener, desplegar y validar la solución.
 
-## 🛠️ Instalación y Ejecución
+| Documento                   | Descripción                                            | Ubicación                                                        |
+| --------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------- |
+| **Arquitectura**            | Decisiones arquitectónicas y ADRs del sistema.         | [**docs/architecture/README.md**](./docs/architecture/README.md) |
+| **Auditoría de Seguridad**  | Hallazgos y recomendaciones de seguridad.              | [**SECURITY_AUDIT.md**](./SECURITY_AUDIT.md)                     |
+| **Resumen de Pruebas**      | Evidencia de cobertura y validación funcional.         | [**TESTING_SUMMARY.md**](./TESTING_SUMMARY.md)                   |
+| **Guía de estilo Markdown** | Reglas editoriales para documentación del repositorio. | [**docs/MD_STYLE_GUIDE.md**](./docs/MD_STYLE_GUIDE.md)           |
+
+### Reportes de Estado
+
+- **Auditoría de Seguridad:** [SECURITY_AUDIT.md](./SECURITY_AUDIT.md)
+- **Pruebas y Validación:** [TESTING_SUMMARY.md](./TESTING_SUMMARY.md)
+
+---
+
+## 3. Inicio rapido
 
 ### Prerrequisitos
-- Docker Engine & Docker Compose
+
+- Docker Engine & Docker Compose v2 **o** Podman + Podman Compose
 
 ### Pasos
 
 1. **Clonar el repositorio**
+
    ```bash
-   git clone https://github.com/Duver0/IA_P1.git
-   cd IA_P1
+   git clone https://github.com/jhorman10/IA_P1_Fork.git
+   cd IA_P1_Fork
    ```
 
-2. **Iniciar la infraestructura**
+2. **Configurar entorno**
+
    ```bash
-   docker compose up -d --build
+   cp .env.example .env
+   # Editar .env con credenciales seguras (ver .env.example para detalles)
    ```
 
-3. **Acceder a la aplicación**
+3. **Iniciar infraestructura**
+   - **Con Docker Compose:**
+     ```bash
+     docker compose up -d --build
+     ```
+   - **Con Podman Compose:**
+     ```bash
+     podman-compose up -d --build
+     ```
+     > **Nota:**
+     >
+     > - Podman Compose es compatible con este archivo, pero revisa advertencias sobre volúmenes y puertos si usas rootless Podman.
+     > - Si encuentras problemas con permisos en volúmenes, consulta la [documentación oficial de Podman](https://docs.podman.io/en/latest/markdown/podman-compose.1.html).
+
+4. **Acceder a la aplicación**
    - **Frontend:** [http://localhost:3001](http://localhost:3001)
    - **API Swagger:** [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
-   - **RabbitMQ Admin:** [http://localhost:15672](http://localhost:15672) (user: `guest`, pass: `guest`)
+   - **RabbitMQ Admin:** [http://localhost:15672](http://localhost:15672)
 
-## ✨ Características Clave
+---
 
-- **Event-Driven**: Comunicación asíncrona entre servicios para mayor resiliencia.
-- **Real-Time**: Actualizaciones instantáneas en el frontend vía WebSockets (`socket.io`).
-- **Concurrency Safe**: Asignación de turnos atómica (`findOneAndUpdate`) para prevenir race conditions.
-- **Robustez**:
-  - Manejo de errores tipado (`TurnoEventPayload`).
-  - Validación de datos (DTOs + `class-validator`).
-  - Logs estructurados (`NestJS Logger`).
-- **Infraestructura como Código**: Entorno completamente dockerizado (`docker-compose.yml`).
+## 4. Caracteristicas clave
 
-## 📡 API Endpoints (Producer)
-
-| Método | Endpoint | Descripción |
-|---|---|---|
-| `POST` | `/turnos` | Crear un nuevo turno (Async) |
-| `GET` | `/turnos` | Listar todos los turnos |
-| `GET` | `/turnos/:cedula` | Buscar turnos por cédula |
-
-## 🧪 Pruebas Manuales (cURL)
-
-**Crear un turno:**
-```bash
-curl -X POST http://localhost:3000/turnos \
-  -H "Content-Type: application/json" \
-  -d '{"nombre": "Paciente Test", "cedula": 12345, "priority": "alta"}'
-```
-
-**Ver respuesta:**
-```json
-{
-  "status": "accepted",
-  "message": "Turno en proceso de asignación"
-}
-```
-
-## 📂 Estructura del Proyecto
-
-```
-IA_P1/
-├── backend/
-│   ├── producer/        # API Gateway & WebSocket Server
-│   │   ├── src/events/  # Controladores de eventos (RabbitMQ -> WS)
-│   │   └── src/turnos/  # Lógica de negocio HTTP
-│   └── consumer/        # Worker Service
-│       ├── src/scheduler/ # Lógica de asignación automática
-│       └── src/turnos/    # Persistencia MongoDB
-├── frontend/            # Next.js App Router
-│   ├── src/hooks/       # Custom Hooks (useTurnosWebSocket)
-│   └── src/domain/      # Modelos compartidos
-├── docker-compose.yml   # Orquestación de contenedores
-└── README.md            # Documentación
-```
-
-## 📝 Notas de Auditoría (Fixes recientes)
-
-- **Type Safety**: Se eliminaron los tipos `any` mediante interfaces compartidas (`TurnoEventPayload`).
-- **Race Conditions**: Se corrigió la lógica del scheduler para garantizar asignaciones únicas.
-- **Frontend Sync**: Se ajustaron los tipos (`cedula: number`) para coincidir con el backend.
-- **Docker Networking**: Configuración corregida para que el cliente navegador use `localhost`.
-- **Scheduler configurable**: El intervalo del scheduler del consumer ahora se lee de `SCHEDULER_INTERVAL_MS` (default 15000 ms, alineado con la documentación).
-- **Validación en eventos**: El microservicio RMQ aplica `ValidationPipe` global con `whitelist`, `forbidNonWhitelisted` y `transform` para validar `CreateTurnoDto` en eventos.
-- **Ack/Nack explícitos**: El consumer confirma mensajes en éxito y diferencia `nack` sin requeue para errores de validación vs requeue en errores transitorios para evitar bloqueo con `prefetch=1`.
-- **Robustez**: Estas mejoras fortalecen el entorno de desarrollo; aún faltan políticas de reintentos, DLQ y hardening para un entorno productivo.
+- **Orientado a Eventos**: Comunicación puramente asíncrona vía RabbitMQ.
+- **Diseño Guiado por el Dominio (DDD)**: Value Objects, Eventos de Dominio, Fábricas, Especificaciones.
+- **Arquitectura Hexagonal**: Patrón de Puertos y Adaptadores en el servicio Consumidor.
+- **Tiempo Real**: WebSockets para actualizaciones instantáneas de turnos.
+- **Resiliencia**: DLQ (Dead Letter Queue), Políticas de Reintento y Healthchecks.
+- **Seguridad**: Helmet, Rate Limiting, CORS y Política de Cero Hardcodeo.

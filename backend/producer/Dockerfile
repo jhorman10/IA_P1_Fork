@@ -35,10 +35,13 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --omit=dev --legacy-peer-deps
 
-COPY --from=build /app/dist ./dist
+COPY --chown=node:node --from=build /app/dist ./dist
 
 # ⚕️ HUMAN CHECK - Puerto expuesto
 # Verificar que coincida con la variable de entorno PRODUCER_PORT
 EXPOSE 3000
+
+# 🛡️ HUMAN CHECK - Security: Run as non-root user (H-16)
+USER node
 
 CMD ["npm", "run", "start:prod"]

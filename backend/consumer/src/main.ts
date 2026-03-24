@@ -1,52 +1,62 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { Logger, ValidationPipe } from '@nestjs/common';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { ConfigService } from '@nestjs/config';
+import { Logger, ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { NestFactory } from "@nestjs/core";
+import { MicroserviceOptions, Transport } from "@nestjs/microservices";
+
+import { AppModule } from "./app.module";
 
 async function bootstrap(): Promise<void> {
-    const logger = new Logger('Bootstrap');
+  const logger = new Logger("Bootstrap");
 
-    // Primero creamos el contexto de aplicación para acceder al ConfigService
-    const appContext = await NestFactory.createApplicationContext(AppModule);
-    const configService = appContext.get(ConfigService);
+  // ⚕️ HUMAN CHECK - Aplicación híbrida: HTTP (Health) + Microservicio
+  // Se usa create en lugar de createMicroservice para tener un puerto HTTP
+  // y permitir Healthchecks de Docker/K8s.
+  const app = await NestFactory.create(AppModule);
+  app.enableShutdownHooks();
+  const configService = app.get(ConfigService);
 
-    // ⚕️ HUMAN CHECK - Reemplazado || por ?? (null-safe)
-    const rabbitUrl = configService.get<string>('RABBITMQ_URL') ?? 'amqp://guest:guest@localhost:5672';
-    const queueName = configService.get<string>('RABBITMQ_QUEUE') ?? 'turnos_queue';
+  const rabbitUrl = configService.getOrThrow<string>("RABBITMQ_URL");
+  const queueName = configService.getOrThrow<string>("RABBITMQ_QUEUE");
 
-    // ⚕️ HUMAN CHECK - Cerrar appContext antes de crear el microservicio
-    // Evita doble inicialización de módulos (memory leak potencial)
-    await appContext.close();
-
-    // ⚕️ HUMAN CHECK - Configuración de Microservicio
-    // Verificar que la URL y el nombre de la cola coincidan con los del Producer
-    // y que los puertos de RabbitMQ estén accesibles desde el contenedor.
-    const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
-        transport: Transport.RMQ,
-        options: {
-            urls: [rabbitUrl],
-            queue: queueName,
-            noAck: false, // Importante para confirmación manual
-            queueOptions: {
-                durable: true,
-            },
-            prefetchCount: 1, // Procesar uno a la vez para evitar sobrecarga
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [rabbitUrl],
+      queue: queueName,
+      noAck: false,
+      queueOptions: {
+        durable: true,
+        arguments: {
+          "x-dead-letter-exchange": configService.get<string>(
+            "DLX_EXCHANGE",
+            "appointment_dlx",
+          ),
+          "x-dead-letter-routing-key": configService.get<string>(
+            "DLX_ROUTING_KEY",
+            "appointment_dlq",
+          ),
         },
-    });
+      },
+      prefetchCount: 1,
+    },
+  });
 
-    // ⚕️ HUMAN CHECK - Validación global en microservicio
-    // Se habilita ValidationPipe para eventos RMQ (whitelist + forbid + transform)
-    app.useGlobalPipes(
-        new ValidationPipe({
-            whitelist: true,
-            forbidNonWhitelisted: true,
-            transform: true,
-        }),
-    );
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
-    await app.listen();
-    // ⚕️ HUMAN CHECK - Reemplazado console.log por Logger
-    logger.log(`Consumer (Worker) is listening on queue: ${queueName}`);
+  await app.startAllMicroservices();
+
+  // The Consumer now listens on port 3000 (internal to container)
+  // only for health checks and future metrics.
+  const port = configService.get<number>("PORT") ?? 3000;
+  await app.listen(port);
+
+  logger.log(`Consumer (Worker) running hybrid mode on port ${port}`);
+  logger.log(`Listening for tasks on queue: ${queueName}`);
 }
 bootstrap();
