@@ -8,7 +8,7 @@ FROM node:20-slim AS development
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
+RUN npm install
 
 COPY . .
 
@@ -20,7 +20,7 @@ FROM node:20-slim AS build
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
+RUN npm install
 
 COPY . .
 RUN npm run build
@@ -31,7 +31,7 @@ FROM node:20-slim AS production
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install --omit=dev --legacy-peer-deps
+RUN npm install --omit=dev
 
 COPY --chown=node:node --from=build /app/dist ./dist
 
@@ -42,4 +42,4 @@ COPY --chown=node:node --from=build /app/dist ./dist
 # 🛡️ HUMAN CHECK - Security: Run as non-root user (H-16)
 USER node
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "--enable-source-maps", "dist/main.js"]
