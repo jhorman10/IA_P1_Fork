@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect,useRef, useState } from "react";
+
+import { useDependencies } from "@/context/DependencyContext";
 import { CreateAppointmentDTO } from "@/domain/CreateAppointment";
-import { HttpAppointmentRepository } from "@/repositories/HttpAppointmentRepository";
 
 /**
  * Hook for registering appointments.
@@ -17,93 +18,89 @@ import { HttpAppointmentRepository } from "@/repositories/HttpAppointmentReposit
  * - Circuit Breaker compatible
  */
 export function useAppointmentRegistration() {
-    const [loading, setLoading] = useState(false);
-    const [success, setSuccess] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-    /**
-     * Hook lifecycle control
-     */
-    const isMountedRef = useRef(true);
+  /**
+   * Hook lifecycle control
+   */
+  const isMountedRef = useRef(true);
 
-    /**
-     * Prevents multiple simultaneous submits
-     */
-    const inFlightRef = useRef(false);
+  /**
+   * Prevents multiple simultaneous submits
+   */
+  const inFlightRef = useRef(false);
 
-    /**
-     * Repository singleton
-     */
-    const repositoryRef = useRef<HttpAppointmentRepository | null>(null);
+  /**
+   * Repository from DI Context (stable, no need for ref)
+   * ⚕️ HUMAN CHECK - H-36: DependencyContext es estable, no requiere useRef
+   */
+  const { repository } = useDependencies();
 
-    if (!repositoryRef.current) {
-        repositoryRef.current = new HttpAppointmentRepository();
-    }
+  // 🛡️ HUMAN CHECK - DIP: Hook uses injected repository, not class.
 
-    useEffect(() => {
-        return () => {
-            isMountedRef.current = false;
-        };
-    }, []);
-
-    /**
-     * Safe state update (prevents setState after unmount)
-     */
-    const safeSet = <T,>(setter: (v: T) => void, value: T) => {
-        if (isMountedRef.current) setter(value);
+  useEffect(() => {
+    // Resetear inFlightRef en cada mount (evita bloqueo tras Fast Refresh o remount)
+    isMountedRef.current = true;
+    inFlightRef.current = false;
+    return () => {
+      isMountedRef.current = false;
     };
+  }, []);
 
-    const register = async (data: CreateAppointmentDTO) => {
-        if (inFlightRef.current) return;
+  /**
+   * Safe state update (prevents setState after unmount)
+   */
+  const safeSet = <T>(setter: (v: T) => void, value: T) => {
+    if (isMountedRef.current) setter(value);
+  };
 
-        inFlightRef.current = true;
+  const register = async (data: CreateAppointmentDTO) => {
+    if (inFlightRef.current) return;
 
-        safeSet(setLoading, true);
-        safeSet(setSuccess, null);
-        safeSet(setError, null);
+    inFlightRef.current = true;
 
-        try {
-            const res = await repositoryRef.current!.createAppointment(data);
+    safeSet(setLoading, true);
+    safeSet(setSuccess, null);
+    safeSet(setError, null);
 
-            safeSet(
-                setSuccess,
-                res.message ?? "Appointment registered successfully"
-            );
-        } catch (err: unknown) {
-            const message =
-                err instanceof Error ? err.message : "UNKNOWN_ERROR";
+    try {
+      const res = await repository.createAppointment(data);
 
-            let userMessage = "Could not register the appointment.";
+      safeSet(setSuccess, res.message ?? "Turno registrado exitosamente.");
+    } catch (err: unknown) {
+      const errorCode = err instanceof Error ? err.message : "UNKNOWN_ERROR";
+      // Si el servidor envió un mensaje específico, mostrarlo directamente
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const serverMessage = (err as any)?.serverMessage;
 
-            switch (message) {
-                case "TIMEOUT":
-                    userMessage =
-                        "The server took too long. Please try again.";
-                    break;
+      let userMessage =
+        serverMessage ?? "No se pudo registrar el turno. Intente de nuevo.";
 
-                case "RATE_LIMIT":
-                    userMessage =
-                        "Too many requests. Please wait a few seconds.";
-                    break;
-
-                case "HTTP_ERROR":
-                case "SERVER_ERROR":
-                    userMessage =
-                        "Server error. Please try later.";
-                    break;
-
-                case "CIRCUIT_OPEN":
-                    userMessage =
-                        "Server temporarily unavailable. Retrying...";
-                    break;
-            }
-
-            safeSet(setError, userMessage);
-        } finally {
-            safeSet(setLoading, false);
-            inFlightRef.current = false;
+      if (!serverMessage) {
+        switch (errorCode) {
+          case "TIMEOUT":
+            userMessage = "El servidor tardó demasiado. Intente de nuevo.";
+            break;
+          case "RATE_LIMIT":
+            userMessage = "Demasiadas solicitudes. Espere unos segundos.";
+            break;
+          case "SERVER_ERROR":
+            userMessage = "Error en el servidor. Intente más tarde.";
+            break;
+          case "CIRCUIT_OPEN":
+            userMessage = "Servidor temporalmente no disponible.";
+            break;
         }
-    };
+      }
 
-    return { register, loading, success, error };
+      safeSet(setError, userMessage);
+    } finally {
+      safeSet(setLoading, false);
+      inFlightRef.current = false;
+    }
+  };
+
+  return { register, loading, success, error, isSubmitting: loading };
 }

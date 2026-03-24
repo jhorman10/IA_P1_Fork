@@ -14,15 +14,15 @@ Proveer una interfaz ligera, segura y resiliente para:
 
 ## Stack Tecnológico
 
-| Tecnología | Uso |
-|----------|-----|
-| Next.js 16 | Framework principal |
-| React 19 | UI |
-| TypeScript | Tipado estático |
-| App Router | Arquitectura moderna |
+| Tecnología  | Uso                  |
+| ----------- | -------------------- |
+| Next.js 16  | Framework principal  |
+| React 19    | UI                   |
+| TypeScript  | Tipado estático      |
+| App Router  | Arquitectura moderna |
 | CSS Modules | Estilos encapsulados |
-| Fetch API | Cliente HTTP |
-| ESLint | Calidad de código |
+| Fetch API   | Cliente HTTP         |
+| ESLint      | Calidad de código    |
 
 ## Características Técnicas
 
@@ -94,7 +94,7 @@ Crear archivo `.env.local`:
 ```env
 NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api/mock
 NEXT_PUBLIC_POLLING_INTERVAL=3000
-````
+```
 
 ## Instalación
 
@@ -134,32 +134,32 @@ Esto permite ejecutar el frontend sin backend real.
 
 ## Decisiones Técnicas
 
-* No se utiliza estado global (no necesario para el dominio actual)
-* Polling en lugar de WebSocket para simplicidad del MVP, escalable a SSE / WebSocket
-* CSS Modules para evitar colisiones de estilos
-* Cliente HTTP centralizado para resiliencia
-* Arquitectura preparada para escalar sin refactor complejo
+- No se utiliza estado global (no necesario para el dominio actual)
+- Polling en lugar de WebSocket para simplicidad del MVP, escalable a SSE / WebSocket
+- CSS Modules para evitar colisiones de estilos
+- Cliente HTTP centralizado para resiliencia
+- Arquitectura preparada para escalar sin refactor complejo
 
 ## Preparado para Escalar
 
 El proyecto está diseñado para evolucionar hacia:
 
-* WebSocket / SSE
-* Backend real con colas (RabbitMQ)
-* Observabilidad (si se requiere)
-* Testing automatizado
-* Despliegue en contenedores
-* Multi-pantalla en tiempo real
+- WebSocket / SSE
+- Backend real con colas (RabbitMQ)
+- Observabilidad (si se requiere)
+- Testing automatizado
+- Despliegue en contenedores
+- Multi-pantalla en tiempo real
 
 ## Calidad de Código
 
-* Sin memory leaks
-* Sin loops duplicados
-* Sin re-render innecesario
-* Manejo de errores controlado
-* Sanitización de inputs
-* Código documentado
-* Separación de responsabilidades
+- Sin memory leaks
+- Sin loops duplicados
+- Sin re-render innecesario
+- Manejo de errores controlado
+- Sanitización de inputs
+- Código documentado
+- Separación de responsabilidades
 
 ## Scripts
 
@@ -172,8 +172,8 @@ npm run lint     # Lint
 
 ## Requisitos
 
-* Node.js 20+
-* NPM 9+
+- Node.js 20+
+- NPM 9+
 
 ## Estado del Proyecto
 

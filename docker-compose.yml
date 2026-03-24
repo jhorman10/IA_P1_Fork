@@ -1,5 +1,12 @@
-# ⚕️ HUMAN CHECK - Configuración de Docker Compose
-# Revisar puertos expuestos y variables de entorno antes de desplegar
+######################################################################
+# ⚕️ HUMAN CHECK - Configuración de Docker Compose & Podman Compose
+# Este archivo es compatible tanto con Docker Compose v2 como con Podman Compose.
+# - No se usan features exclusivas de Docker Engine.
+# - restart: unless-stopped es soportado por ambos.
+# - Volúmenes y puertos pueden requerir ajustes en rootless Podman.
+# - Para levantar con podman: `podman-compose up -d --build`
+# Revisar puertos expuestos y variables de entorno antes de desplegar.
+######################################################################
 services:
   producer:
     container_name: backend-producer
@@ -8,34 +15,45 @@ services:
       dockerfile: Dockerfile
       target: development
     # ⚕️ HUMAN CHECK - Comando de desarrollo
-    # En producción, eliminar este command para usar el CMD del Dockerfile
-    command: npm run start:dev
-    # ⚕️ HUMAN CHECK - Puertos Expuestos
+    # En producción, eliminar este comando para usar el CMD del Dockerfile
+    command: npm run start
+    # ⚕️ HUMAN CHECK - Puertos expuestos
     # Verificar que el puerto mapeado no entre en conflicto con otros servicios del host
     ports:
       - "${PRODUCER_PORT:-3000}:3000"
-    # ⚕️ HUMAN CHECK - Volúmenes de Desarrollo (Hot-Reload)
-    # Estos volúmenes montan el código fuente local para desarrollo con hot-reload.
+    restart: unless-stopped
+    # ⚕️ HUMAN CHECK - Volúmenes de desarrollo (Hot-Reload)
+    # Estos volúmenes montan el código fuente local para desarrollo con recarga en caliente.
     # En producción, eliminar estos volúmenes y usar la imagen construida.
     volumes:
       - ./backend/producer:/app
       - /app/node_modules
       - /app/dist
+    # ⚕️ HUMAN CHECK - Variables de entorno gestionadas vía .env
     environment:
-      - NODE_ENV=development
-      - PORT=3000
-      # ⚕️ HUMAN CHECK - Credenciales de conexión RabbitMQ
-      # No usar credenciales por defecto (guest/guest) en producción.
-      # Configurar variables seguras en .env
-      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq:5672
-      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE:-turnos_queue}
-      # ⚕️ HUMAN CHECK - Cola de notificaciones (WebSocket bridge)
-      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE:-turnos_notifications}
-      # ⚕️ HUMAN CHECK - Credenciales de conexión MongoDB (Lectura)
-      - MONGODB_URI=mongodb://${MONGO_USER:-admin}:${MONGO_PASS:-admin123}@mongodb:27017/turnos_db?authSource=admin
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PRODUCER_PORT}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq:${RABBITMQ_PORT}
+      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE}
+      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE}
+      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:${MONGODB_PORT}/appointments_db?authSource=admin
+      - FRONTEND_URL=${FRONTEND_URL}
     depends_on:
-      - rabbitmq
-      - mongodb
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3000/health', (res) => { if (res.statusCode === 200) process.exit(0); else process.exit(1); }).on('error', () => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - app-network
 
@@ -46,33 +64,43 @@ services:
       dockerfile: Dockerfile
       target: development
     # ⚕️ HUMAN CHECK - Comando de desarrollo
-    # En producción, eliminar este command para usar el CMD del Dockerfile
-    command: npm run start:dev
-    # ⚕️ HUMAN CHECK - Volúmenes de Desarrollo (Hot-Reload)
-    # Estos volúmenes montan el código fuente local para desarrollo con hot-reload.
+    # En producción, eliminar este comando para usar el CMD del Dockerfile
+    command: npm run start
+    # ⚕️ HUMAN CHECK - Volúmenes de desarrollo (Hot-Reload)
+    # Estos volúmenes montan el código fuente local para desarrollo con recarga en caliente.
     # En producción, eliminar estos volúmenes y usar la imagen construida.
     volumes:
       - ./backend/consumer:/app
       - /app/node_modules
       - /app/dist
+    restart: unless-stopped
+    # ⚕️ HUMAN CHECK - Variables de entorno gestionadas vía .env
     environment:
-      - NODE_ENV=development
-      # ⚕️ HUMAN CHECK - Credenciales de conexión RabbitMQ
-      # No usar credenciales por defecto (guest/guest) en producción.
-      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq:5672
-      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE:-turnos_queue}
-      # ⚕️ HUMAN CHECK - Cola de notificaciones (WebSocket bridge)
-      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE:-turnos_notifications}
-      # ⚕️ HUMAN CHECK - Configuración del Scheduler
-      - SCHEDULER_INTERVAL=1000
-      - CONSULTORIOS_TOTAL=5
-      # ⚕️ HUMAN CHECK - Credenciales de conexión MongoDB
-      # No usar credenciales por defecto en producción.
-      - MONGODB_URI=mongodb://${MONGO_USER:-admin}:${MONGO_PASS:-admin123}@mongodb:27017/turnos_db?authSource=admin
+      - NODE_ENV=${NODE_ENV}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq:${RABBITMQ_PORT}
+      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE}
+      - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE}
+      - SCHEDULER_INTERVAL_MS=${SCHEDULER_INTERVAL_MS}
+      - CONSULTORIOS_TOTAL=${CONSULTORIOS_TOTAL}
+      - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:${MONGODB_PORT}/appointments_db?authSource=admin
     depends_on:
-      - rabbitmq
-      - producer
-      - mongodb
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      producer:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3000/health', (res) => { if (res.statusCode === 200) process.exit(0); else process.exit(1); }).on('error', () => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - app-network
 
@@ -82,21 +110,19 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     # ⚕️ HUMAN CHECK - Comando de desarrollo
-    # En producción, eliminar este command para usar el CMD del Dockerfile
+    # En producción, eliminar este comando para usar el CMD del Dockerfile
     command: npm run dev -- -p 3001 -H 0.0.0.0
     ports:
       - "${FRONTEND_PORT:-3001}:3001"
+    restart: unless-stopped
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    # ⚕️ HUMAN CHECK - Variables de entorno gestionadas vía .env
     environment:
-      - NODE_ENV=development
-      # ⚕️ HUMAN CHECK - NEXT_PUBLIC_* se ejecutan en el NAVEGADOR del usuario, no en Docker
-      # Por eso usan localhost (no el hostname interno 'producer')
-      # Para probar en red local, cambia 'localhost' por tu IP local (ej. http://192.168.1.50:3000)
-      - NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
-      # ⚕️ HUMAN CHECK - URL del WebSocket
-      - NEXT_PUBLIC_WS_URL=http://localhost:3000
+      - NODE_ENV=${NODE_ENV}
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+      - NEXT_PUBLIC_WS_URL=${NEXT_PUBLIC_WS_URL}
     depends_on:
       - producer
     networks:
@@ -107,19 +133,25 @@ services:
   rabbitmq:
     container_name: P1_rabbitmq
     image: rabbitmq:3-management-alpine
-    # ⚕️ HUMAN CHECK - Puertos Expuestos de RabbitMQ
-    # El puerto 15672 (Management UI) NO debe exponerse en producción
+    # ⚕️ HUMAN CHECK - Puertos expuestos de RabbitMQ
+    # El puerto 15672 (Management UI) NO DEBE exponerse en producción
     ports:
-      - "${RABBITMQ_PORT:-5672}:5672"
-      - "${RABBITMQ_MGMT_PORT:-15672}:15672"
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_MGMT_PORT}:15672"
     # ⚕️ HUMAN CHECK - Credenciales por defecto de RabbitMQ
     # Las credenciales guest/guest solo deben usarse en desarrollo local.
-    # Usar secretos o variables de entorno seguras en producción.
+    # Usar secretos o variables seguras en producción.
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-guest}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS:-guest}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
     networks:
       - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # ⚕️ HUMAN CHECK - Configuración de MongoDB
   # Cambiar credenciales por defecto antes de ir a producción
@@ -127,17 +159,23 @@ services:
     container_name: P1_mongodb
     image: mongo:7
     ports:
-      - "${MONGODB_PORT:-27017}:27017"
+      - "${MONGODB_PORT}:27017"
     # ⚕️ HUMAN CHECK - Credenciales por defecto de MongoDB
     # Las credenciales admin/admin123 solo deben usarse en desarrollo local.
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER:-admin}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS:-admin123}
-      - MONGO_INITDB_DATABASE=turnos_db
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}
+      - MONGO_INITDB_DATABASE=appointments_db
     volumes:
       - mongodb_data:/data/db
     networks:
       - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   mongodb_data:

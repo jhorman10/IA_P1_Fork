@@ -1,0 +1,8 @@
+{
+  "extends": "../producer/tsconfig.json",
+  "compilerOptions": {
+    "typeRoots": ["../producer/node_modules/@types"],
+    "types": ["jest", "node"]
+  },
+  "include": ["**/*.ts"]
+}
