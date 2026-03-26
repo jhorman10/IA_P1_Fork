@@ -204,3 +204,66 @@ flowchart TD
 - **Trade-off:** aumenta la complejidad de observabilidad, pero mejora desacoplamiento y tolerancia a fallas.
 
 ---
+
+## Documentacion para HU y HT
+
+> Esta seccion incorpora fuentes de referencia para redactar Historias de Usuario (HU) y convertirlas en Historias Tecnicas (HT) sin perder trazabilidad de negocio.
+
+### Fuentes recomendadas
+
+- Scrum Manager - Historias de Usuario: https://www.scrummanager.com/files/historias_usuario_scrum_manager.pdf?utm_source=chatgpt.com
+- Caroli - Historias de Usuario: https://caroli.org/es/historias-de-usuario/
+- Atlassian - User Stories en Agile: https://www.atlassian.com/es/agile/project-management/user-stories?utm_source=chatgpt.com
+
+### Como redactar una HU (estructura minima)
+
+Plantilla:
+
+> Como [rol], quiero [objetivo], para [beneficio de negocio].
+
+Checklist minimo:
+
+- Tiene un rol real del dominio (por ejemplo: Paciente, Recepcionista, Administrador).
+- Expresa valor de negocio observable.
+- Incluye criterios de aceptacion verificables.
+- Es negociable y estimable.
+
+### Ejemplo claro de HU (este proyecto)
+
+**HU-01 - Asignacion valida por disponibilidad real**
+
+> Como Paciente, quiero que mi turno se asigne solo a un medico disponible, para evitar esperas indefinidas por asignaciones invalidas.
+
+Criterios de aceptacion:
+
+- Dado un paciente en espera, cuando el scheduler ejecuta el ciclo, entonces solo asigna consultorios con medico en estado `available`.
+- Dado que no hay medicos disponibles, cuando finaliza el ciclo, entonces el turno permanece en espera sin perder prioridad.
+- Dado un turno asignado correctamente, cuando se confirma la asignacion, entonces se publica el evento `AppointmentAssigned`.
+
+### Como redactar una HT (derivada de HU)
+
+Plantilla:
+
+> Como equipo tecnico, necesitamos [capacidad tecnica], para habilitar [HU o resultado de negocio].
+
+Checklist minimo:
+
+- Define componente y limite tecnico (API, cola, base de datos, websocket, seguridad).
+- Establece condicion de exito medible (latencia, errores, retries, cobertura, etc.).
+- Mantiene trazabilidad directa con una HU.
+
+### Ejemplo claro de HT (derivada de HU-01)
+
+**HT-01 - Consulta priorizada de pacientes y validacion de medico disponible**
+
+> Como equipo tecnico, necesitamos implementar en el scheduler una consulta MongoDB con orden por urgencia y validacion de disponibilidad del medico, para habilitar la HU-01 de asignacion valida.
+
+Criterios de aceptacion:
+
+- La consulta selecciona pacientes por orden `urgency DESC, createdAt ASC`.
+- El scheduler descarta consultorios cuyo medico no este en estado `available`.
+- La asignacion valida dispara el evento `AppointmentAssigned` en RabbitMQ.
+- Si falla la publicacion, se aplica politica de reintentos y enrutamiento a DLQ.
+- Se emite traza con OpenTelemetry para el flujo completo de asignacion.
+
+---
