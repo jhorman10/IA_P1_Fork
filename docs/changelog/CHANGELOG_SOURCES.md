@@ -195,3 +195,12 @@ flowchart TD
 ---
 
 [Unreleased]: https://github.com/jhorman10/IA_P1_Fork/compare/HEAD...HEAD
+
+## Seguimiento IA vs Humano — Checkpoint 2
+
+- **Qué sugirió la IA:** resolver la actualización de disponibilidad médica con endpoint REST síncrono directo.
+- **Qué validó el humano en documentación oficial:** en arquitectura event-driven, los cambios críticos de estado se preservan mejor con eventos de dominio y colas resilientes.
+- **Decisión tomada:** publicar cambios de disponibilidad vía evento y procesarlos asíncronamente en el consumer.
+- **Trade-off:** aumenta la complejidad de observabilidad, pero mejora desacoplamiento y tolerancia a fallas.
+
+---
