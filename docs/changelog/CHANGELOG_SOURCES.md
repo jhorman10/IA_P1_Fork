@@ -381,3 +381,78 @@ Criterios de aceptacion:
 - Decision de documentacion: conservar la historia humana como HU base (INVEST) y trasladar los mecanismos de entrega garantizada a la HT correspondiente.
 
 ---
+
+## HT habilitadoras para las HU registradas
+
+> Esta seccion define las Historias Tecnicas (HT) necesarias para hacer viables las HU documentadas (HU-01, HU-02 y HU-03), manteniendo trazabilidad funcional y alcance INVEST.
+
+### Matriz de trazabilidad HU -> HT
+
+- HU-01 (registro con urgencia) -> HT-01
+- HU-02 (visualizacion en tiempo real) -> HT-02, HT-03
+- HU-03 (notificacion de asignacion) -> HT-04, HT-05, HT-06
+
+### HT-01 - Persistencia y validacion de urgencia
+
+Como equipo tecnico, necesitamos persistir turnos con nivel de urgencia y fecha de registro validada, para habilitar HU-01.
+
+Criterios de aceptacion:
+
+- El modelo de datos admite solo `Alta`, `Media` o `Baja` para urgencia.
+- El sistema rechaza registros sin urgencia valida.
+- Al crear el turno, se guarda `created_at` en UTC.
+- El turno queda en estado inicial `waiting`.
+
+### HT-02 - Proyeccion de cola consultable
+
+Como equipo tecnico, necesitamos una consulta de cola ordenada y consumible por interfaz, para habilitar HU-02.
+
+Criterios de aceptacion:
+
+- La consulta devuelve posicion actual del turno y su estado.
+- El orden de salida respeta prioridad y desempate por `created_at`.
+- Si el turno no esta activo, la respuesta retorna estado consistente de no disponible.
+
+### HT-03 - Canal en tiempo real con reconexion
+
+Como equipo tecnico, necesitamos un canal WebSocket resiliente para publicar cambios de cola, para habilitar HU-02.
+
+Criterios de aceptacion:
+
+- Los cambios se reflejan sin recargar pantalla.
+- Si se pierde conexion, el cliente intenta reconectar automaticamente.
+- Durante reconexion, se mantiene el ultimo dato conocido en pantalla.
+
+### HT-04 - Motor de asignacion por urgencia y disponibilidad
+
+Como equipo tecnico, necesitamos un proceso de asignacion que seleccione el siguiente turno por urgencia y FIFO, validando disponibilidad real del medico, para habilitar HU-03.
+
+Criterios de aceptacion:
+
+- La asignacion respeta prioridad: Alta > Media > Baja.
+- En misma urgencia, se respeta FIFO por `created_at`.
+- Solo se asignan medicos en estado `available`.
+- Si no hay medico disponible, el turno permanece en `waiting`.
+
+### HT-05 - Publicacion confiable de evento de asignacion
+
+Como equipo tecnico, necesitamos publicar `AppointmentAssigned` con entrega confiable para habilitar HU-03.
+
+Criterios de aceptacion:
+
+- Toda asignacion valida publica un evento `AppointmentAssigned`.
+- La entrega se garantiza al menos una vez.
+- Si falla la entrega inicial, se aplican reintentos y enrutamiento a DLQ al superar el limite.
+
+### HT-06 - Notificacion visible y auditable al paciente
+
+Como equipo tecnico, necesitamos consumir el evento de asignacion y notificar al paciente en pantalla con auditoria, para habilitar HU-03.
+
+Criterios de aceptacion:
+
+- La notificacion muestra medico, consultorio y hora estimada.
+- Si no existe asignacion, no se muestra notificacion de llamado.
+- Cada notificacion emitida deja registro auditable con timestamp y referencias del turno.
+- El tiempo extremo a extremo cumple el objetivo de 2 segundos en condiciones normales.
+
+---
