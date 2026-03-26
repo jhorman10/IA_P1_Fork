@@ -185,4 +185,13 @@ flowchart TD
 
 ---
 
+## Seguimiento IA vs Humano — Checkpoint 1
+
+- **Qué sugirió la IA:** modelar disponibilidad del médico con un booleano dentro de consultorio para simplificar el filtro.
+- **Qué validó el humano en documentación oficial:** en DDD, el médico debe conservar ciclo de vida independiente para trazabilidad de estados y auditoría.
+- **Decisión tomada:** mantener entidad `Doctor` separada con estado explícito de disponibilidad y consulta encapsulada en repositorio.
+- **Trade-off:** se agrega complejidad de modelado inicial a cambio de menor acoplamiento y mayor capacidad de evolución.
+
+---
+
 [Unreleased]: https://github.com/jhorman10/IA_P1_Fork/compare/HEAD...HEAD
