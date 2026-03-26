@@ -305,3 +305,41 @@ Criterios de aceptacion:
 - Decision de documentacion: usar la redaccion humana como base y anexar los detalles tecnicos de la IA como criterios extendidos cuando la fase de implementacion lo requiera.
 
 ---
+
+## Seguimiento IA vs Humano - Checkpoint 4
+
+### Lo que dijo la IA
+
+**HU-002: Visualizacion en Tiempo Real de Turno y Consultorio**
+
+Como paciente en la sala de espera,
+quiero ver en la pantalla de la sala mi turno actual, el consultorio asignado, el nombre del medico y mi posicion en la cola,
+para reducir mi ansiedad, conocer a que consultorio dirigirme y entender cuanto tiempo aproximado falta para mi atencion.
+
+Criterios de aceptacion:
+
+- La pantalla de espera muestra: numero de turno, consultorio, nombre del medico, posicion actual en la cola.
+- La informacion se actualiza en menos de 2 segundos tras cambios (latencia WebSocket <200ms).
+- Si el paciente aun no ha sido asignado, muestra "En espera..." y su posicion en la fila.
+- Si un cambio de consultorio o medico ocurre, la pantalla refleja el cambio sin refresco de pagina.
+- Se valida que solo pacientes con turno activo puedan ver esta informacion.
+
+### Humano
+
+**HU-02**
+
+Como usuario en una sala de espera, quiero ver en tiempo real mi posicion en la cola, para conocer mi progreso sin preguntar en recepcion.
+
+Criterios de aceptacion:
+
+- La pantalla muestra la posicion actual y el estado del turno.
+- Cuando cambia la cola, la posicion actual se actualiza sin recargar la pantalla.
+- Si se pierde conexion, la pantalla muestra estado de reconexion y ultimo dato conocido.
+
+### Lectura del contraste
+
+- La version de la IA amplia el alcance funcional incorporando consultorio, nombre del medico, restriccion de visibilidad y objetivos emocionales del paciente.
+- La version humana recorta el alcance a la necesidad principal de negocio: conocer avance en la cola con una experiencia robusta ante perdida de conexion.
+- Decision de documentacion: mantener la HU humana como historia base por ser mas pequeña e independiente, y tratar los detalles extra de la IA como extension futura o criterios tecnicos derivados.
+
+---
