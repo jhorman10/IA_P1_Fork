@@ -267,3 +267,41 @@ Criterios de aceptacion:
 - Se emite traza con OpenTelemetry para el flujo completo de asignacion.
 
 ---
+
+## Seguimiento IA vs Humano - Checkpoint 3
+
+### Lo que dijo la IA
+
+**HU-001: Registro de Pacientes con Nivel de Urgencia**
+
+Como recepcionista o personal de admision,
+quiero registrar un paciente nuevo con un nivel de urgencia (Alta / Media / Baja),
+para asegurar que los casos criticos sean priorizados en la cola de asignacion y el medico disponible sea el adecuado segun la gravedad.
+
+Criterios de aceptacion:
+
+- El formulario de registro permite seleccionar urgencia desde un dropdown con 3 opciones: Alta, Media, Baja.
+- La urgencia es obligatoria; el sistema no permite registrar sin seleccionarla.
+- Se guarda el timestamp de registro exacto (con precision de milisegundos) para desempates FIFO.
+- El paciente registrado aparece inmediatamente en la cola de espera visible en el backend.
+- Se valida que los unicos valores permitidos para urgencia sean los tres definidos (validacion tanto en UI como en API).
+
+### Humano
+
+**HU-01**
+
+Como recepcionista, quiero registrar un usuario con nivel de urgencia (Alta, Media, Baja), para que el sistema priorice la atencion segun criticidad clinica.
+
+Criterios de aceptacion:
+
+- Solo se permiten valores de urgencia del selector.
+- Si falta urgencia, el registro no se guarda y muestra validacion.
+- Al guardar, el turno queda en estado "esperando" con fecha del momento en que se registro.
+
+### Lectura del contraste
+
+- La version de la IA es mas detallada en canales y precision tecnica (UI/API, milisegundos, visibilidad inmediata en backend).
+- La version humana es mas sintetica y centrada en valor funcional, con criterios minimos claros.
+- Decision de documentacion: usar la redaccion humana como base y anexar los detalles tecnicos de la IA como criterios extendidos cuando la fase de implementacion lo requiera.
+
+---
