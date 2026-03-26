@@ -343,3 +343,41 @@ Criterios de aceptacion:
 - Decision de documentacion: mantener la HU humana como historia base por ser mas pequeña e independiente, y tratar los detalles extra de la IA como extension futura o criterios tecnicos derivados.
 
 ---
+
+## Seguimiento IA vs Humano - Checkpoint 5
+
+### Lo que dijo la IA
+
+**HU-003: Notificacion del Paciente sobre Asignacion Confirmada**
+
+Como paciente,
+quiero recibir una notificacion inmediata en pantalla cuando mi turno ha sido asignado a un medico disponible,
+para confirmar que sere atendido por una persona que realmente esta presente en el consultorio.
+
+Criterios de aceptacion:
+
+- La notificacion llega al cliente en maximo 2 segundos tras la asignacion en el evento de RabbitMQ.
+- La notificacion muestra: nombre del medico, consultorio asignado y hora estimada de llamada.
+- El evento es entregado con garantia de al menos una vez (no se pierden notificaciones).
+- Si la notificacion falla la primera vez, se reintenta hasta 3 veces via DLQ antes de ser desechada.
+- Se registra un log de cada notificacion enviada (timestamp, paciente, medico) para auditoria.
+
+### Humano
+
+**HU-03 Notificacion de asignacion de medico**
+
+Como paciente, quiero recibir una notificacion inmediata en la pantalla cuando mi turno sea asignado, para confirmar que sere atendido y saber a que consultorio dirigirme.
+
+Criterios de aceptacion:
+
+- Cuando el turno se asigna, el paciente recibe una notificacion en la pantalla en un tiempo maximo de 2 segundos.
+- La notificacion muestra nombre del medico, consultorio asignado y hora estimada de llamada.
+- Si el paciente no tiene asignacion, no se muestra notificacion de llamado.
+
+### Lectura del contraste
+
+- La version de la IA incorpora controles tecnicos de confiabilidad y auditoria (al menos una vez, reintentos con DLQ, logging), utiles para la futura HT.
+- La version humana mantiene foco en valor directo al paciente y comportamiento observable en la interfaz.
+- Decision de documentacion: conservar la historia humana como HU base (INVEST) y trasladar los mecanismos de entrega garantizada a la HT correspondiente.
+
+---
