@@ -482,4 +482,52 @@ Criterios de aceptacion:
 
 > Nota: la distribucion asume una velocidad de equipo de entre 16 y 30 puntos por sprint. Ajustar segun capacidad historica del equipo.
 
+### Propuesta de distribucion por sprint — Historias de Usuario
+
+| Sprint   | HUs incluidas | Puntos HU |
+| -------- | ------------- | --------- |
+| Sprint 1 | —             | 0         |
+| Sprint 2 | HU-01, HU-02  | 11        |
+| Sprint 3 | HU-03         | 13        |
+
+> Sprint 1 solo completa HTs habilitadoras. Las HUs no se pueden cerrar hasta que sus HTs dependientes esten verificadas.
+
+---
+
+## Estimaciones Scrum Poker — Historias de Usuario
+
+> Escala Fibonacci utilizada: 1, 2, 3, 5, 8, 13.  
+> Criterios transversales aplicados: complejidad tecnica, incertidumbre/riesgo funcional, dependencias entre HTs habilitadoras y esfuerzo de pruebas de aceptacion.  
+> Principio: la estimacion de cada HU mide valor funcional observable, no la suma del esfuerzo tecnico de sus HTs. Una HU no se considera terminada hasta que todas sus HTs esten completas y verificadas.
+
+| HU    | Titulo                                     | Puntos | Criterio principal                                                                                                                                                                                                                   |
+| ----- | ------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| HU-01 | Registro de paciente con nivel de urgencia | **3**  | Una sola HT habilitadora, reglas de negocio simples, criterios de aceptacion verificables directamente en UI y API. Sin integracion asincrona.                                                                                       |
+| HU-02 | Visualizacion en tiempo real de posicion   | **8**  | Dos HTs con dependencia secuencial. La complejidad sube por el canal WebSocket y la resiliencia ante desconexion, pero el valor de negocio es acotado y los criterios son observables.                                               |
+| HU-03 | Notificacion de asignacion al paciente     | **13** | Tres HTs en el camino critico. Integra motor de asignacion, publicacion confiable de evento y notificacion auditable. Maxima complejidad de integracion, riesgo funcional alto y latencia extremo a extremo como condicion de exito. |
+
+**Total de puntos HU:** 24
+
+---
+
+## Matriz de Dependencia HU → HT
+
+> Este cuadro muestra que HTs deben completarse para habilitar cada HU y el peso total de esfuerzo tecnico que cada historia arrastra.
+
+| HU    | Titulo                                     | HTs habilitadoras   | Puntos HTs | Puntos HU |
+| ----- | ------------------------------------------ | ------------------- | ---------- | --------- |
+| HU-01 | Registro de paciente con nivel de urgencia | HT-01               | 3          | **3**     |
+| HU-02 | Visualizacion en tiempo real de posicion   | HT-02, HT-03        | 13         | **8**     |
+| HU-03 | Notificacion de asignacion al paciente     | HT-04, HT-05, HT-06 | 29         | **13**    |
+
+### Impacto en la planificacion del sprint
+
+| Sprint   | HUs entregables | HTs incluidas       | Puntos HT | Puntos HU |
+| -------- | --------------- | ------------------- | --------- | --------- |
+| Sprint 1 | —               | HT-01, HT-02, HT-03 | 16        | 0         |
+| Sprint 2 | HU-01, HU-02    | HT-04, HT-05, HT-06 | 29        | 11        |
+| Sprint 3 | HU-03           | —                   | 0         | 13        |
+
+> Las HUs solo pueden cerrarse una vez que todas sus HTs habilitadoras esten completas y verificadas. Sprint 1 entrega exclusivamente capacidad tecnica. Sprint 2 entrega las primeras HUs habilitadas por Sprint 1 y adelanta las HTs del camino critico. Sprint 3 cierra HU-03 una vez verificado el flujo extremo a extremo.
+
 ---
