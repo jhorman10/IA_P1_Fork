@@ -456,3 +456,30 @@ Criterios de aceptacion:
 - El tiempo extremo a extremo cumple el objetivo de 2 segundos en condiciones normales.
 
 ---
+
+## Estimaciones Scrum Poker — Historias Tecnicas
+
+> Escala Fibonacci utilizada: 1, 2, 3, 5, 8, 13.  
+> Criterios transversales aplicados: complejidad tecnica, incertidumbre/riesgo funcional, dependencias entre componentes y esfuerzo de pruebas.
+
+| HT    | Titulo                                            | Puntos | Criterio principal                                                                                                                    |
+| ----- | ------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| HT-01 | Persistencia y validacion de urgencia             | **3**  | Baja complejidad. Reglas claras, pocas dependencias. Pruebas de validacion de campo y estado inicial directas.                        |
+| HT-02 | Proyeccion de cola consultable                    | **5**  | Complejidad media. Requiere ordenamiento por prioridad + FIFO, manejo de estado consistente y pruebas de consultas.                   |
+| HT-03 | Canal en tiempo real con reconexion               | **8**  | Complejidad alta. Manejo de WebSocket, reconexion automatica, sincronizacion de ultimo estado conocido y pruebas de resiliencia.      |
+| HT-04 | Motor de asignacion por urgencia y disponibilidad | **8**  | Logica critica de negocio. Multiples reglas de decision, riesgo de regresion funcional y cobertura de escenarios borde.               |
+| HT-05 | Publicacion confiable de evento de asignacion     | **13** | Mayor complejidad del feature. Confiabilidad de entrega (al menos una vez), reintentos, DLQ, idempotencia y observabilidad operativa. |
+| HT-06 | Notificacion visible y auditable al paciente      | **8**  | Integracion de consumo de evento + actualizacion UI + registro de auditoria + cumplimiento de latencia extremo a extremo (<2s).       |
+
+**Total de puntos:** 45
+
+### Propuesta de distribucion por sprint
+
+| Sprint   | HTs incluidas       | Puntos |
+| -------- | ------------------- | ------ |
+| Sprint 1 | HT-01, HT-02, HT-03 | 16     |
+| Sprint 2 | HT-04, HT-05, HT-06 | 29     |
+
+> Nota: la distribucion asume una velocidad de equipo de entre 16 y 30 puntos por sprint. Ajustar segun capacidad historica del equipo.
+
+---
