@@ -509,25 +509,3 @@ Criterios de aceptacion:
 **Total de puntos HU:** 24
 
 ---
-
-## Matriz de Dependencia HU → HT
-
-> Este cuadro muestra que HTs deben completarse para habilitar cada HU y el peso total de esfuerzo tecnico que cada historia arrastra.
-
-| HU    | Titulo                                     | HTs habilitadoras   | Puntos HTs | Puntos HU |
-| ----- | ------------------------------------------ | ------------------- | ---------- | --------- |
-| HU-01 | Registro de paciente con nivel de urgencia | HT-01               | 3          | **3**     |
-| HU-02 | Visualizacion en tiempo real de posicion   | HT-02, HT-03        | 13         | **8**     |
-| HU-03 | Notificacion de asignacion al paciente     | HT-04, HT-05, HT-06 | 29         | **13**    |
-
-### Impacto en la planificacion del sprint
-
-| Sprint   | HUs entregables | HTs incluidas       | Puntos HT | Puntos HU |
-| -------- | --------------- | ------------------- | --------- | --------- |
-| Sprint 1 | —               | HT-01, HT-02, HT-03 | 16        | 0         |
-| Sprint 2 | HU-01, HU-02    | HT-04, HT-05, HT-06 | 29        | 11        |
-| Sprint 3 | HU-03           | —                   | 0         | 13        |
-
-> Las HUs solo pueden cerrarse una vez que todas sus HTs habilitadoras esten completas y verificadas. Sprint 1 entrega exclusivamente capacidad tecnica. Sprint 2 entrega las primeras HUs habilitadas por Sprint 1 y adelanta las HTs del camino critico. Sprint 3 cierra HU-03 una vez verificado el flujo extremo a extremo.
-
----
