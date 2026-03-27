@@ -509,3 +509,55 @@ Criterios de aceptacion:
 **Total de puntos HU:** 24
 
 ---
+
+## Matriz de Dependencia HU → HT
+
+> Construida a partir de los criterios de aceptacion de las HUs, las HTs habilitadoras, las dependencias tecnicas entre HTs y los componentes del sistema (Scheduler, RabbitMQ, WebSocket, MongoDB, Frontend).
+
+### Dependencias entre HTs
+
+Antes de leer la matriz HU → HT es necesario entender que las propias HTs tienen orden interno de ejecucion:
+
+| HT    | Depende de   | Razon de la dependencia                                                                                 |
+| ----- | ------------ | ------------------------------------------------------------------------------------------------------- |
+| HT-01 | —            | No tiene dependencias. Es la base del modelo de datos.                                                  |
+| HT-02 | HT-01        | La proyeccion de cola requiere turnos con urgencia ya persistidos.                                      |
+| HT-03 | HT-02        | El canal WebSocket solo es util si ya existe una consulta de cola que publicar.                         |
+| HT-04 | HT-01        | El motor de asignacion consume turnos con urgencia validada y estado `waiting`.                         |
+| HT-05 | HT-04        | Solo se publica `AppointmentAssigned` cuando existe una asignacion valida del motor.                    |
+| HT-06 | HT-05, HT-03 | Consume el evento publicado por HT-05 y necesita el canal WebSocket de HT-03 para notificar al cliente. |
+
+### Matriz HU → HT con detalle tecnico
+
+| HU    | Criterio de aceptacion clave                                                        | HT habilitadora | Componente tecnico                                     | Puntos HT | Dependencia interna de la HT | Puntos HU |
+| ----- | ----------------------------------------------------------------------------------- | --------------- | ------------------------------------------------------ | --------- | ---------------------------- | --------- |
+| HU-01 | Urgencia obligatoria (Alta/Media/Baja), timestamp UTC, estado inicial `waiting`     | HT-01           | Modelo MongoDB + validacion API                        | 3         | Sin dependencias             | **3**     |
+| HU-02 | Posicion en cola visible, actualizacion sin recarga, ultimo dato ante desconexion   | HT-02           | Consulta MongoDB ordenada por urgencia + FIFO          | 5         | HT-01 completa               | **8**     |
+|       |                                                                                     | HT-03           | WebSocket resiliente + logica de reconexion en cliente | 8         | HT-02 completa               |           |
+| HU-03 | Asignacion solo a medico `available`, prioridad Alta>Media>Baja + FIFO              | HT-04           | Scheduler + repositorio de Doctor con estado           | 8         | HT-01 completa               | **13**    |
+|       | Evento `AppointmentAssigned` publicado con entrega garantizada (at-least-once, DLQ) | HT-05           | RabbitMQ Producer + politica de reintentos + DLQ       | 13        | HT-04 completa               |           |
+|       | Notificacion en <2s con medico, consultorio y hora; registro auditable              | HT-06           | Consumer + WebSocket + log de auditoria                | 8         | HT-05 + HT-03 completas      |           |
+
+### Camino critico
+
+```
+HT-01 → HT-04 → HT-05 → HT-06
+         ↑                  ↑
+HT-01 → HT-02 → HT-03 ────┘
+```
+
+- **Ruta A (funcionalidad de asignacion):** HT-01 → HT-04 → HT-05 → HT-06
+- **Ruta B (visualizacion en tiempo real):** HT-01 → HT-02 → HT-03
+- **Convergencia:** HT-06 depende de ambas rutas. No puede cerrarse HU-03 sin que las dos rutas esten completas.
+
+### Resumen consolidado por sprint
+
+| Sprint   | HTs entregadas                     | HUs desbloqueadas | Puntos HT | Puntos HU |
+| -------- | ---------------------------------- | ----------------- | --------- | --------- |
+| Sprint 1 | HT-01, HT-02, HT-03                | —                 | 16        | 0         |
+| Sprint 2 | HT-04, HT-05, HT-06 + HU-01, HU-02 | HU-01, HU-02      | 29        | 11        |
+| Sprint 3 | — (verificacion E2E)               | HU-03             | 0         | 13        |
+
+> HU-01 y HU-02 se pueden verificar en Sprint 2 porque sus HTs habilitadoras (HT-01, HT-02, HT-03) quedan listas en Sprint 1. HU-03 cierra en Sprint 3 una vez validado el flujo extremo a extremo con latencia <2s.
+
+---
