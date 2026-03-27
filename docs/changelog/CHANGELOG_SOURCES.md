@@ -8,7 +8,7 @@
 ---
 
 > Este archivo es una bitácora de investigación que contrasta críticamente las fuentes y arquitecturas propuestas por la IA frente a la documentación oficial investigada por el humano.  
-> El formato de versionado sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/).
+> El formato de versionado sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ---
 
