@@ -116,7 +116,7 @@ export default function CompletedHistoryDashboard() {
         </h2>
         {waitingAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
-            {waitingAppointments.map((t) => (
+            {waitingAppointments.map((t, idx) => (
               <WaitingAppointmentCard
                 key={t.id}
                 appointment={t}
@@ -146,6 +146,8 @@ export default function CompletedHistoryDashboard() {
                 appointment={t}
                 timeIcon="⏰"
               />
+                queuePosition={idx + 1}
+                total={waitingAppointments.length}
             ))}
           </ul>
         ) : isConnecting ? (

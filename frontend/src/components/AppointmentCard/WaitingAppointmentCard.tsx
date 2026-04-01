@@ -1,3 +1,4 @@
+import { QueuePositionBadge } from "@/components/QueuePositionBadge/QueuePositionBadge";
 import { Appointment } from "@/domain/Appointment";
 import styles from "@/styles/page.module.css";
 
@@ -13,6 +14,8 @@ import styles from "@/styles/page.module.css";
 export interface WaitingAppointmentCardProps {
   appointment: Appointment;
   timeIcon?: string; // Optional icon override (default: "📝")
+  queuePosition?: number; // SPEC-003: posición en la cola (1-based)
+  total?: number; // SPEC-003: total de turnos en espera
 }
 
 // Helper functions (used only in this component)
@@ -32,6 +35,8 @@ export function WaitingAppointmentCard({
   appointment,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _timeIcon = "📝",
+  queuePosition,
+  total,
 }: WaitingAppointmentCardProps) {
   return (
     <li className={`${styles.appointmentCard} ${styles.waiting}`}>
@@ -43,6 +48,12 @@ export function WaitingAppointmentCard({
           <span className={styles.label}>Consultorio:</span>
           <span className={styles.officeBadge}>Pendiente</span>
         </div>
+        {queuePosition !== undefined && total !== undefined && (
+          <div className={styles.infoRow}>
+            <span className={styles.label}>Cola:</span>
+            <QueuePositionBadge position={queuePosition} total={total} />
+          </div>
+        )}
         <div className={styles.infoRow}>
           <span className={styles.label}>Prioridad:</span>
           <span
