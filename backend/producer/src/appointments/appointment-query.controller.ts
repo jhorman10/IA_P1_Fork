@@ -1,8 +1,10 @@
 import { Controller, Get, Inject, Param, ParseIntPipe } from "@nestjs/common";
-import { ApiOperation, ApiParam,ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
+import { GetQueuePositionUseCase } from "../domain/ports/inbound/get-queue-position.use-case";
 import { QueryAppointmentsUseCase } from "../domain/ports/inbound/query-appointments.use-case";
 import { AppointmentResponseDto } from "../dto/appointment-response.dto";
+import { QueuePositionResponseDto } from "../dto/queue-position-response.dto";
 import { AppointmentMapper } from "../mappers/appointment.mapper";
 
 @ApiTags("Appointments")
@@ -11,6 +13,8 @@ export class AppointmentQueryController {
   constructor(
     @Inject("QueryAppointmentsUseCase")
     private readonly queryAppointmentsUseCase: QueryAppointmentsUseCase,
+    @Inject("GetQueuePositionUseCase")
+    private readonly getQueuePositionUseCase: GetQueuePositionUseCase,
   ) {}
 
   @Get()
@@ -28,6 +32,30 @@ export class AppointmentQueryController {
   async getAllAppointments(): Promise<AppointmentResponseDto[]> {
     const events = await this.queryAppointmentsUseCase.findAll();
     return AppointmentMapper.toResponseDtoList(events);
+  }
+
+  // SPEC-003: Must be declared before /:idCard to avoid route shadowing
+  @Get("queue-position/:idCard")
+  @ApiOperation({
+    summary: "Obtener posición en cola de un paciente",
+    description:
+      "Calcula la posición ordinal (1-based) del paciente en la cola de espera, " +
+      "ordenada por prioridad (Alta > Media > Baja) y FIFO.",
+  })
+  @ApiParam({
+    name: "idCard",
+    description: "Cédula del paciente",
+    example: 123456789,
+  })
+  @ApiResponse({
+    status: 200,
+    description: "Posición en cola",
+    type: QueuePositionResponseDto,
+  })
+  async getQueuePosition(
+    @Param("idCard", ParseIntPipe) idCard: number,
+  ): Promise<QueuePositionResponseDto> {
+    return this.getQueuePositionUseCase.execute(idCard);
   }
 
   @Get(":idCard")
