@@ -8,6 +8,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { CreateAppointmentUseCaseImpl } from "./application/use-cases/create-appointment.use-case.impl";
 import { AppointmentModule } from "./appointments/appointment.module";
 import { AppointmentQueryController } from "./appointments/appointment-query.controller";
+import { DoctorModule } from "./doctors/doctor.module";
 import { EventsModule } from "./events/events.module";
 import { HealthController } from "./health.controller";
 import { RabbitMQPublisherAdapter } from "./infrastructure/adapters/outbound/rabbitmq-publisher.adapter";
@@ -55,6 +56,7 @@ import { ProducerController } from "./producer.controller";
       },
     ]),
     AppointmentModule,
+    DoctorModule,
     EventsModule,
     // 🛡️ HUMAN CHECK - Proteccion contra ataques de fuerza bruta y DoS
     // H-14 Fix: Relaxed limits (100 req/min) and ConfigService integration

@@ -42,6 +42,14 @@ export class Appointment {
   // ⚕️ HUMAN CHECK - Timestamp de finalización
   @Prop({ type: Number, default: null })
   completedAt!: number | null;
+
+  // SPEC-003: Médico asignado — nullable para turnos en espera o migrados
+  @Prop({ type: String, default: null })
+  doctorId!: string | null;
+
+  // SPEC-003: Nombre desnormalizado para consultas rápidas sin lookup
+  @Prop({ type: String, default: null, maxlength: 100 })
+  doctorName!: string | null;
 }
 
 export const AppointmentSchema = SchemaFactory.createForClass(Appointment);

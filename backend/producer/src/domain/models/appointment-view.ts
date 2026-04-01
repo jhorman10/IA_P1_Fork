@@ -7,4 +7,7 @@ export interface AppointmentView {
   priority: "high" | "medium" | "low";
   timestamp: number;
   completedAt?: number;
+  // SPEC-003: médico asignado — null para turnos en espera o migrados
+  doctorId: string | null;
+  doctorName: string | null;
 }

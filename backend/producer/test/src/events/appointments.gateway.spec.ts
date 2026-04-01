@@ -139,6 +139,8 @@ describe("AppointmentsGateway", () => {
       office: "1",
       priority: "high" as const,
       timestamp: Date.now(),
+      doctorId: null,
+      doctorName: null,
     };
 
     gateway.broadcastAppointmentUpdated(appointmentPayload);
@@ -158,6 +160,8 @@ describe("AppointmentsGateway", () => {
       office: null,
       priority: "low" as const,
       timestamp: 1000,
+      doctorId: null,
+      doctorName: null,
     };
 
     gateway.broadcastAppointmentUpdated(appointmentPayload);
@@ -178,6 +182,8 @@ describe("AppointmentsGateway", () => {
       office: null,
       priority: "medium" as const,
       timestamp: 2000,
+      doctorId: null,
+      doctorName: null,
     };
 
     expect(() =>

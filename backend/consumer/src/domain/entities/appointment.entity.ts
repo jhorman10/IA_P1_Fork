@@ -23,6 +23,9 @@ export class Appointment {
     public timestamp: number = Date.now(),
     public completedAt?: number,
     public readonly id: string = randomUUID(), // 🎯 DOMAIN GENERATED IDENTITY
+    // SPEC-003: médico asignado — null para turnos en espera o migrados
+    public doctorId: string | null = null,
+    public doctorName: string | null = null,
   ) {}
 
   public recordEvent(event: DomainEvent): void {
@@ -47,6 +50,29 @@ export class Appointment {
     }
     this.status = "called";
     this.office = office;
+    this.completedAt = now + durationSeconds * 1000;
+  }
+
+  /**
+   * SPEC-003: Asigna un médico real al turno.
+   * Persiste doctorId, doctorName y office del médico.
+   */
+  public assignDoctor(
+    doctorId: string,
+    doctorName: string,
+    office: string,
+    durationSeconds: number,
+    now: number,
+  ): void {
+    if (this.status !== "waiting") {
+      throw new ValidationError(
+        `Cannot assign doctor to appointment in ${this.status} status`,
+      );
+    }
+    this.status = "called";
+    this.office = office;
+    this.doctorId = doctorId;
+    this.doctorName = doctorName;
     this.completedAt = now + durationSeconds * 1000;
   }
 

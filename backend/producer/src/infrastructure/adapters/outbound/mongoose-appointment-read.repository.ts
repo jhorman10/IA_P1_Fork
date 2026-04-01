@@ -73,6 +73,9 @@ export class MongooseAppointmentReadRepository implements AppointmentReadReposit
       priority: doc.priority,
       timestamp: doc.timestamp,
       completedAt: doc.completedAt ?? undefined,
+      // SPEC-003: médico asignado
+      doctorId: doc.doctorId ?? null,
+      doctorName: doc.doctorName ?? null,
     };
   }
 }

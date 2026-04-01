@@ -13,4 +13,7 @@ export interface PersistenceAppointmentData {
   timestamp: number;
   completedAt?: number;
   domainId: string;
+  // SPEC-003: médico asignado
+  doctorId?: string | null;
+  doctorName?: string | null;
 }

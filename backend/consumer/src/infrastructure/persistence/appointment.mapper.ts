@@ -28,6 +28,8 @@ export class AppointmentMapper {
       doc.timestamp,
       doc.completedAt ?? undefined,
       doc.domainId, // Garantiza que el id de dominio es persistente
+      doc.doctorId ?? null, // SPEC-003
+      doc.doctorName ?? null, // SPEC-003
     );
   }
 
@@ -44,6 +46,9 @@ export class AppointmentMapper {
       completedAt: entity.completedAt,
       timestamp: entity.timestamp,
       domainId: entity.id,
+      // SPEC-003: médico asignado
+      doctorId: entity.doctorId,
+      doctorName: entity.doctorName,
     };
   }
 }

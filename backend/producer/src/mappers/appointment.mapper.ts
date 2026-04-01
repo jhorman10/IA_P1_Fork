@@ -12,6 +12,8 @@ export class AppointmentMapper {
       priority: event.priority,
       timestamp: event.timestamp,
       completedAt: event.completedAt,
+      doctorId: event.doctorId,
+      doctorName: event.doctorName,
     };
   }
 

@@ -21,6 +21,8 @@ describe("QueryAppointmentsUseCaseImpl", () => {
       status: "called",
       priority: "medium",
       timestamp: Date.now(),
+      doctorId: "doc-1",
+      doctorName: "Dr. John",
     },
     {
       id: "def-456",
@@ -30,6 +32,8 @@ describe("QueryAppointmentsUseCaseImpl", () => {
       status: "waiting",
       priority: "high",
       timestamp: Date.now(),
+      doctorId: null,
+      doctorName: null,
     },
   ];
 
@@ -37,6 +41,8 @@ describe("QueryAppointmentsUseCaseImpl", () => {
     mockRepo = {
       findAll: jest.fn(),
       findByIdCard: jest.fn(),
+      findWaiting: jest.fn(),
+      findActiveByIdCard: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
