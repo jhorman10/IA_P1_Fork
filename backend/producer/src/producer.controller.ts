@@ -1,5 +1,5 @@
 import { Body, Controller, HttpCode, Inject, Post } from "@nestjs/common";
-import { ApiBody,ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { CreateAppointmentUseCase } from "./domain/ports/inbound/create-appointment.use-case";
 import { QueryAppointmentsUseCase } from "./domain/ports/inbound/query-appointments.use-case";
@@ -49,7 +49,7 @@ export class ProducerController {
     const command = {
       idCard: dto.idCard,
       fullName: dto.fullName,
-      priority: dto.priority ?? "medium",
+      priority: dto.priority,
     };
 
     // 2. Execute Use Case (Business Logic)

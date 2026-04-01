@@ -8,6 +8,7 @@ import { LoggerPort } from "../../domain/ports/outbound/logger.port";
 import { FullName } from "../../domain/value-objects/full-name.value-object";
 import { IdCard } from "../../domain/value-objects/id-card.value-object";
 import { Priority } from "../../domain/value-objects/priority.value-object";
+import { DuplicateActiveAppointmentError } from "../../domain/errors/duplicate-active-appointment.error";
 import { RegisterAppointmentCommand } from "../../domain/commands/register-appointment.command";
 
 /**
@@ -32,15 +33,15 @@ export class RegisterAppointmentUseCaseImpl implements RegisterAppointmentUseCas
       "RegisterAppointmentUseCase",
     );
 
-    // 2. Idempotency Check (Domain Rule)
+    // 2. Duplicate-active guard (Domain Rule — SPEC-003)
     const existing =
       await this.appointmentRepository.findByIdCardAndActive(idCardVo);
     if (existing) {
       this.logger.warn(
-        `Patient ${idCardVo.toValue()} already has an active appointment. Reusing existing.`,
+        `Patient ${idCardVo.toValue()} already has an active appointment. Rejecting duplicate.`,
         "RegisterAppointmentUseCase",
       );
-      return existing;
+      throw new DuplicateActiveAppointmentError(idCardVo.toValue());
     }
 
     // 3. Domain Factory (Centralized Business Policies)

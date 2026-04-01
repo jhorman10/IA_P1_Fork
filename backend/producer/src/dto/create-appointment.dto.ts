@@ -1,9 +1,8 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 import {
   IsIn,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsPositive,
   IsString,
   Max,
@@ -30,16 +29,15 @@ export class CreateAppointmentDto {
   @IsString({ message: "El nombre debe ser texto" })
   fullName!: string;
 
-  @ApiPropertyOptional({
-    description: "Appointment priority",
+  @ApiProperty({
+    description: "Appointment priority (obligatorio)",
     example: "medium",
     enum: ["high", "medium", "low"],
-    default: "medium",
   })
-  @IsOptional()
+  @IsNotEmpty({ message: "La prioridad es obligatoria" })
   @IsString()
   @IsIn(["high", "medium", "low"], {
     message: "La prioridad debe ser alta, media o baja",
   })
-  priority?: AppointmentPriority;
+  priority!: AppointmentPriority;
 }

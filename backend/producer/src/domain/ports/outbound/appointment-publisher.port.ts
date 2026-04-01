@@ -1,7 +1,7 @@
 export interface PublishAppointmentCommand {
   idCard: number;
   fullName: string;
-  priority?: "high" | "medium" | "low";
+  priority: "high" | "medium" | "low";
 }
 
 export interface AppointmentPublisherPort {

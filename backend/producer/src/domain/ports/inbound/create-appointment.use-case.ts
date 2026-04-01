@@ -5,6 +5,7 @@
 export interface CreateAppointmentCommand {
   idCard: number;
   fullName: string;
+  priority: "high" | "medium" | "low";
 }
 
 /**

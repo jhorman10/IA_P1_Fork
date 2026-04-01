@@ -70,6 +70,7 @@ describe("ProducerController (Integration Tests)", () => {
       const createAppointmentDto = {
         idCard: 123456789,
         fullName: "John Doe",
+        priority: "medium",
       };
 
       // ⚕️ HUMAN CHECK - SRP: El Caso de Uso retorna void (Patrón Command).
@@ -87,7 +88,6 @@ describe("ProducerController (Integration Tests)", () => {
       });
 
       // Verify mapping: DTO -> Command
-      // HUMAN CHECK: Controller adds default priority if not provided
       expect(createAppointmentUseCase.execute).toHaveBeenCalledWith({
         idCard: 123456789,
         fullName: "John Doe",
@@ -113,6 +113,7 @@ describe("ProducerController (Integration Tests)", () => {
     it("should return 400 if fullName is missing", async () => {
       const invalidPayload = {
         idCard: 123456789,
+        priority: "medium",
       };
 
       const response = await request(app.getHttpServer())
@@ -129,6 +130,7 @@ describe("ProducerController (Integration Tests)", () => {
       const invalidPayload = {
         idCard: "invalid-text",
         fullName: "John Doe",
+        priority: "medium",
       };
 
       const response = await request(app.getHttpServer())
@@ -137,6 +139,25 @@ describe("ProducerController (Integration Tests)", () => {
         .expect(400);
 
       expect(response.body.error).toBe("Bad Request");
+    });
+
+    it("should return 400 if priority is missing", async () => {
+      const invalidPayload = {
+        idCard: 123456789,
+        fullName: "John Doe",
+      };
+
+      const response = await request(app.getHttpServer())
+        .post("/appointments")
+        .send(invalidPayload)
+        .expect(400);
+
+      expect(response.body.message).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining("prioridad es obligatoria"),
+        ]),
+      );
+      expect(createAppointmentUseCase.execute).not.toHaveBeenCalled();
     });
 
     it("should forward provided priority without overriding it", async () => {

@@ -44,6 +44,12 @@ export class MongooseAppointmentReadRepository implements AppointmentReadReposit
     return docs.map((doc) => this.toPayload(doc));
   }
 
+  async findActiveByIdCard(idCard: number): Promise<AppointmentView | null> {
+    const doc = await this.appointmentModel
+      .findOne({ idCard, status: { $in: ["waiting", "called"] } })
+      .exec();
+    return doc ? this.toPayload(doc) : null;
+
   /**
    * Maps a Mongoose document to the standardized event payload DTO.
    * SRP: Mapping responsibility isolated here, not in the service.

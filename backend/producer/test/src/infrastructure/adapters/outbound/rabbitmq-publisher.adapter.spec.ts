@@ -34,6 +34,7 @@ describe("RabbitMQPublisherAdapter", () => {
     const dto: CreateAppointmentDto = {
       fullName: "John Doe",
       idCard: 12345678,
+      priority: "medium",
     };
 
     await adapter.publishAppointmentCreated(dto);
@@ -48,6 +49,7 @@ describe("RabbitMQPublisherAdapter", () => {
     const dto: CreateAppointmentDto = {
       fullName: "Jane Smith",
       idCard: 87654321,
+      priority: "medium",
     };
 
     await adapter.publishAppointmentCreated(dto);
@@ -60,6 +62,7 @@ describe("RabbitMQPublisherAdapter", () => {
     const dto: CreateAppointmentDto = {
       fullName: "John Doe",
       idCard: 12345678,
+      priority: "medium",
     };
 
     await adapter.publishAppointmentCreated(dto);
@@ -80,6 +83,7 @@ describe("RabbitMQPublisherAdapter", () => {
     const dto: CreateAppointmentDto = {
       fullName: "John Doe",
       idCard: 12345678,
+      priority: "medium",
     };
 
     await expect(adapter.publishAppointmentCreated(dto)).rejects.toThrow(
@@ -95,6 +99,7 @@ describe("RabbitMQPublisherAdapter", () => {
     const dto: CreateAppointmentDto = {
       fullName: "John Doe",
       idCard: 12345678,
+      priority: "medium",
     };
 
     await expect(adapter.publishAppointmentCreated(dto)).rejects.toBe(
@@ -106,6 +111,7 @@ describe("RabbitMQPublisherAdapter", () => {
     const dto: CreateAppointmentDto = {
       fullName: "John Doe",
       idCard: 12345678,
+      priority: "medium",
     };
 
     await adapter.publishAppointmentCreated(dto);
@@ -117,10 +123,12 @@ describe("RabbitMQPublisherAdapter", () => {
     const dto1: CreateAppointmentDto = {
       fullName: "John Doe",
       idCard: 12345678,
+      priority: "medium",
     };
     const dto2: CreateAppointmentDto = {
       fullName: "Jane Smith",
       idCard: 87654321,
+      priority: "medium",
     };
 
     await adapter.publishAppointmentCreated(dto1);
