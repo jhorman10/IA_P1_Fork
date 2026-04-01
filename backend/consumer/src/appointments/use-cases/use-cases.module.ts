@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ConsultationPolicy } from "src/domain/policies/consultation.policy";
 
 import { AssignDoctorUseCaseImpl } from "../../application/use-cases/assign-doctor.use-case.impl";
@@ -30,16 +30,17 @@ import { RepositoriesModule } from "../repositories/repositories.module";
  * @dependencies
  *   - RepositoriesModule: Provides AppointmentRepository, LockRepository
  *   - PoliciesModule: Provides ConsultationPolicy for business rule enforcement
+ *   - ConfigService: Parametrizes TOTAL_OFFICES from environment
  *
  * @relatedPatterns UseCase, Command, Application Service, Orchestrator
  * @seeAlso ADR-001 (Hexagonal Architecture), SOLID (SRP, DIP)
  */
 @Module({
   imports: [
-    ConfigModule,
+    ConfigModule, // ⚕️ HUMAN CHECK - TOTAL_OFFICES parametrization
     RepositoriesModule,
     PoliciesModule,
-    InfrastructureModule,
+    InfrastructureModule, // provides LoggerPort, ClockPort, NotificationPort, DomainEventBus
   ],
   providers: [
     {
@@ -56,14 +57,16 @@ import { RepositoriesModule } from "../repositories/repositories.module";
         "LoggerPort",
         "ClockPort",
         "DoctorRepository",
+        "AuditPort",
       ],
-      useFactory: (repo, notification, logger, clock, doctorRepo) =>
+      useFactory: (repo, notification, logger, clock, doctorRepo, auditPort) =>
         new CompleteExpiredAppointmentsUseCaseImpl(
           repo,
           notification,
           logger,
           clock,
           doctorRepo,
+          auditPort,
         ),
     },
     {
@@ -71,6 +74,7 @@ import { RepositoriesModule } from "../repositories/repositories.module";
       inject: [
         "AppointmentRepository",
         "DoctorRepository",
+        "AuditPort",
         "LoggerPort",
         "ClockPort",
         ConsultationPolicy,
@@ -78,6 +82,7 @@ import { RepositoriesModule } from "../repositories/repositories.module";
       useFactory: (
         repo,
         doctorRepo,
+        auditPort,
         logger,
         clock,
         policy: ConsultationPolicy,
@@ -85,6 +90,7 @@ import { RepositoriesModule } from "../repositories/repositories.module";
         new AssignDoctorUseCaseImpl(
           repo,
           doctorRepo,
+          auditPort,
           logger,
           clock,
           policy,

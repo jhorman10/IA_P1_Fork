@@ -2,6 +2,7 @@ import { AppointmentAssignedEvent } from "../../domain/events/appointment-assign
 import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 import { AssignAvailableOfficesUseCase } from "../../domain/ports/inbound/assign-available-offices.use-case";
 import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
+import { AuditPort } from "../../domain/ports/outbound/audit.port";
 import { ClockPort } from "../../domain/ports/outbound/clock.port";
 import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
 import { LoggerPort } from "../../domain/ports/outbound/logger.port";
@@ -13,12 +14,14 @@ import { LoggerPort } from "../../domain/ports/outbound/logger.port";
  * Invariants:
  * - Only doctors with status=available receive patients.
  * - After assignment, doctor transitions to busy.
+ * - Each assignment is recorded in the audit log.
  * - Waiting queue is sorted: priority (high→low) then FIFO timestamp.
  */
 export class AssignDoctorUseCaseImpl implements AssignAvailableOfficesUseCase {
   constructor(
     private readonly appointmentRepository: AppointmentRepository,
     private readonly doctorRepository: DoctorRepository,
+    private readonly auditPort: AuditPort,
     private readonly logger: LoggerPort,
     private readonly clock: ClockPort,
     private readonly consultationPolicy: ConsultationPolicy,
@@ -58,6 +61,7 @@ export class AssignDoctorUseCaseImpl implements AssignAvailableOfficesUseCase {
       return;
     }
 
+    // Sort: priority weight ASC (high=1 < medium=2 < low=3), then FIFO
     waiting = waiting.sort((a, b) => {
       const priorityDiff =
         a.priority.getNumericWeight() - b.priority.getNumericWeight();
@@ -74,6 +78,12 @@ export class AssignDoctorUseCaseImpl implements AssignAvailableOfficesUseCase {
       "AssignDoctorUseCase",
     );
 
+    // Compute queue positions before assignment for audit context
+    const queuePositionMap = new Map<string, number>();
+    waiting.forEach((appt, index) => {
+      queuePositionMap.set(appt.id, index + 1);
+    });
+
     for (let i = 0; i < possibleAssignments; i++) {
       const appointment = waiting[i];
       const doctor = availableDoctors[i];
@@ -87,6 +97,7 @@ export class AssignDoctorUseCaseImpl implements AssignAvailableOfficesUseCase {
         "AssignDoctorUseCase",
       );
 
+      // Domain: assign doctor info + transition to called
       appointment.assignDoctor(
         doctor.id,
         doctor.name,
@@ -96,10 +107,28 @@ export class AssignDoctorUseCaseImpl implements AssignAvailableOfficesUseCase {
       );
       appointment.recordEvent(new AppointmentAssignedEvent(appointment));
 
+      // Persist appointment
       await this.appointmentRepository.save(appointment);
 
+      // Persist doctor status change: available → busy
       doctor.markBusy();
       await this.doctorRepository.updateStatus(doctor.id, doctor.status);
+
+      // Audit: APPOINTMENT_ASSIGNED
+      await this.auditPort.log({
+        action: "APPOINTMENT_ASSIGNED",
+        appointmentId: appointment.id,
+        doctorId: doctor.id,
+        details: {
+          patientIdCard: appointment.idCard.toValue(),
+          patientName: appointment.fullName.toValue(),
+          doctorName: doctor.name,
+          office: doctor.office,
+          priority: appointment.priority.toValue(),
+          queuePosition: queuePositionMap.get(appointment.id) ?? undefined,
+        },
+        timestamp: now,
+      });
 
       this.logger.log(
         `Assigned Dr. ${doctor.name} to appointment ${appointment.id}`,

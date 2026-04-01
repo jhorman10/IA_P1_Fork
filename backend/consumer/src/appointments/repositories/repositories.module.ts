@@ -3,12 +3,14 @@ import { getModelToken, MongooseModule } from "@nestjs/mongoose";
 
 import { EventDispatchingAppointmentRepositoryDecorator } from "../../infrastructure/persistence/event-dispatching-appointment-repository.decorator";
 import { MongooseAppointmentRepository } from "../../infrastructure/persistence/mongoose-appointment.repository";
+import { MongooseAuditAdapter } from "../../infrastructure/persistence/mongoose-audit.adapter";
 import { MongooseDoctorRepository } from "../../infrastructure/persistence/mongoose-doctor.repository";
 import { MongooseLockRepository } from "../../infrastructure/persistence/mongoose-lock.repository";
 import {
   Appointment,
   AppointmentSchema,
 } from "../../schemas/appointment.schema";
+import { AuditLog, AuditLogSchema } from "../../schemas/audit-log.schema";
 import { Doctor, DoctorSchema } from "../../schemas/doctor.schema";
 import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 import { InfrastructureModule } from "../infrastructure/infrastructure.module";
@@ -42,11 +44,15 @@ import { PoliciesModule } from "../policies/policies.module";
     MongooseModule.forFeature([
       { name: Appointment.name, schema: AppointmentSchema },
       { name: Doctor.name, schema: DoctorSchema },
+      { name: AuditLog.name, schema: AuditLogSchema },
     ]),
-    PoliciesModule,
-    InfrastructureModule,
+    PoliciesModule, // ⚕️ HUMAN CHECK - Repositories depend on domain policies
+    InfrastructureModule, // provides LoggerPort and DomainEventBus
   ],
   providers: [
+    // ⚕️ HUMAN CHECK - Two-step factory:
+    // 1. Create inner repository (pure Mongoose adapter)
+    // 2. Wrap with event-dispatching decorator (cross-cutting concern)
     {
       provide: "MongooseAppointmentRepository",
       inject: [
@@ -67,11 +73,22 @@ import { PoliciesModule } from "../policies/policies.module";
       provide: "LockRepository",
       useClass: MongooseLockRepository,
     },
+    // SPEC-003: Doctor repository (read + status updates)
     {
       provide: "DoctorRepository",
       useClass: MongooseDoctorRepository,
     },
+    // SPEC-003: Audit log adapter (write-only)
+    {
+      provide: "AuditPort",
+      useClass: MongooseAuditAdapter,
+    },
   ],
-  exports: ["AppointmentRepository", "LockRepository", "DoctorRepository"],
+  exports: [
+    "AppointmentRepository",
+    "LockRepository",
+    "DoctorRepository",
+    "AuditPort",
+  ],
 })
 export class RepositoriesModule {}
