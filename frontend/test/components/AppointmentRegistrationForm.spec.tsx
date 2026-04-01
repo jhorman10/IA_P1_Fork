@@ -80,12 +80,14 @@ describe("AppointmentRegistrationForm", () => {
       const user = userEvent.setup();
       render(<AppointmentRegistrationForm />);
 
+      const prioritySelect = screen.getAllByRole("combobox")[0];
       const idCardInput = screen.getByPlaceholderText(
         "Número de Identificación (6-12 dígitos)",
       );
       const submitButton = screen.getByText("Registrar Ahora");
 
       await user.type(idCardInput, "123456");
+      await user.selectOptions(prioritySelect, "high");
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -105,10 +107,12 @@ describe("AppointmentRegistrationForm", () => {
       const idCardInput = screen.getByPlaceholderText(
         "Número de Identificación (6-12 dígitos)",
       );
+      const prioritySelect = screen.getAllByRole("combobox")[0];
       const submitButton = screen.getByText("Registrar Ahora");
 
       await user.type(fullNameInput, "John Doe");
       await user.type(idCardInput, "123");
+      await user.selectOptions(prioritySelect, "high");
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -140,6 +144,28 @@ describe("AppointmentRegistrationForm", () => {
       expect((idCardInput as HTMLInputElement).value).toBe("1234");
     });
 
+    it("should require priority before allowing submit", async () => {
+      const user = userEvent.setup();
+      render(<AppointmentRegistrationForm />);
+
+      const fullNameInput = screen.getByPlaceholderText("Nombre Completo");
+      const idCardInput = screen.getByPlaceholderText(
+        "Número de Identificación (6-12 dígitos)",
+      );
+      const prioritySelect = screen.getAllByRole("combobox")[0];
+      const submitButton = screen.getByText("Registrar Ahora");
+
+      await user.type(fullNameInput, "John Doe");
+      await user.type(idCardInput, "123456");
+      await user.click(submitButton);
+
+      expect(mockRegister).not.toHaveBeenCalled();
+      expect(prioritySelect).toBeRequired();
+      expect(
+        (prioritySelect.closest("form") as HTMLFormElement).checkValidity(),
+      ).toBe(false);
+    });
+
     it("should show error for ID card longer than 12 digits", async () => {
       const user = userEvent.setup();
       render(<AppointmentRegistrationForm />);
@@ -160,16 +186,20 @@ describe("AppointmentRegistrationForm", () => {
   describe("Form Submission", () => {
     it("should call register with correct data on valid submission", async () => {
       const user = userEvent.setup();
+      mockRegister.mockResolvedValue(true);
+
       render(<AppointmentRegistrationForm />);
 
       const fullNameInput = screen.getByPlaceholderText("Nombre Completo");
       const idCardInput = screen.getByPlaceholderText(
         "Número de Identificación (6-12 dígitos)",
       );
+      const prioritySelect = screen.getAllByRole("combobox")[0];
       const submitButton = screen.getByText("Registrar Ahora");
 
       await user.type(fullNameInput, "Jane Smith");
       await user.type(idCardInput, "987654321");
+      await user.selectOptions(prioritySelect, "medium");
       await user.click(submitButton);
 
       await waitFor(() => {
@@ -178,6 +208,35 @@ describe("AppointmentRegistrationForm", () => {
           idCard: 987654321,
           priority: "medium",
         });
+      });
+    });
+
+    it("should clear the form after a successful registration", async () => {
+      const user = userEvent.setup();
+      mockRegister.mockResolvedValue(true);
+
+      render(<AppointmentRegistrationForm />);
+
+      const fullNameInput = screen.getByPlaceholderText(
+        "Nombre Completo",
+      ) as HTMLInputElement;
+      const idCardInput = screen.getByPlaceholderText(
+        "Número de Identificación (6-12 dígitos)",
+      ) as HTMLInputElement;
+      const prioritySelect = screen.getAllByRole(
+        "combobox",
+      )[0] as HTMLSelectElement;
+      const submitButton = screen.getByText("Registrar Ahora");
+
+      await user.type(fullNameInput, "Jane Smith");
+      await user.type(idCardInput, "987654321");
+      await user.selectOptions(prioritySelect, "medium");
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(fullNameInput.value).toBe("");
+        expect(idCardInput.value).toBe("");
+        expect(prioritySelect.value).toBe("");
       });
     });
 
@@ -233,12 +292,12 @@ describe("AppointmentRegistrationForm", () => {
   });
 
   describe("Form State", () => {
-    it("should default to medium priority", () => {
+    it("should default to empty priority value", () => {
       render(<AppointmentRegistrationForm />);
 
       const selects = screen.getAllByRole("combobox");
       const prioritySelect = selects[0] as HTMLSelectElement;
-      expect(prioritySelect.value).toBe("medium");
+      expect(prioritySelect.value).toBe("");
     });
   });
 

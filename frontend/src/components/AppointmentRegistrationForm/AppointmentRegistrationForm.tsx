@@ -15,7 +15,7 @@ import styles from "./AppointmentRegistrationForm.module.css";
 export default function AppointmentRegistrationForm() {
   const [fullName, setFullName] = useState("");
   const [idCard, setIdCard] = useState("");
-  const [priority, setPriority] = useState<"high" | "medium" | "low">("medium");
+  const [priority, setPriority] = useState<"high" | "medium" | "low" | "">("");
 
   const { register, loading, success, error } = useAppointmentRegistration();
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -41,7 +41,23 @@ export default function AppointmentRegistrationForm() {
     }
 
     const validIdCard = parseInt(safeIdCard, 10);
-    await register({ fullName: safeFullName, idCard: validIdCard, priority });
+
+    if (!priority) {
+      setValidationError("La prioridad es obligatoria.");
+      return;
+    }
+
+    const wasRegistered = await register({
+      fullName: safeFullName,
+      idCard: validIdCard,
+      priority,
+    });
+
+    if (wasRegistered) {
+      setFullName("");
+      setIdCard("");
+      setPriority("");
+    }
   };
 
   return (
@@ -80,11 +96,15 @@ export default function AppointmentRegistrationForm() {
         <select
           value={priority}
           onChange={(e) =>
-            setPriority(e.target.value as "high" | "medium" | "low")
+            setPriority(e.target.value as "high" | "medium" | "low" | "")
           }
           className={styles.input}
           disabled={loading}
+          required
         >
+          <option value="" disabled>
+            Seleccione prioridad
+          </option>
           <option value="low">Prioridad Baja</option>
           <option value="medium">Prioridad Media</option>
           <option value="high">Prioridad Alta</option>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect,useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useDependencies } from "@/context/DependencyContext";
 import { CreateAppointmentDTO } from "@/domain/CreateAppointment";
@@ -56,8 +56,8 @@ export function useAppointmentRegistration() {
     if (isMountedRef.current) setter(value);
   };
 
-  const register = async (data: CreateAppointmentDTO) => {
-    if (inFlightRef.current) return;
+  const register = async (data: CreateAppointmentDTO): Promise<boolean> => {
+    if (inFlightRef.current) return false;
 
     inFlightRef.current = true;
 
@@ -69,6 +69,7 @@ export function useAppointmentRegistration() {
       const res = await repository.createAppointment(data);
 
       safeSet(setSuccess, res.message ?? "Turno registrado exitosamente.");
+      return true;
     } catch (err: unknown) {
       const errorCode = err instanceof Error ? err.message : "UNKNOWN_ERROR";
       // Si el servidor envió un mensaje específico, mostrarlo directamente
@@ -96,6 +97,7 @@ export function useAppointmentRegistration() {
       }
 
       safeSet(setError, userMessage);
+      return false;
     } finally {
       safeSet(setLoading, false);
       inFlightRef.current = false;
