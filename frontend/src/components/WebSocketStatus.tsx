@@ -18,7 +18,11 @@ import styles from "./WebSocketStatus.module.css";
  * <WebSocketStatus status={connected ? 'connected' : 'disconnected'} variant="inline" />
  * ```
  */
-type ConnectionStatus = "connected" | "connecting" | "disconnected";
+type ConnectionStatus =
+  | "connected"
+  | "connecting"
+  | "reconnecting"
+  | "disconnected";
 type BadgeVariant = "inline" | "block";
 
 interface WebSocketStatusProps {
@@ -35,6 +39,12 @@ const StatusConfig = {
   connecting: {
     icon: "🟡",
     label: "Conectando...",
+    className: styles.statusConnecting,
+  },
+  // SPEC-003: explicit reconnecting state (CRITERIO-2.3)
+  reconnecting: {
+    icon: "🟡",
+    label: "Reconectando...",
     className: styles.statusConnecting,
   },
   disconnected: {
