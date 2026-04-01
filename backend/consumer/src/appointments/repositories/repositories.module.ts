@@ -1,13 +1,17 @@
 import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
+import { getModelToken, MongooseModule } from "@nestjs/mongoose";
 
 import { EventDispatchingAppointmentRepositoryDecorator } from "../../infrastructure/persistence/event-dispatching-appointment-repository.decorator";
 import { MongooseAppointmentRepository } from "../../infrastructure/persistence/mongoose-appointment.repository";
+import { MongooseDoctorRepository } from "../../infrastructure/persistence/mongoose-doctor.repository";
 import { MongooseLockRepository } from "../../infrastructure/persistence/mongoose-lock.repository";
 import {
   Appointment,
   AppointmentSchema,
 } from "../../schemas/appointment.schema";
+import { Doctor, DoctorSchema } from "../../schemas/doctor.schema";
+import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
+import { InfrastructureModule } from "../infrastructure/infrastructure.module";
 import { PoliciesModule } from "../policies/policies.module";
 
 /**
@@ -37,18 +41,17 @@ import { PoliciesModule } from "../policies/policies.module";
   imports: [
     MongooseModule.forFeature([
       { name: Appointment.name, schema: AppointmentSchema },
+      { name: Doctor.name, schema: DoctorSchema },
     ]),
-    PoliciesModule, // ⚕️ HUMAN CHECK - Repositories depend on domain policies
+    PoliciesModule,
+    InfrastructureModule,
   ],
   providers: [
-    // ⚕️ HUMAN CHECK - Two-step factory:
-    // 1. Create inner repository (pure Mongoose adapter)
-    // 2. Wrap with event-dispatching decorator (cross-cutting concern)
     {
       provide: "MongooseAppointmentRepository",
       inject: [
-        "default_MongooseModel_Appointment",
-        "ConsultationPolicy",
+        getModelToken(Appointment.name),
+        ConsultationPolicy,
         "LoggerPort",
       ],
       useFactory: (model, policy, logger) =>
@@ -64,7 +67,11 @@ import { PoliciesModule } from "../policies/policies.module";
       provide: "LockRepository",
       useClass: MongooseLockRepository,
     },
+    {
+      provide: "DoctorRepository",
+      useClass: MongooseDoctorRepository,
+    },
   ],
-  exports: ["AppointmentRepository", "LockRepository"],
+  exports: ["AppointmentRepository", "LockRepository", "DoctorRepository"],
 })
 export class RepositoriesModule {}

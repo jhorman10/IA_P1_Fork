@@ -5,9 +5,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "sh -c 'mkdir -p dist; find dist -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null || true; nest build'",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "sh -c 'mkdir -p dist; find dist -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null || true; nest start'",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",

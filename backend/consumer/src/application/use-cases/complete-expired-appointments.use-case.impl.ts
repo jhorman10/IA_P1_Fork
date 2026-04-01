@@ -1,6 +1,7 @@
 import { CompleteExpiredAppointmentsUseCase } from "../../domain/ports/inbound/complete-expired-appointments.use-case";
 import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
 import { ClockPort } from "../../domain/ports/outbound/clock.port";
+import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
 import { LoggerPort } from "../../domain/ports/outbound/logger.port";
 import { NotificationPort } from "../../domain/ports/outbound/notification.port";
 
@@ -10,6 +11,7 @@ export class CompleteExpiredAppointmentsUseCaseImpl implements CompleteExpiredAp
     private readonly notificationPort: NotificationPort,
     private readonly logger: LoggerPort,
     private readonly clock: ClockPort,
+    private readonly doctorRepository: DoctorRepository,
   ) {}
 
   async execute(): Promise<void> {
@@ -17,10 +19,21 @@ export class CompleteExpiredAppointmentsUseCaseImpl implements CompleteExpiredAp
     const expired = await this.appointmentRepository.findExpiredCalled(now);
 
     for (const app of expired) {
+      const doctorId = app.doctorId;
+
       app.complete();
       await this.appointmentRepository.save(app);
       await this.notificationPort.notifyAppointmentUpdated(app);
+
+      if (doctorId) {
+        const doctor = await this.doctorRepository.findById(doctorId);
+        if (doctor) {
+          doctor.markAvailable();
+          await this.doctorRepository.updateStatus(doctor.id, doctor.status);
+        }
+      }
     }
+
     if (expired.length > 0) {
       this.logger.log(
         `Completed ${expired.length} expired appointments`,

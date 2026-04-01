@@ -9,9 +9,17 @@ describe("ConsumerController", () => {
   interface RegisterUseCaseMock {
     execute: jest.Mock<Promise<{ id: string }>, [unknown]>;
   }
+  interface AssignUseCaseMock {
+    execute: jest.Mock<Promise<void>, []>;
+  }
   let registerUseCase: RegisterUseCaseMock;
+  let assignUseCase: AssignUseCaseMock;
 
   const mockRegisterUseCase = {
+    execute: jest.fn(),
+  };
+
+  const mockAssignUseCase = {
     execute: jest.fn(),
   };
 
@@ -45,11 +53,16 @@ describe("ConsumerController", () => {
           useValue: mockRegisterUseCase,
         },
         { provide: "RetryPolicyPort", useValue: mockRetryPolicyPort },
+        {
+          provide: "AssignAvailableOfficesUseCase",
+          useValue: mockAssignUseCase,
+        },
       ],
     }).compile();
 
     controller = module.get<ConsumerController>(ConsumerController);
     registerUseCase = module.get("RegisterAppointmentUseCase");
+    assignUseCase = module.get("AssignAvailableOfficesUseCase");
   });
 
   it("should be defined", () => {
@@ -61,7 +74,7 @@ describe("ConsumerController", () => {
     mockRetryPolicyPort.shouldMoveToDLQ.mockReturnValue(false);
 
     await controller.handleCreateAppointment(
-      { idCard: 1234, fullName: "Test" },
+      { idCard: 1234, fullName: "Test", priority: "medium" },
       mockContext,
     );
 
@@ -76,7 +89,7 @@ describe("ConsumerController", () => {
     mockRetryPolicyPort.shouldMoveToDLQ.mockReturnValue(true);
 
     await controller.handleCreateAppointment(
-      { idCard: 0, fullName: "" },
+      { idCard: 0, fullName: "", priority: "medium" },
       mockContext,
     );
 
@@ -92,7 +105,7 @@ describe("ConsumerController", () => {
     mockRetryPolicyPort.shouldMoveToDLQ.mockReturnValue(false);
 
     await controller.handleCreateAppointment(
-      { idCard: 1234, fullName: "Test" },
+      { idCard: 1234, fullName: "Test", priority: "medium" },
       mockContext,
     );
 
@@ -121,10 +134,32 @@ describe("ConsumerController", () => {
     mockRetryPolicyPort.shouldMoveToDLQ.mockReturnValue(true);
 
     await controller.handleCreateAppointment(
-      { idCard: 1234, fullName: "Test" },
+      { idCard: 1234, fullName: "Test", priority: "medium" },
       contextWithRetries,
     );
 
+    expect(mockChannel.nack).toHaveBeenCalledWith(
+      expect.anything(),
+      false,
+      false,
+    );
+  });
+
+  it("should trigger assignment and ack on doctor_checked_in event", async () => {
+    mockAssignUseCase.execute.mockResolvedValue(undefined);
+
+    await controller.handleDoctorCheckedIn({}, mockContext);
+
+    expect(assignUseCase.execute).toHaveBeenCalledTimes(1);
+    expect(mockChannel.ack).toHaveBeenCalled();
+  });
+
+  it("should nack without requeue when doctor_checked_in assignment fails", async () => {
+    mockAssignUseCase.execute.mockRejectedValue(new Error("Assignment failed"));
+
+    await controller.handleDoctorCheckedIn({}, mockContext);
+
+    expect(assignUseCase.execute).toHaveBeenCalledTimes(1);
     expect(mockChannel.nack).toHaveBeenCalledWith(
       expect.anything(),
       false,

@@ -1,11 +1,12 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigModule } from "@nestjs/config";
 import { ConsultationPolicy } from "src/domain/policies/consultation.policy";
 
-import { AssignAvailableOfficesUseCaseImpl } from "../../application/use-cases/assign-available-offices.use-case.impl";
+import { AssignDoctorUseCaseImpl } from "../../application/use-cases/assign-doctor.use-case.impl";
 import { CompleteExpiredAppointmentsUseCaseImpl } from "../../application/use-cases/complete-expired-appointments.use-case.impl";
 import { MaintenanceOrchestratorUseCaseImpl } from "../../application/use-cases/maintenance-orchestrator.use-case.impl";
 import { RegisterAppointmentUseCaseImpl } from "../../application/use-cases/register-appointment.use-case.impl";
+import { InfrastructureModule } from "../infrastructure/infrastructure.module";
 import { PoliciesModule } from "../policies/policies.module";
 import { RepositoriesModule } from "../repositories/repositories.module";
 
@@ -29,16 +30,16 @@ import { RepositoriesModule } from "../repositories/repositories.module";
  * @dependencies
  *   - RepositoriesModule: Provides AppointmentRepository, LockRepository
  *   - PoliciesModule: Provides ConsultationPolicy for business rule enforcement
- *   - ConfigService: Parametrizes TOTAL_OFFICES from environment
  *
  * @relatedPatterns UseCase, Command, Application Service, Orchestrator
  * @seeAlso ADR-001 (Hexagonal Architecture), SOLID (SRP, DIP)
  */
 @Module({
   imports: [
-    ConfigModule, // ⚕️ HUMAN CHECK - TOTAL_OFFICES parametrization
+    ConfigModule,
     RepositoriesModule,
     PoliciesModule,
+    InfrastructureModule,
   ],
   providers: [
     {
@@ -54,40 +55,40 @@ import { RepositoriesModule } from "../repositories/repositories.module";
         "NotificationPort",
         "LoggerPort",
         "ClockPort",
+        "DoctorRepository",
       ],
-      useFactory: (repo, notification, logger, clock) =>
+      useFactory: (repo, notification, logger, clock, doctorRepo) =>
         new CompleteExpiredAppointmentsUseCaseImpl(
           repo,
           notification,
           logger,
           clock,
+          doctorRepo,
         ),
     },
     {
       provide: "AssignAvailableOfficesUseCase",
       inject: [
         "AppointmentRepository",
+        "DoctorRepository",
         "LoggerPort",
         "ClockPort",
-        "ConsultationPolicy",
-        ConfigService,
+        ConsultationPolicy,
       ],
       useFactory: (
         repo,
+        doctorRepo,
         logger,
         clock,
         policy: ConsultationPolicy,
-        configService: ConfigService,
-      ) => {
-        const totalOffices = configService.get<number>("TOTAL_OFFICES", 5);
-        return new AssignAvailableOfficesUseCaseImpl(
+      ) =>
+        new AssignDoctorUseCaseImpl(
           repo,
+          doctorRepo,
           logger,
           clock,
-          totalOffices,
           policy,
-        );
-      },
+        ),
     },
     {
       provide: "MaintenanceOrchestratorUseCase",

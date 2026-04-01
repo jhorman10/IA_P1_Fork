@@ -1,14 +1,7 @@
 import { Module } from "@nestjs/common";
 
-import {
-  AppointmentAssignedHandler,
-  AppointmentRegisteredHandler,
-} from "../application/event-handlers/appointment-events.handler";
-import { RmqNotificationAdapter } from "../infrastructure/adapters/rmq-notification.adapter";
-import { NestLoggerAdapter } from "../infrastructure/logging/nest-logger.adapter";
-import { LocalDomainEventBusAdapter } from "../infrastructure/messaging/local-domain-event-bus.adapter";
-import { SystemClockAdapter } from "../infrastructure/utils/system-clock.adapter";
 import { NotificationsModule } from "../notifications/notifications.module";
+import { InfrastructureModule } from "./infrastructure/infrastructure.module";
 import { PoliciesModule } from "./policies/policies.module";
 import { RepositoriesModule } from "./repositories/repositories.module";
 import { UseCasesModule } from "./use-cases/use-cases.module";
@@ -45,62 +38,9 @@ import { UseCasesModule } from "./use-cases/use-cases.module";
     RepositoriesModule,
     UseCasesModule,
     NotificationsModule,
+    InfrastructureModule,
   ],
-  providers: [
-    // ⚕️ HUMAN CHECK - Infrastructure Adapters (Ports Implementation)
-    // These are framework-aware implementations that bridge to domain ports
-    {
-      provide: "LoggerPort",
-      useClass: NestLoggerAdapter,
-    },
-    {
-      provide: "ClockPort",
-      useClass: SystemClockAdapter,
-    },
-    {
-      provide: "NotificationPort",
-      useClass: RmqNotificationAdapter,
-    },
-
-    // ⚕️ HUMAN CHECK - Event Handlers (Domain Event Subscribers)
-    // SRP: Each handler reacts to one event type. OCP: New handlers without modifying existing.
-    // Fixed R-03: Using Factory pattern instead of @Injectable decorator for framework agnosticism
-    {
-      provide: AppointmentRegisteredHandler,
-      inject: ["NotificationPort", "LoggerPort"],
-      useFactory: (notificationPort, loggerPort) => 
-        new AppointmentRegisteredHandler(notificationPort, loggerPort),
-    },
-    {
-      provide: AppointmentAssignedHandler,
-      inject: ["NotificationPort", "LoggerPort"],
-      useFactory: (notificationPort, loggerPort) => 
-        new AppointmentAssignedHandler(notificationPort, loggerPort),
-    },
-
-    // ⚕️ HUMAN CHECK - DomainEventBus (Local In-Process Event Dispatcher)
-    // H-25 Fix: Automatic event dispatch after repository save.
-    // Alternative: External message broker (RabbitMQ) for true event-driven architecture.
-    {
-      provide: "DomainEventBus",
-      inject: [AppointmentRegisteredHandler, AppointmentAssignedHandler],
-      useFactory: (registered, assigned) =>
-        new LocalDomainEventBusAdapter([registered, assigned]),
-    },
-  ],
-  exports: [
-    // Public ports (use cases, repositories)
-    "RegisterAppointmentUseCase",
-    "CompleteExpiredAppointmentsUseCase",
-    "AssignAvailableOfficesUseCase",
-    "MaintenanceOrchestratorUseCase",
-    "AppointmentRepository",
-    "LockRepository",
-    // Infrastructure adapters (for other modules)
-    "LoggerPort",
-    "ClockPort",
-    "NotificationPort",
-    "DomainEventBus",
-  ],
+  // Re-export sub-modules so consumers of AppointmentModule can inject their providers
+  exports: [UseCasesModule, RepositoriesModule, InfrastructureModule],
 })
 export class AppointmentModule {}
