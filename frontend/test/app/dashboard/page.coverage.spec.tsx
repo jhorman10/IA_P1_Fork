@@ -173,4 +173,56 @@ describe("CompletedHistoryDashboard coverage", () => {
 
     jest.useRealTimers();
   });
+
+  it("renders assignment notification on waiting to called transition", async () => {
+    mockHookState = {
+      appointments: [],
+      error: undefined,
+      _connected: true,
+      isConnecting: false,
+      connectionStatus: "connected",
+    };
+
+    render(<CompletedHistoryDashboard />);
+
+    expect(storedCallback).toBeTruthy();
+
+    act(() => {
+      storedCallback?.({
+        id: "apt-200",
+        fullName: "Maria Lopez",
+        idCard: 123456,
+        office: null,
+        timestamp: 1,
+        status: "waiting",
+        priority: "medium",
+        doctorId: null,
+        doctorName: null,
+      });
+    });
+
+    expect(
+      screen.queryByTestId("assignment-notification"),
+    ).not.toBeInTheDocument();
+
+    act(() => {
+      storedCallback?.({
+        id: "apt-200",
+        fullName: "Maria Lopez",
+        idCard: 123456,
+        office: "4",
+        timestamp: 2,
+        status: "called",
+        priority: "medium",
+        doctorId: "doc-004",
+        doctorName: "Dr. Luis Gomez",
+      });
+    });
+
+    expect(
+      await screen.findByTestId("assignment-notification"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Dr. Luis Gomez")).toBeInTheDocument();
+    expect(screen.getByText("Consultorio 4")).toBeInTheDocument();
+  });
 });

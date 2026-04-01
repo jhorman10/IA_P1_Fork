@@ -11,4 +11,6 @@ export interface Appointment {
   completedAt?: number;
   status: AppointmentStatus;
   priority: AppointmentPriority;
+  doctorId: string | null; // SPEC-003: médico asignado
+  doctorName: string | null; // SPEC-003: nombre desnormalizado
 }

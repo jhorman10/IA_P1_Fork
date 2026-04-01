@@ -1,3 +1,4 @@
+import { DoctorInfo } from "@/components/DoctorInfo/DoctorInfo";
 import { Appointment } from "@/domain/Appointment";
 import styles from "@/styles/page.module.css";
 
@@ -55,6 +56,12 @@ export function CalledAppointmentCard({
             {appointment.office || "N/A"}
           </span>
         </div>
+        {appointment.doctorName && appointment.office && (
+          <DoctorInfo
+            doctorName={appointment.doctorName}
+            office={appointment.office}
+          />
+        )}
         <div className={styles.infoRow}>
           <span className={styles.label}>Prioridad:</span>
           <span
@@ -68,8 +75,8 @@ export function CalledAppointmentCard({
       {showTime && (
         <div className={styles.cardFooter}>
           <span className={styles.horaLabel}>{timeIcon}</span>
-          <span className={styles.hora}>
-            {formatTime(appointment.timestamp)}
+          <span className={styles.hora} data-testid="estimated-time">
+            {formatTime(appointment.completedAt ?? appointment.timestamp)}
           </span>
         </div>
       )}
