@@ -8,6 +8,7 @@ export class AppointmentMapper {
       fullName: event.fullName,
       idCard: event.idCard,
       office: event.office,
+      doctorId: event.doctorId ?? null,
       status: event.status,
       priority: event.priority,
       timestamp: event.timestamp,

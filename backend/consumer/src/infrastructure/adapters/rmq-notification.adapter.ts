@@ -37,6 +37,7 @@ export class RmqNotificationAdapter implements NotificationPort {
       fullName: appointment.fullName.toValue(),
       idCard: appointment.idCard.toValue(),
       office: appointment.office,
+      doctorId: (appointment as any).doctorId ?? null,
       status: appointment.status,
       priority: appointment.priority.toValue(),
       timestamp: appointment.timestamp,

@@ -4,6 +4,7 @@ import {
   AppointmentAssignedHandler,
   AppointmentRegisteredHandler,
 } from "../application/event-handlers/appointment-events.handler";
+import { AutoAssignOnRegisterHandler } from "../application/event-handlers/auto-assign.handler";
 import { RmqNotificationAdapter } from "../infrastructure/adapters/rmq-notification.adapter";
 import { NestLoggerAdapter } from "../infrastructure/logging/nest-logger.adapter";
 import { LocalDomainEventBusAdapter } from "../infrastructure/messaging/local-domain-event-bus.adapter";
@@ -68,14 +69,32 @@ import { UseCasesModule } from "./use-cases/use-cases.module";
     {
       provide: AppointmentRegisteredHandler,
       inject: ["NotificationPort", "LoggerPort"],
-      useFactory: (notificationPort, loggerPort) => 
+      useFactory: (notificationPort, loggerPort) =>
         new AppointmentRegisteredHandler(notificationPort, loggerPort),
     },
     {
       provide: AppointmentAssignedHandler,
       inject: ["NotificationPort", "LoggerPort"],
-      useFactory: (notificationPort, loggerPort) => 
+      useFactory: (notificationPort, loggerPort) =>
         new AppointmentAssignedHandler(notificationPort, loggerPort),
+    },
+    {
+      provide: AutoAssignOnRegisterHandler,
+      inject: [
+        "AppointmentRepository",
+        "DoctorRepository",
+        "LoggerPort",
+        "ClockPort",
+        "ConsultationPolicy",
+      ],
+      useFactory: (repo, doctorRepo, logger, clock, policy) =>
+        new AutoAssignOnRegisterHandler(
+          repo,
+          doctorRepo,
+          logger,
+          clock,
+          policy,
+        ),
     },
 
     // ⚕️ HUMAN CHECK - DomainEventBus (Local In-Process Event Dispatcher)
@@ -83,9 +102,13 @@ import { UseCasesModule } from "./use-cases/use-cases.module";
     // Alternative: External message broker (RabbitMQ) for true event-driven architecture.
     {
       provide: "DomainEventBus",
-      inject: [AppointmentRegisteredHandler, AppointmentAssignedHandler],
-      useFactory: (registered, assigned) =>
-        new LocalDomainEventBusAdapter([registered, assigned]),
+      inject: [
+        AppointmentRegisteredHandler,
+        AppointmentAssignedHandler,
+        AutoAssignOnRegisterHandler,
+      ],
+      useFactory: (registered, assigned, autoAssign) =>
+        new LocalDomainEventBusAdapter([registered, assigned, autoAssign]),
     },
   ],
   exports: [
