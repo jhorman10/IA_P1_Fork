@@ -1,6 +1,6 @@
 import { QueuePositionBadge } from "@/components/QueuePositionBadge/QueuePositionBadge";
-import { anonymizeName } from "@/lib/anonymizeName";
 import { Appointment } from "@/domain/Appointment";
+import { anonymizeName } from "@/lib/anonymizeName";
 import styles from "@/styles/page.module.css";
 
 /**
@@ -36,7 +36,7 @@ function getPriorityBadge(priority: string): string {
 
 export function WaitingAppointmentCard({
   appointment,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   timeIcon: _timeIcon = "📝",
   queuePosition,
   total,
