@@ -86,7 +86,7 @@ describe("DoctorServiceImpl (unit)", () => {
     expect(resAll).toEqual([sampleDoctor]);
     expect(repo.findAll).toHaveBeenCalledWith(undefined);
 
-    const resFiltered = await service.findAll("available");
+    await service.findAll("available");
     expect(repo.findAll).toHaveBeenCalledWith("available");
   });
 
