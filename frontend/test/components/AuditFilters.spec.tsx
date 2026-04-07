@@ -45,24 +45,26 @@ describe("AuditFilters", () => {
     expect(onFilterChange).toHaveBeenCalledWith({ action: undefined });
   });
 
-  it("calls onFilterChange with actorUid when input changes", () => {
+  it("calls onFilterChange with actorSearch when input changes", () => {
     const onFilterChange = jest.fn();
     render(
       <AuditFilters filters={emptyFilters} onFilterChange={onFilterChange} />,
     );
 
     fireEvent.change(screen.getByLabelText("Actor"), {
-      target: { value: "uid-abc" },
+      target: { value: "admin@clinica.com" },
     });
 
-    expect(onFilterChange).toHaveBeenCalledWith({ actorUid: "uid-abc" });
+    expect(onFilterChange).toHaveBeenCalledWith({
+      actorSearch: "admin@clinica.com",
+    });
   });
 
-  it("calls onFilterChange with undefined actorUid when cleared", () => {
+  it("calls onFilterChange with undefined actorSearch when cleared", () => {
     const onFilterChange = jest.fn();
     render(
       <AuditFilters
-        filters={{ actorUid: "uid-abc" }}
+        filters={{ actorSearch: "admin@clinica.com" }}
         onFilterChange={onFilterChange}
       />,
     );
@@ -71,13 +73,16 @@ describe("AuditFilters", () => {
       target: { value: "" },
     });
 
-    expect(onFilterChange).toHaveBeenCalledWith({ actorUid: undefined });
+    expect(onFilterChange).toHaveBeenCalledWith({ actorSearch: undefined });
   });
 
   it("reflects existing filter values in controls", () => {
     render(
       <AuditFilters
-        filters={{ action: "DOCTOR_CHECK_IN", actorUid: "uid-123" }}
+        filters={{
+          action: "DOCTOR_CHECK_IN",
+          actorSearch: "admin@clinica.com",
+        }}
         onFilterChange={jest.fn()}
       />,
     );
@@ -86,7 +91,7 @@ describe("AuditFilters", () => {
       "DOCTOR_CHECK_IN",
     );
     expect(screen.getByLabelText<HTMLInputElement>("Actor").value).toBe(
-      "uid-123",
+      "admin@clinica.com",
     );
   });
 

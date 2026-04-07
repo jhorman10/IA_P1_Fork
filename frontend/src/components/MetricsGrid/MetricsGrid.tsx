@@ -28,19 +28,16 @@ export default function MetricsGrid({ metrics }: MetricsGridProps) {
           <MetricCard
             label="En espera"
             value={metrics.appointments.waiting}
-            icon="⏳"
             variant="warning"
           />
           <MetricCard
             label="En atención"
             value={metrics.appointments.called}
-            icon="🩺"
             variant="default"
           />
           <MetricCard
             label="Completados hoy"
             value={metrics.appointments.completedToday}
-            icon="✅"
             variant="success"
           />
         </div>
@@ -52,19 +49,16 @@ export default function MetricsGrid({ metrics }: MetricsGridProps) {
           <MetricCard
             label="Disponibles"
             value={metrics.doctors.available}
-            icon="🟢"
             variant="success"
           />
           <MetricCard
             label="Ocupados"
             value={metrics.doctors.busy}
-            icon="🟡"
             variant="warning"
           />
           <MetricCard
             label="Desconectados"
             value={metrics.doctors.offline}
-            icon="⚫"
             variant="muted"
           />
         </div>

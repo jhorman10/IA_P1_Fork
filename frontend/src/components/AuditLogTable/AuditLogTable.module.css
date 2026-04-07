@@ -74,7 +74,7 @@
   font-size: 12px;
   font-weight: 500;
   background: var(--color-surface-tertiary);
-  color: var(--color-slate-700);
+  color: var(--color-text-primary);
   white-space: nowrap;
 }
 

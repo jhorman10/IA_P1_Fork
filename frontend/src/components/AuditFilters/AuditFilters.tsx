@@ -29,8 +29,8 @@ export default function AuditFilters({
     onFilterChange({ ...filters, action: value || undefined });
   };
 
-  const handleActorUid = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onFilterChange({ ...filters, actorUid: e.target.value || undefined });
+  const handleActorSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onFilterChange({ ...filters, actorSearch: e.target.value || undefined });
   };
 
   const handleFrom = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,8 +82,8 @@ export default function AuditFilters({
           type="text"
           className={styles.input}
           placeholder="Nombre o Correo"
-          value={filters.actorUid ?? ""}
-          onChange={handleActorUid}
+          value={filters.actorSearch ?? ""}
+          onChange={handleActorSearch}
         />
       </div>
 

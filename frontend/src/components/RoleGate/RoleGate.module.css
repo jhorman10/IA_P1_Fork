@@ -8,9 +8,9 @@
 
 .message {
   font-size: 15px;
-  color: #6b7280;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  color: var(--color-text-secondary);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 20px 28px;
   text-align: center;

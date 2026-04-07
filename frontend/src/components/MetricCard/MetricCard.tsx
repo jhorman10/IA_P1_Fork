@@ -6,14 +6,12 @@ import styles from "./MetricCard.module.css";
 export interface MetricCardProps {
   label: string;
   value: string | number;
-  icon?: string;
   variant?: "default" | "success" | "warning" | "muted";
 }
 
 export default function MetricCard({
   label,
   value,
-  icon,
   variant = "default",
 }: MetricCardProps) {
   return (
@@ -21,11 +19,6 @@ export default function MetricCard({
       className={`${styles.card} ${styles[variant] ?? ""}`}
       data-testid="metric-card"
     >
-      {icon && (
-        <span className={styles.icon} aria-hidden="true">
-          {icon}
-        </span>
-      )}
       <span className={styles.value} data-testid="metric-value">
         {value}
       </span>

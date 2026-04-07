@@ -34,21 +34,6 @@ describe("MetricCard", () => {
     expect(screen.getByTestId("metric-value")).toHaveTextContent("—");
   });
 
-  it("renders icon when provided", () => {
-    const { container } = renderCard({ icon: "⏳" });
-
-    const iconEl = container.querySelector("[aria-hidden='true']");
-    expect(iconEl).toBeInTheDocument();
-    expect(iconEl).toHaveTextContent("⏳");
-  });
-
-  it("does not render icon element when icon is omitted", () => {
-    const { container } = renderCard({ icon: undefined });
-
-    const iconEl = container.querySelector("[aria-hidden='true']");
-    expect(iconEl).not.toBeInTheDocument();
-  });
-
   it("renders data-testid metric-card on wrapper", () => {
     renderCard();
 

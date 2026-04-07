@@ -15,6 +15,8 @@ import { EventsModule } from "./events/events.module";
 import { HealthController } from "./health.controller";
 import { RabbitMQLifecyclePublisherAdapter } from "./infrastructure/adapters/outbound/rabbitmq-lifecycle-publisher.adapter";
 import { RabbitMQPublisherAdapter } from "./infrastructure/adapters/outbound/rabbitmq-publisher.adapter";
+import { MetricsModule } from "./metrics/metrics.module";
+import { OfficeModule } from "./offices/office.module";
 import { ProducerController } from "./producer.controller";
 import { ProfilesModule } from "./profiles/profiles.module";
 
@@ -61,6 +63,8 @@ import { ProfilesModule } from "./profiles/profiles.module";
     ]),
     AppointmentModule,
     EventsModule,
+    MetricsModule,
+    OfficeModule,
     ProfilesModule,
     AuditModule,
     // 🛡️ HUMAN CHECK - Proteccion contra ataques de fuerza bruta y DoS

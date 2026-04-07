@@ -138,6 +138,12 @@ describe("AdminDashboardPage", () => {
     expect(screen.getByTestId("metrics-grid")).toBeInTheDocument();
   });
 
+  it("does not show generatedAt metadata when metrics are available", () => {
+    render(<AdminDashboardPage />);
+
+    expect(screen.queryByText(/^Actualizado:/)).not.toBeInTheDocument();
+  });
+
   it("shows loading text when loading and no metrics yet", () => {
     mockUseMetrics.mockReturnValue(
       buildMetricsReturn({ metrics: null, loading: true }),

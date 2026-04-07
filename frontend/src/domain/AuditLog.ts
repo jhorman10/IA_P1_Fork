@@ -12,6 +12,7 @@ export type AuditAction =
 export interface AuditLogFilters {
   action?: AuditAction;
   actorUid?: string;
+  actorSearch?: string;
   from?: number;
   to?: number;
 }

@@ -33,13 +33,15 @@ export default function AdminDashboardPage() {
       )}
 
       {loading && !metrics && (
-        <p className={styles.loading}>Cargando métricas…</p>
+        <p className={styles.loadingState} role="status" aria-live="polite">
+          Cargando métricas…
+        </p>
       )}
 
       {metrics && <MetricsGrid metrics={metrics} />}
 
       {!loading && !metrics && !error && (
-        <p className={styles.empty}>Sin datos disponibles.</p>
+        <div className={styles.emptyState}>Sin datos disponibles.</div>
       )}
     </main>
   );
