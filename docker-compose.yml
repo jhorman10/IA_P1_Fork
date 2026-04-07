@@ -109,15 +109,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    # ⚕️ HUMAN CHECK - Comando de desarrollo
-    # En producción, eliminar este comando para usar el CMD del Dockerfile
-    command: npm run dev -- -p 3001 -H 0.0.0.0
+      target: production
     ports:
       - "${FRONTEND_PORT:-3001}:3001"
     restart: unless-stopped
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+    # Use the production image (no host mount) to avoid filesystem permission issues
     # ⚕️ HUMAN CHECK - Variables de entorno gestionadas vía .env
     environment:
       - NODE_ENV=${NODE_ENV}
