@@ -44,6 +44,19 @@ import { PoliciesModule } from "../policies/policies.module";
     PoliciesModule, // ⚕️ HUMAN CHECK - Repositories depend on domain policies
   ],
   providers: [
+    // Compatibility aliases: some modules reference the legacy provider tokens
+    // (e.g. "default_MongooseModel_Appointment") — expose them by mapping
+    // to the tokens created by MongooseModule.getModelToken.
+    {
+      provide: "default_MongooseModel_Appointment",
+      inject: [getModelToken(Appointment.name)],
+      useFactory: (model) => model,
+    },
+    {
+      provide: "default_MongooseModel_Doctor",
+      inject: [getModelToken(Doctor.name)],
+      useFactory: (model) => model,
+    },
     // ⚕️ HUMAN CHECK - Two-step factory:
     // 1. Create inner repository (pure Mongoose adapter)
     // 2. Wrap with event-dispatching decorator (cross-cutting concern)
