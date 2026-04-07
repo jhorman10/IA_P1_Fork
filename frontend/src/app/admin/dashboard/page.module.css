@@ -1,0 +1,47 @@
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.heading {
+  font-size: 26px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.subheading {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.error {
+  font-size: 14px;
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.loading {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.empty {
+  font-size: 14px;
+  color: #9ca3af;
+}

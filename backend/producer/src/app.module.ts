@@ -8,10 +8,12 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { CreateAppointmentUseCaseImpl } from "./application/use-cases/create-appointment.use-case.impl";
 import { AppointmentModule } from "./appointments/appointment.module";
 import { AppointmentQueryController } from "./appointments/appointment-query.controller";
+import { AuditModule } from "./audit/audit.module";
 import { EventsModule } from "./events/events.module";
 import { HealthController } from "./health.controller";
 import { RabbitMQPublisherAdapter } from "./infrastructure/adapters/outbound/rabbitmq-publisher.adapter";
 import { ProducerController } from "./producer.controller";
+import { ProfilesModule } from "./profiles/profiles.module";
 
 @Module({
   imports: [
@@ -56,6 +58,8 @@ import { ProducerController } from "./producer.controller";
     ]),
     AppointmentModule,
     EventsModule,
+    ProfilesModule,
+    AuditModule,
     // 🛡️ HUMAN CHECK - Proteccion contra ataques de fuerza bruta y DoS
     // H-14 Fix: Relaxed limits (100 req/min) and ConfigService integration
     ThrottlerModule.forRootAsync({

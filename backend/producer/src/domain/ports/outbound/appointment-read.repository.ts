@@ -7,4 +7,5 @@ import { AppointmentView } from "../../models/appointment-view";
 export interface AppointmentReadRepository {
   findAll(): Promise<AppointmentView[]>;
   findByIdCard(idCard: number): Promise<AppointmentView[]>;
+  findById(id: string): Promise<AppointmentView | null>;
 }

@@ -18,23 +18,23 @@ import {
  * Fake Logger for tests
  */
 class FakeLogger implements LoggerPort {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   log(message: string): void {
     // Silent in tests
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   error(message: string, trace?: string): void {
     // Silent in tests
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   warn(message: string): void {
     // Silent in tests
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   debug(message: string): void {
     // Silent in tests
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   verbose(message: string, context?: string): void {
     // Silent in tests
   }
@@ -67,7 +67,7 @@ describe("MongooseAppointmentRepository (Integration)", () => {
     appointmentModel = connection.model<AppointmentDocument>(
       AppointmentSchemaClass.name,
       // ⚕️ HUMAN CHECK: Cast de tipo de Schema necesario por incompatibilidad de versiones @nestjs/mongoose vs mongoose standalone
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       AppointmentSchema as any,
     );
 
@@ -75,7 +75,7 @@ describe("MongooseAppointmentRepository (Integration)", () => {
     consultationPolicy = new ConsultationPolicy();
     repository = new MongooseAppointmentRepository(
       // ⚕️ HUMAN CHECK: Cast de tipo de Model necesario por incompatibilidad de versiones @nestjs/mongoose vs mongoose standalone
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       appointmentModel as any,
       consultationPolicy,
       new FakeLogger(), // ⚕️ H-34: Agregar logger para cumplir con firma del constructor

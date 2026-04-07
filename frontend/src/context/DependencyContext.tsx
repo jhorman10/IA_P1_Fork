@@ -3,13 +3,16 @@
 import { createContext, ReactNode, useContext, useMemo } from "react";
 
 import { AppointmentRepository } from "@/domain/ports/AppointmentRepository";
+import { OperationalRealTimePort } from "@/domain/ports/OperationalRealTimePort";
 import { RealTimePort } from "@/domain/ports/RealTimePort";
+import { AuthenticatedSocketIoAdapter } from "@/infrastructure/adapters/AuthenticatedSocketIoAdapter";
 import { HttpAppointmentAdapter } from "@/infrastructure/adapters/HttpAppointmentAdapter";
 import { SocketIoAdapter } from "@/infrastructure/adapters/SocketIoAdapter";
 
 interface DependencyContextType {
   repository: AppointmentRepository;
   realTime: RealTimePort;
+  operationalRealTime: OperationalRealTimePort;
 }
 
 const DependencyContext = createContext<DependencyContextType | null>(null);
@@ -21,6 +24,7 @@ export function DependencyProvider({ children }: { children: ReactNode }) {
     return {
       repository: new HttpAppointmentAdapter(),
       realTime: new SocketIoAdapter(),
+      operationalRealTime: new AuthenticatedSocketIoAdapter(),
     };
   }, []);
 

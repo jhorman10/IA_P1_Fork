@@ -9,11 +9,11 @@ describe("env config", () => {
     delete process.env.NEXT_PUBLIC_API_BASE_URL;
     delete process.env.NEXT_PUBLIC_WS_URL;
 
-    expect(() => {
-      jest.isolateModules(() => {
-        require(modulePath);
-      });
-    }).toThrow(/Missing env variable/);
+    jest.isolateModules(() => {
+      const { env } = require(modulePath);
+      expect(() => env.API_BASE_URL).toThrow(/Missing env variable/);
+      expect(() => env.WS_URL).toThrow(/Missing env variable/);
+    });
   });
 
   it("exports values when env is set", () => {

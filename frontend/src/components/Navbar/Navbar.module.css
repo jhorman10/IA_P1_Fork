@@ -1,0 +1,166 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  height: 56px;
+  background: var(--color-nav-bg);
+  color: var(--color-nav-text);
+  font-size: 0.875rem;
+  border-bottom: 2px solid var(--gold);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: background 0.3s ease;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.link {
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  color: var(--color-nav-link);
+  text-decoration: none;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.link:hover {
+  background: var(--color-nav-link-hover-bg);
+  color: var(--color-nav-text);
+}
+
+.active {
+  background: var(--color-nav-link-active-bg);
+  color: var(--color-nav-link-active-text);
+  border-color: var(--color-nav-link-active-border);
+  box-shadow: inset 0 0 0 1px var(--color-nav-link-active-border);
+  font-weight: 700;
+}
+
+.active:hover {
+  background: var(--color-nav-link-active-bg);
+  color: var(--color-nav-link-active-text);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.roleBadge {
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.roleAdmin {
+  background: #7c3aed;
+  color: #fff;
+}
+
+.roleRecepcionista {
+  background: #0284c7;
+  color: #fff;
+}
+
+.roleDoctor {
+  background: #059669;
+  color: #fff;
+}
+
+.userName {
+  color: var(--color-nav-link);
+  font-size: 0.8rem;
+}
+
+.themeToggle {
+  background: none;
+  border: 1px solid var(--color-nav-link-hover-bg);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.3rem 0.5rem;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.themeToggle:hover {
+  background: var(--color-nav-link-hover-bg);
+}
+
+.logoutBtn {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--color-slate-300);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-nav-link);
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.logoutBtn:hover {
+  background: var(--color-red-600);
+  border-color: var(--color-red-600);
+  color: #fff;
+}
+
+.loginLink {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--gold, #c6a96b);
+  border-radius: 6px;
+  color: var(--gold, #c6a96b);
+  text-decoration: none;
+  font-weight: 600;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.loginLink:hover {
+  background: var(--gold);
+  color: var(--color-text-inverted);
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.5rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+
+  .userName {
+    display: none;
+  }
+}
