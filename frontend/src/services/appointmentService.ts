@@ -40,7 +40,7 @@ export async function cancelAppointment(
 
 export async function getQueuePosition(
   idCard: number,
-): Promise<{ position: number; appointmentId: string }> {
+): Promise<{ position: number; total: number; appointmentId: string }> {
   const res = await fetch(
     `${env.API_BASE_URL}/appointments/queue-position/${idCard}`,
   );
