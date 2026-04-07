@@ -110,6 +110,11 @@ import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
       useClass: MongooseLockRepository,
     },
   ],
-  exports: ["AppointmentRepository", "LockRepository", "DoctorRepository"],
+  exports: [
+    "AppointmentRepository",
+    "LockRepository",
+    "DoctorRepository",
+    "LoggerPort",
+  ],
 })
 export class RepositoriesModule {}
