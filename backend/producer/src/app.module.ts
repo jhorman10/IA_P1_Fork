@@ -79,7 +79,6 @@ import { ProfilesModule } from "./profiles/profiles.module";
   controllers: [
     ProducerController,
     AppointmentQueryController,
-    AppointmentLifecycleController,
     HealthController,
   ],
   providers: [
