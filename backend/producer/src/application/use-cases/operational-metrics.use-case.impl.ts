@@ -12,6 +12,7 @@ import { QueryAppointmentsUseCase } from "../../domain/ports/inbound/query-appoi
 import {
   CONSUMER_AUDIT_LOG_QUERY_PORT,
   ConsumerAuditLogQueryPort,
+  ConsumerAuditTimingEntry,
 } from "../../domain/ports/outbound/consumer-audit-log-query.port";
 
 /**
@@ -74,11 +75,11 @@ export class OperationalMetricsUseCaseImpl implements OperationalMetricsPort {
       hoursElapsed > 0 ? completedToday / hoursElapsed : 0;
 
     // Build lookup maps from audit events
-    const assignedEvents = (timingEvents as any[]).filter(
-      (e: any) => e.action === "APPOINTMENT_ASSIGNED",
+    const assignedEvents = (timingEvents as ConsumerAuditTimingEntry[]).filter(
+      (e) => e.action === "APPOINTMENT_ASSIGNED",
     );
-    const completedEvents = (timingEvents as any[]).filter(
-      (e: any) => e.action === "APPOINTMENT_COMPLETED",
+    const completedEvents = (timingEvents as ConsumerAuditTimingEntry[]).filter(
+      (e) => e.action === "APPOINTMENT_COMPLETED",
     );
 
     // Map appointmentId → creation timestamp (from appointment documents)

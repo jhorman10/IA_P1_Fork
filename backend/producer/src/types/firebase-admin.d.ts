@@ -1,14 +1,14 @@
 declare module "firebase-admin" {
-  const admin: any;
+  const admin: unknown;
 
   namespace admin {
     namespace app {
-      type App = any;
+      type App = unknown;
     }
     namespace credential {
-      type Credential = any;
+      type Credential = unknown;
     }
-    type ServiceAccount = any;
+    type ServiceAccount = unknown;
   }
 
   export = admin;

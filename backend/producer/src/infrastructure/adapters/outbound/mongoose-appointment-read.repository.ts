@@ -60,7 +60,7 @@ export class MongooseAppointmentReadRepository implements AppointmentReadReposit
       fullName: doc.fullName,
       idCard: doc.idCard,
       office: doc.office,
-      doctorId: (doc as any).doctorId ?? null,
+      doctorId: (doc as unknown as { doctorId?: string }).doctorId ?? null,
       status: doc.status,
       priority: doc.priority,
       timestamp: doc.timestamp,
