@@ -16,10 +16,13 @@ export interface Profile {
 }
 
 export interface CreateProfileDTO {
+  /** Firebase UID — required when backend binds Firebase Auth to the profile */
+  uid?: string;
   email: string;
-  password: string;
+  password?: string;
   display_name: string;
   role: UserRole;
+  doctor_id?: string | null;
   /** SPEC-015: for doctor role — backend creates Doctor entity transparently */
   specialty_id?: string | null;
 }

@@ -352,7 +352,9 @@ describe("useAppointmentRegistration", () => {
       };
 
       let resolveRegister: any;
-      const registerPromise = new Promise((resolve) => {
+      const registerPromise = new Promise<
+        import("@/domain/CreateAppointment").CreateAppointmentResponse
+      >((resolve) => {
         resolveRegister = resolve;
       });
 
@@ -458,7 +460,7 @@ describe("useAppointmentRegistration", () => {
 
     it("should reset in-flight flag on mount/remount", () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { unmount, _rerender } = renderHook(() =>
+      const { unmount, rerender: _rerender } = renderHook(() =>
         useAppointmentRegistration(),
       );
 

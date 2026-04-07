@@ -96,7 +96,7 @@ describe("useOperationalAppointmentsWebSocket", () => {
   describe("Auth rejection", () => {
     it("sets authRejected=true when onAuthRejected fires", async () => {
       let onAuthRejectedCallback: (() => void) | null = null;
-      mockOperationalRealTime.onAuthRejected.mockImplementation((cb) => {
+      mockOperationalRealTime.onAuthRejected.mockImplementation((cb: () => void) => {
         onAuthRejectedCallback = cb;
       });
 
@@ -121,10 +121,10 @@ describe("useOperationalAppointmentsWebSocket", () => {
       let onConnectCb: (() => void) | null = null;
       let onAuthRejectedCb: (() => void) | null = null;
 
-      mockOperationalRealTime.onConnect.mockImplementation((cb) => {
+      mockOperationalRealTime.onConnect.mockImplementation((cb: () => void) => {
         onConnectCb = cb;
       });
-      mockOperationalRealTime.onAuthRejected.mockImplementation((cb) => {
+      mockOperationalRealTime.onAuthRejected.mockImplementation((cb: () => void) => {
         onAuthRejectedCb = cb;
       });
 
@@ -154,7 +154,7 @@ describe("useOperationalAppointmentsWebSocket", () => {
   describe("Connection lifecycle", () => {
     it("sets connected=true when onConnect fires", async () => {
       let onConnectCallback: (() => void) | null = null;
-      mockOperationalRealTime.onConnect.mockImplementation((cb) => {
+      mockOperationalRealTime.onConnect.mockImplementation((cb: () => void) => {
         onConnectCallback = cb;
       });
 
@@ -177,7 +177,7 @@ describe("useOperationalAppointmentsWebSocket", () => {
 
     it("sets connected=false when onDisconnect fires", async () => {
       let onDisconnectCallback: (() => void) | null = null;
-      mockOperationalRealTime.onDisconnect.mockImplementation((cb) => {
+      mockOperationalRealTime.onDisconnect.mockImplementation((cb: () => void) => {
         onDisconnectCallback = cb;
       });
 
@@ -196,7 +196,7 @@ describe("useOperationalAppointmentsWebSocket", () => {
 
     it("sets error message when onError fires", async () => {
       let onErrorCallback: ((err: Error) => void) | null = null;
-      mockOperationalRealTime.onError.mockImplementation((cb) => {
+      mockOperationalRealTime.onError.mockImplementation((cb: (err: Error) => void) => {
         onErrorCallback = cb;
       });
 
@@ -218,7 +218,7 @@ describe("useOperationalAppointmentsWebSocket", () => {
   describe("Data management", () => {
     it("updates appointments state when onSnapshot fires", async () => {
       let onSnapshotCallback: ((data: Appointment[]) => void) | null = null;
-      mockOperationalRealTime.onSnapshot.mockImplementation((cb) => {
+      mockOperationalRealTime.onSnapshot.mockImplementation((cb: (data: Appointment[]) => void) => {
         onSnapshotCallback = cb;
       });
 
@@ -253,10 +253,10 @@ describe("useOperationalAppointmentsWebSocket", () => {
       let onSnapshotCallback: ((data: Appointment[]) => void) | null = null;
       let onUpdateCallback: ((data: Appointment) => void) | null = null;
 
-      mockOperationalRealTime.onSnapshot.mockImplementation((cb) => {
+      mockOperationalRealTime.onSnapshot.mockImplementation((cb: (data: Appointment[]) => void) => {
         onSnapshotCallback = cb;
       });
-      mockOperationalRealTime.onAppointmentUpdated.mockImplementation((cb) => {
+      mockOperationalRealTime.onAppointmentUpdated.mockImplementation((cb: (data: Appointment) => void) => {
         onUpdateCallback = cb;
       });
 

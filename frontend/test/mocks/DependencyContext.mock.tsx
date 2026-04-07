@@ -24,6 +24,7 @@
 import { createContext, ReactNode, useContext, useMemo } from "react";
 
 import { AppointmentRepository } from "@/domain/ports/AppointmentRepository";
+import { OperationalRealTimePort } from "@/domain/ports/OperationalRealTimePort";
 import { RealTimePort } from "@/domain/ports/RealTimePort";
 
 // Mock implementations
@@ -37,16 +38,28 @@ export const mockRealTime: jest.Mocked<RealTimePort> = {
   disconnect: jest.fn(),
   onSnapshot: jest.fn(),
   onAppointmentUpdated: jest.fn(),
-  onAppointmentCalled: jest.fn(),
   onConnect: jest.fn(),
   onDisconnect: jest.fn(),
   onError: jest.fn(),
   isConnected: jest.fn(() => true),
 };
 
+export const mockOperationalRealTime: jest.Mocked<OperationalRealTimePort> = {
+  connect: jest.fn(),
+  disconnect: jest.fn(),
+  onSnapshot: jest.fn(),
+  onAppointmentUpdated: jest.fn(),
+  onConnect: jest.fn(),
+  onDisconnect: jest.fn(),
+  onError: jest.fn(),
+  onAuthRejected: jest.fn(),
+  isConnected: jest.fn(() => false),
+};
+
 interface DependencyContextType {
   repository: AppointmentRepository;
   realTime: RealTimePort;
+  operationalRealTime: OperationalRealTimePort;
 }
 
 const DependencyContext = createContext<DependencyContextType | null>(null);
@@ -58,6 +71,7 @@ export function TestDependencyProvider({ children }: { children: ReactNode }) {
     return {
       repository: mockRepository,
       realTime: mockRealTime,
+      operationalRealTime: mockOperationalRealTime,
     };
   }, []);
 
@@ -89,9 +103,17 @@ export function resetMocks() {
   mockRealTime.disconnect.mockClear();
   mockRealTime.onSnapshot.mockClear();
   mockRealTime.onAppointmentUpdated.mockClear();
-  mockRealTime.onAppointmentCalled.mockClear();
   mockRealTime.onConnect.mockClear();
   mockRealTime.onDisconnect.mockClear();
   mockRealTime.onError.mockClear();
   mockRealTime.isConnected.mockClear();
+  mockOperationalRealTime.connect.mockClear();
+  mockOperationalRealTime.disconnect.mockClear();
+  mockOperationalRealTime.onSnapshot.mockClear();
+  mockOperationalRealTime.onAppointmentUpdated.mockClear();
+  mockOperationalRealTime.onConnect.mockClear();
+  mockOperationalRealTime.onDisconnect.mockClear();
+  mockOperationalRealTime.onError.mockClear();
+  mockOperationalRealTime.onAuthRejected.mockClear();
+  mockOperationalRealTime.isConnected.mockClear();
 }

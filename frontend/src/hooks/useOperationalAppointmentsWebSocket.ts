@@ -63,7 +63,7 @@ export function useOperationalAppointmentsWebSocket(
 
     operationalRealTime.onError(
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      (_err) => {
+      (_err: Error) => {
         setError("Error de conexión en tiempo real operativo");
         setConnected(false);
         setIsConnecting(false);
@@ -78,11 +78,11 @@ export function useOperationalAppointmentsWebSocket(
       setIsReconnecting(false);
     });
 
-    operationalRealTime.onSnapshot((data) => {
+    operationalRealTime.onSnapshot((data: Appointment[]) => {
       setAppointments(data);
     });
 
-    operationalRealTime.onAppointmentUpdated((data) => {
+    operationalRealTime.onAppointmentUpdated((data: Appointment) => {
       updateAppointment(data);
       if (onUpdate) onUpdate(data);
     });

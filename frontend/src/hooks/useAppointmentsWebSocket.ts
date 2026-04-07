@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback,useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useDependencies } from "@/context/DependencyContext";
 import { Appointment } from "@/domain/Appointment";
@@ -70,11 +70,8 @@ export function useAppointmentsWebSocket(
     };
   }, [realTime, updateAppointment, onUpdate]);
 
-  const connectionStatus = connected
-    ? "connected"
-    : isConnecting
-      ? "connecting"
-      : "disconnected";
+  const connectionStatus: "connected" | "connecting" | "disconnected" =
+    connected ? "connected" : isConnecting ? "connecting" : "disconnected";
 
   return { appointments, error, connected, isConnecting, connectionStatus };
 }
