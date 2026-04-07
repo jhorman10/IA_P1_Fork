@@ -12,8 +12,8 @@ import { AuditModule } from "./audit/audit.module";
 import { EventsModule } from "./events/events.module";
 import { HealthController } from "./health.controller";
 import { RabbitMQPublisherAdapter } from "./infrastructure/adapters/outbound/rabbitmq-publisher.adapter";
-import { ProfilesModule } from "./profiles/profiles.module";
 import { ProducerController } from "./producer.controller";
+import { ProfilesModule } from "./profiles/profiles.module";
 
 @Module({
   imports: [
