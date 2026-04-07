@@ -11,6 +11,7 @@ import {
 } from "../../schemas/appointment.schema";
 import { Doctor, DoctorSchema } from "../../schemas/doctor.schema";
 import { PoliciesModule } from "../policies/policies.module";
+import { NestLoggerAdapter } from "../../infrastructure/logging/nest-logger.adapter";
 import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 
 /**
@@ -70,6 +71,22 @@ import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
       ],
       useFactory: (model, policy, logger) =>
         new MongooseAppointmentRepository(model, policy, logger),
+    },
+    // Provide a local LoggerPort so repositories can log without depending on the
+    // higher-level AppointmentModule. This keeps the RepositoriesModule
+    // self-contained for DI and avoids circular imports.
+    {
+      provide: "LoggerPort",
+      useClass: NestLoggerAdapter,
+    },
+    // Provide a lightweight no-op DomainEventBus so the repositories can be
+    // instantiated without requiring the full event-bus wiring. AppointmentModule
+    // may override or provide a richer implementation when available.
+    {
+      provide: "DomainEventBus",
+      useValue: {
+        publish: async () => undefined,
+      },
     },
     {
       provide: "AppointmentRepository",
