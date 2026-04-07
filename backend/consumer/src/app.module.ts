@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ScheduleModule } from "@nestjs/schedule";
@@ -41,10 +41,4 @@ import { SchedulerService } from "./scheduler/scheduler.service";
     },
   ],
 })
-export class AppModule implements OnModuleInit {
-  constructor(private readonly schedulerService: SchedulerService) {}
-  onModuleInit() {
-    // Forzar la inicialización del SchedulerService
-    void this.schedulerService;
-  }
-}
+export class AppModule {}
