@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { ProfilesModule } from "../profiles/profiles.module";
 
 import { QueryAppointmentsUseCaseImpl } from "../application/use-cases/query-appointments.use-case.impl";
 import { MongooseAppointmentReadRepository } from "../infrastructure/adapters/outbound/mongoose-appointment-read.repository";
@@ -11,6 +12,7 @@ import { Appointment, AppointmentSchema } from "../schemas/appointment.schema";
     MongooseModule.forFeature([
       { name: Appointment.name, schema: AppointmentSchema },
     ]),
+    ProfilesModule,
   ],
   providers: [
     {
@@ -22,6 +24,7 @@ import { Appointment, AppointmentSchema } from "../schemas/appointment.schema";
       useClass: MongooseAppointmentReadRepository,
     },
   ],
-  exports: ["QueryAppointmentsUseCase"],
+  controllers: [],
+  exports: ["QueryAppointmentsUseCase", "AppointmentReadRepository"],
 })
 export class AppointmentModule {}

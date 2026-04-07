@@ -23,4 +23,8 @@ export class QueryAppointmentsUseCaseImpl implements QueryAppointmentsUseCase {
   async findByIdCard(idCard: number): Promise<AppointmentView[]> {
     return this.repository.findByIdCard(idCard);
   }
+
+  async findById(id: string): Promise<AppointmentView | null> {
+    return this.repository.findById(id);
+  }
 }

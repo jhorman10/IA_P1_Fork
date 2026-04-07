@@ -7,16 +7,17 @@ export type AuditAction =
   | "DOCTOR_CHECK_IN"
   | "DOCTOR_CHECK_OUT";
 
+export type AuditLogDocument = HydratedDocument<AuditLog>;
+
 export interface AuditDetails {
   patientIdCard?: number;
+  patientName?: string;
   doctorName?: string;
-  office?: string;
+  office?: string | null;
   priority?: string;
   queuePosition?: number;
   [key: string]: unknown;
 }
-
-export type AuditLogDocument = HydratedDocument<AuditLog>;
 
 @Schema({ collection: "audit_logs", timestamps: true })
 export class AuditLog {
