@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ConsultationPolicy } from "src/domain/policies/consultation.policy";
 import { NestLoggerAdapter } from "../../infrastructure/logging/nest-logger.adapter";
+import { SystemClockAdapter } from "../../infrastructure/utils/system-clock.adapter";
 
 import { AssignAvailableOfficesUseCaseImpl } from "../../application/use-cases/assign-available-offices.use-case.impl";
 import { CancelAppointmentUseCaseImpl } from "../../application/use-cases/cancel-appointment.use-case.impl";
@@ -50,6 +51,10 @@ import { RepositoriesModule } from "../repositories/repositories.module";
     {
       provide: "LoggerPort",
       useClass: NestLoggerAdapter,
+    },
+    {
+      provide: "ClockPort",
+      useClass: SystemClockAdapter,
     },
     {
       provide: "RegisterAppointmentUseCase",
