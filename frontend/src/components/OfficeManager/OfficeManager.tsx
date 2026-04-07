@@ -58,7 +58,7 @@ export default function OfficeManager({
     if (!office.enabled) {
       await onToggleEnabled(office.number, true);
     } else {
-      if (!office.can_disable) return;
+      if (office.occupied) return;
       await onToggleEnabled(office.number, false);
     }
   };
@@ -172,9 +172,9 @@ export default function OfficeManager({
                     office.enabled ? styles.btnDisable : styles.btnEnable
                   }
                   onClick={() => handleToggle(office)}
-                  disabled={loading || (office.enabled && !office.can_disable)}
+                  disabled={loading || (office.enabled && office.occupied)}
                   title={
-                    office.enabled && !office.can_disable
+                    office.enabled && office.occupied
                       ? "No se puede deshabilitar: el consultorio está ocupado"
                       : undefined
                   }
@@ -188,7 +188,7 @@ export default function OfficeManager({
                   {office.enabled ? "Deshabilitar" : "Habilitar"}
                 </button>
               </div>
-              {office.enabled && !office.can_disable && (
+              {office.enabled && office.occupied && (
                 <p className={styles.occupiedNote}>
                   Está siendo usado. Podrás deshabilitarlo cuando el doctor haga
                   check-out.
