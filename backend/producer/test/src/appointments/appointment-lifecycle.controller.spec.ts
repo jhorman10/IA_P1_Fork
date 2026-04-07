@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Test, TestingModule } from "@nestjs/testing";
