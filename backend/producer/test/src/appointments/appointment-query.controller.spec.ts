@@ -84,6 +84,8 @@ describe("AppointmentQueryController (Integration Tests)", () => {
           status: "called",
           priority: "medium",
           timestamp: 1645000000000,
+          doctorId: null,
+          doctorName: null,
         },
         {
           id: "apt-002",
@@ -93,6 +95,8 @@ describe("AppointmentQueryController (Integration Tests)", () => {
           status: "waiting",
           priority: "high",
           timestamp: 1645000100000,
+          doctorId: null,
+          doctorName: null,
         },
       ];
 
@@ -131,6 +135,8 @@ describe("AppointmentQueryController (Integration Tests)", () => {
           status: "called",
           priority: "medium",
           timestamp: 1645000000000,
+          doctorId: null,
+          doctorName: null,
         },
       ];
 

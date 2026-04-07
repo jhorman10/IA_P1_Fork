@@ -90,6 +90,8 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
       status: "waiting",
       priority: "medium",
       timestamp: 1712251200000,
+      doctorId: null,
+      doctorName: null,
     },
   ];
 
