@@ -1,7 +1,7 @@
 "use client";
 
 // SPEC-011: Admin Audit Page — read-only audit log viewer (admin only)
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import AuditFilters from "@/components/AuditFilters/AuditFilters";
 import AuditLogTable from "@/components/AuditLogTable/AuditLogTable";
@@ -41,6 +41,23 @@ export default function AdminAuditPage() {
     [profiles],
   );
 
+  const handleFilterChange = useCallback(
+    (newFilters: typeof filters) => {
+      if (newFilters.actorSearch) {
+        const search = newFilters.actorSearch.toLowerCase();
+        const match = profiles.find(
+          (p) =>
+            p.display_name?.toLowerCase().includes(search) ||
+            p.email?.toLowerCase().includes(search),
+        );
+        setFilters({ ...newFilters, actorUid: match?.uid });
+      } else {
+        setFilters({ ...newFilters, actorUid: undefined });
+      }
+    },
+    [profiles, setFilters],
+  );
+
   if (!allowed) return null;
 
   return (
@@ -60,7 +77,7 @@ export default function AdminAuditPage() {
         </div>
       )}
 
-      <AuditFilters filters={filters} onFilterChange={setFilters} />
+      <AuditFilters filters={filters} onFilterChange={handleFilterChange} />
 
       <AuditLogTable
         logs={logs}
