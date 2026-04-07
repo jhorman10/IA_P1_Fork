@@ -11,7 +11,7 @@ describe("AuditFilters", () => {
     render(<AuditFilters filters={emptyFilters} onFilterChange={jest.fn()} />);
 
     expect(screen.getByLabelText("Acción")).toBeInTheDocument();
-    expect(screen.getByLabelText("Actor (UID)")).toBeInTheDocument();
+    expect(screen.getByLabelText("Actor")).toBeInTheDocument();
     expect(screen.getByLabelText("Desde")).toBeInTheDocument();
     expect(screen.getByLabelText("Hasta")).toBeInTheDocument();
   });
@@ -51,7 +51,7 @@ describe("AuditFilters", () => {
       <AuditFilters filters={emptyFilters} onFilterChange={onFilterChange} />,
     );
 
-    fireEvent.change(screen.getByLabelText("Actor (UID)"), {
+    fireEvent.change(screen.getByLabelText("Actor"), {
       target: { value: "uid-abc" },
     });
 
@@ -67,7 +67,7 @@ describe("AuditFilters", () => {
       />,
     );
 
-    fireEvent.change(screen.getByLabelText("Actor (UID)"), {
+    fireEvent.change(screen.getByLabelText("Actor"), {
       target: { value: "" },
     });
 
@@ -85,7 +85,7 @@ describe("AuditFilters", () => {
     expect(screen.getByLabelText<HTMLSelectElement>("Acción").value).toBe(
       "DOCTOR_CHECK_IN",
     );
-    expect(screen.getByLabelText<HTMLInputElement>("Actor (UID)").value).toBe(
+    expect(screen.getByLabelText<HTMLInputElement>("Actor").value).toBe(
       "uid-123",
     );
   });

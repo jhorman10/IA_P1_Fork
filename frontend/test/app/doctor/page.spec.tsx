@@ -8,6 +8,7 @@ import { Doctor } from "@/domain/Doctor";
 import { Profile } from "@/domain/Profile";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 import { UseAuthReturn } from "@/hooks/useAuth";
+import { useAvailableOffices } from "@/hooks/useAvailableOffices";
 import { UseDoctorDashboardReturn } from "@/hooks/useDoctorDashboard";
 
 jest.mock("@/hooks/useAuth", () => ({
@@ -22,10 +23,17 @@ jest.mock("@/hooks/useAppointmentsWebSocket", () => ({
   useAppointmentsWebSocket: jest.fn(),
 }));
 
+jest.mock("@/hooks/useAvailableOffices", () => ({
+  useAvailableOffices: jest.fn(),
+}));
+
 import { useAuth } from "@/hooks/useAuth";
 import { useDoctorDashboard } from "@/hooks/useDoctorDashboard";
 
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
+const mockUseAvailableOffices = useAvailableOffices as jest.MockedFunction<
+  typeof useAvailableOffices
+>;
 const mockUseDoctorDashboard = useDoctorDashboard as jest.MockedFunction<
   typeof useDoctorDashboard
 >;
@@ -106,6 +114,12 @@ describe("DoctorDashboardPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseAuth.mockReturnValue(buildAuthReturn());
+    mockUseAvailableOffices.mockReturnValue({
+      offices: ["A1", "A2"],
+      loading: false,
+      error: null,
+      refetch: jest.fn(),
+    });
     mockUseDoctorDashboard.mockReturnValue(buildDashboardReturn());
     mockUseAppointmentsWebSocket.mockReturnValue({
       appointments: [],
@@ -182,9 +196,10 @@ describe("DoctorDashboardPage", () => {
 
     render(<DoctorDashboardPage />);
 
-    await user.click(screen.getByTestId("btn-check-in"));
+    await user.selectOptions(screen.getByTestId("office-select"), "A1");
+    await user.click(screen.getByTestId("btn-confirm-checkin"));
 
-    expect(checkIn).toHaveBeenCalledTimes(1);
+    expect(checkIn).toHaveBeenCalledWith("A1");
     expect(checkOut).not.toHaveBeenCalled();
   });
 
