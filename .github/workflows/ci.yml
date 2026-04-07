@@ -233,7 +233,7 @@ jobs:
 
       - name: Producer integration tests
         working-directory: backend/producer
-        run: npm test -- --testPathPattern="integration" --forceExit
+        run: npm test -- --testPathPatterns="integration" --forceExit
         env:
           MONGO_URI: mongodb://localhost:27017/appointments_db_test
           MONGODB_URI: mongodb://localhost:27017/appointments_db_test
@@ -254,7 +254,7 @@ jobs:
 
       - name: Consumer integration tests
         working-directory: backend/consumer
-        run: npm test -- --testPathPattern="integration" --forceExit
+        run: npm test -- --testPathPatterns="integration" --forceExit
         env:
           MONGO_URI: mongodb://localhost:27017/appointments_db_test
           MONGODB_URI: mongodb://localhost:27017/appointments_db_test
