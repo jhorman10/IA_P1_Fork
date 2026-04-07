@@ -1,6 +1,6 @@
 import { forwardRef, Module } from "@nestjs/common";
-import { ClientsModule, Transport } from "@nestjs/microservices";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ClientsModule, Transport } from "@nestjs/microservices";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import { DoctorServiceImpl } from "../application/use-cases/doctor.service.impl";
