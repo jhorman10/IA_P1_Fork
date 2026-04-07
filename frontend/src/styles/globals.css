@@ -8,7 +8,7 @@
   color-scheme: light;
 
   /* Base */
-  --background: #f8fafc;
+  --background: #f6f8fb;
   --foreground: #111827;
   --gold: #c6a96b;
   --border: #e5e7eb;
@@ -23,9 +23,9 @@
   --font-weight-bold: 700;
 
   /* Semantic surface */
-  --color-surface: #ffffff;
-  --color-surface-alt: #f8fafc;
-  --color-surface-tertiary: #f1f5f9;
+  --color-surface: #fcfcfd;
+  --color-surface-alt: #f1f4f8;
+  --color-surface-tertiary: #eef2f7;
 
   /* Semantic text */
   --color-text-primary: #0b1324;
@@ -38,7 +38,7 @@
   --color-border-light: #f1f5f9;
 
   /* Navbar tokens */
-  --color-nav-bg: #ffffff;
+  --color-nav-bg: #fcfcfd;
   --color-nav-text: #111827;
   --color-nav-link: #374151;
   --color-nav-link-hover-bg: #f1f5f9;
@@ -47,7 +47,7 @@
   --color-nav-link-active-border: #3b82f6;
 
   /* Input tokens */
-  --color-input-bg: #ffffff;
+  --color-input-bg: #fcfcfd;
   --color-input-border: #e2e8f0;
   --color-input-text: #0b1324;
 

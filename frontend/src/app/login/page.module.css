@@ -3,6 +3,6 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  background: var(--background, #f8fafc);
+  background: var(--background);
   padding: 0 16px;
 }

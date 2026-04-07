@@ -1,13 +1,12 @@
 .card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 24px 20px;
+  border-radius: var(--radius-md);
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  box-shadow: var(--shadow-sm);
+  gap: 6px;
   min-width: 140px;
   transition:
     background 0.3s ease,
@@ -15,47 +14,31 @@
     border-color 0.3s ease;
 }
 
-.icon {
-  font-size: 22px;
-  line-height: 1;
-}
-
 .value {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--color-text-primary);
   line-height: 1.1;
+  margin-top: 4px;
 }
 
 .label {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--color-text-secondary);
   font-weight: 500;
 }
 
 /* Variant: success */
-.success {
-  border-color: var(--color-green-200);
-}
-
 .success .value {
-  color: var(--color-green-800);
+  color: var(--color-green-700);
 }
 
 /* Variant: warning */
-.warning {
-  border-color: var(--color-amber-200);
-}
-
 .warning .value {
-  color: var(--color-amber-800);
+  color: var(--color-amber-700);
 }
 
 /* Variant: muted */
-.muted {
-  border-color: var(--color-border);
-}
-
 .muted .value {
   color: var(--color-text-tertiary);
 }

@@ -157,8 +157,8 @@
   padding: 10px 24px;
   border-radius: 8px;
   border: none;
-  background: linear-gradient(135deg, #c6a96b, #b89652);
-  color: white;
+  background: linear-gradient(135deg, var(--gold), #b89652);
+  color: var(--color-text-inverted);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;

@@ -2,6 +2,32 @@
 import { env } from "@/config/env";
 import { ApplyCapacityResult, Office } from "@/domain/Office";
 
+interface OfficeApiResponse {
+  number: string;
+  enabled: boolean;
+  occupied: boolean;
+  occupiedByDoctorId: string | null;
+  occupiedByDoctorName: string | null;
+  occupiedByStatus: string | null;
+  canDisable: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+function mapOfficeResponse(office: OfficeApiResponse): Office {
+  return {
+    number: office.number,
+    enabled: office.enabled,
+    occupied: office.occupied,
+    occupied_by_doctor_id: office.occupiedByDoctorId,
+    occupied_by_doctor_name: office.occupiedByDoctorName,
+    occupied_by_status: office.occupiedByStatus,
+    can_disable: office.canDisable,
+    created_at: office.createdAt,
+    updated_at: office.updatedAt,
+  };
+}
+
 export async function getOffices(token: string): Promise<Office[]> {
   const res = await fetch(`${env.API_BASE_URL}/offices`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -9,7 +35,8 @@ export async function getOffices(token: string): Promise<Office[]> {
   if (!res.ok) {
     throw new Error(`HTTP_ERROR: ${res.status}`);
   }
-  return res.json();
+  const data = (await res.json()) as OfficeApiResponse[];
+  return data.map(mapOfficeResponse);
 }
 
 export async function applyOfficeCapacity(
@@ -59,5 +86,6 @@ export async function updateOfficeEnabled(
     err.status = res.status;
     throw err;
   }
-  return res.json();
+  const office = (await res.json()) as OfficeApiResponse;
+  return mapOfficeResponse(office);
 }
