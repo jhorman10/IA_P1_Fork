@@ -2,6 +2,7 @@
 
 import { Appointment } from "@/domain/Appointment";
 import { anonymizeName } from "@/lib/anonymizeName";
+
 import styles from "./AssignmentNotification.module.css";
 
 interface AssignmentNotificationProps {
