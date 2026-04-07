@@ -19,9 +19,17 @@ export interface AuditDetails {
   [key: string]: unknown;
 }
 
-@Schema({ collection: "audit_logs" })
+@Schema({ collection: "audit_logs", timestamps: true })
 export class AuditLog {
-  @Prop({ required: true, type: String })
+  @Prop({
+    required: true,
+    enum: [
+      "APPOINTMENT_ASSIGNED",
+      "APPOINTMENT_COMPLETED",
+      "DOCTOR_CHECK_IN",
+      "DOCTOR_CHECK_OUT",
+    ] as AuditAction[],
+  })
   action!: AuditAction;
 
   @Prop({ type: String, default: null })
@@ -30,10 +38,10 @@ export class AuditLog {
   @Prop({ type: String, default: null })
   doctorId!: string | null;
 
-  @Prop({ required: true, type: Object })
+  @Prop({ type: Object, required: true })
   details!: AuditDetails;
 
-  @Prop({ required: true, type: Number })
+  @Prop({ required: true })
   timestamp!: number;
 }
 
