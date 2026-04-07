@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-empty-object-type */
 import { HydratedDocument } from "mongoose";
 export type AuditAction =
   | "APPOINTMENT_ASSIGNED"
