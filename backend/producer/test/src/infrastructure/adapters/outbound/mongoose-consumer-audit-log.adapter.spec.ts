@@ -1,5 +1,5 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { getModelToken } from "@nestjs/mongoose";
+import { Test, TestingModule } from "@nestjs/testing";
 import { MongooseConsumerAuditLogAdapter } from "src/infrastructure/adapters/outbound/mongoose-consumer-audit-log.adapter";
 import { ConsumerAuditLogReadModel } from "src/schemas/consumer-audit-log.schema";
 

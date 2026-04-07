@@ -1,8 +1,8 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { MongooseSpecialtyRepository } from "src/infrastructure/adapters/outbound/mongoose-specialty.repository";
-import { Specialty } from "src/schemas/specialty.schema";
 import { Doctor } from "src/schemas/doctor.schema";
+import { Specialty } from "src/schemas/specialty.schema";
 
 describe("MongooseSpecialtyRepository", () => {
   let repository: MongooseSpecialtyRepository;

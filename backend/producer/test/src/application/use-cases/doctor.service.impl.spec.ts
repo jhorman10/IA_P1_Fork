@@ -4,9 +4,9 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { DoctorServiceImpl } from "src/application/use-cases/doctor.service.impl";
+import { DoctorView } from "src/domain/models/doctor-view";
 import { AppointmentLifecyclePublisherPort } from "src/domain/ports/outbound/appointment-lifecycle-publisher.port";
 import { DoctorRepository } from "src/domain/ports/outbound/doctor.repository";
-import { DoctorView } from "src/domain/models/doctor-view";
 
 describe("DoctorServiceImpl (unit)", () => {
   let service: DoctorServiceImpl;
