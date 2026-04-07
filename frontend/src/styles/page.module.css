@@ -1,58 +1,4 @@
 /* ========================================
-   SYSTEM - VARIABLES Y TOKENS
-   ======================================== */
-
-:root {
-  /* Typography */
-  --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Roboto, sans-serif;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-
-  /* Colors - Semantic Palette */
-  --color-surface: #ffffff;
-  --color-surface-alt: #f8fafc;
-  --color-surface-tertiary: #f1f5f9;
-  --color-text-primary: #0b1324;
-  --color-text-secondary: #475569;
-  --color-text-tertiary: #94a3b8;
-  --color-border: #e2e8f0;
-  --color-border-light: #f1f5f9;
-
-  /* Brand Colors */
-  --color-blue-50: #eff6ff;
-  --color-blue-500: #3b82f6;
-  --color-blue-600: #2563eb;
-  --color-blue-200: #bfdbfe;
-  --color-amber-500: #f59e0b;
-  --color-amber-50: #fffbeb;
-  --color-green-500: #22c55e;
-  --color-green-50: #f0fdf4;
-  --color-red-600: #dc2626;
-  --color-red-50: #fee2e2;
-  --color-slate-400: #94a3b8;
-  --color-slate-50: #f8fafc;
-
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 8px 28px rgba(15, 23, 42, 0.10);
-  --shadow-xl: 0 12px 48px rgba(15, 23, 42, 0.12);
-
-  /* Spacing */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-
-  /* Animations */
-  --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
-  --ease-emphasized: cubic-bezier(0.2, 0.0, 0.0, 1);
-  --duration-short: 0.2s;
-  --duration-standard: 0.35s;
-}
-
-/* ========================================
    LAYOUT PRINCIPAL - DASHBOARD CONTAINER
    ======================================== */
 
@@ -107,8 +53,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .audioHint {
@@ -192,10 +143,14 @@
 
 /* Efecto de elevación en hover */
 .appointmentCard::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 50%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    transparent 50%
+  );
   opacity: 0;
   transition: opacity var(--duration-short) ease;
   pointer-events: none;
@@ -217,12 +172,20 @@
 /* Estados por tipo de turno */
 .appointmentCard.waiting {
   border-left-color: var(--color-amber-500);
-  background: linear-gradient(135deg, var(--color-amber-50) 0%, var(--color-surface) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-amber-50) 0%,
+    var(--color-surface) 100%
+  );
 }
 
 .appointmentCard.called {
   border-left-color: var(--color-blue-600);
-  background: linear-gradient(135deg, var(--color-blue-50) 0%, var(--color-surface) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-blue-50) 0%,
+    var(--color-surface) 100%
+  );
 }
 
 .appointmentCard.atendido {
@@ -380,7 +343,7 @@
   color: var(--color-text-secondary);
   font-weight: var(--font-weight-medium);
   font-variant-numeric: tabular-nums;
-  font-family: 'Monaco', 'Courier New', monospace;
+  font-family: "Monaco", "Courier New", monospace;
   background: var(--color-surface-tertiary);
   padding: 4px 8px;
   border-radius: var(--radius-sm);
@@ -462,7 +425,11 @@
   display: flex;
   flex-direction: row;
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--color-surface-alt) 0%, var(--color-surface-tertiary) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--color-surface-alt) 0%,
+    var(--color-surface-tertiary) 100%
+  );
 }
 
 .leftPanel {
@@ -528,6 +495,10 @@
 
 .highlight {
   border-left: 6px solid var(--color-blue-600) !important;
-  background: linear-gradient(100deg, var(--color-blue-50) 80%, var(--color-surface-alt) 100%) !important;
+  background: linear-gradient(
+    100deg,
+    var(--color-blue-50) 80%,
+    var(--color-surface-alt) 100%
+  ) !important;
   color: var(--color-text-primary) !important;
 }
