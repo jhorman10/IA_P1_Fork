@@ -25,12 +25,11 @@ import { RoleGuard } from "../auth/guards/role.guard";
 import { AuthenticatedUser } from "../auth/types/authenticated-user";
 import { Auditable } from "../common/decorators/auditable.decorator";
 import { AuditInterceptor } from "../common/interceptors/audit.interceptor";
+import { QueryAppointmentsUseCase } from "../domain/ports/inbound/query-appointments.use-case";
 import {
   AppointmentLifecyclePublisherPort,
   LIFECYCLE_PUBLISHER_TOKEN,
 } from "../domain/ports/outbound/appointment-lifecycle-publisher.port";
-import { AppointmentReadRepository } from "../domain/ports/outbound/appointment-read.repository";
-import { QueryAppointmentsUseCase } from "../domain/ports/inbound/query-appointments.use-case";
 import { CreateAppointmentResponseDto } from "../dto/create-appointment-response.dto";
 
 // ⚕️ HUMAN CHECK - SPEC-012: Lifecycle controller handles explicit complete/cancel flows.
