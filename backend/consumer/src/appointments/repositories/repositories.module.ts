@@ -62,7 +62,11 @@ import { PoliciesModule } from "../policies/policies.module";
     // 2. Wrap with event-dispatching decorator (cross-cutting concern)
     {
       provide: "MongooseAppointmentRepository",
-      inject: [getModelToken(Appointment.name), "ConsultationPolicy", "LoggerPort"],
+      inject: [
+        getModelToken(Appointment.name),
+        ConsultationPolicy,
+        "LoggerPort",
+      ],
       useFactory: (model, policy, logger) =>
         new MongooseAppointmentRepository(model, policy, logger),
     },
