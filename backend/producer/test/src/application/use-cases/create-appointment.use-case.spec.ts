@@ -22,6 +22,7 @@ describe("CreateAppointmentUseCaseImpl", () => {
       findByIdCard: jest.fn(),
       findWaiting: jest.fn(),
       findActiveByIdCard: jest.fn().mockResolvedValue(null),
+      findById: jest.fn(),
     } as jest.Mocked<AppointmentReadRepository>;
 
     const module: TestingModule = await Test.createTestingModule({

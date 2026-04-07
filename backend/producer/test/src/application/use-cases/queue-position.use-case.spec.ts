@@ -12,6 +12,7 @@ describe("GetQueuePositionUseCaseImpl", () => {
       findByIdCard: jest.fn(),
       findWaiting: jest.fn(),
       findActiveByIdCard: jest.fn(),
+      findById: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
