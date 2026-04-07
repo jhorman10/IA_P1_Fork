@@ -1,5 +1,5 @@
-import { ValidationError } from "../errors/validation.error";
 import { DoctorStatus } from "../../schemas/doctor.schema";
+import { ValidationError } from "../errors/validation.error";
 
 export { DoctorStatus };
 
