@@ -117,8 +117,11 @@ import { UseCasesModule } from "./use-cases/use-cases.module";
     "CompleteExpiredAppointmentsUseCase",
     "AssignAvailableOfficesUseCase",
     "MaintenanceOrchestratorUseCase",
+    "CompleteAppointmentUseCase",
+    "CancelAppointmentUseCase",
     "AppointmentRepository",
     "LockRepository",
+    "DoctorRepository",
     // Infrastructure adapters (for other modules)
     "LoggerPort",
     "ClockPort",
