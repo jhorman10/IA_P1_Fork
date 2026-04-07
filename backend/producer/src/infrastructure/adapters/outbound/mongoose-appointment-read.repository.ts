@@ -44,6 +44,12 @@ export class MongooseAppointmentReadRepository implements AppointmentReadReposit
     return docs.map((doc) => this.toPayload(doc));
   }
 
+  async findById(id: string): Promise<AppointmentView | null> {
+    const doc = await this.appointmentModel.findById(id).exec();
+    if (!doc) return null;
+    return this.toPayload(doc);
+  }
+
   /**
    * Maps a Mongoose document to the standardized event payload DTO.
    * SRP: Mapping responsibility isolated here, not in the service.
@@ -54,6 +60,7 @@ export class MongooseAppointmentReadRepository implements AppointmentReadReposit
       fullName: doc.fullName,
       idCard: doc.idCard,
       office: doc.office,
+      doctorId: (doc as any).doctorId ?? null,
       status: doc.status,
       priority: doc.priority,
       timestamp: doc.timestamp,

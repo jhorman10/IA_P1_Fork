@@ -2,11 +2,48 @@
 name: Orchestrator
 description: Orquesta el flujo completo ASDD para nuevas funcionalidades con trabajo paralelo. Coordina Spec (secuencial) → [Backend ∥ Frontend] (paralelo) → [Tests BE ∥ Tests FE] (paralelo) → QA → Doc (opcional).
 tools:
-  - read/readFile
-  - search/listDirectory
-  - search
-  - web/fetch
-  - agent
+  [
+    vscode/getProjectSetupInfo,
+    vscode/installExtension,
+    vscode/memory,
+    vscode/newWorkspace,
+    vscode/resolveMemoryFileUri,
+    vscode/runCommand,
+    vscode/vscodeAPI,
+    vscode/extensions,
+    vscode/askQuestions,
+    execute/runNotebookCell,
+    execute/testFailure,
+    execute/getTerminalOutput,
+    execute/awaitTerminal,
+    execute/killTerminal,
+    execute/createAndRunTask,
+    execute/runInTerminal,
+    read/getNotebookSummary,
+    read/problems,
+    read/readFile,
+    read/viewImage,
+    read/terminalSelection,
+    read/terminalLastCommand,
+    agent/runSubagent,
+    edit/createDirectory,
+    edit/createFile,
+    edit/createJupyterNotebook,
+    edit/editFiles,
+    edit/editNotebook,
+    edit/rename,
+    search/changes,
+    search/codebase,
+    search/fileSearch,
+    search/listDirectory,
+    search/searchResults,
+    search/textSearch,
+    search/usages,
+    web/fetch,
+    web/githubRepo,
+    browser/openBrowserPage,
+    todo,
+  ]
 agents:
   - Spec Generator
   - Backend Developer
