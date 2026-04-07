@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { Appointment } from "@/domain/Appointment";
 import { anonymizeName } from "@/lib/anonymizeName";
+
 import styles from "./AssignmentNotification.module.css";
 
 export interface AssignmentNotificationProps {
