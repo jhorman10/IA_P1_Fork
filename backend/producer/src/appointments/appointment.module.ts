@@ -22,6 +22,6 @@ import { Appointment, AppointmentSchema } from "../schemas/appointment.schema";
       useClass: MongooseAppointmentReadRepository,
     },
   ],
-  exports: ["QueryAppointmentsUseCase"],
+  exports: ["QueryAppointmentsUseCase", "AppointmentReadRepository"],
 })
 export class AppointmentModule {}
