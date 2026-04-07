@@ -35,6 +35,7 @@ describe("OperationalMetricsUseCaseImpl", () => {
     timestamp: todayStart + 1000,
     completedAt: undefined,
     doctorId: null,
+    doctorName: null,
     ...overrides,
   });
 

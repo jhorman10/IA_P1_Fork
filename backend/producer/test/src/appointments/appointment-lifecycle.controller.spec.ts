@@ -68,6 +68,7 @@ describe("AppointmentLifecycleController (Integration Tests)", () => {
     priority: "medium",
     timestamp: 1760000000,
     doctorId: "doc-a",
+    doctorName: null,
     ...overrides,
   });
 
@@ -101,6 +102,14 @@ describe("AppointmentLifecycleController (Integration Tests)", () => {
         {
           provide: "AppointmentReadRepository",
           useValue: appointmentReadRepository,
+        },
+        {
+          provide: "QueryAppointmentsUseCase",
+          useValue: {
+            findById: appointmentReadRepository.findById,
+            findAll: jest.fn(),
+            findByIdCard: jest.fn(),
+          },
         },
         {
           provide: LIFECYCLE_PUBLISHER_TOKEN,
