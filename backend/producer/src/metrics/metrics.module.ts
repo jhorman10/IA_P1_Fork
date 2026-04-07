@@ -2,8 +2,8 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import {
-  OperationalMetricsUseCaseImpl,
   OPERATIONAL_METRICS_PORT,
+  OperationalMetricsUseCaseImpl,
 } from "../application/use-cases/operational-metrics.use-case.impl";
 import { AppointmentModule } from "../appointments/appointment.module";
 import { DoctorModule } from "../doctors/doctor.module";

@@ -3,7 +3,6 @@ import {
   ConflictException,
   NotFoundException,
 } from "@nestjs/common";
-
 import { SpecialtyServiceImpl } from "src/application/use-cases/specialty.service.impl";
 import { SpecialtyView } from "src/domain/models/specialty-view";
 import { SpecialtyRepository } from "src/domain/ports/outbound/specialty.repository";

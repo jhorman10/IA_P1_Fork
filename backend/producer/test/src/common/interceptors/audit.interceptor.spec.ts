@@ -1,7 +1,6 @@
 import { CallHandler, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { firstValueFrom, of, throwError } from "rxjs";
-
 import { AUDIT_ACTION_KEY } from "src/common/decorators/auditable.decorator";
 import { AuditInterceptor } from "src/common/interceptors/audit.interceptor";
 import { OperationalAuditPort } from "src/domain/ports/outbound/operational-audit.port";

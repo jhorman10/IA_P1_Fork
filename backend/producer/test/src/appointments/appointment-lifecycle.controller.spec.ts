@@ -2,20 +2,19 @@
 import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Test, TestingModule } from "@nestjs/testing";
-import request from "supertest";
-
 import { AppointmentLifecycleController } from "src/appointments/appointment-lifecycle.controller";
 import { FirebaseAuthGuard } from "src/auth/guards/firebase-auth.guard";
 import { RoleGuard } from "src/auth/guards/role.guard";
 import { AuditInterceptor } from "src/common/interceptors/audit.interceptor";
 import { AppointmentView } from "src/domain/models/appointment-view";
 import {
-  LIFECYCLE_PUBLISHER_TOKEN,
   AppointmentLifecyclePublisherPort,
+  LIFECYCLE_PUBLISHER_TOKEN,
 } from "src/domain/ports/outbound/appointment-lifecycle-publisher.port";
 import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port";
 import { OPERATIONAL_AUDIT_PORT } from "src/domain/ports/outbound/operational-audit.port";
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
+import request from "supertest";
 
 describe("AppointmentLifecycleController (Integration Tests)", () => {
   let app: INestApplication;

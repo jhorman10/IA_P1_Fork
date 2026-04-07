@@ -1,6 +1,5 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
-
 import { MongooseProfileAuditLogAdapter } from "src/infrastructure/adapters/outbound/mongoose-profile-audit-log.adapter";
 import { ProfileAuditLog } from "src/schemas/profile-audit-log.schema";
 

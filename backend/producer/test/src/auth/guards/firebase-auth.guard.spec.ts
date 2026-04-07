@@ -3,7 +3,6 @@ import {
   ForbiddenException,
   UnauthorizedException,
 } from "@nestjs/common";
-
 import { FirebaseAuthGuard } from "src/auth/guards/firebase-auth.guard";
 import { ProfileView } from "src/domain/models/profile-view";
 import { FirebaseAuthPort } from "src/domain/ports/outbound/firebase-auth.port";

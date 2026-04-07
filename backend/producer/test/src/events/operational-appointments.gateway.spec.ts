@@ -1,7 +1,6 @@
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Server, Socket } from "socket.io";
-
 import { WsFirebaseAuthGuard } from "src/auth/guards/ws-firebase-auth.guard";
 import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port";
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";

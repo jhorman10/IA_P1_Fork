@@ -1,6 +1,5 @@
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-
 import { AuditLogQueryDto } from "src/dto/audit-log-query.dto";
 
 describe("AuditLogQueryDto", () => {

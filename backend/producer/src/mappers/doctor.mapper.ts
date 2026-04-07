@@ -1,5 +1,5 @@
-import { DoctorResponseDto } from "../dto/doctor-response.dto";
 import { DoctorView } from "../domain/models/doctor-view";
+import { DoctorResponseDto } from "../dto/doctor-response.dto";
 
 export class DoctorMapper {
   static toDto(view: DoctorView): DoctorResponseDto {

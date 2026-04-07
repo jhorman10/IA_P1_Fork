@@ -6,19 +6,18 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Test, TestingModule } from "@nestjs/testing";
-
 import { AppointmentQueryController } from "src/appointments/appointment-query.controller";
 import { AuthController } from "src/auth/auth.controller";
 import { DoctorContextGuard } from "src/auth/guards/doctor-context.guard";
 import { FirebaseAuthGuard } from "src/auth/guards/firebase-auth.guard";
 import { RoleGuard } from "src/auth/guards/role.guard";
 import { AuditInterceptor } from "src/common/interceptors/audit.interceptor";
+import { DoctorController } from "src/doctors/doctor.controller";
 import { ProfileView } from "src/domain/models/profile-view";
 import { PROFILE_SERVICE_TOKEN } from "src/domain/ports/inbound/profile-service.port";
 import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port";
 import { OPERATIONAL_AUDIT_PORT } from "src/domain/ports/outbound/operational-audit.port";
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
-import { DoctorController } from "src/doctors/doctor.controller";
 import { ProducerController } from "src/producer.controller";
 import { AppointmentEventPayload } from "src/types/appointment-event";
 import request from "supertest";

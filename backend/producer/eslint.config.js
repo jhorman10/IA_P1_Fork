@@ -4,7 +4,8 @@ import tsEslintPlugin from "@typescript-eslint/eslint-plugin";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 
 function withoutExtends(config) {
-  const {  ...rest } = config;
+  // remove `extends` (and any other legacy-only keys) when using flat config
+  const { extends: _extends, overrideConfig, ...rest } = config || {};
   return rest;
 }
 

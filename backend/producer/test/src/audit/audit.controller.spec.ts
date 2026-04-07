@@ -5,12 +5,11 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Test, TestingModule } from "@nestjs/testing";
-
 import { AuditController } from "src/audit/audit.controller";
 import { FirebaseAuthGuard } from "src/auth/guards/firebase-auth.guard";
 import { RoleGuard } from "src/auth/guards/role.guard";
-import { OPERATIONAL_AUDIT_QUERY_PORT } from "src/domain/ports/outbound/operational-audit-query.port";
 import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port";
+import { OPERATIONAL_AUDIT_QUERY_PORT } from "src/domain/ports/outbound/operational-audit-query.port";
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
 import request from "supertest";
 

@@ -4,11 +4,10 @@ import {
   ForbiddenException,
   NotFoundException,
 } from "@nestjs/common";
-
 import { ProfileServiceImpl } from "src/application/use-cases/profile.service.impl";
 import { ProfileView } from "src/domain/models/profile-view";
-import { ProfileAuditLogRepository } from "src/domain/ports/outbound/profile-audit-log.repository";
 import { ProfileRepository } from "src/domain/ports/outbound/profile.repository";
+import { ProfileAuditLogRepository } from "src/domain/ports/outbound/profile-audit-log.repository";
 
 describe("ProfileServiceImpl", () => {
   let service: ProfileServiceImpl;

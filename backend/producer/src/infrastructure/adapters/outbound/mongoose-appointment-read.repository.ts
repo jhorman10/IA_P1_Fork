@@ -2,12 +2,12 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
+import { AppointmentView } from "../../../domain/models/appointment-view";
 import { AppointmentReadRepository } from "../../../domain/ports/outbound/appointment-read.repository";
 import {
   Appointment,
   AppointmentDocument,
 } from "../../../schemas/appointment.schema";
-import { AppointmentView } from "../../../domain/models/appointment-view";
 
 /**
  * Adapter: Infrastructure — Mongoose implementation of AppointmentReadRepository.

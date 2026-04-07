@@ -3,10 +3,10 @@ import { MongooseModule } from "@nestjs/mongoose";
 
 import { OfficeServiceImpl } from "../application/use-cases/office.service.impl";
 import { MongooseOfficeRepository } from "../infrastructure/adapters/outbound/mongoose-office.repository";
+import { ProfilesModule } from "../profiles/profiles.module";
 import { Doctor, DoctorSchema } from "../schemas/doctor.schema";
 import { Office, OfficeSchema } from "../schemas/office.schema";
 import { OfficeController } from "./office.controller";
-import { ProfilesModule } from "../profiles/profiles.module";
 
 /**
  * SPEC-016: Módulo del catálogo administrable de consultorios.

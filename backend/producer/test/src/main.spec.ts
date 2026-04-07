@@ -20,7 +20,7 @@ jest.mock("@nestjs/core", () => ({
 }));
 
 jest.mock("@nestjs/common", () => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+   
   const actual = jest.requireActual("@nestjs/common");
   return {
     ...actual,

@@ -13,15 +13,15 @@ import { switchMap, tap } from "rxjs/operators";
 import { AuthenticatedUser } from "../../auth/types/authenticated-user";
 import { ProfileView } from "../../domain/models/profile-view";
 import {
-  ProfileRepository,
-  PROFILE_REPOSITORY_TOKEN,
-} from "../../domain/ports/outbound/profile.repository";
-import {
+  OPERATIONAL_AUDIT_PORT,
   OperationalAuditAction,
   OperationalAuditEntry,
   OperationalAuditPort,
-  OPERATIONAL_AUDIT_PORT,
 } from "../../domain/ports/outbound/operational-audit.port";
+import {
+  PROFILE_REPOSITORY_TOKEN,
+  ProfileRepository,
+} from "../../domain/ports/outbound/profile.repository";
 import { AUDIT_ACTION_KEY } from "../decorators/auditable.decorator";
 
 const SESSION_DEDUP_WINDOW_MS = 24 * 60 * 60 * 1000;

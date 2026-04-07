@@ -1,9 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
-
 import { OperationalMetricsUseCaseImpl } from "src/application/use-cases/operational-metrics.use-case.impl";
-import { CONSUMER_AUDIT_LOG_QUERY_PORT } from "src/domain/ports/outbound/consumer-audit-log-query.port";
 import { AppointmentView } from "src/domain/models/appointment-view";
 import { DoctorView } from "src/domain/models/doctor-view";
+import { CONSUMER_AUDIT_LOG_QUERY_PORT } from "src/domain/ports/outbound/consumer-audit-log-query.port";
 
 /**
  * SPEC-013: Unit tests for OperationalMetricsUseCaseImpl

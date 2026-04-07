@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { DoctorServicePort } from "../../domain/ports/inbound/doctor-service.port";
 import { AppointmentView } from "../../domain/models/appointment-view";
 import { DoctorView } from "../../domain/models/doctor-view";
+import { DoctorServicePort } from "../../domain/ports/inbound/doctor-service.port";
 import {
   OPERATIONAL_METRICS_PORT,
   OperationalMetricsPort,

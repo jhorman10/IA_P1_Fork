@@ -1,6 +1,5 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
-
 import { MongooseProfileRepository } from "src/infrastructure/adapters/outbound/mongoose-profile.repository";
 import { Profile } from "src/schemas/profile.schema";
 

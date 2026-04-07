@@ -3,10 +3,10 @@ import { MongooseModule } from "@nestjs/mongoose";
 
 import { SpecialtyServiceImpl } from "../application/use-cases/specialty.service.impl";
 import { MongooseSpecialtyRepository } from "../infrastructure/adapters/outbound/mongoose-specialty.repository";
+import { ProfilesModule } from "../profiles/profiles.module";
 import { Doctor, DoctorSchema } from "../schemas/doctor.schema";
 import { Specialty, SpecialtySchema } from "../schemas/specialty.schema";
 import { SpecialtiesController } from "./specialties.controller";
-import { ProfilesModule } from "../profiles/profiles.module";
 
 /**
  * SPEC-015: Módulo del catálogo de especialidades médicas.

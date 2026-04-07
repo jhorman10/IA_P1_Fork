@@ -3,23 +3,23 @@ import { MongooseModule } from "@nestjs/mongoose";
 
 import { ProfileServiceImpl } from "../application/use-cases/profile.service.impl";
 import { AuthController } from "../auth/auth.controller";
-import { FirebaseAuthGuard } from "../auth/guards/firebase-auth.guard";
 import { DoctorContextGuard } from "../auth/guards/doctor-context.guard";
+import { FirebaseAuthGuard } from "../auth/guards/firebase-auth.guard";
 import { FirebaseTokenOnlyGuard } from "../auth/guards/firebase-token-only.guard";
 import { RoleGuard } from "../auth/guards/role.guard";
+import { DoctorModule } from "../doctors/doctor.module";
 import { PROFILE_SERVICE_TOKEN } from "../domain/ports/inbound/profile-service.port";
 import { FIREBASE_AUTH_PORT } from "../domain/ports/outbound/firebase-auth.port";
-import { PROFILE_AUDIT_LOG_REPOSITORY_TOKEN } from "../domain/ports/outbound/profile-audit-log.repository";
 import { PROFILE_REPOSITORY_TOKEN } from "../domain/ports/outbound/profile.repository";
+import { PROFILE_AUDIT_LOG_REPOSITORY_TOKEN } from "../domain/ports/outbound/profile-audit-log.repository";
 import { FirebaseAuthAdapter } from "../infrastructure/adapters/outbound/firebase-auth.adapter";
-import { MongooseProfileAuditLogAdapter } from "../infrastructure/adapters/outbound/mongoose-profile-audit-log.adapter";
 import { MongooseProfileRepository } from "../infrastructure/adapters/outbound/mongoose-profile.repository";
+import { MongooseProfileAuditLogAdapter } from "../infrastructure/adapters/outbound/mongoose-profile-audit-log.adapter";
+import { Profile, ProfileSchema } from "../schemas/profile.schema";
 import {
   ProfileAuditLog,
   ProfileAuditLogSchema,
 } from "../schemas/profile-audit-log.schema";
-import { Profile, ProfileSchema } from "../schemas/profile.schema";
-import { DoctorModule } from "../doctors/doctor.module";
 import { SpecialtiesModule } from "../specialties/specialty.module";
 import { ProfilesController } from "./profiles.controller";
 

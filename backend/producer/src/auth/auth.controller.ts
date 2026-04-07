@@ -18,11 +18,11 @@ import { FirebaseAuthGuard } from "../auth/guards/firebase-auth.guard";
 import { AuthenticatedUser } from "../auth/types/authenticated-user";
 import { Auditable } from "../common/decorators/auditable.decorator";
 import { AuditInterceptor } from "../common/interceptors/audit.interceptor";
-import { SessionResponseDto } from "../dto/session-response.dto";
 import {
   PROFILE_SERVICE_TOKEN,
   ProfileServicePort,
 } from "../domain/ports/inbound/profile-service.port";
+import { SessionResponseDto } from "../dto/session-response.dto";
 
 /** Maps role → allowed frontend modules per SPEC-004 permissions matrix. */
 const ROLE_MODULES: Record<string, string[]> = {

@@ -9,12 +9,12 @@ import {
 import { Roles } from "../auth/decorators/roles.decorator";
 import { FirebaseAuthGuard } from "../auth/guards/firebase-auth.guard";
 import { RoleGuard } from "../auth/guards/role.guard";
+import { OperationalAuditEntry } from "../domain/ports/outbound/operational-audit.port";
 import {
   AuditLogFilters,
-  OperationalAuditQueryPort,
   OPERATIONAL_AUDIT_QUERY_PORT,
+  OperationalAuditQueryPort,
 } from "../domain/ports/outbound/operational-audit-query.port";
-import { OperationalAuditEntry } from "../domain/ports/outbound/operational-audit.port";
 import { AuditLogQueryDto } from "../dto/audit-log-query.dto";
 import {
   AuditLogEntryDto,

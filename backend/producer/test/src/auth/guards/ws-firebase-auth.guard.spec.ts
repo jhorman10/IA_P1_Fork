@@ -1,8 +1,8 @@
 import { ExecutionContext } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Socket } from "socket.io";
-
 import { WsFirebaseAuthGuard } from "src/auth/guards/ws-firebase-auth.guard";
+import { ProfileView } from "src/domain/models/profile-view";
 import {
   FIREBASE_AUTH_PORT,
   FirebaseAuthPort,
@@ -11,7 +11,6 @@ import {
   PROFILE_REPOSITORY_TOKEN,
   ProfileRepository,
 } from "src/domain/ports/outbound/profile.repository";
-import { ProfileView } from "src/domain/models/profile-view";
 
 describe("WsFirebaseAuthGuard", () => {
   let guard: WsFirebaseAuthGuard;

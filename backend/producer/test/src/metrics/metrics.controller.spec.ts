@@ -5,14 +5,13 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Test, TestingModule } from "@nestjs/testing";
-import request from "supertest";
-
-import { MetricsController } from "src/metrics/metrics.controller";
 import { FirebaseAuthGuard } from "src/auth/guards/firebase-auth.guard";
 import { RoleGuard } from "src/auth/guards/role.guard";
 import { OPERATIONAL_METRICS_PORT } from "src/domain/ports/inbound/operational-metrics.port";
 import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port";
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
+import { MetricsController } from "src/metrics/metrics.controller";
+import request from "supertest";
 
 /**
  * SPEC-013: Integration tests for MetricsController.

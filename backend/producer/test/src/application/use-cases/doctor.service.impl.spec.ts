@@ -1,10 +1,9 @@
 import { BadRequestException, ConflictException } from "@nestjs/common";
-
 import { DoctorServiceImpl } from "src/application/use-cases/doctor.service.impl";
 import { DoctorView } from "src/domain/models/doctor-view";
 import { DoctorServicePort } from "src/domain/ports/inbound/doctor-service.port";
-import { DoctorEventPublisherPort } from "src/domain/ports/outbound/doctor-event-publisher.port";
 import { DoctorRepository } from "src/domain/ports/outbound/doctor.repository";
+import { DoctorEventPublisherPort } from "src/domain/ports/outbound/doctor-event-publisher.port";
 import { OfficeRepository } from "src/domain/ports/outbound/office.repository";
 
 describe("DoctorServiceImpl", () => {

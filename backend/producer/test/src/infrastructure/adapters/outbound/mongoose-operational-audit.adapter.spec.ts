@@ -1,6 +1,5 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
-
 import { MongooseOperationalAuditAdapter } from "src/infrastructure/adapters/outbound/mongoose-operational-audit.adapter";
 import { OperationalAuditLog } from "src/schemas/operational-audit-log.schema";
 

@@ -1,6 +1,5 @@
 import { BadRequestException, ConflictException } from "@nestjs/common";
 import { Model } from "mongoose";
-
 import { OfficeServiceImpl } from "src/application/use-cases/office.service.impl";
 import { OfficeView } from "src/domain/models/office-view";
 import { OfficeRepository } from "src/domain/ports/outbound/office.repository";

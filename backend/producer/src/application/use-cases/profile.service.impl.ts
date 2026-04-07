@@ -15,14 +15,14 @@ import {
   UpdateProfileCommand,
 } from "../../domain/ports/inbound/profile-service.port";
 import {
-  PROFILE_AUDIT_LOG_REPOSITORY_TOKEN,
-  ProfileAuditLogRepository,
-} from "../../domain/ports/outbound/profile-audit-log.repository";
-import {
   PROFILE_REPOSITORY_TOKEN,
   ProfilePage,
   ProfileRepository,
 } from "../../domain/ports/outbound/profile.repository";
+import {
+  PROFILE_AUDIT_LOG_REPOSITORY_TOKEN,
+  ProfileAuditLogRepository,
+} from "../../domain/ports/outbound/profile-audit-log.repository";
 
 /**
  * SPEC-004: Application Use Case — Profile Service.
