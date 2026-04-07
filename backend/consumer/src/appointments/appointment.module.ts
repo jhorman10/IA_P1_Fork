@@ -112,17 +112,10 @@ import { UseCasesModule } from "./use-cases/use-cases.module";
     },
   ],
   exports: [
-    // Public ports (use cases, repositories)
-    "RegisterAppointmentUseCase",
-    "CompleteExpiredAppointmentsUseCase",
-    "AssignAvailableOfficesUseCase",
-    "MaintenanceOrchestratorUseCase",
-    "CompleteAppointmentUseCase",
-    "CancelAppointmentUseCase",
-    "AppointmentRepository",
-    "LockRepository",
-    "DoctorRepository",
-    // Infrastructure adapters (for other modules)
+    // Re-export sub-modules that provide use-cases and repositories
+    UseCasesModule,
+    RepositoriesModule,
+    // Infrastructure adapters (provided here)
     "LoggerPort",
     "ClockPort",
     "NotificationPort",
