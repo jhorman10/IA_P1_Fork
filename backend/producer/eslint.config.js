@@ -4,19 +4,22 @@ import tsEslintPlugin from "@typescript-eslint/eslint-plugin";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 
 function withoutExtends(config) {
-  const {  ...rest } = config;
+  const { extends: _extends, ...rest } = config || {};
   return rest;
 }
 
-export default [
-  Object.assign({}, withoutExtends(jsConfig.configs.recommended), {
-    files: ["**/*.js"],
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: "module",
-    },
-  }),
-  Object.assign({}, withoutExtends(tsEslintPlugin.configs.recommended), {
+const js = Object.assign({}, withoutExtends(jsConfig.configs.recommended), {
+  files: ["**/*.js"],
+  languageOptions: {
+    ecmaVersion: 2022,
+    sourceType: "module",
+  },
+});
+
+const ts = Object.assign(
+  {},
+  withoutExtends(tsEslintPlugin.configs.recommended),
+  {
     files: ["**/*.ts"],
     languageOptions: {
       parser,
@@ -41,5 +44,32 @@ export default [
         },
       ],
     }),
-  }),
-];
+  },
+);
+
+// Relax strict rules for test files and specs to avoid blocking CI autofix
+const testOverride = {
+  files: ["**/*.spec.ts", "test/**/*.ts", "**/*.spec.tsx", "test/**/*.tsx"],
+  languageOptions: {
+    parser,
+    ecmaVersion: 2022,
+    sourceType: "module",
+  },
+  plugins: {
+    "@typescript-eslint": tsEslintPlugin,
+  },
+  rules: {
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-require-imports": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_",
+      },
+    ],
+  },
+};
+
+export default [js, ts, testOverride];

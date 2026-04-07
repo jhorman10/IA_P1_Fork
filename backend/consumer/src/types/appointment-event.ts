@@ -5,7 +5,11 @@
 /**
  * Valid states for the appointment lifecycle
  */
-export type AppointmentStatus = "waiting" | "called" | "completed";
+export type AppointmentStatus =
+  | "waiting"
+  | "called"
+  | "completed"
+  | "cancelled";
 
 /**
  * Valid priorities for office assignment

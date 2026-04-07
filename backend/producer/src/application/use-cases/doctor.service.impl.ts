@@ -12,11 +12,14 @@ import {
   DoctorServicePort,
 } from "../../domain/ports/inbound/doctor-service.port";
 import {
+  AppointmentLifecyclePublisherPort,
+  LIFECYCLE_PUBLISHER_TOKEN,
+} from "../../domain/ports/outbound/appointment-lifecycle-publisher.port";
+import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
+import {
   DOCTOR_OFFICE_RANGE_MESSAGE,
   isValidDoctorOffice,
 } from "../../doctors/doctor-office.constants";
-import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
-import { DoctorEventPublisherPort } from "../../domain/ports/outbound/doctor-event-publisher.port";
 
 /**
  * Application Use Case: Doctor Service
@@ -28,27 +31,25 @@ export class DoctorServiceImpl implements DoctorServicePort {
   constructor(
     @Inject("DoctorRepository")
     private readonly repo: DoctorRepository,
-    @Inject("DoctorEventPublisherPort")
-    private readonly publisher: DoctorEventPublisherPort,
+    @Inject(LIFECYCLE_PUBLISHER_TOKEN)
+    private readonly lifecyclePublisher: AppointmentLifecyclePublisherPort,
   ) {}
 
   async createDoctor(command: CreateDoctorCommand): Promise<DoctorView> {
-    if (!isValidDoctorOffice(command.office)) {
+    if (command.office && !isValidDoctorOffice(command.office)) {
       throw new BadRequestException(DOCTOR_OFFICE_RANGE_MESSAGE);
     }
 
-    const existing = await this.repo.findByOffice(command.office);
-    if (existing) {
-      throw new ConflictException(
-        `El consultorio ${command.office} ya tiene un médico asignado`,
-      );
+    if (command.office) {
+      const existing = await this.repo.findByOffice(command.office);
+      if (existing) {
+        throw new ConflictException(
+          `El consultorio ${command.office} ya tiene un médico asignado`,
+        );
+      }
     }
-    return this.repo.save({
-      name: command.name,
-      specialty: command.specialty,
-      office: command.office,
-      status: "offline" as DoctorStatus,
-    });
+
+    return this.repo.save(command);
   }
 
   async findAll(status?: DoctorStatus): Promise<DoctorView[]> {
@@ -75,12 +76,13 @@ export class DoctorServiceImpl implements DoctorServicePort {
     if (!updated) {
       throw new NotFoundException(`Médico con id ${id} no encontrado`);
     }
-    await this.publisher.publishDoctorCheckedIn({
-      doctorId: updated.id,
-      doctorName: updated.name,
-      office: updated.office,
+
+    // SPEC-003: Publish event to trigger reactive assignment in the consumer
+    await this.lifecyclePublisher.publishDoctorCheckedIn({
+      doctorId: id,
       timestamp: Date.now(),
     });
+
     return updated;
   }
 
@@ -99,5 +101,17 @@ export class DoctorServiceImpl implements DoctorServicePort {
       throw new NotFoundException(`Médico con id ${id} no encontrado`);
     }
     return updated;
+  }
+
+  async updateSpecialty(
+    id: string,
+    name: string,
+    _specialtyId?: string,
+  ): Promise<void> {
+    const doctor = await this.repo.findById(id);
+    if (!doctor) {
+      throw new NotFoundException(`Médico con id ${id} no encontrado`);
+    }
+    await this.repo.updateSpecialty(id, name);
   }
 }

@@ -1,0 +1,8 @@
+.main {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: var(--background);
+  padding: 0 16px;
+}

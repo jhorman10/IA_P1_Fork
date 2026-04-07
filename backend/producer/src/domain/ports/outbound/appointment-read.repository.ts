@@ -11,4 +11,5 @@ export interface AppointmentReadRepository {
   findWaiting(): Promise<AppointmentView[]>;
   /** SPEC-003: Devuelve el turno activo (waiting/called) de un paciente, o null si no existe */
   findActiveByIdCard(idCard: number): Promise<AppointmentView | null>;
+  findById(id: string): Promise<AppointmentView | null>;
 }

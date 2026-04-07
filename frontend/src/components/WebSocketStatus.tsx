@@ -22,7 +22,10 @@ type ConnectionStatus =
   | "connected"
   | "connecting"
   | "reconnecting"
-  | "disconnected";
+  | "disconnected"
+  | "unauthenticated"
+  | "auth_rejected"
+  | (string & Record<never, never>); // allow other string statuses without breaking type safety
 type BadgeVariant = "inline" | "block";
 
 interface WebSocketStatusProps {
@@ -30,7 +33,10 @@ interface WebSocketStatusProps {
   variant?: BadgeVariant;
 }
 
-const StatusConfig = {
+const StatusConfig: Record<
+  string,
+  { icon: string; label: string; className: string }
+> = {
   connected: {
     icon: "🟢",
     label: "Conectado",
@@ -52,13 +58,23 @@ const StatusConfig = {
     label: "Desconectado",
     className: styles.statusDisconnected,
   },
+  unauthenticated: {
+    icon: "🔴",
+    label: "Sin autenticar",
+    className: styles.statusDisconnected,
+  },
+  auth_rejected: {
+    icon: "🔴",
+    label: "Auth rechazada",
+    className: styles.statusDisconnected,
+  },
 };
 
 export default function WebSocketStatus({
   status,
   variant = "inline",
 }: WebSocketStatusProps) {
-  const config = StatusConfig[status];
+  const config = StatusConfig[status] ?? StatusConfig.disconnected;
   const isBlock = variant === "block";
 
   return (

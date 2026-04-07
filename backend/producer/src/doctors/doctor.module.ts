@@ -1,21 +1,26 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import { DoctorServiceImpl } from "../application/use-cases/doctor.service.impl";
-import { RabbitMQDoctorPublisherAdapter } from "../infrastructure/adapters/outbound/rabbitmq-doctor-publisher.adapter";
+import { LIFECYCLE_PUBLISHER_TOKEN } from "../domain/ports/outbound/appointment-lifecycle-publisher.port";
 import { MongooseDoctorRepository } from "../infrastructure/adapters/outbound/mongoose-doctor.repository";
+import { RabbitMQLifecyclePublisherAdapter } from "../infrastructure/adapters/outbound/rabbitmq-lifecycle-publisher.adapter";
+import { ProfilesModule } from "../profiles/profiles.module";
 import { Doctor, DoctorSchema } from "../schemas/doctor.schema";
 import { DoctorController } from "./doctor.controller";
 
 /**
- * SPEC-003: Módulo que encapsula toda la lógica de gestión de médicos en el Producer.
- * Registra su propio ClientProxy para publicar eventos RabbitMQ de check-in.
+ * SPEC-003: DoctorModule — gestiona CRUD y disponibilidad de médicos.
+ * Importa ProfilesModule via forwardRef para proveer FirebaseAuthGuard, RoleGuard
+ * y DoctorContextGuard a DoctorController (ciclo: DoctorModule↔ProfilesModule).
+ * Exporta "DoctorService" y "DoctorRepository" para uso en ProfilesModule y MetricsModule.
  */
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Doctor.name, schema: DoctorSchema }]),
+    forwardRef(() => ProfilesModule),
     ClientsModule.registerAsync([
       {
         name: "APPOINTMENTS_SERVICE",
@@ -51,14 +56,14 @@ import { DoctorController } from "./doctor.controller";
       useClass: MongooseDoctorRepository,
     },
     {
-      provide: "DoctorEventPublisherPort",
-      useClass: RabbitMQDoctorPublisherAdapter,
+      provide: LIFECYCLE_PUBLISHER_TOKEN,
+      useClass: RabbitMQLifecyclePublisherAdapter,
     },
     {
       provide: "DoctorService",
       useClass: DoctorServiceImpl,
     },
   ],
-  exports: ["DoctorService"],
+  exports: ["DoctorService", "DoctorRepository"],
 })
 export class DoctorModule {}

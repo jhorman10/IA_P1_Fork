@@ -1,4 +1,5 @@
-import { DoctorInfo } from "@/components/DoctorInfo/DoctorInfo";
+import DoctorInfo from "@/components/DoctorInfo/DoctorInfo";
+import { anonymizeName } from "@/lib/anonymizeName";
 import { Appointment } from "@/domain/Appointment";
 import styles from "@/styles/page.module.css";
 
@@ -15,6 +16,8 @@ export interface CalledAppointmentCardProps {
   appointment: Appointment;
   timeIcon?: string; // Optional icon override (default: "🔔")
   showTime?: boolean; // Show time badge in footer (default: true)
+  /** SPEC-009: anonymize patient name for public screen (default: true) */
+  anonymize?: boolean;
 }
 
 function getPriorityBadge(priority: string): string {
@@ -43,11 +46,16 @@ export function CalledAppointmentCard({
   appointment,
   timeIcon = "🔔",
   showTime = true,
+  anonymize = true,
 }: CalledAppointmentCardProps) {
   return (
     <li className={`${styles.appointmentCard} ${styles.called}`}>
       <div className={styles.cardHeader}>
-        <span className={styles.nombre}>{appointment.fullName}</span>
+        <span className={styles.nombre}>
+          {anonymize
+            ? anonymizeName(appointment.fullName)
+            : appointment.fullName}
+        </span>
       </div>
       <div className={styles.cardBody}>
         <div className={styles.infoRow}>

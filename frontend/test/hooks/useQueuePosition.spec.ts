@@ -24,11 +24,9 @@ describe("useQueuePosition", () => {
 
   it("should return initial loading state", async () => {
     mockGetQueuePosition.mockResolvedValue({
-      idCard: 123456,
       position: 2,
       total: 5,
-      status: "waiting",
-      priority: "medium",
+      appointmentId: "apt-123456",
     });
 
     const { result } = renderHook(() => useQueuePosition(123456));
@@ -39,11 +37,9 @@ describe("useQueuePosition", () => {
 
   it("should return position and total after fetch", async () => {
     mockGetQueuePosition.mockResolvedValue({
-      idCard: 123456,
       position: 3,
       total: 7,
-      status: "waiting",
-      priority: "high",
+      appointmentId: "apt-123456",
     });
 
     const { result } = renderHook(() => useQueuePosition(123456));
@@ -74,11 +70,9 @@ describe("useQueuePosition", () => {
 
   it("should refetch when refreshSignal changes", async () => {
     mockGetQueuePosition.mockResolvedValue({
-      idCard: 111111,
       position: 1,
       total: 3,
-      status: "waiting",
-      priority: "low",
+      appointmentId: "apt-111111",
     });
 
     const { rerender } = renderHook(

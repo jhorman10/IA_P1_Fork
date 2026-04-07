@@ -1,8 +1,10 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigModule } from "@nestjs/config";
 import { ConsultationPolicy } from "src/domain/policies/consultation.policy";
 
 import { AssignDoctorUseCaseImpl } from "../../application/use-cases/assign-doctor.use-case.impl";
+import { CancelAppointmentUseCaseImpl } from "../../application/use-cases/cancel-appointment.use-case.impl";
+import { CompleteAppointmentUseCaseImpl } from "../../application/use-cases/complete-appointment.use-case.impl";
 import { CompleteExpiredAppointmentsUseCaseImpl } from "../../application/use-cases/complete-expired-appointments.use-case.impl";
 import { MaintenanceOrchestratorUseCaseImpl } from "../../application/use-cases/maintenance-orchestrator.use-case.impl";
 import { RegisterAppointmentUseCaseImpl } from "../../application/use-cases/register-appointment.use-case.impl";
@@ -17,8 +19,10 @@ import { RepositoriesModule } from "../repositories/repositories.module";
  * from controllers, repositories, and domain entities. This module groups:
  * - RegisterAppointmentUseCase: Create new appointments
  * - CompleteExpiredAppointmentsUseCase: Mark expired appointments as done
- * - AssignAvailableOfficesUseCase: Assign waiting patients to free offices
- * - MaintenanceOrchestratorUseCase: Coordinate both maintenance tasks with locking
+ * - AssignAvailableOfficesUseCase: Assign waiting patients to available doctors (SPEC-003)
+ * - CancelAppointmentUseCase: Cancel a waiting appointment (SPEC-012)
+ * - CompleteAppointmentUseCase: Complete a called appointment (SPEC-012)
+ * - MaintenanceOrchestratorUseCase: Coordinate maintenance tasks with locking
  *
  * @tradeoff vs thin services:
  *   ✅ Clear orchestration logic (not mixed with HTTP/db concerns)
@@ -28,7 +32,7 @@ import { RepositoriesModule } from "../repositories/repositories.module";
  *   ❌ Requires proper dependency injection setup
  *
  * @dependencies
- *   - RepositoriesModule: Provides AppointmentRepository, LockRepository
+ *   - RepositoriesModule: Provides AppointmentRepository, LockRepository, DoctorRepository
  *   - PoliciesModule: Provides ConsultationPolicy for business rule enforcement
  *   - ConfigService: Parametrizes TOTAL_OFFICES from environment
  *
@@ -96,6 +100,19 @@ import { RepositoriesModule } from "../repositories/repositories.module";
           policy,
         ),
     },
+    // SPEC-012: Individual appointment lifecycle use cases
+    {
+      provide: "CancelAppointmentUseCase",
+      inject: ["AppointmentRepository", "LoggerPort"],
+      useFactory: (repo, logger) =>
+        new CancelAppointmentUseCaseImpl(repo, logger),
+    },
+    {
+      provide: "CompleteAppointmentUseCase",
+      inject: ["AppointmentRepository", "DoctorRepository", "LoggerPort"],
+      useFactory: (repo, doctorRepo, logger) =>
+        new CompleteAppointmentUseCaseImpl(repo, doctorRepo, logger),
+    },
     {
       provide: "MaintenanceOrchestratorUseCase",
       inject: [
@@ -112,6 +129,8 @@ import { RepositoriesModule } from "../repositories/repositories.module";
     "RegisterAppointmentUseCase",
     "CompleteExpiredAppointmentsUseCase",
     "AssignAvailableOfficesUseCase",
+    "CancelAppointmentUseCase",
+    "CompleteAppointmentUseCase",
     "MaintenanceOrchestratorUseCase",
   ],
 })

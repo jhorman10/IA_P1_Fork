@@ -15,6 +15,7 @@ import { Doctor, DoctorSchema } from "../../schemas/doctor.schema";
 import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 import { InfrastructureModule } from "../infrastructure/infrastructure.module";
 import { PoliciesModule } from "../policies/policies.module";
+import { NestLoggerAdapter } from "../../infrastructure/logging/nest-logger.adapter";
 
 /**
  * @description RepositoriesModule encapsulates all data persistence mechanisms.
@@ -50,6 +51,19 @@ import { PoliciesModule } from "../policies/policies.module";
     InfrastructureModule, // provides LoggerPort and DomainEventBus
   ],
   providers: [
+    // Compatibility aliases: some modules reference the legacy provider tokens
+    // (e.g. "default_MongooseModel_Appointment") — expose them by mapping
+    // to the tokens created by MongooseModule.getModelToken.
+    {
+      provide: "default_MongooseModel_Appointment",
+      inject: [getModelToken(Appointment.name)],
+      useFactory: (model) => model,
+    },
+    {
+      provide: "default_MongooseModel_Doctor",
+      inject: [getModelToken(Doctor.name)],
+      useFactory: (model) => model,
+    },
     // ⚕️ HUMAN CHECK - Two-step factory:
     // 1. Create inner repository (pure Mongoose adapter)
     // 2. Wrap with event-dispatching decorator (cross-cutting concern)
@@ -63,20 +77,42 @@ import { PoliciesModule } from "../policies/policies.module";
       useFactory: (model, policy, logger) =>
         new MongooseAppointmentRepository(model, policy, logger),
     },
+    // Provide a local LoggerPort so repositories can log without depending on the
+    // higher-level AppointmentModule. This keeps the RepositoriesModule
+    // self-contained for DI and avoids circular imports.
+    {
+      provide: "LoggerPort",
+      useClass: NestLoggerAdapter,
+    },
+    // Provide a lightweight no-op DomainEventBus so the repositories can be
+    // instantiated without requiring the full event-bus wiring. AppointmentModule
+    // may override or provide a richer implementation when available.
+    {
+      provide: "DomainEventBus",
+      useValue: {
+        publish: async () => undefined,
+      },
+    },
     {
       provide: "AppointmentRepository",
       inject: ["MongooseAppointmentRepository", "DomainEventBus"],
       useFactory: (inner, bus) =>
         new EventDispatchingAppointmentRepositoryDecorator(inner, bus),
     },
+    // SPEC-003: Doctor repository (read + status updates)
+    {
+      provide: "MongooseDoctorRepository",
+      inject: [getModelToken(Doctor.name)],
+      useFactory: (model) => new MongooseDoctorRepository(model),
+    },
+    {
+      provide: "DoctorRepository",
+      inject: ["MongooseDoctorRepository"],
+      useFactory: (inner) => inner,
+    },
     {
       provide: "LockRepository",
       useClass: MongooseLockRepository,
-    },
-    // SPEC-003: Doctor repository (read + status updates)
-    {
-      provide: "DoctorRepository",
-      useClass: MongooseDoctorRepository,
     },
     // SPEC-003: Audit log adapter (write-only)
     {
@@ -89,6 +125,7 @@ import { PoliciesModule } from "../policies/policies.module";
     "LockRepository",
     "DoctorRepository",
     "AuditPort",
+    "LoggerPort",
   ],
 })
 export class RepositoriesModule {}

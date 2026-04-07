@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 
+import { AppointmentView } from "../../domain/models/appointment-view";
 import { QueryAppointmentsUseCase } from "../../domain/ports/inbound/query-appointments.use-case";
 import { AppointmentReadRepository } from "../../domain/ports/outbound/appointment-read.repository";
-import { AppointmentView } from "../../domain/models/appointment-view";
 
 /**
  * Application Use Case: Query Appointments
@@ -22,5 +22,9 @@ export class QueryAppointmentsUseCaseImpl implements QueryAppointmentsUseCase {
 
   async findByIdCard(idCard: number): Promise<AppointmentView[]> {
     return this.repository.findByIdCard(idCard);
+  }
+
+  async findById(id: string): Promise<AppointmentView | null> {
+    return this.repository.findById(id);
   }
 }

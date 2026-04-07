@@ -1,6 +1,22 @@
-import { Body, Controller, HttpCode, Inject, Post } from "@nestjs/common";
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Inject,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 
+import { Roles } from "./auth/decorators/roles.decorator";
+import { FirebaseAuthGuard } from "./auth/guards/firebase-auth.guard";
+import { RoleGuard } from "./auth/guards/role.guard";
 import { CreateAppointmentUseCase } from "./domain/ports/inbound/create-appointment.use-case";
 import { QueryAppointmentsUseCase } from "./domain/ports/inbound/query-appointments.use-case";
 import { CreateAppointmentDto } from "./dto/create-appointment.dto";
@@ -11,6 +27,7 @@ import { CreateAppointmentResponseDto } from "./dto/create-appointment-response.
 // Consultas (GET) → QueryAppointmentsUseCase
 
 @ApiTags("Appointments")
+@ApiBearerAuth()
 @Controller("appointments")
 export class ProducerController {
   constructor(
@@ -22,6 +39,8 @@ export class ProducerController {
 
   @Post()
   @HttpCode(202)
+  @UseGuards(FirebaseAuthGuard, RoleGuard)
+  @Roles("admin", "recepcionista")
   @ApiOperation({
     summary: "Create a new appointment",
     description:

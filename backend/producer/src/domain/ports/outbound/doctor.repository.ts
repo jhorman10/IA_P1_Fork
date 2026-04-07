@@ -1,22 +1,15 @@
-import { DoctorStatus } from "../../models/doctor-view";
-import { DoctorView } from "../../models/doctor-view";
+import { DoctorStatus, DoctorView } from "../../models/doctor-view";
+import { CreateDoctorCommand } from "../inbound/doctor-service.port";
 
 /**
- * Port: Outbound — Read repository for doctors (Producer side).
- * SPEC-003: Permite al Producer consultar y escribir médicos desde su capa de aplicación.
+ * Outbound Port: Doctor Repository
+ * SPEC-003: Operaciones de persistencia sobre la colección de médicos.
  */
-export interface DoctorReadRepository {
+export interface DoctorRepository {
+  save(command: CreateDoctorCommand): Promise<DoctorView>;
   findAll(status?: DoctorStatus): Promise<DoctorView[]>;
   findById(id: string): Promise<DoctorView | null>;
   findByOffice(office: string): Promise<DoctorView | null>;
-}
-
-export interface DoctorWriteRepository {
-  save(
-    doctor: Omit<DoctorView, "id" | "createdAt" | "updatedAt">,
-  ): Promise<DoctorView>;
   updateStatus(id: string, status: DoctorStatus): Promise<DoctorView | null>;
+  updateSpecialty(id: string, name: string): Promise<void>;
 }
-
-export interface DoctorRepository
-  extends DoctorReadRepository, DoctorWriteRepository {}

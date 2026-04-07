@@ -8,8 +8,10 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from "@nestjs/common";
 import {
+  ApiBearerAuth,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -17,6 +19,10 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 
+import { Roles } from "../auth/decorators/roles.decorator";
+import { DoctorContextGuard } from "../auth/guards/doctor-context.guard";
+import { FirebaseAuthGuard } from "../auth/guards/firebase-auth.guard";
+import { RoleGuard } from "../auth/guards/role.guard";
 import { DoctorStatus } from "../domain/models/doctor-view";
 import { DoctorServicePort } from "../domain/ports/inbound/doctor-service.port";
 import { CreateDoctorDto } from "../dto/create-doctor.dto";
@@ -24,6 +30,7 @@ import { DoctorResponseDto } from "../dto/doctor-response.dto";
 import { DoctorMapper } from "../mappers/doctor.mapper";
 
 @ApiTags("Doctors")
+@ApiBearerAuth()
 @Controller("doctors")
 export class DoctorController {
   constructor(
@@ -76,6 +83,8 @@ export class DoctorController {
   }
 
   @Get(":id")
+  @UseGuards(FirebaseAuthGuard, RoleGuard, DoctorContextGuard)
+  @Roles("admin", "doctor")
   @ApiOperation({ summary: "Obtener médico por ID" })
   @ApiParam({ name: "id", description: "Doctor MongoDB ObjectId" })
   @ApiResponse({ status: 200, type: DoctorResponseDto })
@@ -86,6 +95,8 @@ export class DoctorController {
   }
 
   @Patch(":id/check-in")
+  @UseGuards(FirebaseAuthGuard, RoleGuard, DoctorContextGuard)
+  @Roles("admin", "doctor")
   @ApiOperation({
     summary: "Check-in del médico",
     description:
@@ -107,9 +118,7 @@ export class DoctorController {
   })
   @ApiResponse({ status: 404, description: "Médico no encontrado" })
   @ApiResponse({ status: 409, description: "Médico ya está disponible" })
-  async checkIn(
-    @Param("id") id: string,
-  ): Promise<{
+  async checkIn(@Param("id") id: string): Promise<{
     id: string;
     name: string;
     status: string;
@@ -127,6 +136,8 @@ export class DoctorController {
   }
 
   @Patch(":id/check-out")
+  @UseGuards(FirebaseAuthGuard, RoleGuard, DoctorContextGuard)
+  @Roles("admin", "doctor")
   @ApiOperation({
     summary: "Check-out del médico",
     description:
@@ -151,9 +162,7 @@ export class DoctorController {
     status: 409,
     description: "Médico tiene paciente asignado, no puede hacer check-out",
   })
-  async checkOut(
-    @Param("id") id: string,
-  ): Promise<{
+  async checkOut(@Param("id") id: string): Promise<{
     id: string;
     name: string;
     status: string;

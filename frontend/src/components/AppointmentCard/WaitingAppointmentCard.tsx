@@ -1,4 +1,5 @@
 import { QueuePositionBadge } from "@/components/QueuePositionBadge/QueuePositionBadge";
+import { anonymizeName } from "@/lib/anonymizeName";
 import { Appointment } from "@/domain/Appointment";
 import styles from "@/styles/page.module.css";
 
@@ -16,6 +17,8 @@ export interface WaitingAppointmentCardProps {
   timeIcon?: string; // Optional icon override (default: "📝")
   queuePosition?: number; // SPEC-003: posición en la cola (1-based)
   total?: number; // SPEC-003: total de turnos en espera
+  /** SPEC-009: anonymize patient name for public screen (default: true) */
+  anonymize?: boolean;
 }
 
 // Helper functions (used only in this component)
@@ -34,14 +37,19 @@ function getPriorityBadge(priority: string): string {
 export function WaitingAppointmentCard({
   appointment,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _timeIcon = "📝",
+  timeIcon: _timeIcon = "📝",
   queuePosition,
   total,
+  anonymize = true,
 }: WaitingAppointmentCardProps) {
   return (
     <li className={`${styles.appointmentCard} ${styles.waiting}`}>
       <div className={styles.cardHeader}>
-        <span className={styles.nombre}>{appointment.fullName}</span>
+        <span className={styles.nombre}>
+          {anonymize
+            ? anonymizeName(appointment.fullName)
+            : appointment.fullName}
+        </span>
       </div>
       <div className={styles.cardBody}>
         <div className={styles.infoRow}>

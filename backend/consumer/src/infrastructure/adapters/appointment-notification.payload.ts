@@ -12,6 +12,7 @@ export interface AppointmentNotificationPayload {
   priority: string;
   timestamp: number;
   completedAt?: number;
+  // SPEC-003: Médico asignado
   doctorId: string | null;
   doctorName: string | null;
 }

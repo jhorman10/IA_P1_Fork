@@ -1,9 +1,7 @@
+"use client";
+
 import styles from "./QueuePositionBadge.module.css";
 
-/**
- * SPEC-003: Badge que muestra la posición del paciente en la cola de espera.
- * Props: position (1-based), total (total en espera)
- */
 export interface QueuePositionBadgeProps {
   position: number;
   total: number;
@@ -16,9 +14,12 @@ export function QueuePositionBadge({
   return (
     <span
       className={styles.badge}
+      data-testid="queue-position-badge"
       aria-label={`Posición ${position} de ${total}`}
     >
       🔢 Pos. <strong>{position}</strong> / {total}
     </span>
   );
 }
+
+export default QueuePositionBadge;

@@ -1,16 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
-import { DoctorView, DoctorStatus } from "../../../domain/models/doctor-view";
+import { DoctorStatus, DoctorView } from "../../../domain/models/doctor-view";
+import { CreateDoctorCommand } from "../../../domain/ports/inbound/doctor-service.port";
 import { DoctorRepository } from "../../../domain/ports/outbound/doctor.repository";
 import { Doctor, DoctorDocument } from "../../../schemas/doctor.schema";
 
 /**
  * Adapter: Infrastructure — Mongoose implementation of DoctorRepository (Producer).
  * SPEC-003: Gestiona CRUD de médicos y consultas por estado/consultorio.
- * SRP: Solo responsable del acceso a datos de médicos. Mapeo en línea (sin mapper separado
- * dado que DoctorView es plano y no tiene VOs de dominio en el Producer).
+ * SRP: Solo responsable del acceso a datos de médicos. Mapeo en línea.
  */
 @Injectable()
 export class MongooseDoctorRepository implements DoctorRepository {
@@ -18,6 +18,16 @@ export class MongooseDoctorRepository implements DoctorRepository {
     @InjectModel(Doctor.name)
     private readonly model: Model<DoctorDocument>,
   ) {}
+
+  async save(command: CreateDoctorCommand): Promise<DoctorView> {
+    const doc = await this.model.create({
+      name: command.name,
+      specialty: command.specialty,
+      office: command.office ?? "",
+      status: "offline",
+    });
+    return this.toView(doc);
+  }
 
   async findAll(status?: DoctorStatus): Promise<DoctorView[]> {
     const filter = status ? { status } : {};
@@ -27,6 +37,7 @@ export class MongooseDoctorRepository implements DoctorRepository {
 
   async findById(id: string): Promise<DoctorView | null> {
     try {
+      if (!Types.ObjectId.isValid(id)) return null;
       const doc = await this.model.findById(id).exec();
       return doc ? this.toView(doc) : null;
     } catch {
@@ -39,21 +50,28 @@ export class MongooseDoctorRepository implements DoctorRepository {
     return doc ? this.toView(doc) : null;
   }
 
-  async save(
-    data: Omit<DoctorView, "id" | "createdAt" | "updatedAt">,
-  ): Promise<DoctorView> {
-    const created = await this.model.create(data);
-    return this.toView(created);
-  }
-
   async updateStatus(
     id: string,
     status: DoctorStatus,
   ): Promise<DoctorView | null> {
-    const doc = await this.model
-      .findByIdAndUpdate(id, { status }, { new: true })
-      .exec();
-    return doc ? this.toView(doc) : null;
+    try {
+      if (!Types.ObjectId.isValid(id)) return null;
+      const doc = await this.model
+        .findByIdAndUpdate(id, { status }, { new: true })
+        .exec();
+      return doc ? this.toView(doc) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async updateSpecialty(id: string, name: string): Promise<void> {
+    try {
+      if (!Types.ObjectId.isValid(id)) return;
+      await this.model.findByIdAndUpdate(id, { specialty: name }).exec();
+    } catch {
+      // no-op on invalid id
+    }
   }
 
   private toView(doc: DoctorDocument): DoctorView {
@@ -62,7 +80,7 @@ export class MongooseDoctorRepository implements DoctorRepository {
       name: doc.name,
       specialty: doc.specialty,
       office: doc.office,
-      status: doc.status,
+      status: doc.status as DoctorStatus,
       createdAt: (doc as unknown as { createdAt: Date }).createdAt,
       updatedAt: (doc as unknown as { updatedAt: Date }).updatedAt,
     };

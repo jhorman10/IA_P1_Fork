@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { ProfilesModule } from "../profiles/profiles.module";
 
 import { QueryAppointmentsUseCaseImpl } from "../application/use-cases/query-appointments.use-case.impl";
 import { GetQueuePositionUseCaseImpl } from "../application/use-cases/queue-position.use-case.impl";
@@ -12,6 +13,7 @@ import { Appointment, AppointmentSchema } from "../schemas/appointment.schema";
     MongooseModule.forFeature([
       { name: Appointment.name, schema: AppointmentSchema },
     ]),
+    ProfilesModule,
   ],
   providers: [
     {

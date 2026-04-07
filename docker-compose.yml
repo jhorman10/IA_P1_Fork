@@ -38,6 +38,9 @@ services:
       - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE}
       - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:${MONGODB_PORT}/appointments_db?authSource=admin
       - FRONTEND_URL=${FRONTEND_URL}
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -109,20 +112,23 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    # ⚕️ HUMAN CHECK - Comando de desarrollo
-    # En producción, eliminar este comando para usar el CMD del Dockerfile
-    command: npm run dev -- -p 3001 -H 0.0.0.0
+      target: development
     ports:
       - "${FRONTEND_PORT:-3001}:3001"
     restart: unless-stopped
     volumes:
       - ./frontend:/app
       - /app/node_modules
+      - /app/.next
     # ⚕️ HUMAN CHECK - Variables de entorno gestionadas vía .env
     environment:
       - NODE_ENV=${NODE_ENV}
       - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
       - NEXT_PUBLIC_WS_URL=${NEXT_PUBLIC_WS_URL}
+      - NEXT_PUBLIC_FIREBASE_API_KEY=${NEXT_PUBLIC_FIREBASE_API_KEY}
+      - NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}
+      - NEXT_PUBLIC_FIREBASE_PROJECT_ID=${NEXT_PUBLIC_FIREBASE_PROJECT_ID}
+      - NEXT_PUBLIC_FIREBASE_APP_ID=${NEXT_PUBLIC_FIREBASE_APP_ID}
     depends_on:
       - producer
     networks:

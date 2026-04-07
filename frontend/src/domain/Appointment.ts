@@ -1,5 +1,9 @@
 // ⚕️ HUMAN CHECK - Domain model synced with backend AppointmentEventPayload
-export type AppointmentStatus = "waiting" | "called" | "completed";
+export type AppointmentStatus =
+  | "waiting"
+  | "called"
+  | "completed"
+  | "cancelled";
 export type AppointmentPriority = "high" | "medium" | "low";
 
 export interface Appointment {
@@ -11,6 +15,8 @@ export interface Appointment {
   completedAt?: number;
   status: AppointmentStatus;
   priority: AppointmentPriority;
-  doctorId: string | null; // SPEC-003: médico asignado
-  doctorName: string | null; // SPEC-003: nombre desnormalizado
+  /** SPEC-003 / SPEC-008: doctor currently serving this appointment */
+  doctorId?: string | null;
+  /** SPEC-003 / SPEC-008: denormalized doctor name */
+  doctorName?: string | null;
 }

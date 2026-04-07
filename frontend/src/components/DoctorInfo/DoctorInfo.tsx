@@ -1,9 +1,7 @@
+"use client";
+
 import styles from "./DoctorInfo.module.css";
 
-/**
- * SPEC-003: Bloque informativo del médico asignado al turno.
- * Props: doctorName, office
- */
 export interface DoctorInfoProps {
   doctorName: string;
   office: string;
@@ -11,12 +9,17 @@ export interface DoctorInfoProps {
 
 export function DoctorInfo({ doctorName, office }: DoctorInfoProps) {
   return (
-    <div className={styles.container}>
-      <span className={styles.icon}>👨‍⚕️</span>
-      <div className={styles.details}>
-        <span className={styles.name}>{doctorName}</span>
-        <span className={styles.office}>Consultorio {office}</span>
+    <div className={styles.block} data-testid="doctor-info">
+      <div className={styles.row}>
+        <span className={styles.label}>Médico:</span>
+        <span className={styles.value}>{doctorName}</span>
+      </div>
+      <div className={styles.row}>
+        <span className={styles.label}>Consultorio:</span>
+        <span className={styles.value}>{office}</span>
       </div>
     </div>
   );
 }
+
+export default DoctorInfo;

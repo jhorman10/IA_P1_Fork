@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 
-import { RabbitMQPublisherAdapter } from "../../../../../src/infrastructure/adapters/outbound/rabbitmq-publisher.adapter";
 import { CreateAppointmentDto } from "../../../../../src/dto/create-appointment.dto";
+import { RabbitMQPublisherAdapter } from "../../../../../src/infrastructure/adapters/outbound/rabbitmq-publisher.adapter";
 
 describe("RabbitMQPublisherAdapter", () => {
   let adapter: RabbitMQPublisherAdapter;

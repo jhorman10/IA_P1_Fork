@@ -45,9 +45,13 @@ export default function AppointmentsScreen() {
     }
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { appointments, error, _connected, isConnecting, connectionStatus } =
-    useAppointmentsWebSocket(handleUpdate);
+  const {
+    appointments,
+    error,
+    connected: _connected,
+    isConnecting,
+    connectionStatus,
+  } = useAppointmentsWebSocket(handleUpdate);
 
   // SPEC-003: seed prevStatusRef from initial snapshot so already-called
   // appointments don't trigger spurious notifications on page load

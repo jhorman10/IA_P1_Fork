@@ -46,9 +46,13 @@ export default function CompletedHistoryDashboard() {
     }
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { appointments, error, _connected, isConnecting, connectionStatus } =
-    useAppointmentsWebSocket(handleUpdate);
+  const {
+    appointments,
+    error,
+    connected: _connected,
+    isConnecting,
+    connectionStatus,
+  } = useAppointmentsWebSocket(handleUpdate);
 
   // SPEC-003: seed prevStatusRef from initial snapshot so known-called
   // appointments don’t trigger spurious notifications on page load

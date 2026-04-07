@@ -25,6 +25,10 @@ export class Appointment {
   @Prop({ type: String, default: null, index: true })
   office!: string | null;
 
+  // Doctor assigned to the appointment (domain id)
+  @Prop({ type: String, default: null, index: true })
+  doctorId!: string | null;
+
   @Prop({
     default: "waiting",
     enum: ["waiting", "called", "completed"],
@@ -42,10 +46,6 @@ export class Appointment {
   // ⚕️ HUMAN CHECK - Timestamp de finalización
   @Prop({ type: Number, default: null })
   completedAt!: number | null;
-
-  // SPEC-003: Médico asignado — nullable para turnos en espera o migrados
-  @Prop({ type: String, default: null })
-  doctorId!: string | null;
 
   // SPEC-003: Nombre desnormalizado para consultas rápidas sin lookup
   @Prop({ type: String, default: null, maxlength: 100 })

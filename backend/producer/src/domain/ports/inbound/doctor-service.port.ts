@@ -7,7 +7,8 @@ import { DoctorStatus, DoctorView } from "../../models/doctor-view";
 export interface CreateDoctorCommand {
   name: string;
   specialty: string;
-  office: string;
+  specialtyId?: string | null;
+  office: string | null;
 }
 
 /**
@@ -20,4 +21,9 @@ export interface DoctorServicePort {
   findById(id: string): Promise<DoctorView>;
   checkIn(id: string): Promise<DoctorView>;
   checkOut(id: string): Promise<DoctorView>;
+  updateSpecialty(
+    id: string,
+    name: string,
+    specialtyId?: string,
+  ): Promise<void>;
 }

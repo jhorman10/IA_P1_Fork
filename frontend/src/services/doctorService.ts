@@ -1,16 +1,71 @@
-// SPEC-003: servicio HTTP para médicos
-// \u2695\ufe0f HUMAN CHECK - Endpoint: GET /doctors?status=
+// SPEC-008: Doctor HTTP service — checkIn/checkOut, list, getById, available offices
 import { env } from "@/config/env";
-import { Doctor, DoctorStatus } from "@/domain/Doctor";
+import { Doctor } from "@/domain/Doctor";
 
-export async function getDoctors(status?: DoctorStatus): Promise<Doctor[]> {
+async function throwWithMessage(res: Response): Promise<never> {
+  const body = await res.json().catch(() => ({}));
+  const message =
+    (body as { message?: string }).message ?? `HTTP_ERROR: ${res.status}`;
+  throw new Error(message);
+}
+
+export async function getDoctors(
+  status?: string,
+  token?: string,
+): Promise<Doctor[]> {
   const url = new URL(`${env.API_BASE_URL}/doctors`);
-  if (status) {
-    url.searchParams.set("status", status);
-  }
-  const res = await fetch(url.toString());
-  if (!res.ok) {
-    throw new Error(`HTTP_ERROR: ${res.status}`);
-  }
+  if (status) url.searchParams.set("status", status);
+  const headers: Record<string, string> = {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const res = await fetch(url.toString(), { headers });
+  if (!res.ok) return throwWithMessage(res);
+  return res.json();
+}
+
+export async function getDoctorById(
+  doctorId: string,
+  token: string,
+): Promise<Doctor> {
+  const res = await fetch(`${env.API_BASE_URL}/doctors/${doctorId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return throwWithMessage(res);
+  return res.json();
+}
+
+export async function checkInDoctor(
+  doctorId: string,
+  token: string,
+  office: string,
+): Promise<Doctor> {
+  const res = await fetch(`${env.API_BASE_URL}/doctors/${doctorId}/check-in`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ office }),
+  });
+  if (!res.ok) return throwWithMessage(res);
+  return res.json();
+}
+
+export async function checkOutDoctor(
+  doctorId: string,
+  token: string,
+): Promise<Doctor> {
+  const res = await fetch(`${env.API_BASE_URL}/doctors/${doctorId}/check-out`, {
+    method: "PATCH",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return throwWithMessage(res);
+  return res.json();
+}
+
+export async function getAvailableOffices(token: string): Promise<string[]> {
+  const res = await fetch(`${env.API_BASE_URL}/doctors/offices/available`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return throwWithMessage(res);
   return res.json();
 }

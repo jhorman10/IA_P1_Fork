@@ -53,15 +53,12 @@ export function useAppointmentsWebSocket(
       }
     });
 
-    realTime.onError(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      (_err) => {
-        setError("Error de conexión en tiempo real");
-        setConnected(false);
-        setIsConnecting(false);
-        setIsReconnecting(false);
-      },
-    );
+    realTime.onError((_err) => {
+      setError("Error de conexión en tiempo real");
+      setConnected(false);
+      setIsConnecting(false);
+      setIsReconnecting(false);
+    });
 
     realTime.onSnapshot((data) => {
       setAppointments(data);
@@ -81,7 +78,11 @@ export function useAppointmentsWebSocket(
   }, [realTime, updateAppointment, onUpdate]);
 
   // SPEC-003: expose reconnecting as distinct status (🟡 Reconectando...)
-  const connectionStatus = connected
+  const connectionStatus:
+    | "connected"
+    | "connecting"
+    | "reconnecting"
+    | "disconnected" = connected
     ? "connected"
     : isReconnecting
       ? "reconnecting"

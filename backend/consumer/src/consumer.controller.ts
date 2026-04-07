@@ -2,7 +2,9 @@ import { Controller, Inject, Logger } from "@nestjs/common";
 import { Ctx, EventPattern, Payload, RmqContext } from "@nestjs/microservices";
 
 import { RegisterAppointmentCommand } from "./domain/commands/register-appointment.command";
-import { AssignAvailableOfficesUseCase } from "./domain/ports/inbound/assign-available-offices.use-case";
+import { CancelAppointmentUseCase } from "./domain/ports/inbound/cancel-appointment.use-case";
+import { CompleteAppointmentUseCase } from "./domain/ports/inbound/complete-appointment.use-case";
+import { MaintenanceOrchestratorUseCase } from "./domain/ports/inbound/maintenance-orchestrator.use-case";
 import { RegisterAppointmentUseCase } from "./domain/ports/inbound/register-appointment.use-case";
 import { RetryPolicyPort } from "./domain/ports/outbound/retry-policy.port";
 import { CreateAppointmentDto } from "./dto/create-appointment.dto";
@@ -17,8 +19,12 @@ export class ConsumerController {
     private readonly registerUseCase: RegisterAppointmentUseCase,
     @Inject("RetryPolicyPort")
     private readonly retryPolicy: RetryPolicyPort,
-    @Inject("AssignAvailableOfficesUseCase")
-    private readonly assignUseCase: AssignAvailableOfficesUseCase,
+    @Inject("CompleteAppointmentUseCase")
+    private readonly completeUseCase: CompleteAppointmentUseCase,
+    @Inject("CancelAppointmentUseCase")
+    private readonly cancelUseCase: CancelAppointmentUseCase,
+    @Inject("MaintenanceOrchestratorUseCase")
+    private readonly maintenanceUseCase: MaintenanceOrchestratorUseCase,
   ) {}
 
   @EventPattern("create_appointment")
@@ -67,28 +73,72 @@ export class ConsumerController {
     return xDeath.reduce((acc, entry) => acc + (entry.count || 0), 0);
   }
 
-  /**
-   * SPEC-003: Handle doctor_checked_in event from Producer.
-   * Triggers immediate assignment run so waiting patients are matched
-   * without waiting for the next scheduler tick.
-   */
-  @EventPattern("doctor_checked_in")
-  async handleDoctorCheckedIn(
-    @Payload() _data: unknown,
+  @EventPattern("complete_appointment")
+  async handleCompleteAppointment(
+    @Payload()
+    data: { appointmentId: string; actorUid: string; timestamp: number },
     @Ctx() context: RmqContext,
   ): Promise<void> {
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
+
     try {
-      this.logger.log(
-        "[doctor_checked_in] Received — triggering immediate assignment",
-      );
-      await this.assignUseCase.execute();
+      await this.completeUseCase.execute(data.appointmentId);
       channel.ack(originalMsg);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
-      this.logger.error(`[doctor_checked_in] Assignment failed: ${message}`);
-      channel.nack(originalMsg, false, false); // Send to DLQ — do not requeue infinite loop
+      this.logger.error(
+        `[ERROR] complete_appointment failed for ${data.appointmentId}: ${message}`,
+      );
+      channel.ack(originalMsg);
+    }
+  }
+
+  @EventPattern("cancel_appointment")
+  async handleCancelAppointment(
+    @Payload()
+    data: { appointmentId: string; actorUid: string; timestamp: number },
+    @Ctx() context: RmqContext,
+  ): Promise<void> {
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
+
+    try {
+      await this.cancelUseCase.execute(data.appointmentId);
+      channel.ack(originalMsg);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(
+        `[ERROR] cancel_appointment failed for ${data.appointmentId}: ${message}`,
+      );
+      channel.ack(originalMsg);
+    }
+  }
+
+  /**
+   * SPEC-003: When a doctor checks in, trigger reactive assignment
+   * to immediately assign waiting patients to the newly available doctor.
+   */
+  @EventPattern("doctor_checked_in")
+  async handleDoctorCheckedIn(
+    @Payload() data: { doctorId: string; timestamp: number },
+    @Ctx() context: RmqContext,
+  ): Promise<void> {
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
+
+    try {
+      this.logger.log(
+        `[doctor_checked_in] Doctor ${data.doctorId} checked in — triggering assignment`,
+      );
+      await this.maintenanceUseCase.execute();
+      channel.ack(originalMsg);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(
+        `[ERROR] doctor_checked_in failed for ${data.doctorId}: ${message}`,
+      );
+      channel.ack(originalMsg);
     }
   }
 }

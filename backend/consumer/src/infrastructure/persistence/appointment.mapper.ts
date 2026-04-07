@@ -37,7 +37,7 @@ export class AppointmentMapper {
    * Maps a Domain Entity to a persistence object (for updates/saves).
    */
   public static toPersistence(entity: Appointment): PersistenceAppointmentData {
-    return {
+    const base: PersistenceAppointmentData = {
       idCard: entity.idCard.toValue(),
       fullName: entity.fullName.toValue(),
       priority: entity.priority.toValue(),
@@ -50,5 +50,7 @@ export class AppointmentMapper {
       doctorId: entity.doctorId,
       doctorName: entity.doctorName,
     };
+
+    return base;
   }
 }

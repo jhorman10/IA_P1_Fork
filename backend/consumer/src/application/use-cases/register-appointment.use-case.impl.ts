@@ -1,3 +1,4 @@
+import { RegisterAppointmentCommand } from "../../domain/commands/register-appointment.command";
 import { Appointment } from "../../domain/entities/appointment.entity";
 import { AppointmentRegisteredEvent } from "../../domain/events/appointment-registered.event";
 import { AppointmentFactory } from "../../domain/factories/appointment.factory";
@@ -9,7 +10,6 @@ import { FullName } from "../../domain/value-objects/full-name.value-object";
 import { IdCard } from "../../domain/value-objects/id-card.value-object";
 import { Priority } from "../../domain/value-objects/priority.value-object";
 import { DuplicateActiveAppointmentError } from "../../domain/errors/duplicate-active-appointment.error";
-import { RegisterAppointmentCommand } from "../../domain/commands/register-appointment.command";
 
 /**
  * 🛰️ HUMAN CHECK - H-25 Fix: Efectos secundarios movidos al Decorador del Repositorio

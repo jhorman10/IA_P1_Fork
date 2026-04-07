@@ -7,12 +7,19 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 
 import { CreateAppointmentUseCaseImpl } from "./application/use-cases/create-appointment.use-case.impl";
 import { AppointmentModule } from "./appointments/appointment.module";
+import { AppointmentLifecycleController } from "./appointments/appointment-lifecycle.controller";
 import { AppointmentQueryController } from "./appointments/appointment-query.controller";
 import { DoctorModule } from "./doctors/doctor.module";
+import { AuditModule } from "./audit/audit.module";
+import { LIFECYCLE_PUBLISHER_TOKEN } from "./domain/ports/outbound/appointment-lifecycle-publisher.port";
 import { EventsModule } from "./events/events.module";
 import { HealthController } from "./health.controller";
+import { RabbitMQLifecyclePublisherAdapter } from "./infrastructure/adapters/outbound/rabbitmq-lifecycle-publisher.adapter";
 import { RabbitMQPublisherAdapter } from "./infrastructure/adapters/outbound/rabbitmq-publisher.adapter";
+import { MetricsModule } from "./metrics/metrics.module";
+import { OfficeModule } from "./offices/office.module";
 import { ProducerController } from "./producer.controller";
+import { ProfilesModule } from "./profiles/profiles.module";
 
 @Module({
   imports: [
@@ -58,6 +65,10 @@ import { ProducerController } from "./producer.controller";
     AppointmentModule,
     DoctorModule,
     EventsModule,
+    MetricsModule,
+    OfficeModule,
+    ProfilesModule,
+    AuditModule,
     // 🛡️ HUMAN CHECK - Proteccion contra ataques de fuerza bruta y DoS
     // H-14 Fix: Relaxed limits (100 req/min) and ConfigService integration
     ThrottlerModule.forRootAsync({
@@ -74,6 +85,7 @@ import { ProducerController } from "./producer.controller";
   controllers: [
     ProducerController,
     AppointmentQueryController,
+    AppointmentLifecycleController,
     HealthController,
   ],
   providers: [
@@ -86,6 +98,11 @@ import { ProducerController } from "./producer.controller";
     {
       provide: "AppointmentPublisherPort",
       useClass: RabbitMQPublisherAdapter,
+    },
+    // SPEC-012: Lifecycle publisher for complete/cancel events
+    {
+      provide: LIFECYCLE_PUBLISHER_TOKEN,
+      useClass: RabbitMQLifecyclePublisherAdapter,
     },
     // 🛡️ HUMAN CHECK - Aplicar ThrottlerGuard globalmente
     {
