@@ -103,6 +103,10 @@ describe("AppointmentLifecycleController (Integration Tests)", () => {
           useValue: appointmentReadRepository,
         },
         {
+          provide: "QueryAppointmentsUseCase",
+          useValue: appointmentReadRepository,
+        },
+        {
           provide: LIFECYCLE_PUBLISHER_TOKEN,
           useValue: lifecyclePublisher,
         },
