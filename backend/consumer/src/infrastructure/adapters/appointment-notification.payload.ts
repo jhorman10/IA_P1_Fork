@@ -7,6 +7,7 @@ export interface AppointmentNotificationPayload {
   fullName: string;
   idCard: number;
   office: string | null;
+  doctorId?: string | null;
   status: string;
   priority: string;
   timestamp: number;
