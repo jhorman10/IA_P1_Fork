@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ConsultationPolicy } from "src/domain/policies/consultation.policy";
+import { NestLoggerAdapter } from "../../infrastructure/logging/nest-logger.adapter";
 
 import { AssignAvailableOfficesUseCaseImpl } from "../../application/use-cases/assign-available-offices.use-case.impl";
 import { CancelAppointmentUseCaseImpl } from "../../application/use-cases/cancel-appointment.use-case.impl";
@@ -43,6 +44,13 @@ import { RepositoriesModule } from "../repositories/repositories.module";
     PoliciesModule,
   ],
   providers: [
+    // Provide a local LoggerPort here so use-cases can resolve logging without
+    // depending on the composition root. This keeps the use-cases runnable
+    // while the module graph stabilizes.
+    {
+      provide: "LoggerPort",
+      useClass: NestLoggerAdapter,
+    },
     {
       provide: "RegisterAppointmentUseCase",
       inject: ["AppointmentRepository", "LoggerPort", "ClockPort"],
