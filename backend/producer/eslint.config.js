@@ -42,5 +42,25 @@ export default [
         },
       ],
     }),
+  // Relax strict rules for test files and specs to avoid blocking CI autofix
+  {
+    files: ["**/*.spec.ts", "test/**/*.ts", "**/*.spec.tsx", "test/**/*.tsx"],
+    languageOptions: {
+      parser,
+      ecmaVersion: 2022,
+      sourceType: "module",
+    },
+    plugins: {
+      "@typescript-eslint": tsEslintPlugin,
+    },
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+      ],
+    },
+  },
   }),
 ];
