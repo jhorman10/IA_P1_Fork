@@ -10,6 +10,7 @@ export interface PersistenceAppointmentData {
   priority: string;
   status: AppointmentStatus;
   office: string | null;
+  doctorId?: string | null;
   timestamp: number;
   completedAt?: number;
   domainId: string;

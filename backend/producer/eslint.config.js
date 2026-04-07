@@ -16,33 +16,38 @@ const js = Object.assign({}, withoutExtends(jsConfig.configs.recommended), {
   },
 });
 
-const ts = Object.assign({}, withoutExtends(tsEslintPlugin.configs.recommended), {
-  files: ["**/*.ts"],
-  languageOptions: {
-    parser,
-    ecmaVersion: 2022,
-    sourceType: "module",
+const ts = Object.assign(
+  {},
+  withoutExtends(tsEslintPlugin.configs.recommended),
+  {
+    files: ["**/*.ts"],
+    languageOptions: {
+      parser,
+      ecmaVersion: 2022,
+      sourceType: "module",
+    },
+    plugins: {
+      "@typescript-eslint": tsEslintPlugin,
+      "simple-import-sort": simpleImportSort,
+    },
+    rules: Object.assign({}, tsEslintPlugin.configs.recommended.rules, {
+      "no-unused-vars": "off",
+      "no-console": "off",
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+    }),
   },
-  plugins: {
-    "@typescript-eslint": tsEslintPlugin,
-    "simple-import-sort": simpleImportSort,
-  },
-  rules: Object.assign({}, tsEslintPlugin.configs.recommended.rules, {
-    "no-unused-vars": "off",
-    "no-console": "off",
-    "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error",
-    "@typescript-eslint/no-unused-vars": [
-      "warn",
-      {
-        argsIgnorePattern: "^_",
-        varsIgnorePattern: "^_",
-        caughtErrorsIgnorePattern: "^_",
-      },
-    ],
-  }),
-});
+);
 
+// Relax strict rules for test files and specs to avoid blocking CI autofix
 const testOverride = {
   files: ["**/*.spec.ts", "test/**/*.ts", "**/*.spec.tsx", "test/**/*.tsx"],
   languageOptions: {
@@ -58,7 +63,11 @@ const testOverride = {
     "@typescript-eslint/no-require-imports": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
-      { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_",
+      },
     ],
   },
 };

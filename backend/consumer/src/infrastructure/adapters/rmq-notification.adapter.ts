@@ -32,7 +32,7 @@ export class RmqNotificationAdapter implements NotificationPort {
   private mapToPayload(
     appointment: Appointment,
   ): AppointmentNotificationPayload {
-    return {
+    const payload: any = {
       id: appointment.id,
       fullName: appointment.fullName.toValue(),
       idCard: appointment.idCard.toValue(),
@@ -42,5 +42,11 @@ export class RmqNotificationAdapter implements NotificationPort {
       timestamp: appointment.timestamp,
       completedAt: appointment.completedAt,
     };
+
+    if (Object.prototype.hasOwnProperty.call(appointment as any, "doctorId")) {
+      payload.doctorId = (appointment as any).doctorId ?? null;
+    }
+
+    return payload as AppointmentNotificationPayload;
   }
 }

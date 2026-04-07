@@ -25,6 +25,7 @@ export class AppointmentMapper {
       new Priority(doc.priority),
       doc.status as AppointmentStatus,
       doc.office,
+      doc.doctorId ?? null,
       doc.timestamp,
       doc.completedAt ?? undefined,
       doc.domainId, // Garantiza que el id de dominio es persistente
@@ -35,7 +36,7 @@ export class AppointmentMapper {
    * Maps a Domain Entity to a persistence object (for updates/saves).
    */
   public static toPersistence(entity: Appointment): PersistenceAppointmentData {
-    return {
+    const base: PersistenceAppointmentData = {
       idCard: entity.idCard.toValue(),
       fullName: entity.fullName.toValue(),
       priority: entity.priority.toValue(),
@@ -45,5 +46,12 @@ export class AppointmentMapper {
       timestamp: entity.timestamp,
       domainId: entity.id,
     };
+
+    // Only include doctorId when explicitly set (non-null/undefined)
+    if (entity.doctorId !== undefined && entity.doctorId !== null) {
+      (base as any).doctorId = entity.doctorId;
+    }
+
+    return base;
   }
 }

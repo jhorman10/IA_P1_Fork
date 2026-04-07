@@ -4,10 +4,12 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { EventDispatchingAppointmentRepositoryDecorator } from "../../infrastructure/persistence/event-dispatching-appointment-repository.decorator";
 import { MongooseAppointmentRepository } from "../../infrastructure/persistence/mongoose-appointment.repository";
 import { MongooseLockRepository } from "../../infrastructure/persistence/mongoose-lock.repository";
+import { MongooseDoctorRepository } from "../../infrastructure/persistence/mongoose-doctor.repository";
 import {
   Appointment,
   AppointmentSchema,
 } from "../../schemas/appointment.schema";
+import { Doctor, DoctorSchema } from "../../schemas/doctor.schema";
 import { PoliciesModule } from "../policies/policies.module";
 
 /**
@@ -37,6 +39,7 @@ import { PoliciesModule } from "../policies/policies.module";
   imports: [
     MongooseModule.forFeature([
       { name: Appointment.name, schema: AppointmentSchema },
+      { name: Doctor.name, schema: DoctorSchema },
     ]),
     PoliciesModule, // ⚕️ HUMAN CHECK - Repositories depend on domain policies
   ],
@@ -60,11 +63,22 @@ import { PoliciesModule } from "../policies/policies.module";
       useFactory: (inner, bus) =>
         new EventDispatchingAppointmentRepositoryDecorator(inner, bus),
     },
+    // Doctor repository (Mongoose adapter)
+    {
+      provide: "MongooseDoctorRepository",
+      inject: ["default_MongooseModel_Doctor"],
+      useFactory: (model) => new MongooseDoctorRepository(model),
+    },
+    {
+      provide: "DoctorRepository",
+      inject: ["MongooseDoctorRepository"],
+      useFactory: (inner) => inner,
+    },
     {
       provide: "LockRepository",
       useClass: MongooseLockRepository,
     },
   ],
-  exports: ["AppointmentRepository", "LockRepository"],
+  exports: ["AppointmentRepository", "LockRepository", "DoctorRepository"],
 })
 export class RepositoriesModule {}
