@@ -58,6 +58,11 @@ export function AssignmentNotification({
             👨‍⚕️ {doctorLine}
             {officeLine ? ` · ${officeLine}` : ""}
           </span>
+          {appointment.completedAt && (
+            <span data-testid="estimated-time" className={styles.estimatedTime}>
+              🕐 {new Date(appointment.completedAt).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" })}
+            </span>
+          )}
         </div>
       </div>
       <button
