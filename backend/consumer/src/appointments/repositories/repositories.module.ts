@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
+import { MongooseModule, getModelToken } from "@nestjs/mongoose";
 
 import { EventDispatchingAppointmentRepositoryDecorator } from "../../infrastructure/persistence/event-dispatching-appointment-repository.decorator";
 import { MongooseAppointmentRepository } from "../../infrastructure/persistence/mongoose-appointment.repository";
@@ -49,11 +49,7 @@ import { PoliciesModule } from "../policies/policies.module";
     // 2. Wrap with event-dispatching decorator (cross-cutting concern)
     {
       provide: "MongooseAppointmentRepository",
-      inject: [
-        "default_MongooseModel_Appointment",
-        "ConsultationPolicy",
-        "LoggerPort",
-      ],
+      inject: [getModelToken(Appointment.name), "ConsultationPolicy", "LoggerPort"],
       useFactory: (model, policy, logger) =>
         new MongooseAppointmentRepository(model, policy, logger),
     },
@@ -66,7 +62,7 @@ import { PoliciesModule } from "../policies/policies.module";
     // Doctor repository (Mongoose adapter)
     {
       provide: "MongooseDoctorRepository",
-      inject: ["default_MongooseModel_Doctor"],
+      inject: [getModelToken(Doctor.name)],
       useFactory: (model) => new MongooseDoctorRepository(model),
     },
     {
