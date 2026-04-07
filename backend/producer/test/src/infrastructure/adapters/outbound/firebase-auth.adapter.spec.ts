@@ -43,7 +43,7 @@ describe("FirebaseAuthAdapter", () => {
     admin.initializeApp.mockReturnValue({ auth: () => mockAuth });
     admin.credential.cert.mockReturnValue({});
 
-    const config = { get: (k: string) => undefined } as unknown as ConfigService;
+    const config = { get: (_k: string) => undefined } as unknown as ConfigService;
     const adapter = new FirebaseAuthAdapter(config);
     adapter.onModuleInit();
 
@@ -63,7 +63,7 @@ describe("FirebaseAuthAdapter", () => {
     admin.initializeApp.mockReturnValue({ auth: () => mockAuth });
     admin.credential.applicationDefault.mockReturnValue({});
 
-    const config = { get: (k: string) => undefined } as unknown as ConfigService;
+    const config = { get: (_k: string) => undefined } as unknown as ConfigService;
     const adapter = new FirebaseAuthAdapter(config);
     adapter.onModuleInit();
 
