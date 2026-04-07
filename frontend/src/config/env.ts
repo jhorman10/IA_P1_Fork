@@ -10,16 +10,20 @@ function required(name: string, value?: string) {
 }
 
 export const env = {
-  API_BASE_URL: required(
-    "NEXT_PUBLIC_API_BASE_URL",
-    process.env.NEXT_PUBLIC_API_BASE_URL,
-  ),
+  get API_BASE_URL() {
+    return required(
+      "NEXT_PUBLIC_API_BASE_URL",
+      process.env.NEXT_PUBLIC_API_BASE_URL,
+    );
+  },
 
   POLLING_INTERVAL: Number(process.env.NEXT_PUBLIC_POLLING_INTERVAL ?? 3000),
 
   // ⚕️ HUMAN CHECK - URL del WebSocket
   // En producción, usar wss:// (WebSocket seguro)
-  WS_URL: required("NEXT_PUBLIC_WS_URL", process.env.NEXT_PUBLIC_WS_URL),
+  get WS_URL() {
+    return required("NEXT_PUBLIC_WS_URL", process.env.NEXT_PUBLIC_WS_URL);
+  },
 
   // SPEC-004: Firebase configuration (lazy getters — only called in browser when vars present)
   get FIREBASE_API_KEY() {
