@@ -25,6 +25,10 @@ export class Appointment {
   @Prop({ type: String, default: null, index: true })
   office!: string | null;
 
+  // Doctor assigned to the appointment (domain id)
+  @Prop({ type: String, default: null, index: true })
+  doctorId!: string | null;
+
   @Prop({
     default: "waiting",
     enum: ["waiting", "called", "completed"],

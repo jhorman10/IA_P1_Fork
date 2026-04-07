@@ -25,6 +25,7 @@ export class AppointmentMapper {
       new Priority(doc.priority),
       doc.status as AppointmentStatus,
       doc.office,
+      doc.doctorId ?? null,
       doc.timestamp,
       doc.completedAt ?? undefined,
       doc.domainId, // Garantiza que el id de dominio es persistente
@@ -41,6 +42,7 @@ export class AppointmentMapper {
       priority: entity.priority.toValue(),
       status: entity.status,
       office: entity.office,
+      doctorId: entity.doctorId ?? null,
       completedAt: entity.completedAt,
       timestamp: entity.timestamp,
       domainId: entity.id,
