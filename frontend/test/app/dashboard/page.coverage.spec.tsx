@@ -62,9 +62,9 @@ describe("CompletedHistoryDashboard coverage", () => {
   it("renders called, waiting, and completed lists", () => {
     mockHookState = {
       appointments: [
-        { id: "1", status: "called", priority: "high", timestamp: 2 },
-        { id: "2", status: "waiting", priority: "low", timestamp: 3 },
-        { id: "3", status: "completed", priority: "medium", timestamp: 4 },
+        { id: "1", fullName: "Test Called", status: "called", priority: "high", timestamp: 2 },
+        { id: "2", fullName: "Test Waiting", status: "waiting", priority: "low", timestamp: 3 },
+        { id: "3", fullName: "Test Completed", status: "completed", priority: "medium", timestamp: 4 },
       ],
       error: undefined,
       _connected: true,
@@ -222,7 +222,7 @@ describe("CompletedHistoryDashboard coverage", () => {
     expect(
       await screen.findByTestId("assignment-notification"),
     ).toBeInTheDocument();
-    expect(screen.getByText("Dr. Luis Gomez")).toBeInTheDocument();
-    expect(screen.getByText("Consultorio 4")).toBeInTheDocument();
+    expect(screen.getByText(/Dr\. Luis Gomez/)).toBeInTheDocument();
+    expect(screen.getByText(/Consultorio 4/)).toBeInTheDocument();
   });
 });

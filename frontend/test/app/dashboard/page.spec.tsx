@@ -96,8 +96,8 @@ describe("CompletedHistoryDashboard (Dashboard Page)", () => {
       render(<CompletedHistoryDashboard />);
 
       await waitFor(() => {
-        expect(screen.getByText("Test Completed")).toBeInTheDocument();
-        expect(screen.getByText("Another Completed")).toBeInTheDocument();
+        expect(screen.getAllByText("Test C.").length).toBeGreaterThan(0);
+        expect(screen.getAllByText("Another C.").length).toBeGreaterThan(0);
       });
 
       // Waiting and called appointments CAN be shown as separate sections
@@ -119,7 +119,7 @@ describe("CompletedHistoryDashboard (Dashboard Page)", () => {
 
       await waitFor(() => {
         const appointments = screen.getAllByText(
-          /Test Completed|Another Completed/,
+          /Test C\.|Another C\./,
         );
         expect(appointments.length).toBeGreaterThan(0);
       });
