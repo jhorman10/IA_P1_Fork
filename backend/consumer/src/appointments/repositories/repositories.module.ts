@@ -11,6 +11,7 @@ import {
 } from "../../schemas/appointment.schema";
 import { Doctor, DoctorSchema } from "../../schemas/doctor.schema";
 import { PoliciesModule } from "../policies/policies.module";
+import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 
 /**
  * @description RepositoriesModule encapsulates all data persistence mechanisms.
