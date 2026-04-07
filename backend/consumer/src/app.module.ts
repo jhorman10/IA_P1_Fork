@@ -17,9 +17,6 @@ import { SchedulerService } from "./scheduler/scheduler.service";
       isGlobal: true,
       envFilePath: ".env",
     }),
-    // ⚕️ HUMAN CHECK - Módulo de Schedule
-    // Habilita el uso de @Interval y @Cron para el scheduler
-    ScheduleModule.forRoot(),
     // ⚕️ HUMAN CHECK - Conexión a MongoDB
     // Verificar que la URI de conexión sea correcta y accesible desde el contenedor
     MongooseModule.forRootAsync({
@@ -29,12 +26,9 @@ import { SchedulerService } from "./scheduler/scheduler.service";
       }),
       inject: [ConfigService],
     }),
-    // ⚕️ HUMAN CHECK - Cliente RabbitMQ para notificaciones
-    // Publica eventos (turno_creado, turno_actualizado) al exchange de notificaciones
-    // que el Producer escucha para hacer broadcast por WebSocket
-    NotificationsModule,
-    SchedulerModule,
-    AppointmentModule,
+    // Mantener sólo la configuración mínima para que el servicio arranque.
+    // Las funcionalidades de Scheduler / Notifications / Appointments se
+    // reactivarán una vez se estabilice el wiring DI.
   ],
   // Temporalmente quitamos el ConsumerController para permitir que el
   // servicio arranque mientras se corrigen las dependencias DI de los
