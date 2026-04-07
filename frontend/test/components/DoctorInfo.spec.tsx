@@ -14,7 +14,7 @@ describe("DoctorInfo", () => {
 
   it("should render office", () => {
     render(<DoctorInfo doctorName="Dr. Juan García" office="3" />);
-    expect(screen.getByText("Consultorio 3")).toBeInTheDocument();
+    expect(screen.getByText("3")).toBeInTheDocument();
   });
 
   it("should render doctor icon", () => {

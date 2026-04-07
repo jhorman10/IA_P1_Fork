@@ -24,7 +24,7 @@ describe("CalledAppointmentCard", () => {
 
   describe("Rendering", () => {
     it("should render patient name", () => {
-      render(<CalledAppointmentCard appointment={mockAppointment} />);
+      render(<CalledAppointmentCard appointment={mockAppointment} anonymize={false} />);
 
       expect(screen.getByText("Jane Smith")).toBeInTheDocument();
     });
