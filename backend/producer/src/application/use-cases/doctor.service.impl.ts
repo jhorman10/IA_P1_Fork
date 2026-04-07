@@ -6,7 +6,11 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 
-import { DoctorView, DoctorStatus } from "../../domain/models/doctor-view";
+import {
+  DOCTOR_OFFICE_RANGE_MESSAGE,
+  isValidDoctorOffice,
+} from "../../doctors/doctor-office.constants";
+import { DoctorStatus, DoctorView } from "../../domain/models/doctor-view";
 import {
   CreateDoctorCommand,
   DoctorServicePort,
@@ -16,10 +20,6 @@ import {
   LIFECYCLE_PUBLISHER_TOKEN,
 } from "../../domain/ports/outbound/appointment-lifecycle-publisher.port";
 import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
-import {
-  DOCTOR_OFFICE_RANGE_MESSAGE,
-  isValidDoctorOffice,
-} from "../../doctors/doctor-office.constants";
 
 /**
  * Application Use Case: Doctor Service
