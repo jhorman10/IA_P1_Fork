@@ -16,7 +16,7 @@ import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port
 import { OPERATIONAL_AUDIT_PORT } from "src/domain/ports/outbound/operational-audit.port";
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
 import { ProfilesController } from "src/profiles/profiles.controller";
-import request from "supertest";
+import * as request from "supertest";
 
 describe("ProfilesController (Integration Tests)", () => {
   let app: INestApplication;

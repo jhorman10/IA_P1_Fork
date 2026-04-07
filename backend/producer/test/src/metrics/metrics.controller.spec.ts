@@ -11,7 +11,7 @@ import { OPERATIONAL_METRICS_PORT } from "src/domain/ports/inbound/operational-m
 import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port";
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
 import { MetricsController } from "src/metrics/metrics.controller";
-import request from "supertest";
+import * as request from "supertest";
 
 /**
  * SPEC-013: Integration tests for MetricsController.

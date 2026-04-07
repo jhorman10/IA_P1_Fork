@@ -13,7 +13,7 @@ import { PROFILE_SERVICE_TOKEN } from "src/domain/ports/inbound/profile-service.
 import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port";
 import { OPERATIONAL_AUDIT_PORT } from "src/domain/ports/outbound/operational-audit.port";
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
-import request from "supertest";
+import * as request from "supertest";
 
 describe("AuthController (Integration Tests)", () => {
   let app: INestApplication;

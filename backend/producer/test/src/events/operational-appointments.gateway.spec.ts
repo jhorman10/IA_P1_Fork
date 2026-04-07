@@ -91,8 +91,6 @@ describe("OperationalAppointmentsGateway", () => {
         status: "waiting",
         priority: "medium",
         timestamp: 1760000000,
-        doctorId: null,
-        doctorName: null,
       },
     ];
     const client = makeClient();
@@ -160,8 +158,6 @@ describe("OperationalAppointmentsGateway", () => {
       status: "called",
       priority: "medium",
       timestamp: 1760000001,
-      doctorId: "doctor-01",
-      doctorName: "Dr. House",
     };
 
     // WHEN

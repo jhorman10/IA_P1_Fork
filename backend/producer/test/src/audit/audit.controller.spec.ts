@@ -11,7 +11,7 @@ import { RoleGuard } from "src/auth/guards/role.guard";
 import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port";
 import { OPERATIONAL_AUDIT_QUERY_PORT } from "src/domain/ports/outbound/operational-audit-query.port";
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
-import request from "supertest";
+import * as request from "supertest";
 
 describe("AuditController (Integration Tests)", () => {
   let app: INestApplication;

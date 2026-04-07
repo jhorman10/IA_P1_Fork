@@ -13,7 +13,7 @@ import {
 import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port";
 import { OPERATIONAL_AUDIT_PORT } from "src/domain/ports/outbound/operational-audit.port";
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
-import request from "supertest";
+import * as request from "supertest";
 
 describe("AppointmentLifecycleController (Integration Tests)", () => {
   let app: INestApplication;
@@ -68,7 +68,6 @@ describe("AppointmentLifecycleController (Integration Tests)", () => {
     priority: "medium",
     timestamp: 1760000000,
     doctorId: "doc-a",
-    doctorName: "Dr. A",
     ...overrides,
   });
 

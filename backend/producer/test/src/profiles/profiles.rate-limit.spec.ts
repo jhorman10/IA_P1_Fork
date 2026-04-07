@@ -10,11 +10,12 @@ import { FirebaseAuthGuard } from "src/auth/guards/firebase-auth.guard";
 import { RoleGuard } from "src/auth/guards/role.guard";
 import { ProfileView } from "src/domain/models/profile-view";
 import { PROFILE_SERVICE_TOKEN } from "src/domain/ports/inbound/profile-service.port";
+import { SPECIALTY_SERVICE_TOKEN } from "src/domain/ports/inbound/specialty-service.port";
 import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port";
 import { OPERATIONAL_AUDIT_PORT } from "src/domain/ports/outbound/operational-audit.port";
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
 import { ProfilesController } from "src/profiles/profiles.controller";
-import request from "supertest";
+import * as request from "supertest";
 
 describe("ProfilesController rate limiting (SPEC-006)", () => {
   let app: INestApplication;
@@ -100,6 +101,19 @@ describe("ProfilesController rate limiting (SPEC-006)", () => {
           useValue: {
             log: jest.fn().mockResolvedValue(undefined),
             hasRecentEntry: jest.fn().mockResolvedValue(false),
+          },
+        },
+        {
+          provide: "DoctorService",
+          useValue: {
+            createDoctor: jest.fn(),
+            updateSpecialty: jest.fn(),
+          },
+        },
+        {
+          provide: SPECIALTY_SERVICE_TOKEN,
+          useValue: {
+            findById: jest.fn(),
           },
         },
         {

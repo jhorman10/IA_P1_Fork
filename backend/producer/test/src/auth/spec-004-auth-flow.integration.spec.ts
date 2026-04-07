@@ -12,9 +12,10 @@ import { RoleGuard } from "src/auth/guards/role.guard";
 import { ProfileView } from "src/domain/models/profile-view";
 import { PROFILE_SERVICE_TOKEN } from "src/domain/ports/inbound/profile-service.port";
 import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port";
+import { OPERATIONAL_AUDIT_PORT } from "src/domain/ports/outbound/operational-audit.port";
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
 import { ProducerController } from "src/producer.controller";
-import request from "supertest";
+import * as request from "supertest";
 
 describe("SPEC-004 Auth Flow (Integration)", () => {
   let app: INestApplication;
@@ -124,6 +125,13 @@ describe("SPEC-004 Auth Flow (Integration)", () => {
         {
           provide: PROFILE_REPOSITORY_TOKEN,
           useValue: mockProfileRepo,
+        },
+        {
+          provide: OPERATIONAL_AUDIT_PORT,
+          useValue: {
+            log: jest.fn().mockResolvedValue(undefined),
+            hasRecentEntry: jest.fn().mockResolvedValue(false),
+          },
         },
       ],
     }).compile();

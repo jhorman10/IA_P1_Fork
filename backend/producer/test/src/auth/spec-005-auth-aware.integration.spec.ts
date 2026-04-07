@@ -20,7 +20,7 @@ import { OPERATIONAL_AUDIT_PORT } from "src/domain/ports/outbound/operational-au
 import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
 import { ProducerController } from "src/producer.controller";
 import { AppointmentEventPayload } from "src/types/appointment-event";
-import request from "supertest";
+import * as request from "supertest";
 
 describe("SPEC-005 Auth-aware Journey (Integration)", () => {
   let app: INestApplication;
@@ -90,8 +90,6 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
       status: "waiting",
       priority: "medium",
       timestamp: 1712251200000,
-      doctorId: null,
-      doctorName: null,
     },
   ];
 
