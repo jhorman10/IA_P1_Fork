@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { AuthProvider } from "@/context/AuthProvider";
 import { DependencyProvider } from "@/context/DependencyContext";
 
 const inter = Inter({
@@ -23,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
-        <DependencyProvider>{children}</DependencyProvider>
+        <AuthProvider>
+          <DependencyProvider>{children}</DependencyProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -7,10 +7,13 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 
 import { CreateAppointmentUseCaseImpl } from "./application/use-cases/create-appointment.use-case.impl";
 import { AppointmentModule } from "./appointments/appointment.module";
+import { AppointmentLifecycleController } from "./appointments/appointment-lifecycle.controller";
 import { AppointmentQueryController } from "./appointments/appointment-query.controller";
 import { AuditModule } from "./audit/audit.module";
+import { LIFECYCLE_PUBLISHER_TOKEN } from "./domain/ports/outbound/appointment-lifecycle-publisher.port";
 import { EventsModule } from "./events/events.module";
 import { HealthController } from "./health.controller";
+import { RabbitMQLifecyclePublisherAdapter } from "./infrastructure/adapters/outbound/rabbitmq-lifecycle-publisher.adapter";
 import { RabbitMQPublisherAdapter } from "./infrastructure/adapters/outbound/rabbitmq-publisher.adapter";
 import { ProducerController } from "./producer.controller";
 import { ProfilesModule } from "./profiles/profiles.module";
@@ -76,6 +79,7 @@ import { ProfilesModule } from "./profiles/profiles.module";
   controllers: [
     ProducerController,
     AppointmentQueryController,
+    AppointmentLifecycleController,
     HealthController,
   ],
   providers: [
@@ -88,6 +92,11 @@ import { ProfilesModule } from "./profiles/profiles.module";
     {
       provide: "AppointmentPublisherPort",
       useClass: RabbitMQPublisherAdapter,
+    },
+    // SPEC-012: Lifecycle publisher for complete/cancel events
+    {
+      provide: LIFECYCLE_PUBLISHER_TOKEN,
+      useClass: RabbitMQLifecyclePublisherAdapter,
     },
     // 🛡️ HUMAN CHECK - Aplicar ThrottlerGuard globalmente
     {

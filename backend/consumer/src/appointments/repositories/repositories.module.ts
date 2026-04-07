@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
+import { MongooseModule, getModelToken } from "@nestjs/mongoose";
 
 import { EventDispatchingAppointmentRepositoryDecorator } from "../../infrastructure/persistence/event-dispatching-appointment-repository.decorator";
 import { MongooseAppointmentRepository } from "../../infrastructure/persistence/mongoose-appointment.repository";
@@ -11,6 +11,8 @@ import {
 } from "../../schemas/appointment.schema";
 import { Doctor, DoctorSchema } from "../../schemas/doctor.schema";
 import { PoliciesModule } from "../policies/policies.module";
+import { NestLoggerAdapter } from "../../infrastructure/logging/nest-logger.adapter";
+import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 
 /**
  * @description RepositoriesModule encapsulates all data persistence mechanisms.
@@ -44,18 +46,47 @@ import { PoliciesModule } from "../policies/policies.module";
     PoliciesModule, // ⚕️ HUMAN CHECK - Repositories depend on domain policies
   ],
   providers: [
+    // Compatibility aliases: some modules reference the legacy provider tokens
+    // (e.g. "default_MongooseModel_Appointment") — expose them by mapping
+    // to the tokens created by MongooseModule.getModelToken.
+    {
+      provide: "default_MongooseModel_Appointment",
+      inject: [getModelToken(Appointment.name)],
+      useFactory: (model) => model,
+    },
+    {
+      provide: "default_MongooseModel_Doctor",
+      inject: [getModelToken(Doctor.name)],
+      useFactory: (model) => model,
+    },
     // ⚕️ HUMAN CHECK - Two-step factory:
     // 1. Create inner repository (pure Mongoose adapter)
     // 2. Wrap with event-dispatching decorator (cross-cutting concern)
     {
       provide: "MongooseAppointmentRepository",
       inject: [
-        "default_MongooseModel_Appointment",
-        "ConsultationPolicy",
+        getModelToken(Appointment.name),
+        ConsultationPolicy,
         "LoggerPort",
       ],
       useFactory: (model, policy, logger) =>
         new MongooseAppointmentRepository(model, policy, logger),
+    },
+    // Provide a local LoggerPort so repositories can log without depending on the
+    // higher-level AppointmentModule. This keeps the RepositoriesModule
+    // self-contained for DI and avoids circular imports.
+    {
+      provide: "LoggerPort",
+      useClass: NestLoggerAdapter,
+    },
+    // Provide a lightweight no-op DomainEventBus so the repositories can be
+    // instantiated without requiring the full event-bus wiring. AppointmentModule
+    // may override or provide a richer implementation when available.
+    {
+      provide: "DomainEventBus",
+      useValue: {
+        publish: async () => undefined,
+      },
     },
     {
       provide: "AppointmentRepository",
@@ -66,7 +97,7 @@ import { PoliciesModule } from "../policies/policies.module";
     // Doctor repository (Mongoose adapter)
     {
       provide: "MongooseDoctorRepository",
-      inject: ["default_MongooseModel_Doctor"],
+      inject: [getModelToken(Doctor.name)],
       useFactory: (model) => new MongooseDoctorRepository(model),
     },
     {
@@ -79,6 +110,11 @@ import { PoliciesModule } from "../policies/policies.module";
       useClass: MongooseLockRepository,
     },
   ],
-  exports: ["AppointmentRepository", "LockRepository", "DoctorRepository"],
+  exports: [
+    "AppointmentRepository",
+    "LockRepository",
+    "DoctorRepository",
+    "LoggerPort",
+  ],
 })
 export class RepositoriesModule {}

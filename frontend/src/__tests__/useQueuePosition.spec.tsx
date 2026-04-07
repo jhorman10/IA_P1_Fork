@@ -27,7 +27,7 @@ describe("useQueuePosition hook", () => {
       Promise.resolve({ ok: true, json: () => Promise.resolve(mockResponse) }),
     );
 
-    const { result } = renderHook(() => useQueuePosition("123456"));
+    const { result } = renderHook(() => useQueuePosition(123456));
 
     // Allow effect to run
     await act(async () => {

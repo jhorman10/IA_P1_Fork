@@ -5,6 +5,7 @@ import {
   AppointmentLifecyclePublisherPort,
   CancelAppointmentEvent,
   CompleteAppointmentEvent,
+  DoctorCheckedInEvent,
 } from "../../../domain/ports/outbound/appointment-lifecycle-publisher.port";
 
 @Injectable()
@@ -33,6 +34,16 @@ export class RabbitMQLifecyclePublisherAdapter implements AppointmentLifecyclePu
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       this.logger.error(`Failed to publish cancel_appointment: ${message}`);
+      throw error;
+    }
+  }
+
+  async publishDoctorCheckedIn(event: DoctorCheckedInEvent): Promise<void> {
+    try {
+      this.client.emit("doctor_checked_in", event);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Failed to publish doctor_checked_in: ${message}`);
       throw error;
     }
   }

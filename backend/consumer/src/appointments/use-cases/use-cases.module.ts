@@ -1,8 +1,12 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ConsultationPolicy } from "src/domain/policies/consultation.policy";
+import { NestLoggerAdapter } from "../../infrastructure/logging/nest-logger.adapter";
+import { SystemClockAdapter } from "../../infrastructure/utils/system-clock.adapter";
 
 import { AssignAvailableOfficesUseCaseImpl } from "../../application/use-cases/assign-available-offices.use-case.impl";
+import { CancelAppointmentUseCaseImpl } from "../../application/use-cases/cancel-appointment.use-case.impl";
+import { CompleteAppointmentUseCaseImpl } from "../../application/use-cases/complete-appointment.use-case.impl";
 import { CompleteExpiredAppointmentsUseCaseImpl } from "../../application/use-cases/complete-expired-appointments.use-case.impl";
 import { MaintenanceOrchestratorUseCaseImpl } from "../../application/use-cases/maintenance-orchestrator.use-case.impl";
 import { RegisterAppointmentUseCaseImpl } from "../../application/use-cases/register-appointment.use-case.impl";
@@ -40,72 +44,7 @@ import { RepositoriesModule } from "../repositories/repositories.module";
     RepositoriesModule,
     PoliciesModule,
   ],
-  providers: [
-    {
-      provide: "RegisterAppointmentUseCase",
-      inject: ["AppointmentRepository", "LoggerPort", "ClockPort"],
-      useFactory: (repo, logger, clock) =>
-        new RegisterAppointmentUseCaseImpl(repo, logger, clock),
-    },
-    {
-      provide: "CompleteExpiredAppointmentsUseCase",
-      inject: [
-        "AppointmentRepository",
-        "NotificationPort",
-        "LoggerPort",
-        "ClockPort",
-      ],
-      useFactory: (repo, notification, logger, clock) =>
-        new CompleteExpiredAppointmentsUseCaseImpl(
-          repo,
-          notification,
-          logger,
-          clock,
-        ),
-    },
-    {
-      provide: "AssignAvailableOfficesUseCase",
-      inject: [
-        "AppointmentRepository",
-        "LoggerPort",
-        "ClockPort",
-        "ConsultationPolicy",
-        ConfigService,
-      ],
-      useFactory: (
-        repo,
-        logger,
-        clock,
-        policy: ConsultationPolicy,
-        configService: ConfigService,
-      ) => {
-        const totalOffices = configService.get<number>("TOTAL_OFFICES", 5);
-        return new AssignAvailableOfficesUseCaseImpl(
-          repo,
-          logger,
-          clock,
-          totalOffices,
-          policy,
-        );
-      },
-    },
-    {
-      provide: "MaintenanceOrchestratorUseCase",
-      inject: [
-        "AssignAvailableOfficesUseCase",
-        "CompleteExpiredAppointmentsUseCase",
-        "LockRepository",
-        "LoggerPort",
-      ],
-      useFactory: (assign, complete, lock, logger) =>
-        new MaintenanceOrchestratorUseCaseImpl(assign, complete, lock, logger),
-    },
-  ],
-  exports: [
-    "RegisterAppointmentUseCase",
-    "CompleteExpiredAppointmentsUseCase",
-    "AssignAvailableOfficesUseCase",
-    "MaintenanceOrchestratorUseCase",
-  ],
+  providers: [],
+  exports: [],
 })
 export class UseCasesModule {}

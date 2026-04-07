@@ -9,7 +9,11 @@ import { Priority } from "../value-objects/priority.value-object";
 // Pattern: Entity — Domain object without infrastructure dependencies
 // ⚕️ HUMAN CHECK - Entidad de dominio pura que posee con precisión su Identidad (H-24)
 
-export type AppointmentStatus = "waiting" | "called" | "completed";
+export type AppointmentStatus =
+  | "waiting"
+  | "called"
+  | "completed"
+  | "cancelled";
 
 export class Appointment {
   private domainEvents: DomainEvent[] = [];
@@ -121,5 +125,9 @@ export class Appointment {
 
   public complete(): void {
     this.status = "completed";
+  }
+
+  public cancel(): void {
+    this.status = "cancelled";
   }
 }
