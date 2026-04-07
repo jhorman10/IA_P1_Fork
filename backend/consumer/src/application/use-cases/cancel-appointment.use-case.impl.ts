@@ -1,6 +1,6 @@
+import { CancelAppointmentUseCase } from "../../domain/ports/inbound/cancel-appointment.use-case";
 import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
 import { LoggerPort } from "../../domain/ports/outbound/logger.port";
-import { CancelAppointmentUseCase } from "../../domain/ports/inbound/cancel-appointment.use-case";
 
 /**
  * SPEC-012: Cancels a waiting appointment.
