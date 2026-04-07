@@ -38,6 +38,9 @@ services:
       - RABBITMQ_NOTIFICATIONS_QUEUE=${RABBITMQ_NOTIFICATIONS_QUEUE}
       - MONGODB_URI=mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:${MONGODB_PORT}/appointments_db?authSource=admin
       - FRONTEND_URL=${FRONTEND_URL}
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -113,7 +116,10 @@ services:
     ports:
       - "${FRONTEND_PORT:-3001}:3001"
     restart: unless-stopped
-    # Use the production image (no host mount) to avoid filesystem permission issues
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
     # ⚕️ HUMAN CHECK - Variables de entorno gestionadas vía .env
     environment:
       - NODE_ENV=${NODE_ENV}
