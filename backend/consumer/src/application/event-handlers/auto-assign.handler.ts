@@ -5,7 +5,7 @@ import { AppointmentRepository } from "../../domain/ports/outbound/appointment.r
 import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
 import { LoggerPort } from "../../domain/ports/outbound/logger.port";
 import { ClockPort } from "../../domain/ports/outbound/clock.port";
-import { ConsultationPolicy } from "../../policies/consultation.policy";
+import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 
 /**
  * Handler: When an appointment is registered, attempt a minimal doctor assignment.

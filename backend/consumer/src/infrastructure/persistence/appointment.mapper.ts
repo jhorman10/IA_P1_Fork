@@ -36,16 +36,22 @@ export class AppointmentMapper {
    * Maps a Domain Entity to a persistence object (for updates/saves).
    */
   public static toPersistence(entity: Appointment): PersistenceAppointmentData {
-    return {
+    const base: PersistenceAppointmentData = {
       idCard: entity.idCard.toValue(),
       fullName: entity.fullName.toValue(),
       priority: entity.priority.toValue(),
       status: entity.status,
       office: entity.office,
-      doctorId: entity.doctorId ?? null,
       completedAt: entity.completedAt,
       timestamp: entity.timestamp,
       domainId: entity.id,
     };
+
+    // Only include doctorId when explicitly set (non-null/undefined)
+    if (entity.doctorId !== undefined && entity.doctorId !== null) {
+      (base as any).doctorId = entity.doctorId;
+    }
+
+    return base;
   }
 }
