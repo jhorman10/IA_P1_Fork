@@ -11,6 +11,10 @@ import {
   CreateDoctorCommand,
   DoctorServicePort,
 } from "../../domain/ports/inbound/doctor-service.port";
+import {
+  AppointmentLifecyclePublisherPort,
+  LIFECYCLE_PUBLISHER_TOKEN,
+} from "../../domain/ports/outbound/appointment-lifecycle-publisher.port";
 import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
 
 /**
@@ -23,6 +27,8 @@ export class DoctorServiceImpl implements DoctorServicePort {
   constructor(
     @Inject("DoctorRepository")
     private readonly repo: DoctorRepository,
+    @Inject(LIFECYCLE_PUBLISHER_TOKEN)
+    private readonly lifecyclePublisher: AppointmentLifecyclePublisherPort,
   ) {}
 
   async createDoctor(command: CreateDoctorCommand): Promise<DoctorView> {
@@ -53,6 +59,13 @@ export class DoctorServiceImpl implements DoctorServicePort {
     if (!updated) {
       throw new NotFoundException(`Médico con id ${id} no encontrado`);
     }
+
+    // SPEC-003: Publish event to trigger reactive assignment in the consumer
+    await this.lifecyclePublisher.publishDoctorCheckedIn({
+      doctorId: id,
+      timestamp: Date.now(),
+    });
+
     return updated;
   }
 

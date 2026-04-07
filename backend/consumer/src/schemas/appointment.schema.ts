@@ -38,7 +38,7 @@ export class Appointment {
   // ⚕️ HUMAN CHECK - Estados del Appointment
   @Prop({
     default: "waiting",
-    enum: ["waiting", "called", "completed"],
+    enum: ["waiting", "called", "completed", "cancelled"],
     index: true,
   })
   status!: AppointmentStatus;

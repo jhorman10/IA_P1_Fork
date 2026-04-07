@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ConsultationPolicy } from "src/domain/policies/consultation.policy";
 
 import { AssignAvailableOfficesUseCaseImpl } from "../../application/use-cases/assign-available-offices.use-case.impl";
+import { CancelAppointmentUseCaseImpl } from "../../application/use-cases/cancel-appointment.use-case.impl";
+import { CompleteAppointmentUseCaseImpl } from "../../application/use-cases/complete-appointment.use-case.impl";
 import { CompleteExpiredAppointmentsUseCaseImpl } from "../../application/use-cases/complete-expired-appointments.use-case.impl";
 import { MaintenanceOrchestratorUseCaseImpl } from "../../application/use-cases/maintenance-orchestrator.use-case.impl";
 import { RegisterAppointmentUseCaseImpl } from "../../application/use-cases/register-appointment.use-case.impl";
@@ -100,12 +102,27 @@ import { RepositoriesModule } from "../repositories/repositories.module";
       useFactory: (assign, complete, lock, logger) =>
         new MaintenanceOrchestratorUseCaseImpl(assign, complete, lock, logger),
     },
+    // SPEC-012: Lifecycle use cases
+    {
+      provide: "CompleteAppointmentUseCase",
+      inject: ["AppointmentRepository", "DoctorRepository", "LoggerPort"],
+      useFactory: (repo, doctorRepo, logger) =>
+        new CompleteAppointmentUseCaseImpl(repo, doctorRepo, logger),
+    },
+    {
+      provide: "CancelAppointmentUseCase",
+      inject: ["AppointmentRepository", "LoggerPort"],
+      useFactory: (repo, logger) =>
+        new CancelAppointmentUseCaseImpl(repo, logger),
+    },
   ],
   exports: [
     "RegisterAppointmentUseCase",
     "CompleteExpiredAppointmentsUseCase",
     "AssignAvailableOfficesUseCase",
     "MaintenanceOrchestratorUseCase",
+    "CompleteAppointmentUseCase",
+    "CancelAppointmentUseCase",
   ],
 })
 export class UseCasesModule {}
