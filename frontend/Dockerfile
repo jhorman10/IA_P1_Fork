@@ -29,7 +29,7 @@ COPY . .
 RUN npm run build
 
 # --- Stage: production ---
-FROM node:20-slim AS production
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
@@ -38,7 +38,7 @@ ENV PORT=3001
 ENV HOSTNAME=0.0.0.0
 
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm install --omit=dev --omit=optional
 
 COPY --chown=node:node --from=build /app/.next ./.next
 COPY --chown=node:node --from=build /app/public ./public

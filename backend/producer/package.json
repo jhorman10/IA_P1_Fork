@@ -40,6 +40,11 @@
     "socket.io": "^4.8.3",
     "firebase-admin": "^11.11.0"
   },
+  "overrides": {
+    "google-gax": {
+      "protobufjs": "7.5.4"
+    }
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@nestjs/cli": "^11.0.16",

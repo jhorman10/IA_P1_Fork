@@ -295,16 +295,11 @@ jobs:
       - name: Build frontend image
         run: docker build --target production -t frontend:ci frontend
 
-      - name: Install Trivy
-        run: |
-          mkdir -p "$RUNNER_TEMP/bin"
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
-            | sh -s -- -b "$RUNNER_TEMP/bin" v0.51.2
-          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
-
       - name: Trivy scan — producer
         run: |
-          trivy image \
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:0.51.2 image \
             --exit-code 1 \
             --severity CRITICAL \
             --no-progress \
@@ -313,7 +308,9 @@ jobs:
 
       - name: Trivy scan — consumer
         run: |
-          trivy image \
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:0.51.2 image \
             --exit-code 1 \
             --severity CRITICAL \
             --no-progress \
@@ -322,7 +319,9 @@ jobs:
 
       - name: Trivy scan — frontend
         run: |
-          trivy image \
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:0.51.2 image \
             --exit-code 1 \
             --severity CRITICAL \
             --no-progress \
@@ -332,7 +331,11 @@ jobs:
       - name: Trivy SARIF report — producer
         if: always()
         run: |
-          trivy image \
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$PWD:/work" \
+            -w /work \
+            aquasec/trivy:0.51.2 image \
             --exit-code 0 \
             --severity HIGH,CRITICAL \
             --format sarif \
