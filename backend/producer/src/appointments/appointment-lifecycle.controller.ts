@@ -30,6 +30,7 @@ import {
   LIFECYCLE_PUBLISHER_TOKEN,
 } from "../domain/ports/outbound/appointment-lifecycle-publisher.port";
 import { AppointmentReadRepository } from "../domain/ports/outbound/appointment-read.repository";
+import { QueryAppointmentsUseCase } from "../domain/ports/inbound/query-appointments.use-case";
 import { CreateAppointmentResponseDto } from "../dto/create-appointment-response.dto";
 
 // ⚕️ HUMAN CHECK - SPEC-012: Lifecycle controller handles explicit complete/cancel flows.
@@ -41,8 +42,8 @@ import { CreateAppointmentResponseDto } from "../dto/create-appointment-response
 @Controller("appointments")
 export class AppointmentLifecycleController {
   constructor(
-    @Inject("AppointmentReadRepository")
-    private readonly appointmentReadRepository: AppointmentReadRepository,
+    @Inject("QueryAppointmentsUseCase")
+    private readonly queryAppointmentsUseCase: QueryAppointmentsUseCase,
     @Inject(LIFECYCLE_PUBLISHER_TOKEN)
     private readonly lifecyclePublisher: AppointmentLifecyclePublisherPort,
   ) {}
@@ -75,7 +76,7 @@ export class AppointmentLifecycleController {
     @Param("id") id: string,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<CreateAppointmentResponseDto> {
-    const appointment = await this.appointmentReadRepository.findById(id);
+    const appointment = await this.queryAppointmentsUseCase.findById(id);
     if (!appointment) {
       throw new NotFoundException("Turno no encontrado");
     }
@@ -133,7 +134,7 @@ export class AppointmentLifecycleController {
     @Param("id") id: string,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<CreateAppointmentResponseDto> {
-    const appointment = await this.appointmentReadRepository.findById(id);
+    const appointment = await this.queryAppointmentsUseCase.findById(id);
     if (!appointment) {
       throw new NotFoundException("Turno no encontrado");
     }
