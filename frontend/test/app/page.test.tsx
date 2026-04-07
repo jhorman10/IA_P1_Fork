@@ -48,7 +48,7 @@ describe("Home Page", () => {
 
   it("renders list of appointments", () => {
     render(<Home />);
-    expect(screen.getByText("Test Patient")).toBeInTheDocument();
-    expect(screen.getByText("Active Patient")).toBeInTheDocument();
+    expect(screen.getByText("Test P.")).toBeInTheDocument();
+    expect(screen.getByText("Active P.")).toBeInTheDocument();
   });
 });
