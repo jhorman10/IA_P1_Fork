@@ -36,7 +36,10 @@ import { SchedulerService } from "./scheduler/scheduler.service";
     SchedulerModule,
     AppointmentModule,
   ],
-  controllers: [ConsumerController, HealthController],
+  // Temporalmente quitamos el ConsumerController para permitir que el
+  // servicio arranque mientras se corrigen las dependencias DI de los
+  // casos de uso. HealthController mantiene el endpoint /health.
+  controllers: [HealthController],
   providers: [
     {
       provide: "RetryPolicyPort",
