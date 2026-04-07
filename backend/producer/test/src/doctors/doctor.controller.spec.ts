@@ -5,6 +5,9 @@ import {
 } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { DoctorController } from "src/doctors/doctor.controller";
+import { FirebaseAuthGuard } from "src/auth/guards/firebase-auth.guard";
+import { RoleGuard } from "src/auth/guards/role.guard";
+import { DoctorContextGuard } from "src/auth/guards/doctor-context.guard";
 import * as request from "supertest";
 
 describe("DoctorController (Integration Tests)", () => {
@@ -44,7 +47,14 @@ describe("DoctorController (Integration Tests)", () => {
           useValue: mockDoctorService,
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(FirebaseAuthGuard)
+      .useValue({ canActivate: jest.fn().mockReturnValue(true) })
+      .overrideGuard(RoleGuard)
+      .useValue({ canActivate: jest.fn().mockReturnValue(true) })
+      .overrideGuard(DoctorContextGuard)
+      .useValue({ canActivate: jest.fn().mockReturnValue(true) })
+      .compile();
 
     app = module.createNestApplication();
     app.useGlobalPipes(
