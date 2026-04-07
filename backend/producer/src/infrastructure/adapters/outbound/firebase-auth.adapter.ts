@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   Logger,
   OnModuleInit,
@@ -109,7 +110,7 @@ export class FirebaseAuthAdapter implements FirebaseAuthPort, OnModuleInit {
     } catch (err: unknown) {
       const firebaseError = err as { code?: string; message?: string };
       if (firebaseError.code === "auth/email-already-exists") {
-        throw new BadRequestException(
+        throw new ConflictException(
           "Ya existe un usuario en Firebase con ese correo",
         );
       }
@@ -120,6 +121,26 @@ export class FirebaseAuthAdapter implements FirebaseAuthPort, OnModuleInit {
       }
       throw new BadRequestException(
         firebaseError.message ?? "Error al crear usuario en Firebase",
+      );
+    }
+  }
+
+  async getUserByEmail(email: string): Promise<{ uid: string } | null> {
+    if (this.e2eTestMode) {
+      return { uid: `e2e_${email.replace(/[^a-zA-Z0-9]/g, "_")}` };
+    }
+    try {
+      // firebase-admin v11: auth() return type is narrowed; cast to access BaseAuth.getUserByEmail
+      const authService = this.app.auth() as unknown as {
+        getUserByEmail(email: string): Promise<{ uid: string }>;
+      };
+      const userRecord = await authService.getUserByEmail(email);
+      return { uid: userRecord.uid };
+    } catch (err: unknown) {
+      const firebaseError = err as { code?: string };
+      if (firebaseError.code === "auth/user-not-found") return null;
+      throw new BadRequestException(
+        "Error al buscar usuario en Firebase por correo",
       );
     }
   }
