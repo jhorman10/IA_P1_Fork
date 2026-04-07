@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback,useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useDependencies } from "@/context/DependencyContext";
 import { Appointment } from "@/domain/Appointment";
@@ -44,14 +44,11 @@ export function useAppointmentsWebSocket(
       setIsConnecting(true);
     });
 
-    realTime.onError(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      (_err) => {
-        setError("Error de conexión en tiempo real");
-        setConnected(false);
-        setIsConnecting(false);
-      },
-    );
+    realTime.onError((_err) => {
+      setError("Error de conexión en tiempo real");
+      setConnected(false);
+      setIsConnecting(false);
+    });
 
     realTime.onSnapshot((data) => {
       setAppointments(data);
@@ -70,11 +67,8 @@ export function useAppointmentsWebSocket(
     };
   }, [realTime, updateAppointment, onUpdate]);
 
-  const connectionStatus = connected
-    ? "connected"
-    : isConnecting
-      ? "connecting"
-      : "disconnected";
+  const connectionStatus: "connected" | "connecting" | "disconnected" =
+    connected ? "connected" : isConnecting ? "connecting" : "disconnected";
 
   return { appointments, error, connected, isConnecting, connectionStatus };
 }

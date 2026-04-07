@@ -1,0 +1,34 @@
+# ── Next.js build output ──
+.next/
+out/
+
+# ── Dependencies ──
+node_modules/
+node_modules.rootowned*/
+
+# ── Test artefacts ──
+coverage/
+test/
+
+# ── Dev tooling ──
+*.md
+.env*
+!.env.example
+*.log
+npm-debug.log*
+jest.config.ts
+jest.setup.ts
+
+# ── TypeScript / build cache ──
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ── Version control ──
+.git/
+.gitignore
+
+# ── OS / editor noise ──
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

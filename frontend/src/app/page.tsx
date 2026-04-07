@@ -30,9 +30,13 @@ export default function AppointmentsScreen() {
     }
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { appointments, error, _connected, isConnecting, connectionStatus } =
-    useAppointmentsWebSocket(handleUpdate);
+  const {
+    appointments,
+    error,
+    connected: _connected,
+    isConnecting,
+    connectionStatus,
+  } = useAppointmentsWebSocket(handleUpdate);
 
   useEffect(() => {
     audioService.init("/sounds/ding.mp3", 0.6);

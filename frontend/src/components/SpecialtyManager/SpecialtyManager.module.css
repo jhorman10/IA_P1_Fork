@@ -1,0 +1,187 @@
+/* =============================================
+   SpecialtyManager — CRUD inline de especialidades
+   ============================================= */
+
+.section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 24px;
+  margin-top: 32px;
+  box-shadow: var(--shadow-sm);
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 18px;
+}
+
+.error {
+  font-size: 13px;
+  color: var(--color-red-600);
+  background: var(--color-red-50);
+  border: 1px solid var(--color-red-100);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 0 0 14px;
+}
+
+.addForm {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid var(--color-input-border);
+  background: var(--color-input-bg);
+  color: var(--color-input-text);
+  transition: all 0.15s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(198, 169, 107, 0.15);
+}
+
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btnAdd {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, var(--gold), #b89652);
+  color: var(--color-text-inverted);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.btnAdd:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(198, 169, 107, 0.3);
+}
+
+.btnAdd:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.empty {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  padding: 16px 0;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  background: var(--color-surface-alt, var(--color-surface));
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.viewRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.editRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.name {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.rowActions {
+  display: flex;
+  gap: 8px;
+}
+
+.btnEdit,
+.btnSave {
+  padding: 7px 14px;
+  border-radius: 7px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnEdit:hover:not(:disabled),
+.btnSave:hover:not(:disabled) {
+  background: var(--color-surface-tertiary);
+}
+
+.btnSave {
+  background: var(--color-blue-600);
+  color: #fff;
+  border-color: var(--color-blue-600);
+}
+
+.btnSave:hover:not(:disabled) {
+  background: var(--color-blue-700);
+}
+
+.btnDelete,
+.btnCancel {
+  padding: 7px 14px;
+  border-radius: 7px;
+  border: 1px solid var(--color-red-100);
+  background: var(--color-red-50);
+  color: var(--color-red-600);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnDelete:hover:not(:disabled),
+.btnCancel:hover:not(:disabled) {
+  background: var(--color-red-100, #fee2e2);
+}
+
+.btnEdit:disabled,
+.btnSave:disabled,
+.btnDelete:disabled,
+.btnCancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

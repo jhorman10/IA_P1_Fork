@@ -20,7 +20,6 @@ jest.mock("@nestjs/core", () => ({
 }));
 
 jest.mock("@nestjs/common", () => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const actual = jest.requireActual("@nestjs/common");
   return {
     ...actual,
@@ -69,7 +68,6 @@ jest.mock("../../src/infrastructure/filters/domain-exception.filter", () => ({
 }));
 
 // ── Imports (after mocks) ─────────────────────────────────────────────────────
-import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import { Transport } from "@nestjs/microservices";
 
@@ -124,7 +122,6 @@ describe("main.ts — bootstrap()", () => {
     const app = buildMockApp(config);
 
     jest.isolateModules(() => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       require("../../src/main");
     });
 
@@ -148,7 +145,6 @@ describe("main.ts — bootstrap()", () => {
     const app = buildMockApp(config);
 
     jest.isolateModules(() => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       require("../../src/main");
     });
 
@@ -162,7 +158,6 @@ describe("main.ts — bootstrap()", () => {
     const app = buildMockApp(config);
 
     jest.isolateModules(() => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       require("../../src/main");
     });
 

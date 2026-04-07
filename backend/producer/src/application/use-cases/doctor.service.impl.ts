@@ -1,0 +1,82 @@
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+
+import { DoctorView } from "../../domain/models/doctor-view";
+import { DoctorStatus } from "../../domain/models/doctor-view";
+import {
+  CreateDoctorCommand,
+  DoctorServicePort,
+} from "../../domain/ports/inbound/doctor-service.port";
+import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
+
+/**
+ * Application Use Case: Doctor Service
+ * SPEC-003: Lógica de negocio sobre la entidad Doctor.
+ * SRP: Orquesta exclusivamente el DoctorRepository. Sin acceso directo a MongoDB.
+ */
+@Injectable()
+export class DoctorServiceImpl implements DoctorServicePort {
+  constructor(
+    @Inject("DoctorRepository")
+    private readonly repo: DoctorRepository,
+  ) {}
+
+  async createDoctor(command: CreateDoctorCommand): Promise<DoctorView> {
+    return this.repo.save(command);
+  }
+
+  async findAll(status?: DoctorStatus): Promise<DoctorView[]> {
+    return this.repo.findAll(status);
+  }
+
+  async findById(id: string): Promise<DoctorView> {
+    const doctor = await this.repo.findById(id);
+    if (!doctor) {
+      throw new NotFoundException(`Médico con id ${id} no encontrado`);
+    }
+    return doctor;
+  }
+
+  async checkIn(id: string): Promise<DoctorView> {
+    const doctor = await this.repo.findById(id);
+    if (!doctor) {
+      throw new NotFoundException(`Médico con id ${id} no encontrado`);
+    }
+    if (doctor.status === "available") {
+      throw new ConflictException("El médico ya está disponible");
+    }
+    const updated = await this.repo.updateStatus(id, "available");
+    if (!updated) {
+      throw new NotFoundException(`Médico con id ${id} no encontrado`);
+    }
+    return updated;
+  }
+
+  async checkOut(id: string): Promise<DoctorView> {
+    const doctor = await this.repo.findById(id);
+    if (!doctor) {
+      throw new NotFoundException(`Médico con id ${id} no encontrado`);
+    }
+    const updated = await this.repo.updateStatus(id, "offline");
+    if (!updated) {
+      throw new NotFoundException(`Médico con id ${id} no encontrado`);
+    }
+    return updated;
+  }
+
+  async updateSpecialty(
+    id: string,
+    name: string,
+    _specialtyId?: string,
+  ): Promise<void> {
+    const doctor = await this.repo.findById(id);
+    if (!doctor) {
+      throw new NotFoundException(`Médico con id ${id} no encontrado`);
+    }
+    await this.repo.updateSpecialty(id, name);
+  }
+}

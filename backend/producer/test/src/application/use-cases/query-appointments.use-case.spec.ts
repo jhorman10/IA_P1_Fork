@@ -1,8 +1,8 @@
 import { NotFoundException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { QueryAppointmentsUseCaseImpl } from "src/application/use-cases/query-appointments.use-case.impl";
+import { AppointmentView } from "src/domain/models/appointment-view";
 import { AppointmentReadRepository } from "src/domain/ports/outbound/appointment-read.repository";
-import { AppointmentEventPayload } from "src/types/appointment-event";
 
 /**
  * ⚕️ HUMAN CHECK - Test de Caso de Uso Hexagonal:
@@ -12,12 +12,13 @@ describe("QueryAppointmentsUseCaseImpl", () => {
   let useCase: QueryAppointmentsUseCaseImpl;
   let mockRepo: jest.Mocked<AppointmentReadRepository>;
 
-  const mockPayloads: AppointmentEventPayload[] = [
+  const mockPayloads: AppointmentView[] = [
     {
       id: "abc-123",
       fullName: "John Doe",
       idCard: 12345678,
       office: "3",
+      doctorId: null,
       status: "called",
       priority: "medium",
       timestamp: Date.now(),
@@ -27,6 +28,7 @@ describe("QueryAppointmentsUseCaseImpl", () => {
       fullName: "Jane Smith",
       idCard: 87654321,
       office: null,
+      doctorId: null,
       status: "waiting",
       priority: "high",
       timestamp: Date.now(),
@@ -37,6 +39,7 @@ describe("QueryAppointmentsUseCaseImpl", () => {
     mockRepo = {
       findAll: jest.fn(),
       findByIdCard: jest.fn(),
+      findById: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({

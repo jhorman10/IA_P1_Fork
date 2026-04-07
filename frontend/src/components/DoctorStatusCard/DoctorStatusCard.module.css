@@ -1,0 +1,143 @@
+/* =============================================
+   DoctorStatusCard — Modern elevated card
+   ============================================= */
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 24px;
+  width: 100%;
+  box-shadow: var(--shadow-sm);
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.info {
+  margin-bottom: 18px;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 6px;
+  letter-spacing: -0.2px;
+}
+
+.office {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0 0 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.specialty {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  margin: 0;
+  font-style: italic;
+}
+
+.statusRow {
+  margin-bottom: 22px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--color-surface-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.available {
+  background: var(--color-green-100);
+  color: var(--color-green-800);
+}
+
+.busy {
+  background: var(--color-amber-50);
+  color: var(--color-amber-800);
+}
+
+.offline {
+  background: var(--color-surface-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btnCheckIn,
+.btnCheckOut {
+  flex: 1;
+  min-width: 140px;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.btnCheckIn {
+  background: var(--color-blue-600);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+.btnCheckIn:hover:not(:disabled) {
+  background: var(--color-blue-700);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.btnCheckIn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btnCheckOut {
+  background: var(--color-surface-tertiary);
+  color: var(--color-slate-700);
+  border: 1px solid var(--color-slate-300);
+}
+
+.btnCheckOut:hover:not(:disabled) {
+  background: var(--color-border);
+  transform: translateY(-1px);
+}
+
+.btnCheckOut:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btnCheckIn:disabled,
+.btnCheckOut:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}

@@ -1,5 +1,5 @@
-import { RegisterAppointmentCommand } from "../../../../src/domain/commands/register-appointment.command";
 import { RegisterAppointmentUseCaseImpl } from "../../../../src/application/use-cases/register-appointment.use-case.impl";
+import { RegisterAppointmentCommand } from "../../../../src/domain/commands/register-appointment.command";
 import { Appointment } from "../../../../src/domain/entities/appointment.entity";
 import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
 import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";

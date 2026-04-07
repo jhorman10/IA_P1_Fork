@@ -4,7 +4,7 @@ import tsEslintPlugin from "@typescript-eslint/eslint-plugin";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 
 function withoutExtends(config) {
-  const {  ...rest } = config;
+  const { extends: _extends, overrideConfig, ...rest } = config || {};
   return rest;
 }
 
@@ -46,4 +46,21 @@ export default [
       "@typescript-eslint/no-namespace": "warn",
     }),
   }),
+
+  {
+    files: ["**/*.spec.ts", "test/**/*.ts"],
+    languageOptions: {
+      parser,
+      ecmaVersion: 2022,
+      sourceType: "module",
+    },
+    plugins: {
+      "@typescript-eslint": tsEslintPlugin,
+      "simple-import-sort": simpleImportSort,
+    },
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
 ];

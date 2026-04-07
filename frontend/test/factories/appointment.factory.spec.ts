@@ -1,4 +1,4 @@
-import { AppointmentFactory } from "@/test/factories/appointment.factory";
+import { AppointmentFactory } from "@test/factories/appointment.factory";
 
 describe("AppointmentFactory", () => {
   const originalRandom = Math.random;

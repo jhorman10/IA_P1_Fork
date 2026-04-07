@@ -1,0 +1,26 @@
+# ── Build artefacts ──
+dist/
+coverage/
+
+# ── Dependencies ──
+node_modules/
+
+# ── Dev tooling ──
+*.md
+.env*
+!.env.example
+*.log
+npm-debug.log*
+
+# ── TypeScript source maps / cache ──
+*.tsbuildinfo
+
+# ── Version control ──
+.git/
+.gitignore
+
+# ── OS / editor noise ──
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

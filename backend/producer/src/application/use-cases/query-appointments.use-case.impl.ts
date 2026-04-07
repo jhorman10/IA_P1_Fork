@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 
+import { AppointmentView } from "../../domain/models/appointment-view";
 import { QueryAppointmentsUseCase } from "../../domain/ports/inbound/query-appointments.use-case";
 import { AppointmentReadRepository } from "../../domain/ports/outbound/appointment-read.repository";
-import { AppointmentView } from "../../domain/models/appointment-view";
 
 /**
  * Application Use Case: Query Appointments

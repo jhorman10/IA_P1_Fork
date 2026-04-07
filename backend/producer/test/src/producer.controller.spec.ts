@@ -1,6 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
 import { Test, TestingModule } from "@nestjs/testing";
+import { FirebaseAuthGuard } from "src/auth/guards/firebase-auth.guard";
+import { RoleGuard } from "src/auth/guards/role.guard";
+import { FIREBASE_AUTH_PORT } from "src/domain/ports/outbound/firebase-auth.port";
+import { PROFILE_REPOSITORY_TOKEN } from "src/domain/ports/outbound/profile.repository";
 import { ProducerController } from "src/producer.controller";
 import * as request from "supertest";
 
@@ -42,8 +46,24 @@ describe("ProducerController (Integration Tests)", () => {
           provide: "QueryAppointmentsUseCase",
           useValue: mockQueryAppointmentsUseCase,
         },
+        FirebaseAuthGuard,
+        RoleGuard,
+        Reflector,
+        {
+          provide: FIREBASE_AUTH_PORT,
+          useValue: { verifyIdToken: jest.fn() },
+        },
+        {
+          provide: PROFILE_REPOSITORY_TOKEN,
+          useValue: { findByUid: jest.fn() },
+        },
       ],
-    }).compile();
+    })
+      .overrideGuard(FirebaseAuthGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(RoleGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     app = module.createNestApplication();
 
