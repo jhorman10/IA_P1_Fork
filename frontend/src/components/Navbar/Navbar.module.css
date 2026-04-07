@@ -75,17 +75,17 @@
 }
 
 .roleAdmin {
-  background: #7c3aed;
+  background: var(--color-blue-600);
   color: #fff;
 }
 
 .roleRecepcionista {
-  background: #0284c7;
+  background: var(--color-primary);
   color: #fff;
 }
 
 .roleDoctor {
-  background: #059669;
+  background: var(--color-green-600);
   color: #fff;
 }
 
