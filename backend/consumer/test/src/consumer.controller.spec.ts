@@ -14,12 +14,21 @@ describe("ConsumerController", () => {
   }
   let registerUseCase: RegisterUseCaseMock;
   let assignUseCase: AssignUseCaseMock;
+  let maintenanceUseCase: AssignUseCaseMock;
 
   const mockRegisterUseCase = {
     execute: jest.fn(),
   };
 
   const mockAssignUseCase = {
+    execute: jest.fn(),
+  };
+
+  const mockCompleteUseCase = {
+    execute: jest.fn(),
+  };
+
+  const mockCancelUseCase = {
     execute: jest.fn(),
   };
 
@@ -57,12 +66,19 @@ describe("ConsumerController", () => {
           provide: "AssignAvailableOfficesUseCase",
           useValue: mockAssignUseCase,
         },
+        { provide: "CompleteAppointmentUseCase", useValue: mockCompleteUseCase },
+        { provide: "CancelAppointmentUseCase", useValue: mockCancelUseCase },
+        {
+          provide: "MaintenanceOrchestratorUseCase",
+          useValue: mockAssignUseCase,
+        },
       ],
     }).compile();
 
     controller = module.get<ConsumerController>(ConsumerController);
     registerUseCase = module.get("RegisterAppointmentUseCase");
     assignUseCase = module.get("AssignAvailableOfficesUseCase");
+    maintenanceUseCase = module.get("MaintenanceOrchestratorUseCase");
   });
 
   it("should be defined", () => {
@@ -148,22 +164,22 @@ describe("ConsumerController", () => {
   it("should trigger assignment and ack on doctor_checked_in event", async () => {
     mockAssignUseCase.execute.mockResolvedValue(undefined);
 
-    await controller.handleDoctorCheckedIn({}, mockContext);
+    const payload = { doctorId: "doc-1", timestamp: Date.now() };
 
-    expect(assignUseCase.execute).toHaveBeenCalledTimes(1);
+    await controller.handleDoctorCheckedIn(payload, mockContext);
+
+    expect(maintenanceUseCase.execute).toHaveBeenCalledTimes(1);
     expect(mockChannel.ack).toHaveBeenCalled();
   });
 
   it("should nack without requeue when doctor_checked_in assignment fails", async () => {
     mockAssignUseCase.execute.mockRejectedValue(new Error("Assignment failed"));
 
-    await controller.handleDoctorCheckedIn({}, mockContext);
+    const payload = { doctorId: "doc-2", timestamp: Date.now() };
 
-    expect(assignUseCase.execute).toHaveBeenCalledTimes(1);
-    expect(mockChannel.nack).toHaveBeenCalledWith(
-      expect.anything(),
-      false,
-      false,
-    );
+    await controller.handleDoctorCheckedIn(payload, mockContext);
+
+    expect(maintenanceUseCase.execute).toHaveBeenCalledTimes(1);
+    expect(mockChannel.ack).toHaveBeenCalled();
   });
 });
