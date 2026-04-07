@@ -19,10 +19,8 @@ let _auth: Auth | null = null;
 //     crashing — env.FIREBASE_* lazy getters will still throw loudly if
 //     any other browser code accesses them without the vars being set.
 if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { getApps, initializeApp } =
     require("firebase/app") as typeof import("firebase/app");
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { getAuth } =
     require("firebase/auth") as typeof import("firebase/auth");
 

@@ -459,7 +459,6 @@ describe("useAppointmentRegistration", () => {
     });
 
     it("should reset in-flight flag on mount/remount", () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { unmount, rerender: _rerender } = renderHook(() =>
         useAppointmentRegistration(),
       );

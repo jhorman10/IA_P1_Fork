@@ -31,7 +31,6 @@ export default function CompletedHistoryDashboard() {
     }
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {
     appointments,
     error,

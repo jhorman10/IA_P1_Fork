@@ -61,15 +61,12 @@ export function useOperationalAppointmentsWebSocket(
       }
     });
 
-    operationalRealTime.onError(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      (_err: Error) => {
-        setError("Error de conexión en tiempo real operativo");
-        setConnected(false);
-        setIsConnecting(false);
-        setIsReconnecting(false);
-      },
-    );
+    operationalRealTime.onError((_err: Error) => {
+      setError("Error de conexión en tiempo real operativo");
+      setConnected(false);
+      setIsConnecting(false);
+      setIsReconnecting(false);
+    });
 
     operationalRealTime.onAuthRejected(() => {
       setAuthRejected(true);

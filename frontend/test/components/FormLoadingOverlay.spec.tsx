@@ -170,7 +170,6 @@ describe("FormLoadingOverlay", () => {
     });
 
     it("should be accessible when visible", () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { container: _container } = render(
         <FormLoadingOverlay isLoading={true} message="Procesando..." />,
       );

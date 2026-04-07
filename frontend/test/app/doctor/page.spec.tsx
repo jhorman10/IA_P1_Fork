@@ -6,8 +6,8 @@ import DoctorDashboardPage from "@/app/doctor/dashboard/page";
 import { Appointment } from "@/domain/Appointment";
 import { Doctor } from "@/domain/Doctor";
 import { Profile } from "@/domain/Profile";
-import { UseAuthReturn } from "@/hooks/useAuth";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
+import { UseAuthReturn } from "@/hooks/useAuth";
 import { UseDoctorDashboardReturn } from "@/hooks/useDoctorDashboard";
 
 jest.mock("@/hooks/useAuth", () => ({

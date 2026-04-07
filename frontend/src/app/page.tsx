@@ -30,7 +30,6 @@ export default function AppointmentsScreen() {
     }
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {
     appointments,
     error,

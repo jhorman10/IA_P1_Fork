@@ -29,7 +29,6 @@ export function useClientSideConfig<T>(init: () => Promise<T>, fallback: T): T {
     }
     // `init` is intentionally excluded: the factory must be stable or wrapped
     // in useCallback by the caller. Re-running on every render would re-init SDKs.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return config;

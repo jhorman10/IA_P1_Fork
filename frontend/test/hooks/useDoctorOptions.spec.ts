@@ -2,8 +2,8 @@
 import { renderHook, waitFor } from "@testing-library/react";
 
 import { Doctor } from "@/domain/Doctor";
-import { useDoctorOptions } from "@/hooks/useDoctorOptions";
 import { useAuth, UseAuthReturn } from "@/hooks/useAuth";
+import { useDoctorOptions } from "@/hooks/useDoctorOptions";
 import { getDoctors } from "@/services/doctorService";
 
 jest.mock("@/hooks/useAuth", () => ({
