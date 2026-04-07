@@ -1,6 +1,7 @@
 import {
   ForbiddenException,
   INestApplication,
+  NotFoundException,
   UnauthorizedException,
   ValidationPipe,
 } from "@nestjs/common";
@@ -144,7 +145,7 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
       async (uid: string) => {
         const profile = profilesByUid[uid];
         if (!profile) {
-          throw new ForbiddenException("Perfil operativo no configurado");
+          throw new NotFoundException("Perfil operativo no configurado");
         }
         if (profile.status !== "active") {
           throw new ForbiddenException("Perfil inactivo");
@@ -287,12 +288,12 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
     });
   });
 
-  it("should return 403 when session is requested with valid token but missing profile", async () => {
+  it("should return 404 when session is requested with valid token but missing profile", async () => {
     await request(app.getHttpServer())
       .post("/auth/session")
       .set("Authorization", "Bearer missing-profile-token")
       .send({})
-      .expect(403);
+      .expect(404);
 
     expect(profileService.resolveSession).not.toHaveBeenCalled();
   });

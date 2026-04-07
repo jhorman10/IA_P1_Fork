@@ -1,6 +1,7 @@
 import {
   ExecutionContext,
   ForbiddenException,
+  NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { FirebaseAuthGuard } from "src/auth/guards/firebase-auth.guard";
@@ -100,7 +101,7 @@ describe("FirebaseAuthGuard", () => {
     expect(firebaseAuth.verifyIdToken).not.toHaveBeenCalled();
   });
 
-  it("should throw ForbiddenException when profile does not exist", async () => {
+  it("should throw NotFoundException when profile does not exist", async () => {
     // GIVEN
     const request: Record<string, unknown> = {
       headers: { authorization: "Bearer valid-token" },
@@ -110,7 +111,7 @@ describe("FirebaseAuthGuard", () => {
 
     // WHEN / THEN
     await expect(guard.canActivate(makeContext(request))).rejects.toThrow(
-      ForbiddenException,
+      NotFoundException,
     );
     expect(profileRepo.findByUid).toHaveBeenCalledWith("uid-missing");
   });

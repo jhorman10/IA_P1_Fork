@@ -1,6 +1,7 @@
 import {
   ForbiddenException,
   INestApplication,
+  NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
@@ -77,7 +78,7 @@ describe("AuthController (Integration Tests)", () => {
       async (uid: string) => {
         const profile = profilesByUid[uid];
         if (!profile)
-          throw new ForbiddenException("Perfil operativo no configurado");
+          throw new NotFoundException("Perfil operativo no configurado");
         if (profile.status !== "active") {
           throw new ForbiddenException("Perfil inactivo");
         }
@@ -167,13 +168,13 @@ describe("AuthController (Integration Tests)", () => {
     expect(profileService.resolveSession).not.toHaveBeenCalled();
   });
 
-  it("should return 403 when token is valid but profile is missing", async () => {
+  it("should return 404 when token is valid but profile is missing", async () => {
     // WHEN
     await request(app.getHttpServer())
       .post("/auth/session")
       .set("Authorization", "Bearer missing-profile-token")
       .send({})
-      .expect(403);
+      .expect(404);
 
     // THEN
     expect(profileService.resolveSession).not.toHaveBeenCalled();

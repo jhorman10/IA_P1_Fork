@@ -1,6 +1,7 @@
 import {
   ForbiddenException,
   INestApplication,
+  NotFoundException,
   UnauthorizedException,
   ValidationPipe,
 } from "@nestjs/common";
@@ -92,7 +93,7 @@ describe("SPEC-004 Auth Flow (Integration)", () => {
       async (uid: string) => {
         const profile = profilesByUid[uid];
         if (!profile)
-          throw new ForbiddenException("Perfil operativo no configurado");
+          throw new NotFoundException("Perfil operativo no configurado");
         if (profile.status !== "active") {
           throw new ForbiddenException("Perfil inactivo");
         }

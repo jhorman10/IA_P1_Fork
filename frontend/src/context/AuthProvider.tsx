@@ -83,10 +83,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // path — it is only loaded when an actual sign-out is needed.
           const { signOut } = await import("firebase/auth");
           await signOut(firebaseAuth).catch(() => {});
-          const message =
-            err instanceof Error
-              ? err.message
-              : "Error al verificar el perfil operativo";
+
+          // Translate HTTP error codes from /auth/session to user-friendly messages.
+          // 404 → profile was never created by an admin (orphan Firebase user).
+          // 403 → profile exists but has been deactivated.
+          const status =
+            err instanceof Error && "status" in err
+              ? (err as Error & { status: number }).status
+              : undefined;
+
+          let message: string;
+          if (status === 404) {
+            message =
+              "Tu cuenta no tiene un perfil operativo configurado. Contacta al administrador del sistema.";
+          } else if (status === 403) {
+            message =
+              "Tu perfil operativo está inactivo. Contacta al administrador del sistema.";
+          } else {
+            message =
+              err instanceof Error
+                ? err.message
+                : "Error al verificar el perfil operativo";
+          }
+
           setState({
             user: null,
             profile: null,
