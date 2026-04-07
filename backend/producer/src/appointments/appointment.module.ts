@@ -5,7 +5,6 @@ import { ProfilesModule } from "../profiles/profiles.module";
 import { QueryAppointmentsUseCaseImpl } from "../application/use-cases/query-appointments.use-case.impl";
 import { MongooseAppointmentReadRepository } from "../infrastructure/adapters/outbound/mongoose-appointment-read.repository";
 import { Appointment, AppointmentSchema } from "../schemas/appointment.schema";
-import { AppointmentLifecycleController } from "./appointment-lifecycle.controller";
 
 // ⚕️ HUMAN CHECK - Módulo Hexagonal: Vincula puerto de entrada → caso de uso, puerto de salida → adaptador
 @Module({
@@ -25,7 +24,7 @@ import { AppointmentLifecycleController } from "./appointment-lifecycle.controll
       useClass: MongooseAppointmentReadRepository,
     },
   ],
-  controllers: [AppointmentLifecycleController],
+  controllers: [],
   exports: ["QueryAppointmentsUseCase", "AppointmentReadRepository"],
 })
 export class AppointmentModule {}
