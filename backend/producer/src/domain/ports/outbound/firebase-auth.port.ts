@@ -10,6 +10,7 @@ export interface DecodedToken {
 export interface FirebaseAuthPort {
   verifyIdToken(idToken: string): Promise<DecodedToken>;
   createUser(email: string, password: string): Promise<{ uid: string }>;
+  getUserByEmail(email: string): Promise<{ uid: string } | null>;
 }
 
 /** NestJS injection token for the Firebase Auth adapter. */

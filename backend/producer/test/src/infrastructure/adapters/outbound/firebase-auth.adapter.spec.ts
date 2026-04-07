@@ -1,4 +1,4 @@
-import { BadRequestException, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, ConflictException, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { FirebaseAuthAdapter } from "src/infrastructure/adapters/outbound/firebase-auth.adapter";
 
@@ -68,7 +68,7 @@ describe("FirebaseAuthAdapter", () => {
     adapter.onModuleInit();
 
     mockAuth.createUser.mockRejectedValueOnce({ code: "auth/email-already-exists", message: "exists" });
-    await expect(adapter.createUser("dupe@b.com", "pwd")).rejects.toThrow(BadRequestException);
+    await expect(adapter.createUser("dupe@b.com", "pwd")).rejects.toThrow(ConflictException);
 
     mockAuth.createUser.mockRejectedValueOnce({ code: "auth/invalid-password", message: "short" });
     await expect(adapter.createUser("a@b.com", "123")).rejects.toThrow(BadRequestException);
