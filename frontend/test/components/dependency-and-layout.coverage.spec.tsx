@@ -59,6 +59,7 @@ describe("AppointmentCard (deprecated)", () => {
         status="waiting"
         showTime
         timeIcon="🕒"
+        anonymize={false}
       />,
     );
 

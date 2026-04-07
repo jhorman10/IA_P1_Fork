@@ -38,6 +38,7 @@ describe("AssignmentNotification", () => {
         <AssignmentNotification
           appointment={mockAppointment}
           onDismiss={jest.fn()}
+          anonymize={false}
         />,
       );
       expect(screen.getByText("Carlos Rodríguez")).toBeInTheDocument();
@@ -50,7 +51,7 @@ describe("AssignmentNotification", () => {
           onDismiss={jest.fn()}
         />,
       );
-      expect(screen.getByText("Dr. Juan García")).toBeInTheDocument();
+      expect(screen.getByText(/Dr\. Juan García/)).toBeInTheDocument();
     });
 
     it("should display office", () => {
@@ -60,7 +61,7 @@ describe("AssignmentNotification", () => {
           onDismiss={jest.fn()}
         />,
       );
-      expect(screen.getByText("Consultorio 3")).toBeInTheDocument();
+      expect(screen.getByText(/Consultorio 3/)).toBeInTheDocument();
     });
 
     it("should show fallback when doctorName is null", () => {
@@ -71,7 +72,7 @@ describe("AssignmentNotification", () => {
       render(
         <AssignmentNotification appointment={noDoctor} onDismiss={jest.fn()} />,
       );
-      expect(screen.getByText("Médico asignado")).toBeInTheDocument();
+      expect(screen.getByText(/Médico asignado/)).toBeInTheDocument();
     });
 
     it("should display estimated time when completedAt is set (CRITERIO-3.1)", () => {
@@ -105,8 +106,8 @@ describe("AssignmentNotification", () => {
           onDismiss={jest.fn()}
         />,
       );
-      expect(screen.getByText("Dr. Juan García")).toBeInTheDocument();
-      expect(screen.getByText("Consultorio 3")).toBeInTheDocument();
+      expect(screen.getByText(/Dr\. Juan García/)).toBeInTheDocument();
+      expect(screen.getByText(/Consultorio 3/)).toBeInTheDocument();
       expect(screen.getByTestId("estimated-time")).toBeInTheDocument();
     });
   });
