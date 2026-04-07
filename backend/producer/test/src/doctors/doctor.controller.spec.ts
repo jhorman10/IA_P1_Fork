@@ -4,10 +4,10 @@ import {
   ValidationPipe,
 } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
-import { DoctorController } from "src/doctors/doctor.controller";
+import { DoctorContextGuard } from "src/auth/guards/doctor-context.guard";
 import { FirebaseAuthGuard } from "src/auth/guards/firebase-auth.guard";
 import { RoleGuard } from "src/auth/guards/role.guard";
-import { DoctorContextGuard } from "src/auth/guards/doctor-context.guard";
+import { DoctorController } from "src/doctors/doctor.controller";
 import * as request from "supertest";
 
 describe("DoctorController (Integration Tests)", () => {
