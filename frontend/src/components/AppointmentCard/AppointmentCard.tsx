@@ -13,6 +13,7 @@
  * and different props. Specialized components make props type-safe and self-documenting.
  */
 
+import { anonymizeName } from "@/lib/anonymizeName";
 import { Appointment } from "@/domain/Appointment";
 import styles from "@/styles/page.module.css";
 
@@ -22,6 +23,8 @@ interface AppointmentCardProps {
   showTime?: boolean;
   timeIcon?: string;
   consultorioLabel?: string;
+  /** SPEC-009: anonymize patient name for public screen (default: true) */
+  anonymize?: boolean;
 }
 
 const getPriorityBadge = (priority: string): string => {
@@ -54,11 +57,16 @@ export default function AppointmentCard({
   consultorioLabel = appointment.office
     ? String(appointment.office)
     : "Pendiente",
+  anonymize = true,
 }: AppointmentCardProps) {
   return (
     <li className={`${styles.appointmentCard} ${styles[status]}`}>
       <div className={styles.cardHeader}>
-        <span className={styles.nombre}>{appointment.fullName}</span>
+        <span className={styles.nombre}>
+          {anonymize
+            ? anonymizeName(appointment.fullName)
+            : appointment.fullName}
+        </span>
       </div>
       <div className={styles.cardBody}>
         <div className={styles.infoRow}>
