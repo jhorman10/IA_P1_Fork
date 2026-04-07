@@ -1,12 +1,12 @@
 import { AssignDoctorUseCaseImpl } from "../../../../src/application/use-cases/assign-doctor.use-case.impl";
 import { Appointment } from "../../../../src/domain/entities/appointment.entity";
 import { Doctor } from "../../../../src/domain/entities/doctor.entity";
+import { ConsultationPolicy } from "../../../../src/domain/policies/consultation.policy";
 import { AppointmentRepository } from "../../../../src/domain/ports/outbound/appointment.repository";
 import { AuditPort } from "../../../../src/domain/ports/outbound/audit.port";
 import { ClockPort } from "../../../../src/domain/ports/outbound/clock.port";
 import { DoctorRepository } from "../../../../src/domain/ports/outbound/doctor.repository";
 import { LoggerPort } from "../../../../src/domain/ports/outbound/logger.port";
-import { ConsultationPolicy } from "../../../../src/domain/policies/consultation.policy";
 import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
 import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
 import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
