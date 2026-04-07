@@ -1,6 +1,8 @@
 import { Module } from "@nestjs/common";
 import { getModelToken, MongooseModule } from "@nestjs/mongoose";
 
+import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
+import { NestLoggerAdapter } from "../../infrastructure/logging/nest-logger.adapter";
 import { EventDispatchingAppointmentRepositoryDecorator } from "../../infrastructure/persistence/event-dispatching-appointment-repository.decorator";
 import { MongooseAppointmentRepository } from "../../infrastructure/persistence/mongoose-appointment.repository";
 import { MongooseAuditAdapter } from "../../infrastructure/persistence/mongoose-audit.adapter";
@@ -12,10 +14,8 @@ import {
 } from "../../schemas/appointment.schema";
 import { AuditLog, AuditLogSchema } from "../../schemas/audit-log.schema";
 import { Doctor, DoctorSchema } from "../../schemas/doctor.schema";
-import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 import { InfrastructureModule } from "../infrastructure/infrastructure.module";
 import { PoliciesModule } from "../policies/policies.module";
-import { NestLoggerAdapter } from "../../infrastructure/logging/nest-logger.adapter";
 
 /**
  * @description RepositoriesModule encapsulates all data persistence mechanisms.
