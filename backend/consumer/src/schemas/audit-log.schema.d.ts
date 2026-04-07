@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { HydratedDocument } from "mongoose";
 export type AuditAction =
   | "APPOINTMENT_ASSIGNED"
