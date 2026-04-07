@@ -6,8 +6,8 @@ import {
   CalledAppointmentCard,
   WaitingAppointmentCard,
 } from "@/components/AppointmentCard";
-import { AssignmentNotification } from "@/components/AssignmentNotification/AssignmentNotification";
 import AppointmentSkeleton from "@/components/AppointmentSkeleton";
+import { AssignmentNotification } from "@/components/AssignmentNotification/AssignmentNotification";
 import WebSocketStatus from "@/components/WebSocketStatus";
 import { Appointment } from "@/domain/Appointment";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
