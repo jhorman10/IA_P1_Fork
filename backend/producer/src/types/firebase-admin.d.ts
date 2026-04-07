@@ -15,7 +15,7 @@ declare module "firebase-admin" {
     }
 
     namespace credential {
-      interface Credential {}
+      type Credential = unknown;
       function cert(serviceAccount: ServiceAccount): Credential;
       function applicationDefault(): Credential;
     }
@@ -24,7 +24,7 @@ declare module "firebase-admin" {
       projectId?: string;
       clientEmail?: string;
       privateKey?: string;
-      [key: string]: any;
+      [key: string]: unknown;
     }
 
     const apps: app.App[];

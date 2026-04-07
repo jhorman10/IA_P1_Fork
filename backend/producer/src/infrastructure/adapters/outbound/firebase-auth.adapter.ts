@@ -3,7 +3,6 @@ import {
   Injectable,
   Logger,
   OnModuleInit,
-  ServiceUnavailableException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";

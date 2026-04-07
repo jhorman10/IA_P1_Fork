@@ -24,7 +24,6 @@ import { Throttle } from "@nestjs/throttler";
 
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
-import { DoctorContextGuard } from "../auth/guards/doctor-context.guard";
 import { FirebaseAuthGuard } from "../auth/guards/firebase-auth.guard";
 import { FirebaseTokenOnlyGuard } from "../auth/guards/firebase-token-only.guard";
 import { RoleGuard } from "../auth/guards/role.guard";
