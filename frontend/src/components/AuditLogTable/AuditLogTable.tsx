@@ -14,6 +14,9 @@ interface AuditLogTableProps {
   total: number;
   onPageChange: (page: number) => void;
   profilesByUid?: Record<string, Profile>;
+  limit: number;
+  limitOptions: number[];
+  onLimitChange: (limit: number) => void;
 }
 
 function formatTimestamp(epoch: number): string {
@@ -35,6 +38,9 @@ export default function AuditLogTable({
   total,
   onPageChange,
   profilesByUid = {},
+  limit,
+  limitOptions,
+  onLimitChange,
 }: AuditLogTableProps) {
   return (
     <div data-testid="audit-log-table">
@@ -98,6 +104,25 @@ export default function AuditLogTable({
 
       {!loading && total > 0 && (
         <div className={styles.pagination} data-testid="audit-pagination">
+          <div className={styles.limitSelector}>
+            <label className={styles.limitLabel} htmlFor="audit-limit-select">
+              Filas por página:
+            </label>
+            <select
+              id="audit-limit-select"
+              className={styles.limitSelect}
+              value={limit}
+              onChange={(e) => onLimitChange(Number(e.target.value))}
+              data-testid="audit-limit-select"
+              aria-label="Filas por página"
+            >
+              {limitOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+          </div>
           <button
             className={styles.pageBtn}
             disabled={page <= 1}

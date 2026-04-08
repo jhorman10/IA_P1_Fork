@@ -36,7 +36,7 @@ function buildPage(entries: AuditLogEntry[] = [sampleEntry]): AuditLogPage {
     data: entries,
     total: entries.length,
     page: 1,
-    limit: 20,
+    limit: 5,
     totalPages: 1,
   };
 }
@@ -68,7 +68,7 @@ describe("useAuditLogs", () => {
 
     expect(mockGetAuditLogs).toHaveBeenCalledWith("test-token", {
       page: 1,
-      limit: 20,
+      limit: 5,
     });
     expect(result.current.logs).toHaveLength(1);
     expect(result.current.logs[0].id).toBe("log-1");
@@ -113,7 +113,7 @@ describe("useAuditLogs", () => {
     expect(mockGetAuditLogs).toHaveBeenLastCalledWith("test-token", {
       action: "DOCTOR_CHECK_IN",
       page: 1,
-      limit: 20,
+      limit: 5,
     });
   });
 
@@ -142,7 +142,7 @@ describe("useAuditLogs", () => {
 
     expect(mockGetAuditLogs).toHaveBeenLastCalledWith("test-token", {
       page: 2,
-      limit: 20,
+      limit: 5,
     });
   });
 });

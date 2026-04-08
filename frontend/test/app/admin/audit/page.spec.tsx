@@ -85,6 +85,9 @@ function buildAuditLogsReturn(
     filters: {},
     setFilters: jest.fn(),
     fetchLogs: jest.fn(),
+    limit: 5,
+    limitOptions: [5, 10, 15],
+    setLimit: jest.fn(),
     ...overrides,
   };
 }
