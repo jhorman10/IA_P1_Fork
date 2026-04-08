@@ -23,6 +23,17 @@ export default function AppointmentsScreen() {
   const [assignedAppointment, setAssignedAppointment] =
     useState<Appointment | null>(null);
 
+  // Force light mode on public screen — restore user preference on unmount
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", "light");
+    return () => {
+      const stored = localStorage.getItem("theme");
+      if (stored === "dark" || stored === "light") {
+        document.documentElement.setAttribute("data-theme", stored);
+      }
+    };
+  }, []);
+
   // SPEC-003: track previous statuses to detect waiting → called transition
   const prevStatusRef = useRef<Map<string, string>>(new Map());
 
