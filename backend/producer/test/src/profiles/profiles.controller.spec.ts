@@ -31,6 +31,7 @@ describe("ProfilesController (Integration Tests)", () => {
   let firebaseAuth: {
     verifyIdToken: jest.Mock;
     createUser: jest.Mock;
+    getUserByEmail: jest.Mock;
   };
 
   let profileRepo: {
@@ -101,6 +102,7 @@ describe("ProfilesController (Integration Tests)", () => {
     const mockFirebaseAuth = {
       verifyIdToken: jest.fn(),
       createUser: jest.fn(),
+      getUserByEmail: jest.fn(),
     };
 
     const mockProfileRepo = {
@@ -282,6 +284,42 @@ describe("ProfilesController (Integration Tests)", () => {
     });
     expect(firebaseAuth.verifyIdToken).toHaveBeenCalledWith("admin-token");
     expect(profileRepo.findByUid).toHaveBeenCalledWith("uid-admin");
+  });
+
+  it("should recover existing Firebase UID and create profile when email already exists in Firebase", async () => {
+    // GIVEN — Firebase user already exists (partial failure recovery)
+    const { ConflictException: CE } = await import("@nestjs/common");
+    firebaseAuth.createUser.mockRejectedValueOnce(new CE("Ya existe un usuario en Firebase con ese correo"));
+    firebaseAuth.getUserByEmail.mockResolvedValueOnce({ uid: "uid-existing" });
+    profileService.createProfile.mockResolvedValueOnce({
+      uid: "uid-existing",
+      email: "existing@clinic.example",
+      display_name: "Admin Existente",
+      role: "admin",
+      status: "active",
+      doctor_id: null,
+      createdAt: new Date("2026-04-05T10:00:00.000Z"),
+      updatedAt: new Date("2026-04-05T10:00:00.000Z"),
+    });
+
+    // WHEN
+    const response = await request(app.getHttpServer())
+      .post("/profiles")
+      .set("Authorization", "Bearer admin-token")
+      .send({
+        email: "existing@clinic.example",
+        password: "SecureP@ss123",
+        display_name: "Admin Existente",
+        role: "admin",
+      })
+      .expect(201);
+
+    // THEN — profile created with the recovered UID
+    expect(response.body.uid).toBe("uid-existing");
+    expect(firebaseAuth.getUserByEmail).toHaveBeenCalledWith("existing@clinic.example");
+    expect(profileService.createProfile).toHaveBeenCalledWith(
+      expect.objectContaining({ uid: "uid-existing", email: "existing@clinic.example" }),
+    );
   });
 
   it("should return 403 when recepcionista tries to create a profile", async () => {
