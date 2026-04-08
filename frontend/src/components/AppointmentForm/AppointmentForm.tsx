@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 
-import { sanitizeText } from "@/security/sanitize";
 import { useAppointmentRegistration } from "@/hooks/useAppointmentRegistration";
+import { sanitizeText } from "@/security/sanitize";
 
 export default function AppointmentForm() {
   const [fullName, setFullName] = useState("");
@@ -58,7 +58,7 @@ export default function AppointmentForm() {
       <select
         data-testid="priority-select"
         value={priority}
-        onChange={(e) => setPriority(e.target.value as any)}
+        onChange={(e) => setPriority(e.target.value as "high" | "medium" | "low")}
         disabled={loading}
       >
         <option value="medium">Normal</option>

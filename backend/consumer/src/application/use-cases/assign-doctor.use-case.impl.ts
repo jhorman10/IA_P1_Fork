@@ -1,10 +1,10 @@
 import { AppointmentAssignedEvent } from "../../domain/events/appointment-assigned.event";
 import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
+import { AuditPort } from "../../domain/ports/outbound/audit.port";
+import { ClockPort } from "../../domain/ports/outbound/clock.port";
 import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
 import { LoggerPort } from "../../domain/ports/outbound/logger.port";
-import { ClockPort } from "../../domain/ports/outbound/clock.port";
-import { AuditPort } from "../../domain/ports/outbound/audit.port";
 
 export class AssignDoctorUseCaseImpl {
   constructor(
@@ -76,7 +76,7 @@ export class AssignDoctorUseCaseImpl {
           priority: appointment.priority.toValue(),
           queuePosition: i + 1,
         },
-      } as any);
+      });
     }
 
     this.logger.log("--- FIN ASIGNACIÓN DE MÉDICO ---");

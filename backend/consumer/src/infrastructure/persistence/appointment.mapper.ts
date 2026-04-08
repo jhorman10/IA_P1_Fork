@@ -49,7 +49,7 @@ export class AppointmentMapper {
 
     // Only include doctorId when explicitly set (non-null/undefined)
     if (entity.doctorId !== undefined && entity.doctorId !== null) {
-      (base as any).doctorId = entity.doctorId;
+      base.doctorId = entity.doctorId;
     }
 
     return base;

@@ -1,5 +1,5 @@
-import { Doctor } from "../../entities/doctor.entity";
 import { DoctorStatus } from "../../../schemas/doctor.schema";
+import { Doctor } from "../../entities/doctor.entity";
 
 export interface DoctorReadRepository {
   findAvailable(): Promise<Doctor[]>;

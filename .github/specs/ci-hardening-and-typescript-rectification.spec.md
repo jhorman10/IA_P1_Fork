@@ -3,7 +3,7 @@ id: SPEC-005
 status: IMPLEMENTED
 feature: ci-hardening-and-typescript-rectification
 created: 2026-04-05
-updated: 2026-04-06
+updated: 2026-04-07
 author: spec-generator
 version: "2.0"
 related-specs:
@@ -36,6 +36,7 @@ La única evidencia que no queda materializada dentro del repo es el log de una 
 ### 2.1 CI Hardening
 
 - El escaneo actual de `.github/workflows/ci.yml` ya no muestra `continue-on-error` para los tramos críticos revisados.
+- El workflow actual dispara CI tanto en `push` a `develop` como en `pull_request` hacia `main` y `develop`.
 - Los thresholds de cobertura existen en:
   - `backend/producer/jest.config.js`
   - `backend/consumer/jest.config.js`

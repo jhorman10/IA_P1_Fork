@@ -3,10 +3,10 @@ import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import Navbar from "@/components/Navbar/Navbar";
 import { AuthProvider } from "@/context/AuthProvider";
 import { DependencyProvider } from "@/context/DependencyContext";
 import { ThemeProvider } from "@/context/ThemeProvider";
-import Navbar from "@/components/Navbar/Navbar";
 
 const inter = Inter({
   subsets: ["latin"],

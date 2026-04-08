@@ -1,7 +1,7 @@
+import { CompleteAppointmentUseCase } from "../../domain/ports/inbound/complete-appointment.use-case";
 import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
 import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
 import { LoggerPort } from "../../domain/ports/outbound/logger.port";
-import { CompleteAppointmentUseCase } from "../../domain/ports/inbound/complete-appointment.use-case";
 
 /**
  * SPEC-012: Completes an appointment and releases the assigned doctor.

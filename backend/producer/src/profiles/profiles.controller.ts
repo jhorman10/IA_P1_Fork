@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Get,
   HttpCode,
@@ -109,8 +110,22 @@ export class ProfilesController {
   async createProfile(
     @Body() dto: CreateProfileDto,
   ): Promise<ProfileResponseDto> {
-    // Step 1: Create Firebase user with email + password → obtain UID
-    const { uid } = await this.firebaseAuth.createUser(dto.email, dto.password);
+    // Step 1: Create Firebase user with email + password → obtain UID.
+    // If the user already exists (e.g., partial failure on a prior attempt),
+    // reuse their UID and continue so the operational profile can be created.
+    let uid: string;
+    try {
+      const result = await this.firebaseAuth.createUser(dto.email, dto.password);
+      uid = result.uid;
+    } catch (err) {
+      if (err instanceof ConflictException) {
+        const existing = await this.firebaseAuth.getUserByEmail(dto.email);
+        if (!existing) throw err;
+        uid = existing.uid;
+      } else {
+        throw err;
+      }
+    }
 
     // Step 2 (SPEC-015): If role === "doctor", create Doctor entity transparently
     let doctorId: string | null = dto.doctor_id ?? null;

@@ -1,11 +1,11 @@
-import { AppointmentRegisteredEvent } from "../../domain/events/appointment-registered.event";
 import { AppointmentAssignedEvent } from "../../domain/events/appointment-assigned.event";
-import { DomainEventHandler } from "../../domain/ports/outbound/domain-event-handler.port";
-import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
-import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
-import { LoggerPort } from "../../domain/ports/outbound/logger.port";
-import { ClockPort } from "../../domain/ports/outbound/clock.port";
+import { AppointmentRegisteredEvent } from "../../domain/events/appointment-registered.event";
 import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
+import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
+import { ClockPort } from "../../domain/ports/outbound/clock.port";
+import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
+import { DomainEventHandler } from "../../domain/ports/outbound/domain-event-handler.port";
+import { LoggerPort } from "../../domain/ports/outbound/logger.port";
 
 /**
  * Handler: When an appointment is registered, attempt a minimal doctor assignment.
