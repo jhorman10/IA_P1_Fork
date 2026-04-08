@@ -5,19 +5,19 @@ export async function GET() {
     {
       id: "1",
       fullName: "Demo Patient",
-      office: "101",
+      office: "1",
       timestamp: Date.now(),
     },
     {
       id: "2",
       fullName: "Demo Patient 2",
-      office: "102",
+      office: "2",
       timestamp: Date.now(),
     },
     {
       id: "3",
       fullName: "Demo Patient 3",
-      office: "103",
+      office: "3",
       timestamp: Date.now(),
     },
   ];

@@ -19,7 +19,16 @@ export interface AuditDetails {
   [key: string]: unknown;
 }
 
-@Schema({ collection: "audit_logs", timestamps: true })
+/**
+ * ⚕️ HUMAN CHECK - Schema AuditLog (Consumer — escritura)
+ * Registro de auditoría por cada decisión de asignación / check-in / check-out.
+ * Índices compuestos para consultas por tipo de acción + timestamp desc,
+ * e índice simple por appointmentId para trazabilidad de turno.
+ */
+@Schema({
+  timestamps: { createdAt: true, updatedAt: false },
+  collection: "audit_logs",
+})
 export class AuditLog {
   @Prop({
     required: true,
@@ -38,11 +47,18 @@ export class AuditLog {
   @Prop({ type: String, default: null })
   doctorId!: string | null;
 
-  @Prop({ type: Object, required: true })
+  @Prop({ required: true, type: Object })
   details!: AuditDetails;
 
+  // Epoch ms — momento exacto de la acción de negocio
   @Prop({ required: true })
   timestamp!: number;
 }
 
 export const AuditLogSchema = SchemaFactory.createForClass(AuditLog);
+
+// SPEC-003: Consulta por tipo de acción, más recientes primero
+AuditLogSchema.index({ action: 1, timestamp: -1 });
+
+// SPEC-003: Auditoría por turno específico
+AuditLogSchema.index({ appointmentId: 1 });

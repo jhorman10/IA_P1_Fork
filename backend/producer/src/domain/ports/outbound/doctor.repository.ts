@@ -9,6 +9,7 @@ export interface DoctorRepository {
   save(command: CreateDoctorCommand): Promise<DoctorView>;
   findAll(status?: DoctorStatus): Promise<DoctorView[]>;
   findById(id: string): Promise<DoctorView | null>;
+  findByOffice(office: string): Promise<DoctorView | null>;
   updateStatus(id: string, status: DoctorStatus): Promise<DoctorView | null>;
   /** SPEC-015: Atomically set status and office in one update (check-in / check-out). */
   updateStatusAndOffice(
@@ -16,7 +17,10 @@ export interface DoctorRepository {
     status: DoctorStatus,
     office: string | null,
   ): Promise<DoctorView | null>;
-  findByOffice(office: string): Promise<DoctorView | null>;
   /** SPEC-015: Update display name and optionally the specialtyId catalog reference. */
-  updateSpecialty(id: string, name: string, specialtyId?: string | null): Promise<void>;
+  updateSpecialty(
+    id: string,
+    name: string,
+    specialtyId?: string | null,
+  ): Promise<void>;
 }

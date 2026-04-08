@@ -1,6 +1,7 @@
 import { RegisterAppointmentUseCaseImpl } from "../../../../src/application/use-cases/register-appointment.use-case.impl";
 import { RegisterAppointmentCommand } from "../../../../src/domain/commands/register-appointment.command";
 import { Appointment } from "../../../../src/domain/entities/appointment.entity";
+import { DuplicateActiveAppointmentError } from "../../../../src/domain/errors/duplicate-active-appointment.error";
 import { FullName } from "../../../../src/domain/value-objects/full-name.value-object";
 import { IdCard } from "../../../../src/domain/value-objects/id-card.value-object";
 import { Priority } from "../../../../src/domain/value-objects/priority.value-object";
@@ -125,7 +126,7 @@ describe("RegisterAppointmentUseCaseImpl", () => {
       await expect(useCase.execute(command)).rejects.toThrow();
     });
 
-    it("should return existing appointment when idempotency check finds active appointment", async () => {
+    it("should throw DuplicateActiveAppointmentError when patient already has an active appointment", async () => {
       const existingAppointment = new Appointment(
         new IdCard(123456789),
         new FullName("Juan Pérez"),
@@ -139,11 +140,33 @@ describe("RegisterAppointmentUseCaseImpl", () => {
 
       const command = new RegisterAppointmentCommand(123456789, "Juan Pérez");
 
-      const result = await useCase.execute(command);
-
-      expect(result).toEqual(existingAppointment);
-      expect(mockRepository.saveCalls).toHaveLength(0); // Not saved again
+      await expect(useCase.execute(command)).rejects.toThrow(
+        DuplicateActiveAppointmentError,
+      );
+      expect(mockRepository.saveCalls).toHaveLength(0);
       expect(mockLogger.hasLog("already has an active appointment")).toBe(true);
+    });
+
+    it("should throw DuplicateActiveAppointmentError with code DUPLICATE_ACTIVE_APPOINTMENT", async () => {
+      const existingAppointment = new Appointment(
+        new IdCard(123456789),
+        new FullName("Juan Pérez"),
+        new Priority("medium"),
+        "waiting",
+      );
+      mockRepository.setFindByIdCardAndActiveResult(existingAppointment);
+
+      const command = new RegisterAppointmentCommand(123456789, "Juan Pérez");
+
+      try {
+        await useCase.execute(command);
+        fail("Expected DuplicateActiveAppointmentError to be thrown");
+      } catch (err) {
+        expect(err).toBeInstanceOf(DuplicateActiveAppointmentError);
+        expect((err as DuplicateActiveAppointmentError).code).toBe(
+          "DUPLICATE_ACTIVE_APPOINTMENT",
+        );
+      }
     });
 
     it("should handle repository errors gracefully", async () => {

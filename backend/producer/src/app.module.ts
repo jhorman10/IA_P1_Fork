@@ -10,6 +10,7 @@ import { AppointmentModule } from "./appointments/appointment.module";
 import { AppointmentLifecycleController } from "./appointments/appointment-lifecycle.controller";
 import { AppointmentQueryController } from "./appointments/appointment-query.controller";
 import { AuditModule } from "./audit/audit.module";
+import { DoctorModule } from "./doctors/doctor.module";
 import { LIFECYCLE_PUBLISHER_TOKEN } from "./domain/ports/outbound/appointment-lifecycle-publisher.port";
 import { EventsModule } from "./events/events.module";
 import { HealthController } from "./health.controller";
@@ -62,6 +63,7 @@ import { ProfilesModule } from "./profiles/profiles.module";
       },
     ]),
     AppointmentModule,
+    DoctorModule,
     EventsModule,
     MetricsModule,
     OfficeModule,

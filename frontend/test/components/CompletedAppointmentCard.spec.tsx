@@ -22,6 +22,8 @@ describe("CompletedAppointmentCard", () => {
     timestamp: startTime,
     completedAt: endTime,
     idCard: 0,
+    doctorId: null,
+    doctorName: null,
   };
 
   describe("Rendering", () => {
@@ -29,6 +31,19 @@ describe("CompletedAppointmentCard", () => {
       render(<CompletedAppointmentCard appointment={mockAppointment} anonymize={false} />);
 
       expect(screen.getByText("Alice Johnson")).toBeInTheDocument();
+    });
+
+    it("should display doctor name when doctor is assigned", () => {
+      const withDoctor: Appointment = {
+        ...mockAppointment,
+        doctorId: "doc-001",
+        doctorName: "Dr. Ana Perez",
+      };
+
+      render(<CompletedAppointmentCard appointment={withDoctor} />);
+
+      expect(screen.getByText("Dr. Ana Perez")).toBeInTheDocument();
+      expect(screen.queryByText("Consultorio 2")).not.toBeInTheDocument();
     });
 
     it("should display office number", () => {
@@ -46,6 +61,19 @@ describe("CompletedAppointmentCard", () => {
       render(<CompletedAppointmentCard appointment={noOffice} />);
 
       expect(screen.getByText("N/A")).toBeInTheDocument();
+    });
+
+    it("should display doctor name even if office is missing", () => {
+      const noOfficeWithDoctor: Appointment = {
+        ...mockAppointment,
+        office: null,
+        doctorId: "doc-001",
+        doctorName: "Dr. Ana Perez",
+      };
+
+      render(<CompletedAppointmentCard appointment={noOfficeWithDoctor} />);
+
+      expect(screen.getByText("Dr. Ana Perez")).toBeInTheDocument();
     });
 
     it("should display priority badge", () => {

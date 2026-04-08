@@ -39,6 +39,8 @@ describe("MongooseDoctorRepository", () => {
     jest.clearAllMocks();
   });
 
+  // ── save ──────────────────────────────────────────────────────────────────
+
   it("should persist specialtyId when saving a doctor", async () => {
     model.create.mockResolvedValue(doctorDoc);
 
@@ -57,6 +59,92 @@ describe("MongooseDoctorRepository", () => {
     });
   });
 
+  it("should default specialtyId to null when not provided", async () => {
+    model.create.mockResolvedValue(doctorDoc);
+
+    await repository.save({
+      name: "Dr. Repo",
+      specialty: "Medicina General",
+      office: null,
+    });
+
+    expect(model.create).toHaveBeenCalledWith(
+      expect.objectContaining({ specialtyId: null, status: "offline" }),
+    );
+  });
+
+  // ── findAll ───────────────────────────────────────────────────────────────
+
+  it("should find all doctors without filter and with status filter", async () => {
+    model.find.mockReturnValue({
+      exec: jest.fn().mockResolvedValue([doctorDoc]),
+    });
+
+    const all = await repository.findAll();
+    expect(model.find).toHaveBeenCalledWith({});
+    expect(all).toHaveLength(1);
+
+    model.find.mockReturnValue({
+      exec: jest.fn().mockResolvedValue([doctorDoc]),
+    });
+    const filtered = await repository.findAll("offline");
+    expect(model.find).toHaveBeenCalledWith({ status: "offline" });
+    expect(filtered[0].status).toBe("offline");
+  });
+
+  // ── findById ──────────────────────────────────────────────────────────────
+
+  it("should return null for invalid id in findById", async () => {
+    const result = await repository.findById("invalid-id");
+    expect(result).toBeNull();
+  });
+
+  it("should return doc when findById matches", async () => {
+    model.findById.mockReturnValue({
+      exec: jest.fn().mockResolvedValue(doctorDoc),
+    });
+    const result = await repository.findById(validId);
+    expect(model.findById).toHaveBeenCalledWith(validId);
+    expect(result).toMatchObject({ id: validId, name: "Dr. Repo" });
+  });
+
+  // ── findByOffice ──────────────────────────────────────────────────────────
+
+  it("should find by office (active status filter) or return null", async () => {
+    model.findOne.mockReturnValue({
+      exec: jest.fn().mockResolvedValue(doctorDoc),
+    });
+    const found = await repository.findByOffice("1");
+    expect(model.findOne).toHaveBeenCalledWith(
+      expect.objectContaining({ office: "1" }),
+    );
+    expect(found).not.toBeNull();
+
+    model.findOne.mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+    const notFound = await repository.findByOffice("missing");
+    expect(notFound).toBeNull();
+  });
+
+  // ── updateStatus ──────────────────────────────────────────────────────────
+
+  it("should update status when id valid and return null when invalid", async () => {
+    model.findByIdAndUpdate.mockReturnValue({
+      exec: jest.fn().mockResolvedValue(doctorDoc),
+    });
+    const updated = await repository.updateStatus(validId, "available");
+    expect(model.findByIdAndUpdate).toHaveBeenCalledWith(
+      validId,
+      { status: "available" },
+      { new: true },
+    );
+    expect(updated).not.toBeNull();
+
+    const invalid = await repository.updateStatus("bad-id", "offline");
+    expect(invalid).toBeNull();
+  });
+
+  // ── updateStatusAndOffice ─────────────────────────────────────────────────
+
   it("should throw ConflictException when updateStatusAndOffice gets duplicate key error", async () => {
     model.findByIdAndUpdate.mockReturnValue({
       exec: jest.fn().mockRejectedValue({ code: 11000 }),
@@ -66,6 +154,8 @@ describe("MongooseDoctorRepository", () => {
       repository.updateStatusAndOffice(validId, "available", "3"),
     ).rejects.toThrow(ConflictException);
   });
+
+  // ── updateSpecialty ───────────────────────────────────────────────────────
 
   it("should update specialty and specialtyId when both are provided", async () => {
     model.findByIdAndUpdate.mockReturnValue({
@@ -90,5 +180,11 @@ describe("MongooseDoctorRepository", () => {
     expect(model.findByIdAndUpdate).toHaveBeenCalledWith(validId, {
       specialty: "Cardiología",
     });
+  });
+
+  it("should ignore invalid id in updateSpecialty", async () => {
+    await expect(
+      repository.updateSpecialty("bad-id", "X"),
+    ).resolves.toBeUndefined();
   });
 });

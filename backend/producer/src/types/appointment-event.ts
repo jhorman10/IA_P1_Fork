@@ -21,9 +21,11 @@ export interface AppointmentEventPayload {
   fullName: string;
   idCard: number;
   office: string | null;
-  doctorId?: string | null;
   status: AppointmentStatus;
   priority: AppointmentPriority;
   timestamp: number;
   completedAt?: number;
+  // SPEC-003: Médico asignado
+  doctorId: string | null;
+  doctorName: string | null;
 }

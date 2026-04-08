@@ -157,14 +157,18 @@ async function request<T>(
  * API pública
  */
 
-export function httpGet<T>(url: string) {
-  return request<T>(url, { method: "GET", cache: "no-store" });
+export function httpGet<T>(url: string, headers?: Record<string, string>) {
+  return request<T>(url, { method: "GET", cache: "no-store", headers });
 }
 
-export function httpPost<T>(url: string, body: unknown) {
+export function httpPost<T>(
+  url: string,
+  body: unknown,
+  headers?: Record<string, string>,
+) {
   return request<T>(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...headers },
     body: JSON.stringify(body),
   });
 }

@@ -2,6 +2,7 @@ import { CompleteAppointmentUseCase } from "../../domain/ports/inbound/complete-
 import { AppointmentRepository } from "../../domain/ports/outbound/appointment.repository";
 import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
 import { LoggerPort } from "../../domain/ports/outbound/logger.port";
+import { NotificationPort } from "../../domain/ports/outbound/notification.port";
 
 /**
  * SPEC-012: Completes an appointment and releases the assigned doctor.
@@ -12,6 +13,7 @@ export class CompleteAppointmentUseCaseImpl implements CompleteAppointmentUseCas
     private readonly appointmentRepository: AppointmentRepository,
     private readonly doctorRepository: DoctorRepository,
     private readonly logger: LoggerPort,
+    private readonly notificationPort: NotificationPort,
   ) {}
 
   async execute(appointmentId: string): Promise<void> {
@@ -36,6 +38,7 @@ export class CompleteAppointmentUseCaseImpl implements CompleteAppointmentUseCas
       );
     }
 
+    await this.notificationPort.notifyAppointmentUpdated(saved);
     this.logger.log(`Appointment ${appointmentId} completed successfully`);
   }
 }

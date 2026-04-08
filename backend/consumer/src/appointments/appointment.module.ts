@@ -5,11 +5,13 @@ import {
   AppointmentRegisteredHandler,
 } from "../application/event-handlers/appointment-events.handler";
 import { AutoAssignOnRegisterHandler } from "../application/event-handlers/auto-assign.handler";
+import { ConsultationPolicy } from "../domain/policies/consultation.policy";
 import { RmqNotificationAdapter } from "../infrastructure/adapters/rmq-notification.adapter";
 import { NestLoggerAdapter } from "../infrastructure/logging/nest-logger.adapter";
 import { LocalDomainEventBusAdapter } from "../infrastructure/messaging/local-domain-event-bus.adapter";
 import { SystemClockAdapter } from "../infrastructure/utils/system-clock.adapter";
 import { NotificationsModule } from "../notifications/notifications.module";
+import { InfrastructureModule } from "./infrastructure/infrastructure.module";
 import { PoliciesModule } from "./policies/policies.module";
 import { RepositoriesModule } from "./repositories/repositories.module";
 import { UseCasesModule } from "./use-cases/use-cases.module";
@@ -46,6 +48,7 @@ import { UseCasesModule } from "./use-cases/use-cases.module";
     RepositoriesModule,
     UseCasesModule,
     NotificationsModule,
+    InfrastructureModule,
   ],
   providers: [
     // ⚕️ HUMAN CHECK - Infrastructure Adapters (Ports Implementation)
@@ -85,15 +88,17 @@ import { UseCasesModule } from "./use-cases/use-cases.module";
         "DoctorRepository",
         "LoggerPort",
         "ClockPort",
-        "ConsultationPolicy",
+        ConsultationPolicy,
+        "NotificationPort",
       ],
-      useFactory: (repo, doctorRepo, logger, clock, policy) =>
+      useFactory: (repo, doctorRepo, logger, clock, policy, notificationPort) =>
         new AutoAssignOnRegisterHandler(
           repo,
           doctorRepo,
           logger,
           clock,
           policy,
+          notificationPort,
         ),
     },
 

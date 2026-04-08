@@ -15,12 +15,20 @@ describe("AppointmentQueryController (Integration Tests)", () => {
     findAll: jest.Mock;
     findByIdCard: jest.Mock;
   }
+  interface GetQueuePositionUseCaseMock {
+    execute: jest.Mock;
+  }
   let queryAppointmentsUseCase: QueryAppointmentsUseCaseMock;
+  let getQueuePositionUseCase: GetQueuePositionUseCaseMock;
 
   beforeEach(async () => {
     const mockQueryAppointmentsUseCase = {
       findAll: jest.fn(),
       findByIdCard: jest.fn(),
+    };
+
+    const mockGetQueuePositionUseCase = {
+      execute: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -29,6 +37,10 @@ describe("AppointmentQueryController (Integration Tests)", () => {
         {
           provide: "QueryAppointmentsUseCase",
           useValue: mockQueryAppointmentsUseCase,
+        },
+        {
+          provide: "GetQueuePositionUseCase",
+          useValue: mockGetQueuePositionUseCase,
         },
       ],
     }).compile();
@@ -43,6 +55,7 @@ describe("AppointmentQueryController (Integration Tests)", () => {
     );
 
     queryAppointmentsUseCase = module.get("QueryAppointmentsUseCase");
+    getQueuePositionUseCase = module.get("GetQueuePositionUseCase");
 
     // Mock AppointmentMapper.toResponseDtoList
     jest.doMock("src/mappers/appointment.mapper", () => ({
@@ -71,6 +84,8 @@ describe("AppointmentQueryController (Integration Tests)", () => {
           status: "called",
           priority: "medium",
           timestamp: 1645000000000,
+          doctorId: null,
+          doctorName: null,
         },
         {
           id: "apt-002",
@@ -80,6 +95,8 @@ describe("AppointmentQueryController (Integration Tests)", () => {
           status: "waiting",
           priority: "high",
           timestamp: 1645000100000,
+          doctorId: null,
+          doctorName: null,
         },
       ];
 
@@ -118,6 +135,8 @@ describe("AppointmentQueryController (Integration Tests)", () => {
           status: "called",
           priority: "medium",
           timestamp: 1645000000000,
+          doctorId: null,
+          doctorName: null,
         },
       ];
 
@@ -162,6 +181,54 @@ describe("AppointmentQueryController (Integration Tests)", () => {
       // R-13 variant: ParseIntPipe debe rechazar decimales
       await request(app.getHttpServer())
         .get("/appointments/123.45")
+        .expect(400);
+    });
+  });
+
+  describe("GET /appointments/queue-position/:idCard", () => {
+    it("should return queue position when appointment is found", async () => {
+      const idCard = 123456789;
+      const expected = {
+        idCard,
+        position: 2,
+        total: 7,
+        status: "waiting",
+        priority: "medium",
+      };
+
+      getQueuePositionUseCase.execute.mockResolvedValue(expected);
+
+      const response = await request(app.getHttpServer())
+        .get(`/appointments/queue-position/${idCard}`)
+        .expect(200);
+
+      expect(response.body).toEqual(expected);
+      expect(getQueuePositionUseCase.execute).toHaveBeenCalledWith(idCard);
+    });
+
+    it("should return not_found payload when appointment is not found", async () => {
+      const idCard = 111222333;
+      const expected = {
+        idCard,
+        position: 0,
+        total: 3,
+        status: "not_found",
+        priority: null,
+      };
+
+      getQueuePositionUseCase.execute.mockResolvedValue(expected);
+
+      const response = await request(app.getHttpServer())
+        .get(`/appointments/queue-position/${idCard}`)
+        .expect(200);
+
+      expect(response.body).toEqual(expected);
+      expect(getQueuePositionUseCase.execute).toHaveBeenCalledWith(idCard);
+    });
+
+    it("should return 400 for invalid idCard in queue-position endpoint", async () => {
+      await request(app.getHttpServer())
+        .get("/appointments/queue-position/invalid-id")
         .expect(400);
     });
   });

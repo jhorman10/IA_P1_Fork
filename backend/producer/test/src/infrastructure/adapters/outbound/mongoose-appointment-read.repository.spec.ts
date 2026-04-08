@@ -19,11 +19,7 @@ const buildDoc = (overrides: Record<string, unknown> = {}) => ({
 
 describe("MongooseAppointmentReadRepository", () => {
   let repository: MongooseAppointmentReadRepository;
-  let mockModel: {
-    find: jest.Mock;
-    sort: jest.Mock;
-    exec: jest.Mock;
-  };
+  let mockModel: any;
 
   const execChain = (results: unknown[]) => {
     const chain = {
@@ -38,6 +34,8 @@ describe("MongooseAppointmentReadRepository", () => {
       find: jest.fn(),
       sort: jest.fn(),
       exec: jest.fn(),
+      findOne: jest.fn(),
+      findById: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -143,6 +141,58 @@ describe("MongooseAppointmentReadRepository", () => {
       await expect(repository.findByIdCard(9999999)).rejects.toThrow(
         "No appointments found for ID card 9999999",
       );
+    });
+  });
+
+  describe("findWaiting", () => {
+    it("should return waiting appointments", async () => {
+      const chain = execChain([buildDoc({ status: "waiting" })]);
+      mockModel.find.mockReturnValue(chain);
+
+      const res = await repository.findWaiting();
+      expect(mockModel.find).toHaveBeenCalledWith({ status: "waiting" });
+      expect(res[0].status).toBe("waiting");
+    });
+  });
+
+  describe("findActiveByIdCard", () => {
+    it("should return active appointment when exists", async () => {
+      const chain = {
+        exec: jest.fn().mockResolvedValue(buildDoc({ status: "called" })),
+      } as any;
+      mockModel.findOne = jest.fn().mockReturnValue(chain);
+
+      const res = await repository.findActiveByIdCard(1234567);
+      expect(mockModel.findOne).toHaveBeenCalledWith({ idCard: 1234567, status: { $in: ["waiting", "called"] } });
+      expect(res).not.toBeNull();
+    });
+
+    it("should return null when no active appointment", async () => {
+      const chain = { exec: jest.fn().mockResolvedValue(null) } as any;
+      mockModel.findOne = jest.fn().mockReturnValue(chain);
+
+      const res = await repository.findActiveByIdCard(5555555);
+      expect(res).toBeNull();
+    });
+  });
+
+  describe("findById", () => {
+    it("should return appointment payload when found", async () => {
+      const chain = { exec: jest.fn().mockResolvedValue(buildDoc()) } as any;
+      mockModel.findById = jest.fn().mockReturnValue(chain);
+
+      const res = await repository.findById("abc123");
+      expect(mockModel.findById).toHaveBeenCalledWith("abc123");
+      expect(res).not.toBeNull();
+      expect(res?.id).toBe("abc123");
+    });
+
+    it("should return null when not found", async () => {
+      const chain = { exec: jest.fn().mockResolvedValue(null) } as any;
+      mockModel.findById = jest.fn().mockReturnValue(chain);
+
+      const res = await repository.findById("missing");
+      expect(res).toBeNull();
     });
   });
 });

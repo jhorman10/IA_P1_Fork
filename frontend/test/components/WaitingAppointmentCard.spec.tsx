@@ -18,6 +18,8 @@ describe("WaitingAppointmentCard", () => {
     priority: "high",
     timestamp: Date.now(),
     idCard: 0,
+    doctorId: null,
+    doctorName: null,
   };
 
   describe("Rendering", () => {
@@ -25,6 +27,18 @@ describe("WaitingAppointmentCard", () => {
       render(<WaitingAppointmentCard appointment={mockAppointment} anonymize={false} />);
 
       expect(screen.getByText("John Doe")).toBeInTheDocument();
+    });
+
+    it("should render queue position when queue data is provided", () => {
+      render(
+        <WaitingAppointmentCard
+          appointment={mockAppointment}
+          queuePosition={2}
+          total={6}
+        />,
+      );
+
+      expect(screen.getByLabelText("Posición 2 de 6")).toBeInTheDocument();
     });
 
     it("should display 'Pendiente' for office status", () => {

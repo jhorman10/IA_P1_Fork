@@ -62,9 +62,34 @@ describe("CompletedHistoryDashboard coverage", () => {
   it("renders called, waiting, and completed lists", () => {
     mockHookState = {
       appointments: [
-        { id: "1", fullName: "Called One", office: "1", idCard: 1, status: "called", priority: "high", timestamp: 2 },
-        { id: "2", fullName: "Waiting Two", office: null, idCard: 2, status: "waiting", priority: "low", timestamp: 3 },
-        { id: "3", fullName: "Completed Three", office: "2", idCard: 3, status: "completed", priority: "medium", timestamp: 4, completedAt: 5 },
+        {
+          id: "1",
+          fullName: "Called One",
+          office: "1",
+          idCard: 1,
+          status: "called",
+          priority: "high",
+          timestamp: 2,
+        },
+        {
+          id: "2",
+          fullName: "Waiting Two",
+          office: null,
+          idCard: 2,
+          status: "waiting",
+          priority: "low",
+          timestamp: 3,
+        },
+        {
+          id: "3",
+          fullName: "Completed Three",
+          office: "2",
+          idCard: 3,
+          status: "completed",
+          priority: "medium",
+          timestamp: 4,
+          completedAt: 5,
+        },
       ],
       error: undefined,
       _connected: true,
@@ -172,5 +197,57 @@ describe("CompletedHistoryDashboard coverage", () => {
     expect(screen.getByText(/Turno completado/)).toBeInTheDocument();
 
     jest.useRealTimers();
+  });
+
+  it("renders assignment notification on waiting to called transition", async () => {
+    mockHookState = {
+      appointments: [],
+      error: undefined,
+      _connected: true,
+      isConnecting: false,
+      connectionStatus: "connected",
+    };
+
+    render(<CompletedHistoryDashboard />);
+
+    expect(storedCallback).toBeTruthy();
+
+    act(() => {
+      storedCallback?.({
+        id: "apt-200",
+        fullName: "Maria Lopez",
+        idCard: 123456,
+        office: null,
+        timestamp: 1,
+        status: "waiting",
+        priority: "medium",
+        doctorId: null,
+        doctorName: null,
+      });
+    });
+
+    expect(
+      screen.queryByTestId("assignment-notification"),
+    ).not.toBeInTheDocument();
+
+    act(() => {
+      storedCallback?.({
+        id: "apt-200",
+        fullName: "Maria Lopez",
+        idCard: 123456,
+        office: "4",
+        timestamp: 2,
+        status: "called",
+        priority: "medium",
+        doctorId: "doc-004",
+        doctorName: "Dr. Luis Gomez",
+      });
+    });
+
+    expect(
+      await screen.findByTestId("assignment-notification"),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Dr\. Luis Gomez/)).toBeInTheDocument();
+    expect(screen.getByText(/Consultorio 4/)).toBeInTheDocument();
   });
 });

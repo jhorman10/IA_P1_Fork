@@ -6,21 +6,26 @@ import {
 } from "@/domain/CreateAppointment";
 import { AppointmentRepository } from "@/domain/ports/AppointmentRepository";
 // 🛡️ HUMAN CHECK - Adapter uses raw HTTP Client (Infrastructure)
-const headers = { "Content-Type": "application/json" };
 
 export class HttpAppointmentAdapter implements AppointmentRepository {
-  async getAppointments(): Promise<Appointment[]> {
-    const res = await fetch(`${env.API_BASE_URL}/appointments`);
+  async getAppointments(token: string): Promise<Appointment[]> {
+    const res = await fetch(`${env.API_BASE_URL}/appointments`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     if (!res.ok) throw new Error("HTTP_ERROR");
     return res.json();
   }
 
   async createAppointment(
     data: CreateAppointmentDTO,
+    token: string,
   ): Promise<CreateAppointmentResponse> {
     const res = await fetch(`${env.API_BASE_URL}/appointments`, {
       method: "POST",
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(data),
     });
     if (!res.ok) {

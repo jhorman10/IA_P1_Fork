@@ -17,6 +17,8 @@ describe("EventsController", () => {
     office: null,
     priority: "medium",
     timestamp: 1000,
+    doctorId: null,
+    doctorName: null,
     ...overrides,
   });
 

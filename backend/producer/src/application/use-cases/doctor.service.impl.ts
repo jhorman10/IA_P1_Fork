@@ -8,8 +8,11 @@ import {
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
-import { DoctorView } from "../../domain/models/doctor-view";
-import { DoctorStatus } from "../../domain/models/doctor-view";
+import {
+  DOCTOR_OFFICE_RANGE_MESSAGE,
+  isValidDoctorOffice,
+} from "../../doctors/doctor-office.constants";
+import { DoctorStatus, DoctorView } from "../../domain/models/doctor-view";
 import {
   CreateDoctorCommand,
   DoctorServicePort,
@@ -38,6 +41,19 @@ export class DoctorServiceImpl implements DoctorServicePort {
   ) {}
 
   async createDoctor(command: CreateDoctorCommand): Promise<DoctorView> {
+    if (command.office && !isValidDoctorOffice(command.office)) {
+      throw new BadRequestException(DOCTOR_OFFICE_RANGE_MESSAGE);
+    }
+
+    if (command.office) {
+      const existing = await this.repo.findByOffice(command.office);
+      if (existing) {
+        throw new ConflictException(
+          `El consultorio ${command.office} ya tiene un médico asignado`,
+        );
+      }
+    }
+
     return this.repo.save(command);
   }
 
@@ -82,9 +98,7 @@ export class DoctorServiceImpl implements DoctorServicePort {
       .findOne({ office, status: { $in: ["available", "busy"] } })
       .exec();
     if (occupant) {
-      throw new ConflictException(
-        `El consultorio ${office} ya está ocupado`,
-      );
+      throw new ConflictException(`El consultorio ${office} ya está ocupado`);
     }
 
     const updated = await this.repo.updateStatusAndOffice(

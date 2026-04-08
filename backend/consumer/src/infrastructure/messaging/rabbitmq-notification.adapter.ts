@@ -1,4 +1,4 @@
-import { Inject,Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 
 import { Appointment } from "../../domain/entities/appointment.entity";
@@ -23,6 +23,9 @@ export class RabbitMQNotificationAdapter implements NotificationPort {
       priority: appointment.priority.toValue(),
       timestamp: appointment.timestamp,
       completedAt: appointment.completedAt,
+      // SPEC-003: preserve assigned-doctor context
+      doctorId: appointment.doctorId ?? null,
+      doctorName: appointment.doctorName ?? null,
     };
 
     this.client.emit("appointment_updated", payload);

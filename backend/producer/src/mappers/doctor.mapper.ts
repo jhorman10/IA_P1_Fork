@@ -11,7 +11,7 @@ export class DoctorMapper {
       status: view.status,
       createdAt: view.createdAt,
       updatedAt: view.updatedAt,
-    } as unknown as DoctorResponseDto;
+    };
   }
 
   static toDtoList(views: DoctorView[]): DoctorResponseDto[] {

@@ -17,68 +17,20 @@ export type AppointmentStatus =
 
 export class Appointment {
   private domainEvents: DomainEvent[] = [];
-  public doctorId: string | null;
-  public timestamp: number;
-  public completedAt?: number;
-  public readonly id: string;
 
-  // Backwards-compatible constructor: older call-sites passed (office, timestamp, completedAt)
-  // while newer signature includes doctorId before timestamp. To avoid breaking tests,
-  // we accept a flexible 6th parameter and normalize inside.
   constructor(
     public readonly idCard: IdCard,
     public readonly fullName: FullName,
     public readonly priority: Priority,
     public status: AppointmentStatus,
     public office: string | null = null,
-    // Can be either doctorId (string|null) in the new API, or timestamp (number) in older calls
-    _doctorIdOrTimestamp: string | null | number | undefined = null,
-    // When _doctorIdOrTimestamp is doctorId, this is the timestamp; otherwise it's the completedAt
-    _timestampOrCompletedAt?: number,
-    _completedAtOrId?: number | string,
-    // Optional final id parameter (keeps backwards compatibility with 8-arg older ctor)
-    _maybeId?: string,
-  ) {
-    // Normalize parameters
-    let resolvedDoctorId: string | null = null;
-    let resolvedTimestamp: number = Date.now();
-    let resolvedCompletedAt: number | undefined = undefined;
-
-    if (typeof _doctorIdOrTimestamp === "number") {
-      // Old signature: (office, timestamp, completedAt)
-      resolvedTimestamp = _doctorIdOrTimestamp;
-      if (typeof _timestampOrCompletedAt === "number") {
-        resolvedCompletedAt = _timestampOrCompletedAt;
-      }
-      // Older callers passed `id` as the 8th argument
-      if (typeof _completedAtOrId === "string") {
-        this.id = _completedAtOrId;
-      } else if (typeof _maybeId === "string") {
-        this.id = _maybeId;
-      } else {
-        this.id = randomUUID();
-      }
-    } else {
-      // New signature: (office, doctorId, timestamp, completedAt)
-      resolvedDoctorId = (_doctorIdOrTimestamp as string | null) ?? null;
-      if (typeof _timestampOrCompletedAt === "number") {
-        resolvedTimestamp = _timestampOrCompletedAt;
-      }
-      if (typeof _completedAtOrId === "number") {
-        resolvedCompletedAt = _completedAtOrId;
-      }
-      // New callers may pass id as the final optional param
-      if (typeof _maybeId === "string") {
-        this.id = _maybeId;
-      } else {
-        this.id = randomUUID();
-      }
-    }
-
-    this.doctorId = resolvedDoctorId;
-    this.timestamp = resolvedTimestamp;
-    this.completedAt = resolvedCompletedAt;
-  }
+    public timestamp: number = Date.now(),
+    public completedAt?: number,
+    public readonly id: string = randomUUID(), // 🎯 DOMAIN GENERATED IDENTITY
+    // SPEC-003: médico asignado — null para turnos en espera o migrados
+    public doctorId: string | null = null,
+    public doctorName: string | null = null,
+  ) {}
 
   public recordEvent(event: DomainEvent): void {
     this.domainEvents.push(event);
@@ -105,9 +57,13 @@ export class Appointment {
     this.completedAt = now + durationSeconds * 1000;
   }
 
+  /**
+   * SPEC-003: Asigna un médico real al turno.
+   * Persiste doctorId, doctorName y office del médico.
+   */
   public assignDoctor(
     doctorId: string,
-    _doctorName: string,
+    doctorName: string,
     office: string,
     durationSeconds: number,
     now: number,
@@ -120,6 +76,7 @@ export class Appointment {
     this.status = "called";
     this.office = office;
     this.doctorId = doctorId;
+    this.doctorName = doctorName;
     this.completedAt = now + durationSeconds * 1000;
   }
 

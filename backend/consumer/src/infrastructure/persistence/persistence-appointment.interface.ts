@@ -10,8 +10,10 @@ export interface PersistenceAppointmentData {
   priority: string;
   status: AppointmentStatus;
   office: string | null;
-  doctorId?: string | null;
   timestamp: number;
   completedAt?: number;
   domainId: string;
+  // SPEC-003: médico asignado
+  doctorId?: string | null;
+  doctorName?: string | null;
 }

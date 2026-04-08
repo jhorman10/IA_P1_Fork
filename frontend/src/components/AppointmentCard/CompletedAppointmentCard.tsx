@@ -60,6 +60,12 @@ export function CompletedAppointmentCard({
             {appointment.office || "N/A"}
           </span>
         </div>
+        {appointment.doctorName && (
+          <div className={styles.infoRow}>
+            <span className={styles.label}>Médico:</span>
+            <span>{appointment.doctorName}</span>
+          </div>
+        )}
         <div className={styles.infoRow}>
           <span className={styles.label}>Duración:</span>
           <span className={styles.hora}>

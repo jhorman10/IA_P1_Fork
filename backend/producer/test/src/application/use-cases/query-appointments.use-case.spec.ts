@@ -18,20 +18,22 @@ describe("QueryAppointmentsUseCaseImpl", () => {
       fullName: "John Doe",
       idCard: 12345678,
       office: "3",
-      doctorId: null,
       status: "called",
       priority: "medium",
       timestamp: Date.now(),
+      doctorId: "doc-1",
+      doctorName: "Dr. John",
     },
     {
       id: "def-456",
       fullName: "Jane Smith",
       idCard: 87654321,
       office: null,
-      doctorId: null,
       status: "waiting",
       priority: "high",
       timestamp: Date.now(),
+      doctorId: null,
+      doctorName: null,
     },
   ];
 
@@ -39,6 +41,8 @@ describe("QueryAppointmentsUseCaseImpl", () => {
     mockRepo = {
       findAll: jest.fn(),
       findByIdCard: jest.fn(),
+      findWaiting: jest.fn(),
+      findActiveByIdCard: jest.fn(),
       findById: jest.fn(),
     };
 
