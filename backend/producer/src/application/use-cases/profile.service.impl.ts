@@ -40,12 +40,13 @@ export class ProfileServiceImpl implements ProfileServicePort {
 
   /**
    * Resolves session: returns active profile for the given Firebase uid.
-   * HTTP 403 if profile not found or inactive.
+   * HTTP 404 if no profile exists for this uid (never configured by an admin).
+   * HTTP 403 if profile exists but is inactive.
    */
   async resolveSession(uid: string): Promise<ProfileView> {
     const profile = await this.repo.findByUid(uid);
     if (!profile) {
-      throw new ForbiddenException("Perfil operativo no configurado");
+      throw new NotFoundException("Perfil operativo no configurado");
     }
     if (profile.status !== "active") {
       throw new ForbiddenException("Perfil inactivo");

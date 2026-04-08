@@ -55,13 +55,13 @@ describe("ProfileServiceImpl", () => {
     expect(repo.findByUid).toHaveBeenCalledWith("uid-admin");
   });
 
-  it("should throw ForbiddenException when profile does not exist", async () => {
+  it("should throw NotFoundException when profile does not exist", async () => {
     // GIVEN
     repo.findByUid.mockResolvedValue(null);
 
     // WHEN / THEN
     await expect(service.resolveSession("uid-missing")).rejects.toThrow(
-      ForbiddenException,
+      NotFoundException,
     );
   });
 

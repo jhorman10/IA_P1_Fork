@@ -1,15 +1,6 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { ConsultationPolicy } from "src/domain/policies/consultation.policy";
-import { NestLoggerAdapter } from "../../infrastructure/logging/nest-logger.adapter";
-import { SystemClockAdapter } from "../../infrastructure/utils/system-clock.adapter";
+import { ConfigModule } from "@nestjs/config";
 
-import { AssignAvailableOfficesUseCaseImpl } from "../../application/use-cases/assign-available-offices.use-case.impl";
-import { CancelAppointmentUseCaseImpl } from "../../application/use-cases/cancel-appointment.use-case.impl";
-import { CompleteAppointmentUseCaseImpl } from "../../application/use-cases/complete-appointment.use-case.impl";
-import { CompleteExpiredAppointmentsUseCaseImpl } from "../../application/use-cases/complete-expired-appointments.use-case.impl";
-import { MaintenanceOrchestratorUseCaseImpl } from "../../application/use-cases/maintenance-orchestrator.use-case.impl";
-import { RegisterAppointmentUseCaseImpl } from "../../application/use-cases/register-appointment.use-case.impl";
 import { PoliciesModule } from "../policies/policies.module";
 import { RepositoriesModule } from "../repositories/repositories.module";
 

@@ -1,5 +1,5 @@
-import { anonymizeName } from "@/lib/anonymizeName";
 import { Appointment } from "@/domain/Appointment";
+import { anonymizeName } from "@/lib/anonymizeName";
 import styles from "@/styles/page.module.css";
 
 /**

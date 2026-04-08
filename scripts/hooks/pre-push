@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# =============================================================================
+# pre-push  — git hook: ejecuta el CI local antes de cada `git push`.
+#
+# Instalado por scripts/install-hooks.sh.
+# Para saltar el hook una sola vez:
+#   git push --no-verify
+# =============================================================================
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+echo ""
+echo "🔒 pre-push: ejecutando CI local antes de subir cambios..."
+echo "   (usa 'git push --no-verify' para saltarlo en caso de emergencia)"
+echo ""
+
+exec "$REPO_ROOT/scripts/ci-local.sh"

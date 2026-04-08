@@ -45,6 +45,18 @@ describe("ConsumerController", () => {
           useValue: mockRegisterUseCase,
         },
         { provide: "RetryPolicyPort", useValue: mockRetryPolicyPort },
+        {
+          provide: "CompleteAppointmentUseCase",
+          useValue: { execute: jest.fn() },
+        },
+        {
+          provide: "CancelAppointmentUseCase",
+          useValue: { execute: jest.fn() },
+        },
+        {
+          provide: "MaintenanceOrchestratorUseCase",
+          useValue: { execute: jest.fn() },
+        },
       ],
     }).compile();
 

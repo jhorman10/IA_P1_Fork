@@ -2,8 +2,8 @@
 
 import React from "react";
 
-import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 import WebSocketStatus from "@/components/WebSocketStatus";
+import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
 
 export default function WaitingRoomPage() {
   const { appointments, connectionStatus } = useAppointmentsWebSocket();

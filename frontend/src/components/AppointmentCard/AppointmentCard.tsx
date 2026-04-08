@@ -13,8 +13,8 @@
  * and different props. Specialized components make props type-safe and self-documenting.
  */
 
-import { anonymizeName } from "@/lib/anonymizeName";
 import { Appointment } from "@/domain/Appointment";
+import { anonymizeName } from "@/lib/anonymizeName";
 import styles from "@/styles/page.module.css";
 
 interface AppointmentCardProps {
