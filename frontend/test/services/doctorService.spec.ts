@@ -106,3 +106,37 @@ describe("doctorService — checkInDoctor", () => {
     );
   });
 });
+
+// SPEC-015: getAvailableOffices — validates /doctors/available-offices contract
+describe("doctorService — getAvailableOffices", () => {
+  beforeEach(() => {
+    jest.resetModules();
+    setEnv();
+  });
+
+  it("calls GET /doctors/available-offices and returns array on 200", async () => {
+    mockDoctorFetch(true, ["1", "3", "5"], 200);
+    const { getAvailableOffices } = await import("@/services/doctorService");
+
+    const result = await getAvailableOffices("token");
+
+    expect(result).toEqual(["1", "3", "5"]);
+    const [url, opts] = (global as any).fetch.mock.calls[0];
+    expect(url).toBe("http://api.test/doctors/available-offices");
+    expect(opts.headers.Authorization).toBe("Bearer token");
+  });
+
+  it("preserves backend message on non-OK response", async () => {
+    mockDoctorFetch(false, { message: "No autorizado" }, 401);
+    const { getAvailableOffices } = await import("@/services/doctorService");
+
+    await expect(getAvailableOffices("token")).rejects.toThrow("No autorizado");
+  });
+
+  it("falls back to HTTP_ERROR string when body has no message", async () => {
+    mockDoctorFetch(false, {}, 500);
+    const { getAvailableOffices } = await import("@/services/doctorService");
+
+    await expect(getAvailableOffices("token")).rejects.toThrow("HTTP_ERROR: 500");
+  });
+});

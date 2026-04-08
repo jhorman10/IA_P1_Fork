@@ -203,6 +203,38 @@ describe("DoctorDashboardPage", () => {
     expect(checkOut).not.toHaveBeenCalled();
   });
 
+  it("refetches available offices after check-in conflict (SPEC-016 CRITERIO-3.4)", async () => {
+    const user = userEvent.setup();
+    const checkIn = jest.fn().mockResolvedValue(undefined);
+    const refetchOffices = jest.fn();
+
+    mockUseDoctorDashboard.mockReturnValue(
+      buildDashboardReturn({
+        doctor: buildDoctor({ status: "offline" }),
+        checkIn,
+        error: "HTTP_ERROR: 409",
+      }),
+    );
+
+    mockUseAvailableOffices.mockReturnValue({
+      offices: ["A1", "A2"],
+      loading: false,
+      error: null,
+      refetch: refetchOffices,
+    });
+
+    render(<DoctorDashboardPage />);
+
+    await user.selectOptions(screen.getByTestId("office-select"), "A2");
+    await user.click(screen.getByTestId("btn-confirm-checkin"));
+
+    expect(checkIn).toHaveBeenCalledWith("A2");
+    expect(refetchOffices).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId("dashboard-error")).toHaveTextContent(
+      "HTTP_ERROR: 409",
+    );
+  });
+
   it("wires check-out action from card to hook checkOut", async () => {
     const user = userEvent.setup();
     const checkIn = jest.fn();

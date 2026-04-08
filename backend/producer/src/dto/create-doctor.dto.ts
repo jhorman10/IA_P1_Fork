@@ -1,10 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsIn, IsNotEmpty, IsString, MaxLength } from "class-validator";
-
-import {
-  DOCTOR_OFFICE_RANGE_MESSAGE,
-  VALID_DOCTOR_OFFICES,
-} from "../doctors/doctor-office.constants";
+import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 
 export class CreateDoctorDto {
   @ApiProperty({
@@ -28,16 +23,4 @@ export class CreateDoctorDto {
     message: "La especialidad no puede superar 100 caracteres",
   })
   specialty!: string;
-
-  @ApiProperty({
-    description: "Consultorio asignado al médico (solo 1 a 5)",
-    example: "3",
-    enum: VALID_DOCTOR_OFFICES,
-  })
-  @IsNotEmpty({ message: "El consultorio es obligatorio" })
-  @IsString({ message: "El consultorio debe ser texto" })
-  @IsIn(VALID_DOCTOR_OFFICES, {
-    message: DOCTOR_OFFICE_RANGE_MESSAGE,
-  })
-  office!: string;
 }
