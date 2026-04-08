@@ -6,8 +6,8 @@ import {
 import { Model } from "mongoose";
 import { DoctorServiceImpl } from "src/application/use-cases/doctor.service.impl";
 import { DoctorView } from "src/domain/models/doctor-view";
-import { DoctorRepository } from "src/domain/ports/outbound/doctor.repository";
 import { AppointmentLifecyclePublisherPort } from "src/domain/ports/outbound/appointment-lifecycle-publisher.port";
+import { DoctorRepository } from "src/domain/ports/outbound/doctor.repository";
 import { DoctorDocument } from "src/schemas/doctor.schema";
 
 // ── helpers ────────────────────────────────────────────────────────────────
