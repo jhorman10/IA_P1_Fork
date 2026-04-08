@@ -20,6 +20,10 @@ export class Appointment {
   @Prop({ required: true })
   fullName!: string;
 
+  // Store domain UUID separately (synced with Consumer schema)
+  @Prop({ type: String, default: null, unique: true, sparse: true })
+  domainId!: string | null;
+
   // ⚕️ HUMAN CHECK - Campo office nullable
   // null cuando el paciente está en espera
   @Prop({ type: String, default: null, index: true })

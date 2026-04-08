@@ -71,7 +71,7 @@ export class MongooseAppointmentReadRepository implements AppointmentReadReposit
    */
   private toPayload(doc: AppointmentDocument): AppointmentView {
     return {
-      id: String(doc._id),
+      id: doc.domainId ?? String(doc._id),
       fullName: doc.fullName,
       idCard: doc.idCard,
       office: doc.office,
