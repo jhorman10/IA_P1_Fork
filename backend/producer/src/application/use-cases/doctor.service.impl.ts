@@ -159,12 +159,13 @@ export class DoctorServiceImpl implements DoctorServicePort {
   async updateSpecialty(
     id: string,
     name: string,
-    _specialtyId?: string,
+    specialtyId?: string,
   ): Promise<void> {
     const doctor = await this.repo.findById(id);
     if (!doctor) {
       throw new NotFoundException(`Médico con id ${id} no encontrado`);
     }
-    await this.repo.updateSpecialty(id, name);
+    // SPEC-015: forward specialtyId so the catalog reference stays in sync
+    await this.repo.updateSpecialty(id, name, specialtyId ?? null);
   }
 }

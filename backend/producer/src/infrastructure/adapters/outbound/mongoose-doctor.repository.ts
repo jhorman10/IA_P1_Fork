@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 
@@ -20,12 +20,16 @@ export class MongooseDoctorRepository implements DoctorRepository {
   ) {}
 
   async save(command: CreateDoctorCommand): Promise<DoctorView> {
-    const doc = await this.model.create({
+    // SPEC-015: specialtyId will be persisted once Database Agent adds the field to
+    // doctor.schema.ts. Cast avoids TS strict-mode error during the transition.
+    const payload: Record<string, unknown> = {
       name: command.name,
       specialty: command.specialty,
+      specialtyId: command.specialtyId ?? null,
       office: command.office ?? null,
       status: "offline",
-    });
+    };
+    const doc = await this.model.create(payload);
     return this.toView(doc);
   }
 
@@ -71,7 +75,11 @@ export class MongooseDoctorRepository implements DoctorRepository {
         .findByIdAndUpdate(id, { $set: { status, office } }, { new: true })
         .exec();
       return doc ? this.toView(doc) : null;
-    } catch {
+    } catch (err: unknown) {
+      const code = (err as { code?: number })?.code;
+      if (code === 11000 || code === 11001) {
+        throw new ConflictException("El consultorio ya está ocupado");
+      }
       return null;
     }
   }
@@ -83,10 +91,17 @@ export class MongooseDoctorRepository implements DoctorRepository {
     return doc ? this.toView(doc) : null;
   }
 
-  async updateSpecialty(id: string, name: string): Promise<void> {
+  async updateSpecialty(
+    id: string,
+    name: string,
+    specialtyId?: string | null,
+  ): Promise<void> {
     try {
       if (!Types.ObjectId.isValid(id)) return;
-      await this.model.findByIdAndUpdate(id, { specialty: name }).exec();
+      const update: Record<string, unknown> = { specialty: name };
+      // SPEC-015: also update specialtyId reference when provided
+      if (specialtyId !== undefined) update.specialtyId = specialtyId;
+      await this.model.findByIdAndUpdate(id, update).exec();
     } catch {
       // no-op on invalid id
     }

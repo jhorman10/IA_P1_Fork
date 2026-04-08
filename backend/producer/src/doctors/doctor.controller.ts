@@ -81,10 +81,11 @@ export class DoctorController {
 
   /**
    * SPEC-016: Returns enabled and unoccupied office numbers sorted ascending.
-   * Must be declared BEFORE ":id" routes so the literal "offices" doesn't
+   * Must be declared BEFORE ":id" routes so the literal segment doesn't
    * match the ":id" parameter.
+   * Route aligned with frontend contract: GET /doctors/available-offices
    */
-  @Get("offices/available")
+  @Get("available-offices")
   @UseGuards(FirebaseAuthGuard, RoleGuard)
   @Roles("admin", "doctor")
   @ApiOperation({

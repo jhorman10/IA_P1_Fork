@@ -25,7 +25,6 @@ export class Doctor {
     type: String,
     required: false,
     default: null,
-    sparse: true,
   })
   office!: string | null;
 
@@ -39,3 +38,6 @@ export class Doctor {
 }
 
 export const DoctorSchema = SchemaFactory.createForClass(Doctor);
+
+// SPEC-015/016: Unique sparse index — null excluido; blinda race condition de check-in concurrente
+DoctorSchema.index({ office: 1 }, { unique: true, sparse: true });

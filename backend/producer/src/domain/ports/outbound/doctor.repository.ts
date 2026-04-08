@@ -17,5 +17,6 @@ export interface DoctorRepository {
     office: string | null,
   ): Promise<DoctorView | null>;
   findByOffice(office: string): Promise<DoctorView | null>;
-  updateSpecialty(id: string, name: string): Promise<void>;
+  /** SPEC-015: Update display name and optionally the specialtyId catalog reference. */
+  updateSpecialty(id: string, name: string, specialtyId?: string | null): Promise<void>;
 }
