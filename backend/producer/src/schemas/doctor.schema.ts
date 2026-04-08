@@ -1,17 +1,16 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
 
-import { VALID_DOCTOR_OFFICES } from "../doctors/doctor-office.constants";
-
 export type DoctorStatus = "available" | "busy" | "offline";
 
 export type DoctorDocument = HydratedDocument<Doctor>;
 
 /**
- * ⚕️ HUMAN CHECK - Schema Doctor (Producer — escritura y lectura)
+ * SPEC-015 / SPEC-016: Schema Doctor (Producer — escritura y lectura)
  * El Producer gestiona el CRUD de médicos.
  * Colección compartida con el Consumer (solo lectura allá).
- * Índices: status (motor de asignación del Consumer), office (unicidad + búsqueda).
+ * Índices: status (motor de asignación del Consumer), office (sparse para búsqueda de ocupación).
+ * office es nullable: null cuando offline, se asigna dinámicamente en check-in.
  */
 @Schema({ timestamps: true, collection: "doctors" })
 export class Doctor {
@@ -21,14 +20,14 @@ export class Doctor {
   @Prop({ required: true, maxlength: 100 })
   specialty!: string;
 
-  // SPEC-003: Consultorio donde opera el médico — único por consultorio
+  // SPEC-015/016: Consultorio asignado dinámicamente — null cuando offline
   @Prop({
-    required: true,
-    unique: true,
-    index: true,
-    enum: VALID_DOCTOR_OFFICES,
+    type: String,
+    required: false,
+    default: null,
+    sparse: true,
   })
-  office!: string;
+  office!: string | null;
 
   @Prop({
     required: true,

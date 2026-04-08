@@ -16,8 +16,12 @@ export class DoctorResponseDto {
   })
   specialty!: string;
 
-  @ApiProperty({ example: "3", description: "Consultorio asignado" })
-  office!: string;
+  @ApiProperty({
+    example: "3",
+    nullable: true,
+    description: "Consultorio operativo actual. null cuando offline.",
+  })
+  office!: string | null;
 
   @ApiProperty({
     enum: ["available", "busy", "offline"],

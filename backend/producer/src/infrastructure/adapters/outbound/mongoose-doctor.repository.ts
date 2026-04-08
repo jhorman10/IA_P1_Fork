@@ -23,7 +23,7 @@ export class MongooseDoctorRepository implements DoctorRepository {
     const doc = await this.model.create({
       name: command.name,
       specialty: command.specialty,
-      office: command.office ?? "",
+      office: command.office ?? null,
       status: "offline",
     });
     return this.toView(doc);
@@ -60,6 +60,29 @@ export class MongooseDoctorRepository implements DoctorRepository {
     }
   }
 
+  async updateStatusAndOffice(
+    id: string,
+    status: DoctorStatus,
+    office: string | null,
+  ): Promise<DoctorView | null> {
+    try {
+      if (!Types.ObjectId.isValid(id)) return null;
+      const doc = await this.model
+        .findByIdAndUpdate(id, { $set: { status, office } }, { new: true })
+        .exec();
+      return doc ? this.toView(doc) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async findByOffice(office: string): Promise<DoctorView | null> {
+    const doc = await this.model
+      .findOne({ office, status: { $in: ["available", "busy"] } })
+      .exec();
+    return doc ? this.toView(doc) : null;
+  }
+
   async updateSpecialty(id: string, name: string): Promise<void> {
     try {
       if (!Types.ObjectId.isValid(id)) return;
@@ -74,7 +97,7 @@ export class MongooseDoctorRepository implements DoctorRepository {
       id: String(doc._id),
       name: doc.name,
       specialty: doc.specialty,
-      office: doc.office,
+      office: doc.office ?? null,
       status: doc.status as DoctorStatus,
       createdAt: (doc as unknown as { createdAt: Date }).createdAt,
       updatedAt: (doc as unknown as { updatedAt: Date }).updatedAt,

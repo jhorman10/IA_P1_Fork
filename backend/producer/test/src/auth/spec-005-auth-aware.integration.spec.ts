@@ -118,6 +118,7 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
       findById: jest.fn(),
       checkIn: jest.fn(),
       checkOut: jest.fn(),
+      getAvailableOffices: jest.fn().mockResolvedValue(["1", "2", "3"]),
     };
 
     const mockFirebaseAuth = {
@@ -157,15 +158,17 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
     mockCreateAppointmentUseCase.execute.mockResolvedValue(undefined);
     mockQueryAppointmentsUseCase.findAll.mockResolvedValue(publicQueueSnapshot);
 
-    mockDoctorService.checkIn.mockImplementation(async (id: string) => {
-      return {
-        id,
-        name: "Dr. Ana Pérez",
-        specialty: "Medicina General",
-        office: "3",
-        status: "available",
-      };
-    });
+    mockDoctorService.checkIn.mockImplementation(
+      async (id: string, office: string) => {
+        return {
+          id,
+          name: "Dr. Ana Pérez",
+          specialty: "Medicina General",
+          office: office ?? "3",
+          status: "available",
+        };
+      },
+    );
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [
@@ -346,6 +349,7 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
     const response = await request(app.getHttpServer())
       .patch("/doctors/doc-001/check-in")
       .set("Authorization", "Bearer doctor-token")
+      .send({ office: "3" })
       .expect(200);
 
     expect(response.body).toMatchObject({
@@ -353,7 +357,7 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
       status: "available",
       message: "Médico registrado como disponible",
     });
-    expect(doctorService.checkIn).toHaveBeenCalledWith("doc-001");
+    expect(doctorService.checkIn).toHaveBeenCalledWith("doc-001", "3");
   });
 
   it("should return 403 when doctor tries to check in another doctor context", async () => {
