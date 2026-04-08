@@ -19,39 +19,39 @@ describe("ConsultationPolicy", () => {
   describe("Instance-based (injectable RNG)", () => {
     it("should return MIN_DURATION when random returns 0", () => {
       const deterministicPolicy = new ConsultationPolicy(() => 0);
-      expect(deterministicPolicy.getRandomDurationSeconds()).toBe(8);
+      expect(deterministicPolicy.getRandomDurationSeconds()).toBe(60);
     });
 
     it("should return MAX_DURATION when random returns 0.99", () => {
       const deterministicPolicy = new ConsultationPolicy(() => 0.99);
-      expect(deterministicPolicy.getRandomDurationSeconds()).toBe(15);
+      expect(deterministicPolicy.getRandomDurationSeconds()).toBe(120);
     });
 
     it("should return midpoint when random returns 0.5", () => {
       const deterministicPolicy = new ConsultationPolicy(() => 0.5);
       const result = deterministicPolicy.getRandomDurationSeconds();
-      expect(result).toBeGreaterThanOrEqual(8);
-      expect(result).toBeLessThanOrEqual(15);
-      expect(result).toBe(12); // floor(0.5 * 8) + 8 = 12
+      expect(result).toBeGreaterThanOrEqual(60);
+      expect(result).toBeLessThanOrEqual(120);
+      expect(result).toBe(90); // floor(0.5 * 61) + 60 = 90
     });
 
-    it("should always produce values within [8, 15] range for valid random [0, 1)", () => {
+    it("should always produce values within [60, 120] range for valid random [0, 1)", () => {
       // Math.random() returns [0, 1) — 1.0 is never produced
       for (let i = 0; i < 100; i++) {
         const randomValue = i / 100;
         const deterministicPolicy = new ConsultationPolicy(() => randomValue);
         const duration = deterministicPolicy.getRandomDurationSeconds();
-        expect(duration).toBeGreaterThanOrEqual(8);
-        expect(duration).toBeLessThanOrEqual(15);
+        expect(duration).toBeGreaterThanOrEqual(60);
+        expect(duration).toBeLessThanOrEqual(120);
       }
     });
   });
 
   describe("Static convenience method (backward compatibility)", () => {
-    it("should return a value within [8, 15] range", () => {
+    it("should return a value within [60, 120] range", () => {
       const result = ConsultationPolicy.getRandomDurationSeconds();
-      expect(result).toBeGreaterThanOrEqual(8);
-      expect(result).toBeLessThanOrEqual(15);
+      expect(result).toBeGreaterThanOrEqual(60);
+      expect(result).toBeLessThanOrEqual(120);
     });
 
     it("should return an integer", () => {

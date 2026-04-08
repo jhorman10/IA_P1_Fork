@@ -199,11 +199,11 @@ describe("AssignAvailableOfficesUseCaseImpl", () => {
     });
 
     it("should use ConsultationPolicy for random duration", async () => {
-      // ConsultationPolicy uses randomFn to calculate duration between 8-15 seconds
-      // Formula: Math.floor(randomFn() * (15 - 8 + 1)) + 8
-      // Set to 1.0 for max duration: Math.floor(1.0 * 8) + 8 = 8 + 8 = 16 seconds
+      // ConsultationPolicy uses randomFn to calculate duration between 60-120 seconds (1-2 min)
+      // Formula: Math.floor(randomFn() * (120 - 60 + 1)) + 60
+      // Set to 1.0 for max duration: Math.floor(1.0 * 61) + 60 = 61 + 60 = 121 seconds
       deterministicRandom = 1.0;
-      const expectedDurationSeconds = 16; // Math.floor(1.0 * 8) + 8 = 16
+      const expectedDurationSeconds = 121; // Math.floor(1.0 * 61) + 60 = 121
 
       const waiting = [
         new Appointment(

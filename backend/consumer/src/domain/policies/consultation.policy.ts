@@ -10,8 +10,8 @@ import { Appointment } from "../entities/appointment.entity";
  * Reference: DDD Tactic — Domain Services for cross-aggregate operations
  */
 export class ConsultationPolicy {
-  private static readonly MIN_DURATION_SECONDS = 8;
-  private static readonly MAX_DURATION_SECONDS = 15;
+  private static readonly MIN_DURATION_SECONDS = 60;
+  private static readonly MAX_DURATION_SECONDS = 120;
 
   constructor(private readonly randomFn: () => number = Math.random) {}
 
