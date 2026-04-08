@@ -27,6 +27,9 @@ export default function AdminAuditPage() {
     filters,
     setFilters,
     fetchLogs,
+    limit,
+    limitOptions,
+    setLimit,
   } = useAuditLogs();
 
   const profilesByUid: Record<string, Profile> = useMemo(
@@ -87,6 +90,9 @@ export default function AdminAuditPage() {
         total={total}
         onPageChange={fetchLogs}
         profilesByUid={profilesByUid}
+        limit={limit}
+        limitOptions={limitOptions}
+        onLimitChange={setLimit}
       />
     </main>
   );
