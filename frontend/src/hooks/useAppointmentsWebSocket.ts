@@ -24,6 +24,14 @@ export function useAppointmentsWebSocket(
 
   const updateAppointment = useCallback((updatedAppointment: Appointment) => {
     setAppointments((prev) => {
+      // Remove completed/cancelled appointments from the public screen state
+      if (
+        updatedAppointment.status === "completed" ||
+        updatedAppointment.status === "cancelled"
+      ) {
+        return prev.filter((t) => t.id !== updatedAppointment.id);
+      }
+
       const index = prev.findIndex((t) => t.id === updatedAppointment.id);
       if (index >= 0) {
         const updated = [...prev];
@@ -61,7 +69,10 @@ export function useAppointmentsWebSocket(
     });
 
     realTime.onSnapshot((data) => {
-      setAppointments(data);
+      // Public screen only shows active appointments (waiting + called)
+      setAppointments(
+        data.filter((a) => a.status === "waiting" || a.status === "called"),
+      );
     });
 
     realTime.onAppointmentUpdated((data) => {
