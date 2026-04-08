@@ -8,7 +8,8 @@ import { getAuditLogs } from "@/services/auditService";
 
 import { useAuth } from "./useAuth";
 
-const DEFAULT_LIMIT = 20;
+const DEFAULT_LIMIT = 5;
+const LIMIT_OPTIONS = [5, 10, 15];
 
 export interface UseAuditLogsReturn {
   logs: AuditLogEntry[];
@@ -20,6 +21,9 @@ export interface UseAuditLogsReturn {
   filters: AuditLogFilters;
   setFilters: (f: AuditLogFilters) => void;
   fetchLogs: (page?: number) => void;
+  limit: number;
+  limitOptions: number[];
+  setLimit: (limit: number) => void;
 }
 
 export function useAuditLogs(): UseAuditLogsReturn {
@@ -31,6 +35,7 @@ export function useAuditLogs(): UseAuditLogsReturn {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFiltersState] = useState<AuditLogFilters>({});
+  const [limit, setLimitState] = useState(DEFAULT_LIMIT);
   const isMountedRef = useRef(true);
 
   useEffect(() => {
@@ -50,7 +55,7 @@ export function useAuditLogs(): UseAuditLogsReturn {
         const response = await getAuditLogs(token, {
           ...filters,
           page: targetPage,
-          limit: DEFAULT_LIMIT,
+          limit,
         });
         if (isMountedRef.current) {
           setLogs(response.data);
@@ -68,11 +73,16 @@ export function useAuditLogs(): UseAuditLogsReturn {
         if (isMountedRef.current) setLoading(false);
       }
     },
-    [token, filters],
+    [token, filters, limit],
   );
 
   const setFilters = useCallback((f: AuditLogFilters) => {
     setFiltersState(f);
+    setPage(1);
+  }, []);
+
+  const setLimit = useCallback((newLimit: number) => {
+    setLimitState(newLimit);
     setPage(1);
   }, []);
 
@@ -90,5 +100,8 @@ export function useAuditLogs(): UseAuditLogsReturn {
     filters,
     setFilters,
     fetchLogs,
+    limit,
+    limitOptions: LIMIT_OPTIONS,
+    setLimit,
   };
 }

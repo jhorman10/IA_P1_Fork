@@ -55,7 +55,6 @@ describe("MongooseDoctorRepository", () => {
       name: "Dr. Repo",
       specialty: "Medicina General",
       specialtyId: "spec-001",
-      office: null,
       status: "offline",
     });
   });
