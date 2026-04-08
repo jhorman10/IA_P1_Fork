@@ -98,6 +98,15 @@ export class AssignDoctorUseCaseImpl implements AssignAvailableOfficesUseCase {
       );
 
       // Domain: assign doctor info + transition to called
+      const reserved = await this.doctorRepository.markBusyAtomic(doctor.id);
+      if (!reserved) {
+        this.logger.log(
+          `Dr. ${doctor.name} ya fue tomado por otro proceso — saltando`,
+          "AssignDoctorUseCase",
+        );
+        continue;
+      }
+
       appointment.assignDoctor(
         doctor.id,
         doctor.name,
@@ -110,10 +119,6 @@ export class AssignDoctorUseCaseImpl implements AssignAvailableOfficesUseCase {
 
       // Persist appointment
       await this.appointmentRepository.save(appointment);
-
-      // Persist doctor status change: available → busy
-      doctor.markBusy();
-      await this.doctorRepository.updateStatus(doctor.id, doctor.status);
 
       // Audit: APPOINTMENT_ASSIGNED
       await this.auditPort.log({

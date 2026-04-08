@@ -17,6 +17,12 @@ export interface DoctorReadRepository {
  */
 export interface DoctorWriteRepository {
   updateStatus(id: string, status: DoctorStatus): Promise<Doctor | null>;
+  /**
+   * Atomic CAS: transitions doctor from available→busy in a single DB operation.
+   * Returns true if the transition succeeded (this caller owns the lock),
+   * false if the doctor was already busy (another process won the race).
+   */
+  markBusyAtomic(id: string): Promise<boolean>;
 }
 
 export interface DoctorRepository

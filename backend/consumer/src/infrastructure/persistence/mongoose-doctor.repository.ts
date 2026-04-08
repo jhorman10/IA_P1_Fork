@@ -44,4 +44,15 @@ export class MongooseDoctorRepository implements DoctorRepository {
       .exec();
     return doc ? DoctorMapper.toDomain(doc) : null;
   }
+
+  async markBusyAtomic(id: string): Promise<boolean> {
+    const doc = await this.model
+      .findOneAndUpdate(
+        { _id: id, status: "available" },
+        { status: "busy" },
+        { new: true },
+      )
+      .exec();
+    return doc !== null;
+  }
 }

@@ -75,6 +75,7 @@ describe("CompleteExpiredAppointmentsUseCaseImpl", () => {
       findById: jest.fn(),
       findAll: jest.fn(),
       updateStatus: jest.fn(),
+      markBusyAtomic: jest.fn().mockResolvedValue(true),
     };
 
     auditPort = {

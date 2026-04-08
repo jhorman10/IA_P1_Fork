@@ -59,6 +59,14 @@ export class AutoAssignOnRegisterHandler implements DomainEventHandler<Appointme
 
     // Domain update
     try {
+      const reserved = await this.doctorRepository.markBusyAtomic(doctor.id);
+      if (!reserved) {
+        this.logger.log(
+          `Doctor ${doctor.name} already taken by another process — skipping`,
+        );
+        return;
+      }
+
       appointment.assignDoctor(
         doctor.id,
         doctor.name,
@@ -71,10 +79,6 @@ export class AutoAssignOnRegisterHandler implements DomainEventHandler<Appointme
       await this.appointmentRepository.save(appointment);
 
       await this.notificationPort.notifyAppointmentUpdated(appointment);
-
-      // Persist doctor status change
-      doctor.markBusy();
-      await this.doctorRepository.updateStatus(doctor.id, doctor.status);
 
       this.logger.log(
         `Assigned doctor ${doctor.name} to appointment ${appointment.id}`,
