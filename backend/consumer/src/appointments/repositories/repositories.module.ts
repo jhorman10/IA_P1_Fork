@@ -1,8 +1,14 @@
 import { Module } from "@nestjs/common";
 import { getModelToken, MongooseModule } from "@nestjs/mongoose";
 
+import {
+  AppointmentAssignedHandler,
+  AppointmentRegisteredHandler,
+} from "../../application/event-handlers/appointment-events.handler";
+import { AutoAssignOnRegisterHandler } from "../../application/event-handlers/auto-assign.handler";
 import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 import { NestLoggerAdapter } from "../../infrastructure/logging/nest-logger.adapter";
+import { LocalDomainEventBusAdapter } from "../../infrastructure/messaging/local-domain-event-bus.adapter";
 import { EventDispatchingAppointmentRepositoryDecorator } from "../../infrastructure/persistence/event-dispatching-appointment-repository.decorator";
 import { MongooseAppointmentRepository } from "../../infrastructure/persistence/mongoose-appointment.repository";
 import { MongooseAuditAdapter } from "../../infrastructure/persistence/mongoose-audit.adapter";
@@ -84,14 +90,54 @@ import { PoliciesModule } from "../policies/policies.module";
       provide: "LoggerPort",
       useClass: NestLoggerAdapter,
     },
-    // Provide a lightweight no-op DomainEventBus so the repositories can be
-    // instantiated without requiring the full event-bus wiring. AppointmentModule
-    // may override or provide a richer implementation when available.
+    // Event handlers wired to the DomainEventBus used by the repository decorator.
+    // NotificationPort and ClockPort are exported by InfrastructureModule (imported above).
+    {
+      provide: AppointmentRegisteredHandler,
+      inject: ["NotificationPort", "LoggerPort"],
+      useFactory: (notificationPort, loggerPort) =>
+        new AppointmentRegisteredHandler(notificationPort, loggerPort),
+    },
+    {
+      provide: AppointmentAssignedHandler,
+      inject: ["NotificationPort", "LoggerPort"],
+      useFactory: (notificationPort, loggerPort) =>
+        new AppointmentAssignedHandler(notificationPort, loggerPort),
+    },
+    // AutoAssignOnRegisterHandler uses the inner MongooseAppointmentRepository
+    // (not the decorated one) to avoid a construction-time circular dependency:
+    //   DomainEventBus → AutoAssignHandler → AppointmentRepository(decorator) → DomainEventBus
+    {
+      provide: AutoAssignOnRegisterHandler,
+      inject: [
+        "MongooseAppointmentRepository",
+        "DoctorRepository",
+        "LoggerPort",
+        "ClockPort",
+        ConsultationPolicy,
+        "NotificationPort",
+      ],
+      useFactory: (repo, doctorRepo, logger, clock, policy, notificationPort) =>
+        new AutoAssignOnRegisterHandler(
+          repo,
+          doctorRepo,
+          logger,
+          clock,
+          policy,
+          notificationPort,
+        ),
+    },
+    // Real DomainEventBus replacing the previous no-op.
+    // The decorator uses this bus to dispatch domain events after each save.
     {
       provide: "DomainEventBus",
-      useValue: {
-        publish: async () => undefined,
-      },
+      inject: [
+        AppointmentRegisteredHandler,
+        AppointmentAssignedHandler,
+        AutoAssignOnRegisterHandler,
+      ],
+      useFactory: (registered, assigned, autoAssign) =>
+        new LocalDomainEventBusAdapter([registered, assigned, autoAssign]),
     },
     {
       provide: "AppointmentRepository",

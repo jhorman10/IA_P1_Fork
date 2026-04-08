@@ -5,6 +5,7 @@ import {
   AppointmentRegisteredHandler,
 } from "../application/event-handlers/appointment-events.handler";
 import { AutoAssignOnRegisterHandler } from "../application/event-handlers/auto-assign.handler";
+import { ConsultationPolicy } from "../domain/policies/consultation.policy";
 import { RmqNotificationAdapter } from "../infrastructure/adapters/rmq-notification.adapter";
 import { NestLoggerAdapter } from "../infrastructure/logging/nest-logger.adapter";
 import { LocalDomainEventBusAdapter } from "../infrastructure/messaging/local-domain-event-bus.adapter";
@@ -87,15 +88,17 @@ import { UseCasesModule } from "./use-cases/use-cases.module";
         "DoctorRepository",
         "LoggerPort",
         "ClockPort",
-        "ConsultationPolicy",
+        ConsultationPolicy,
+        "NotificationPort",
       ],
-      useFactory: (repo, doctorRepo, logger, clock, policy) =>
+      useFactory: (repo, doctorRepo, logger, clock, policy, notificationPort) =>
         new AutoAssignOnRegisterHandler(
           repo,
           doctorRepo,
           logger,
           clock,
           policy,
+          notificationPort,
         ),
     },
 
