@@ -151,6 +151,11 @@ html[data-theme="dark"] {
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.5);
   --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.6);
+
+  /* Brand — slate (dark overrides) */
+  --color-slate-300: #475569;
+  --color-slate-400: #64748b;
+  --color-slate-700: #e2e8f0;
 }
 
 html,

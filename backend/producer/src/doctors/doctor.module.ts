@@ -31,7 +31,19 @@ import { DoctorController } from "./doctor.controller";
           options: {
             urls: [configService.getOrThrow<string>("RABBITMQ_URL")],
             queue: configService.getOrThrow<string>("RABBITMQ_QUEUE"),
-            queueOptions: { durable: true },
+            queueOptions: {
+              durable: true,
+              arguments: {
+                "x-dead-letter-exchange": configService.get<string>(
+                  "DLX_EXCHANGE",
+                  "appointment_dlx",
+                ),
+                "x-dead-letter-routing-key": configService.get<string>(
+                  "DLX_ROUTING_KEY",
+                  "appointment_dlq",
+                ),
+              },
+            },
           },
         }),
         inject: [ConfigService],

@@ -26,9 +26,12 @@ export class MongooseDoctorRepository implements DoctorRepository {
       name: command.name,
       specialty: command.specialty,
       specialtyId: command.specialtyId ?? null,
-      office: command.office ?? null,
       status: "offline",
     };
+    // SPEC-015: Only include office when assigned; omit to keep field absent for partial index
+    if (command.office) {
+      payload.office = command.office;
+    }
     const doc = await this.model.create(payload);
     return this.toView(doc);
   }
@@ -71,8 +74,13 @@ export class MongooseDoctorRepository implements DoctorRepository {
   ): Promise<DoctorView | null> {
     try {
       if (!Types.ObjectId.isValid(id)) return null;
+      // SPEC-015: When office is null (check-out), $unset the field so the
+      // partial unique index excludes this doc and allows multiple offline doctors.
+      const update = office
+        ? { $set: { status, office } }
+        : { $set: { status }, $unset: { office: "" } };
       const doc = await this.model
-        .findByIdAndUpdate(id, { $set: { status, office } }, { new: true })
+        .findByIdAndUpdate(id, update, { new: true })
         .exec();
       return doc ? this.toView(doc) : null;
     } catch (err: unknown) {
