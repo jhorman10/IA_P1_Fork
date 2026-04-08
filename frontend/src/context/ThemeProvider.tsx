@@ -25,6 +25,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
+    // Public screen ("/") is always light — skip theme resolution
+    if (window.location.pathname === "/") {
+      setTheme("light");
+      document.documentElement.setAttribute("data-theme", "light");
+      return;
+    }
+
     const stored = localStorage.getItem("theme") as Theme | null;
     if (stored === "light" || stored === "dark") {
       setTheme(stored);

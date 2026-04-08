@@ -243,7 +243,7 @@ describe("useAppointmentsWebSocket", () => {
       });
     });
 
-    it("should return 'connecting' status when onDisconnect fires (reconnect attempt)", async () => {
+    it("should return 'connecting' status when onDisconnect fires without prior connection", async () => {
       let onDisconnectCallback: (() => void) | null = null;
       mockRealTime.onDisconnect.mockImplementation((cb) => {
         onDisconnectCallback = cb;
@@ -251,7 +251,7 @@ describe("useAppointmentsWebSocket", () => {
 
       const { result } = renderHook(() => useAppointmentsWebSocket());
 
-      // Simulate disconnect - hook sets isConnecting=true (reconnect attempt)
+      // Disconnect without ever having connected (no prior connection)
       act(() => {
         onDisconnectCallback?.();
       });
@@ -260,6 +260,39 @@ describe("useAppointmentsWebSocket", () => {
         expect(result.current.connected).toBe(false);
         expect(result.current.isConnecting).toBe(true);
         expect(result.current.connectionStatus).toBe("connecting");
+      });
+    });
+
+    // SPEC-003 — CRITERIO-2.3: explicit reconnecting state after losing connection
+    it("should return 'reconnecting' status when disconnecting after having connected", async () => {
+      let onConnectCallback: (() => void) | null = null;
+      let onDisconnectCallback: (() => void) | null = null;
+      mockRealTime.onConnect.mockImplementation((cb) => {
+        onConnectCallback = cb;
+      });
+      mockRealTime.onDisconnect.mockImplementation((cb) => {
+        onDisconnectCallback = cb;
+      });
+
+      const { result } = renderHook(() => useAppointmentsWebSocket());
+
+      // First establish a connection
+      act(() => {
+        onConnectCallback?.();
+      });
+
+      await waitFor(() => {
+        expect(result.current.connectionStatus).toBe("connected");
+      });
+
+      // Now simulate losing the connection
+      act(() => {
+        onDisconnectCallback?.();
+      });
+
+      await waitFor(() => {
+        expect(result.current.connected).toBe(false);
+        expect(result.current.connectionStatus).toBe("reconnecting");
       });
     });
 

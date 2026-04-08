@@ -47,6 +47,7 @@ const StatusConfig: Record<
     label: "Conectando...",
     className: styles.statusConnecting,
   },
+  // SPEC-003: explicit reconnecting state (CRITERIO-2.3)
   reconnecting: {
     icon: "🟡",
     label: "Reconectando...",

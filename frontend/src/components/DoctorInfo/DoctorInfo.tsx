@@ -2,12 +2,12 @@
 
 import styles from "./DoctorInfo.module.css";
 
-interface DoctorInfoProps {
+export interface DoctorInfoProps {
   doctorName: string;
   office: string;
 }
 
-export default function DoctorInfo({ doctorName, office }: DoctorInfoProps) {
+export function DoctorInfo({ doctorName, office }: DoctorInfoProps) {
   return (
     <div className={styles.block} data-testid="doctor-info">
       <div className={styles.row}>
@@ -21,3 +21,5 @@ export default function DoctorInfo({ doctorName, office }: DoctorInfoProps) {
     </div>
   );
 }
+
+export default DoctorInfo;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useDependencies } from "@/context/DependencyContext";
 import { Appointment } from "@/domain/Appointment";
@@ -15,6 +15,9 @@ export function useAppointmentsWebSocket(
   const [error, setError] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(true);
+  const [isReconnecting, setIsReconnecting] = useState(false);
+  // tracks whether we've ever had a successful connection in this session
+  const hasConnectedRef = useRef(false);
 
   // 🛡️ HUMAN CHECK - DI: Inject RealTime implementation (SocketIO, SSE, Mock)
   const { realTime } = useDependencies();
@@ -34,20 +37,27 @@ export function useAppointmentsWebSocket(
   useEffect(() => {
     // Setup listeners
     realTime.onConnect(() => {
+      hasConnectedRef.current = true;
       setConnected(true);
       setIsConnecting(false);
+      setIsReconnecting(false);
       setError(null);
     });
 
     realTime.onDisconnect(() => {
       setConnected(false);
       setIsConnecting(true);
+      // SPEC-003: if we had a prior connection, this is a reconnect attempt
+      if (hasConnectedRef.current) {
+        setIsReconnecting(true);
+      }
     });
 
     realTime.onError((_err) => {
       setError("Error de conexión en tiempo real");
       setConnected(false);
       setIsConnecting(false);
+      setIsReconnecting(false);
     });
 
     realTime.onSnapshot((data) => {
@@ -67,8 +77,18 @@ export function useAppointmentsWebSocket(
     };
   }, [realTime, updateAppointment, onUpdate]);
 
-  const connectionStatus: "connected" | "connecting" | "disconnected" =
-    connected ? "connected" : isConnecting ? "connecting" : "disconnected";
+  // SPEC-003: expose reconnecting as distinct status (🟡 Reconectando...)
+  const connectionStatus:
+    | "connected"
+    | "connecting"
+    | "reconnecting"
+    | "disconnected" = connected
+    ? "connected"
+    : isReconnecting
+      ? "reconnecting"
+      : isConnecting
+        ? "connecting"
+        : "disconnected";
 
   return { appointments, error, connected, isConnecting, connectionStatus };
 }

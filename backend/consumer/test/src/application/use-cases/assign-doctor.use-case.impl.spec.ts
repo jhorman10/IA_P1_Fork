@@ -55,6 +55,7 @@ describe("AssignDoctorUseCaseImpl", () => {
       findById: jest.fn(),
       findAll: jest.fn(),
       updateStatus: jest.fn(),
+      markBusyAtomic: jest.fn().mockResolvedValue(true),
     };
 
     auditPort = {
@@ -175,7 +176,7 @@ describe("AssignDoctorUseCaseImpl", () => {
 
     await useCase.execute();
 
-    expect(doctorRepository.updateStatus).toHaveBeenCalledWith("doc-1", "busy");
+    expect(doctorRepository.markBusyAtomic).toHaveBeenCalledWith("doc-1");
   });
 
   it("should create audit log with required fields on assignment", async () => {

@@ -44,6 +44,21 @@ export class MongooseAppointmentReadRepository implements AppointmentReadReposit
     return docs.map((doc) => this.toPayload(doc));
   }
 
+  async findWaiting(): Promise<AppointmentView[]> {
+    const docs = await this.appointmentModel
+      .find({ status: "waiting" })
+      .sort({ timestamp: 1 })
+      .exec();
+    return docs.map((doc) => this.toPayload(doc));
+  }
+
+  async findActiveByIdCard(idCard: number): Promise<AppointmentView | null> {
+    const doc = await this.appointmentModel
+      .findOne({ idCard, status: { $in: ["waiting", "called"] } })
+      .exec();
+    return doc ? this.toPayload(doc) : null;
+  }
+
   async findById(id: string): Promise<AppointmentView | null> {
     const doc = await this.appointmentModel.findById(id).exec();
     if (!doc) return null;
@@ -60,11 +75,13 @@ export class MongooseAppointmentReadRepository implements AppointmentReadReposit
       fullName: doc.fullName,
       idCard: doc.idCard,
       office: doc.office,
-      doctorId: (doc as unknown as { doctorId?: string }).doctorId ?? null,
       status: doc.status,
       priority: doc.priority,
       timestamp: doc.timestamp,
       completedAt: doc.completedAt ?? undefined,
+      // SPEC-003: médico asignado
+      doctorId: doc.doctorId ?? null,
+      doctorName: doc.doctorName ?? null,
     };
   }
 }

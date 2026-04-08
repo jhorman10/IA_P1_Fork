@@ -18,6 +18,8 @@ describe("CalledAppointmentCard", () => {
     priority: "medium",
     timestamp: 1707907200000,
     idCard: 0,
+    doctorId: null,
+    doctorName: null,
   };
 
   describe("Rendering", () => {
@@ -25,6 +27,18 @@ describe("CalledAppointmentCard", () => {
       render(<CalledAppointmentCard appointment={mockAppointment} anonymize={false} />);
 
       expect(screen.getByText("Jane Smith")).toBeInTheDocument();
+    });
+
+    it("should display doctor name when doctor is assigned", () => {
+      const withDoctor: Appointment = {
+        ...mockAppointment,
+        doctorId: "doc-001",
+        doctorName: "Dr. Ana Perez",
+      };
+
+      render(<CalledAppointmentCard appointment={withDoctor} />);
+
+      expect(screen.getByText("Dr. Ana Perez")).toBeInTheDocument();
     });
 
     it("should display office number", () => {
@@ -86,6 +100,48 @@ describe("CalledAppointmentCard", () => {
       );
 
       expect(container).toBeTruthy();
+    });
+
+    it("should use completedAt as estimated time when available (CRITERIO-3.1)", () => {
+      const COMPLETED_AT = 1707910800000;
+      const withCompletedAt: Appointment = {
+        ...mockAppointment,
+        completedAt: COMPLETED_AT,
+      };
+      render(
+        <CalledAppointmentCard appointment={withCompletedAt} showTime={true} />,
+      );
+
+      const expectedTime = new Date(COMPLETED_AT).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      });
+      expect(screen.getByTestId("estimated-time")).toHaveTextContent(
+        expectedTime,
+      );
+    });
+
+    it("should fall back to timestamp when completedAt is absent", () => {
+      const noCompletedAt: Appointment = {
+        ...mockAppointment,
+        timestamp: 1707907200000,
+        completedAt: undefined,
+      };
+      render(
+        <CalledAppointmentCard appointment={noCompletedAt} showTime={true} />,
+      );
+
+      const expectedTime = new Date(1707907200000).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      });
+      expect(screen.getByTestId("estimated-time")).toHaveTextContent(
+        expectedTime,
+      );
     });
   });
 

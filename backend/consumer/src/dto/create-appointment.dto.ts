@@ -1,10 +1,4 @@
-import {
-  IsIn,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from "class-validator";
+import { IsIn, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 import { AppointmentPriority } from "../types/appointment-event";
 
@@ -17,8 +11,8 @@ export class CreateAppointmentDto {
   @IsString()
   fullName!: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @IsIn(["high", "medium", "low"])
-  priority?: AppointmentPriority;
+  priority!: AppointmentPriority;
 }

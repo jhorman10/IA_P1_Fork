@@ -18,6 +18,19 @@ jest.mock("@/context/DependencyContext", () => ({
   })),
 }));
 
+// Mock useAuth to provide a valid token
+jest.mock("@/hooks/useAuth", () => ({
+  useAuth: jest.fn(() => ({
+    token: "test-firebase-token",
+    user: null,
+    profile: null,
+    loading: false,
+    authError: null,
+    login: jest.fn(),
+    logout: jest.fn(),
+  })),
+}));
+
 describe("useAppointmentRegistration", () => {
   beforeEach(() => {
     resetMocks();
@@ -471,6 +484,51 @@ describe("useAppointmentRegistration", () => {
       expect(result.current.loading).toBe(false);
       expect(result.current.error).toBe(null);
       expect(result.current.success).toBe(null);
+    });
+  });
+
+  describe("Authentication Guard", () => {
+    it("should return error when token is null", async () => {
+      const { useAuth } = require("@/hooks/useAuth");
+      useAuth.mockReturnValue({
+        token: null,
+        user: null,
+        profile: null,
+        loading: false,
+        authError: null,
+        login: jest.fn(),
+        logout: jest.fn(),
+      });
+
+      const mockData: CreateAppointmentDTO = {
+        idCard: "123456789",
+        fullName: "John Doe",
+        priority: "medium",
+      };
+
+      const { result } = renderHook(() => useAppointmentRegistration());
+
+      let outcome: boolean = true;
+      await act(async () => {
+        outcome = await result.current.register(mockData);
+      });
+
+      expect(outcome).toBe(false);
+      expect(result.current.error).toBe(
+        "No estás autenticado. Por favor, iniciá sesión.",
+      );
+      expect(mockRepository.createAppointment).not.toHaveBeenCalled();
+
+      // Restore token for other tests
+      useAuth.mockReturnValue({
+        token: "test-firebase-token",
+        user: null,
+        profile: null,
+        loading: false,
+        authError: null,
+        login: jest.fn(),
+        logout: jest.fn(),
+      });
     });
   });
 });

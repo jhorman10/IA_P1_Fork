@@ -1,12 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import {
   CalledAppointmentCard,
   WaitingAppointmentCard,
 } from "@/components/AppointmentCard";
 import AppointmentSkeleton from "@/components/AppointmentSkeleton";
+import { AssignmentNotification } from "@/components/AssignmentNotification/AssignmentNotification";
 import WebSocketStatus from "@/components/WebSocketStatus";
 import { Appointment } from "@/domain/Appointment";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
@@ -19,8 +26,28 @@ import styles from "@/styles/page.module.css";
 export default function AppointmentsScreen() {
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [assignedAppointment, setAssignedAppointment] =
+    useState<Appointment | null>(null);
+
+  // Force light mode on public screen at every render cycle
+  // ThemeProvider also skips theme resolution for pathname "/"
+  useLayoutEffect(() => {
+    document.documentElement.setAttribute("data-theme", "light");
+  });
+
+  // SPEC-003: track previous statuses to detect waiting → called transition
+  const prevStatusRef = useRef<Map<string, string>>(new Map());
 
   const handleUpdate = useCallback((appointment: Appointment) => {
+    const prevStatus = prevStatusRef.current.get(appointment.id);
+
+    // SPEC-003: detect waiting → called transition and show assignment notification
+    if (prevStatus === "waiting" && appointment.status === "called") {
+      setAssignedAppointment(appointment);
+    }
+
+    prevStatusRef.current.set(appointment.id, appointment.status);
+
     if (appointment.status === "called") {
       if (audioService.isEnabled()) {
         audioService.play();
@@ -37,6 +64,16 @@ export default function AppointmentsScreen() {
     isConnecting,
     connectionStatus,
   } = useAppointmentsWebSocket(handleUpdate);
+
+  // SPEC-003: seed prevStatusRef from initial snapshot so already-called
+  // appointments don't trigger spurious notifications on page load
+  useEffect(() => {
+    appointments.forEach((appt) => {
+      if (!prevStatusRef.current.has(appt.id)) {
+        prevStatusRef.current.set(appt.id, appt.status);
+      }
+    });
+  }, [appointments]);
 
   useEffect(() => {
     audioService.init("/sounds/ding.mp3", 0.6);
@@ -68,12 +105,7 @@ export default function AppointmentsScreen() {
       <section className={styles.leftPanel}>
         <header className={styles.stickyHeader}>
           <h1 className={styles.title}>Turnos Disponibles</h1>
-          <WebSocketStatus
-            status={
-              connectionStatus as "connected" | "connecting" | "disconnected"
-            }
-            variant="block"
-          />
+          <WebSocketStatus status={connectionStatus} variant="block" />
           {!audioEnabled && (
             <p className={styles.audioHint}>
               Toca la pantalla para activar sonido 🔔
@@ -124,11 +156,13 @@ export default function AppointmentsScreen() {
         </h2>
         {waitingAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
-            {waitingAppointments.map((t) => (
+            {waitingAppointments.map((t, idx) => (
               <WaitingAppointmentCard
                 key={t.id}
                 appointment={t}
                 timeIcon="📝"
+                queuePosition={idx + 1}
+                total={waitingAppointments.length}
               />
             ))}
           </ul>
@@ -138,6 +172,12 @@ export default function AppointmentsScreen() {
           <p className={styles.empty}>No hay turnos en espera</p>
         )}
       </aside>
+      {assignedAppointment && (
+        <AssignmentNotification
+          appointment={assignedAppointment}
+          onDismiss={() => setAssignedAppointment(null)}
+        />
+      )}
     </main>
   );
 }

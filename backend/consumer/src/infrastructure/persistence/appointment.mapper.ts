@@ -25,10 +25,11 @@ export class AppointmentMapper {
       new Priority(doc.priority),
       doc.status as AppointmentStatus,
       doc.office,
-      doc.doctorId ?? null,
       doc.timestamp,
       doc.completedAt ?? undefined,
       doc.domainId, // Garantiza que el id de dominio es persistente
+      doc.doctorId ?? null, // SPEC-003
+      doc.doctorName ?? null, // SPEC-003
     );
   }
 
@@ -45,12 +46,10 @@ export class AppointmentMapper {
       completedAt: entity.completedAt,
       timestamp: entity.timestamp,
       domainId: entity.id,
+      // SPEC-003: médico asignado
+      doctorId: entity.doctorId,
+      doctorName: entity.doctorName,
     };
-
-    // Only include doctorId when explicitly set (non-null/undefined)
-    if (entity.doctorId !== undefined && entity.doctorId !== null) {
-      base.doctorId = entity.doctorId;
-    }
 
     return base;
   }

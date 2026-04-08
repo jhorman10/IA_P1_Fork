@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { of } from "rxjs";
 
 import { RmqNotificationAdapter } from "../../src/infrastructure/adapters/rmq-notification.adapter";
 import { NotificationsService } from "../../src/notifications/notifications.service";
@@ -14,7 +15,7 @@ describe("RmqNotificationAdapter", () => {
     } as unknown as jest.Mocked<NotificationsService>;
 
     mockClientProxy = {
-      emit: jest.fn(),
+      emit: jest.fn().mockReturnValue(of(undefined)),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -94,6 +95,8 @@ describe("RmqNotificationAdapter", () => {
       priority: "low",
       timestamp: 1000,
       completedAt: 2000,
+      doctorId: null,
+      doctorName: null,
     });
   });
 });

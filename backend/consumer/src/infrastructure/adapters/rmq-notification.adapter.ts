@@ -1,5 +1,7 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
+import { lastValueFrom } from "rxjs";
+import { retry, timeout } from "rxjs/operators";
 
 import { Appointment } from "../../domain/entities/appointment.entity";
 import { NotificationPort } from "../../domain/ports/outbound/notification.port";
@@ -8,6 +10,8 @@ import { AppointmentNotificationPayload } from "./appointment-notification.paylo
 
 @Injectable()
 export class RmqNotificationAdapter implements NotificationPort {
+  private readonly logger = new Logger(RmqNotificationAdapter.name);
+
   constructor(
     private readonly localNotifications: NotificationsService,
     @Inject("APPOINTMENT_NOTIFICATIONS")
@@ -21,11 +25,18 @@ export class RmqNotificationAdapter implements NotificationPort {
       appointment.office,
     );
 
-    // 2. Global event/dashboard update via RMQ
-    this.notificationsClient.emit(
-      "appointment_created",
-      this.mapToPayload(appointment),
-    );
+    // 2. Global event/dashboard update via RMQ — awaited with retry for reliability
+    await lastValueFrom(
+      this.notificationsClient
+        .emit("appointment_created", this.mapToPayload(appointment))
+        .pipe(timeout(5000), retry({ count: 3, delay: 1000 })),
+    ).catch((err: unknown) => {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.error(
+        `Failed to emit appointment_created after retries: ${msg}`,
+      );
+      throw err;
+    });
   }
 
   // ⚕️ HUMAN CHECK - H-03 Fix: Typed return instead of `any`
@@ -41,12 +52,11 @@ export class RmqNotificationAdapter implements NotificationPort {
       priority: appointment.priority.toValue(),
       timestamp: appointment.timestamp,
       completedAt: appointment.completedAt,
+      // SPEC-003: preserve assigned-doctor context
+      doctorId: appointment.doctorId ?? null,
+      doctorName: appointment.doctorName ?? null,
     };
 
-    if (Object.prototype.hasOwnProperty.call(appointment as unknown as Record<string, unknown>, "doctorId")) {
-      payload.doctorId = (appointment as unknown as { doctorId?: string | null }).doctorId ?? null;
-    }
-
-    return payload as AppointmentNotificationPayload;
+    return payload;
   }
 }

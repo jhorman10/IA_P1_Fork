@@ -8,6 +8,10 @@ export interface AuditEntry {
   timestamp: number;
 }
 
+/**
+ * Port: Outbound — Write-only audit log.
+ * SPEC-003: Persiste cada decisión de asignación / check-in / check-out.
+ */
 export interface AuditPort {
   log(entry: AuditEntry): Promise<void>;
 }

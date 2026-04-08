@@ -68,7 +68,7 @@ export class ProducerController {
     const command = {
       idCard: dto.idCard,
       fullName: dto.fullName,
-      priority: dto.priority ?? "medium",
+      priority: dto.priority,
     };
 
     // 2. Execute Use Case (Business Logic)

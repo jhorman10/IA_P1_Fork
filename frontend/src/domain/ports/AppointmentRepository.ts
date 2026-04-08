@@ -5,8 +5,9 @@ import {
 } from "@/domain/CreateAppointment";
 
 export interface AppointmentRepository {
-  getAppointments(): Promise<Appointment[]>;
+  getAppointments(token: string): Promise<Appointment[]>;
   createAppointment(
     data: CreateAppointmentDTO,
+    token: string,
   ): Promise<CreateAppointmentResponse>;
 }

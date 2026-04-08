@@ -118,9 +118,7 @@ describe("CompletedHistoryDashboard (Dashboard Page)", () => {
       render(<CompletedHistoryDashboard />);
 
       await waitFor(() => {
-        const appointments = screen.getAllByText(
-          /Test C\.|Another C\./,
-        );
+        const appointments = screen.getAllByText(/Test C\.|Another C\./);
         expect(appointments.length).toBeGreaterThan(0);
       });
     });

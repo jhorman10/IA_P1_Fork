@@ -21,13 +21,6 @@ export class AppointmentResponseDto {
   office!: string | null;
 
   @ApiProperty({
-    example: "doc-123",
-    nullable: true,
-    description: "Assigned doctor id (domain)",
-  })
-  doctorId!: string | null;
-
-  @ApiProperty({
     enum: ["waiting", "called", "completed"],
     example: "waiting",
     description: "Current status",
@@ -50,4 +43,18 @@ export class AppointmentResponseDto {
     description: "Completion timestamp",
   })
   completedAt?: number;
+
+  @ApiProperty({
+    nullable: true,
+    example: "64b1c2d3e4f5a6b7c8d9e0f1",
+    description: "Assigned doctor ID",
+  })
+  doctorId!: string | null;
+
+  @ApiProperty({
+    nullable: true,
+    example: "Dr. Juan García",
+    description: "Assigned doctor name",
+  })
+  doctorName!: string | null;
 }

@@ -1,4 +1,4 @@
-// SPEC-008 / SPEC-014: Doctor domain model
+// SPEC-003 / SPEC-008 / SPEC-014 / SPEC-015: Doctor domain model
 export type DoctorStatus = "available" | "busy" | "offline";
 
 export interface Doctor {
@@ -9,4 +9,6 @@ export interface Doctor {
   specialtyId?: string;
   office: string | null;
   status: DoctorStatus;
+  createdAt?: string;
+  updatedAt?: string;
 }

@@ -68,6 +68,35 @@ describe("WebSocketStatus", () => {
     });
   });
 
+  // SPEC-003 — CRITERIO-2.3: explicit reconnecting state
+  describe("Reconnecting Status", () => {
+    it("should render yellow indicator with 'Reconectando...' text when status=reconnecting", () => {
+      render(<WebSocketStatus status="reconnecting" />);
+
+      const badge = screen.getByTestId("websocket-status-reconnecting");
+      const label = screen.getByText("Reconectando...");
+
+      expect(badge).toBeInTheDocument();
+      expect(label).toBeInTheDocument();
+    });
+
+    it("should render yellow circle emoji for reconnecting status", () => {
+      render(<WebSocketStatus status="reconnecting" />);
+
+      const badge = screen.getByTestId("websocket-status-reconnecting");
+      expect(badge.textContent).toContain("🟡");
+    });
+
+    it("should be distinct from initial connecting label", () => {
+      const { rerender } = render(<WebSocketStatus status="connecting" />);
+      expect(screen.getByText("Conectando...")).toBeInTheDocument();
+
+      rerender(<WebSocketStatus status="reconnecting" />);
+      expect(screen.getByText("Reconectando...")).toBeInTheDocument();
+      expect(screen.queryByText("Conectando...")).not.toBeInTheDocument();
+    });
+  });
+
   describe("Variants", () => {
     it("should apply inline variant by default", () => {
       const { container } = render(
@@ -144,6 +173,16 @@ describe("WebSocketStatus", () => {
       expect(badge).toHaveAttribute(
         "data-testid",
         "websocket-status-disconnected",
+      );
+    });
+
+    it("should have data-testid for reconnecting status", () => {
+      render(<WebSocketStatus status="reconnecting" />);
+
+      const badge = screen.getByTestId("websocket-status-reconnecting");
+      expect(badge).toHaveAttribute(
+        "data-testid",
+        "websocket-status-reconnecting",
       );
     });
   });

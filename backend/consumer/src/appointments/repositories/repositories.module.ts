@@ -1,17 +1,26 @@
 import { Module } from "@nestjs/common";
-import { getModelToken,MongooseModule } from "@nestjs/mongoose";
+import { getModelToken, MongooseModule } from "@nestjs/mongoose";
 
+import {
+  AppointmentAssignedHandler,
+  AppointmentRegisteredHandler,
+} from "../../application/event-handlers/appointment-events.handler";
+import { AutoAssignOnRegisterHandler } from "../../application/event-handlers/auto-assign.handler";
 import { ConsultationPolicy } from "../../domain/policies/consultation.policy";
 import { NestLoggerAdapter } from "../../infrastructure/logging/nest-logger.adapter";
+import { LocalDomainEventBusAdapter } from "../../infrastructure/messaging/local-domain-event-bus.adapter";
 import { EventDispatchingAppointmentRepositoryDecorator } from "../../infrastructure/persistence/event-dispatching-appointment-repository.decorator";
 import { MongooseAppointmentRepository } from "../../infrastructure/persistence/mongoose-appointment.repository";
+import { MongooseAuditAdapter } from "../../infrastructure/persistence/mongoose-audit.adapter";
 import { MongooseDoctorRepository } from "../../infrastructure/persistence/mongoose-doctor.repository";
 import { MongooseLockRepository } from "../../infrastructure/persistence/mongoose-lock.repository";
 import {
   Appointment,
   AppointmentSchema,
 } from "../../schemas/appointment.schema";
+import { AuditLog, AuditLogSchema } from "../../schemas/audit-log.schema";
 import { Doctor, DoctorSchema } from "../../schemas/doctor.schema";
+import { InfrastructureModule } from "../infrastructure/infrastructure.module";
 import { PoliciesModule } from "../policies/policies.module";
 
 /**
@@ -42,8 +51,10 @@ import { PoliciesModule } from "../policies/policies.module";
     MongooseModule.forFeature([
       { name: Appointment.name, schema: AppointmentSchema },
       { name: Doctor.name, schema: DoctorSchema },
+      { name: AuditLog.name, schema: AuditLogSchema },
     ]),
     PoliciesModule, // ⚕️ HUMAN CHECK - Repositories depend on domain policies
+    InfrastructureModule, // provides LoggerPort and DomainEventBus
   ],
   providers: [
     // Compatibility aliases: some modules reference the legacy provider tokens
@@ -79,14 +90,54 @@ import { PoliciesModule } from "../policies/policies.module";
       provide: "LoggerPort",
       useClass: NestLoggerAdapter,
     },
-    // Provide a lightweight no-op DomainEventBus so the repositories can be
-    // instantiated without requiring the full event-bus wiring. AppointmentModule
-    // may override or provide a richer implementation when available.
+    // Event handlers wired to the DomainEventBus used by the repository decorator.
+    // NotificationPort and ClockPort are exported by InfrastructureModule (imported above).
+    {
+      provide: AppointmentRegisteredHandler,
+      inject: ["NotificationPort", "LoggerPort"],
+      useFactory: (notificationPort, loggerPort) =>
+        new AppointmentRegisteredHandler(notificationPort, loggerPort),
+    },
+    {
+      provide: AppointmentAssignedHandler,
+      inject: ["NotificationPort", "LoggerPort"],
+      useFactory: (notificationPort, loggerPort) =>
+        new AppointmentAssignedHandler(notificationPort, loggerPort),
+    },
+    // AutoAssignOnRegisterHandler uses the inner MongooseAppointmentRepository
+    // (not the decorated one) to avoid a construction-time circular dependency:
+    //   DomainEventBus → AutoAssignHandler → AppointmentRepository(decorator) → DomainEventBus
+    {
+      provide: AutoAssignOnRegisterHandler,
+      inject: [
+        "MongooseAppointmentRepository",
+        "DoctorRepository",
+        "LoggerPort",
+        "ClockPort",
+        ConsultationPolicy,
+        "NotificationPort",
+      ],
+      useFactory: (repo, doctorRepo, logger, clock, policy, notificationPort) =>
+        new AutoAssignOnRegisterHandler(
+          repo,
+          doctorRepo,
+          logger,
+          clock,
+          policy,
+          notificationPort,
+        ),
+    },
+    // Real DomainEventBus replacing the previous no-op.
+    // The decorator uses this bus to dispatch domain events after each save.
     {
       provide: "DomainEventBus",
-      useValue: {
-        publish: async () => undefined,
-      },
+      inject: [
+        AppointmentRegisteredHandler,
+        AppointmentAssignedHandler,
+        AutoAssignOnRegisterHandler,
+      ],
+      useFactory: (registered, assigned, autoAssign) =>
+        new LocalDomainEventBusAdapter([registered, assigned, autoAssign]),
     },
     {
       provide: "AppointmentRepository",
@@ -94,7 +145,7 @@ import { PoliciesModule } from "../policies/policies.module";
       useFactory: (inner, bus) =>
         new EventDispatchingAppointmentRepositoryDecorator(inner, bus),
     },
-    // Doctor repository (Mongoose adapter)
+    // SPEC-003: Doctor repository (read + status updates)
     {
       provide: "MongooseDoctorRepository",
       inject: [getModelToken(Doctor.name)],
@@ -109,11 +160,17 @@ import { PoliciesModule } from "../policies/policies.module";
       provide: "LockRepository",
       useClass: MongooseLockRepository,
     },
+    // SPEC-003: Audit log adapter (write-only)
+    {
+      provide: "AuditPort",
+      useClass: MongooseAuditAdapter,
+    },
   ],
   exports: [
     "AppointmentRepository",
     "LockRepository",
     "DoctorRepository",
+    "AuditPort",
     "LoggerPort",
   ],
 })

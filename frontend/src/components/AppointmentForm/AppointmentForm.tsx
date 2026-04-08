@@ -58,7 +58,9 @@ export default function AppointmentForm() {
       <select
         data-testid="priority-select"
         value={priority}
-        onChange={(e) => setPriority(e.target.value as "high" | "medium" | "low")}
+        onChange={(e) =>
+          setPriority(e.target.value as "high" | "medium" | "low")
+        }
         disabled={loading}
       >
         <option value="medium">Normal</option>

@@ -68,6 +68,7 @@ describe("AppointmentLifecycleController (Integration Tests)", () => {
     priority: "medium",
     timestamp: 1760000000,
     doctorId: "doc-a",
+    doctorName: null,
     ...overrides,
   });
 

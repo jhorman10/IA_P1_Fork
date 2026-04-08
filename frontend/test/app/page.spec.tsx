@@ -310,4 +310,28 @@ describe("AppointmentsScreen (Home Page)", () => {
       expect(statusBadge).toBeInTheDocument();
     });
   });
+
+  // SPEC-003 blockers — queue position visibility and assignment notification
+  describe("SPEC-003: Queue position visibility on main page (CRITERIO-2.1)", () => {
+    it("should display queue position badge for waiting appointments", () => {
+      render(<AppointmentsScreen />);
+
+      // Waiting appointments should show position badges (aria-label format)
+      const badge1 = screen.getByLabelText(/Posici\u00f3n 1 de 2/i);
+      const badge2 = screen.getByLabelText(/Posici\u00f3n 2 de 2/i);
+      expect(badge1).toBeInTheDocument();
+      expect(badge2).toBeInTheDocument();
+    });
+
+    it("should pass queuePosition and total to WaitingAppointmentCard", () => {
+      render(<AppointmentsScreen />);
+
+      // High priority (John Waiting) appears first with position 1
+      const firstBadge = screen.getByLabelText(/Posici\u00f3n 1 de 2/i);
+      expect(firstBadge).toBeInTheDocument();
+    });
+  });
+
+  // SPEC-003: AssignmentNotification integration tested in page.spec003.spec.tsx
+  // (isolated from jest.resetModules() contamination in the Error Handling block above)
 });

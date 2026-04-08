@@ -38,6 +38,8 @@ describe("AppointmentMapper", () => {
         office: null,
         timestamp: now,
         completedAt: undefined,
+        doctorId: null,
+        doctorName: null,
         domainId: "entity-id",
       });
     });

@@ -99,4 +99,39 @@ describe("OfficeServiceImpl", () => {
     });
     expect(officeRepo.updateEnabled).not.toHaveBeenCalled();
   });
+
+  it("should return offices with occupancy when doctors present", async () => {
+    officeRepo.findAll.mockResolvedValue([officeFixture]);
+    doctorModel.find.mockReturnValue({
+      exec: jest.fn().mockResolvedValue([
+        { _id: { toString: () => "doc-001" }, name: "Dr. Ana Perez", office: "2", status: "available" },
+      ]),
+    });
+
+    const res = await service.getAll();
+
+    expect(res).toHaveLength(1);
+    expect(res[0]).toMatchObject({
+      number: "2",
+      occupied: true,
+      occupiedByDoctorId: "doc-001",
+      occupiedByDoctorName: "Dr. Ana Perez",
+    });
+  });
+
+  it("should enable office and return detail view on updateEnabled", async () => {
+    officeRepo.findByNumber.mockResolvedValue(officeFixture);
+    officeRepo.updateEnabled.mockResolvedValue({ ...officeFixture, enabled: true });
+
+    const res = await service.updateEnabled("2", true);
+
+    expect(officeRepo.updateEnabled).toHaveBeenCalledWith("2", true);
+    expect(res).toMatchObject({
+      number: "2",
+      enabled: true,
+      occupied: false,
+      occupiedByDoctorId: null,
+      occupiedByDoctorName: null,
+    });
+  });
 });

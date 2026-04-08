@@ -15,7 +15,8 @@ export interface Appointment {
   completedAt?: number;
   status: AppointmentStatus;
   priority: AppointmentPriority;
-  /** SPEC-008: doctor currently serving this appointment */
+  /** SPEC-003 / SPEC-008: doctor currently serving this appointment */
   doctorId?: string | null;
+  /** SPEC-003 / SPEC-008: denormalized doctor name */
   doctorName?: string | null;
 }

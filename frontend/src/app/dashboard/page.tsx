@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   CalledAppointmentCard,
@@ -8,6 +8,7 @@ import {
   WaitingAppointmentCard,
 } from "@/components/AppointmentCard";
 import AppointmentSkeleton from "@/components/AppointmentSkeleton";
+import { AssignmentNotification } from "@/components/AssignmentNotification/AssignmentNotification";
 import WebSocketStatus from "@/components/WebSocketStatus";
 import { Appointment } from "@/domain/Appointment";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
@@ -20,8 +21,22 @@ import styles from "@/styles/page.module.css";
 export default function CompletedHistoryDashboard() {
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [assignedAppointment, setAssignedAppointment] =
+    useState<Appointment | null>(null);
+
+  // SPEC-003: track previous statuses to detect waiting → called transition
+  const prevStatusRef = useRef<Map<string, string>>(new Map());
 
   const handleUpdate = useCallback((appointment: Appointment) => {
+    const prevStatus = prevStatusRef.current.get(appointment.id);
+
+    // SPEC-003: detect waiting → called transition
+    if (prevStatus === "waiting" && appointment.status === "called") {
+      setAssignedAppointment(appointment);
+    }
+
+    prevStatusRef.current.set(appointment.id, appointment.status);
+
     if (appointment.status === "completed") {
       if (audioService.isEnabled()) {
         audioService.play();
@@ -38,6 +53,16 @@ export default function CompletedHistoryDashboard() {
     isConnecting,
     connectionStatus,
   } = useAppointmentsWebSocket(handleUpdate);
+
+  // SPEC-003: seed prevStatusRef from initial snapshot so known-called
+  // appointments don’t trigger spurious notifications on page load
+  useEffect(() => {
+    appointments.forEach((appt) => {
+      if (!prevStatusRef.current.has(appt.id)) {
+        prevStatusRef.current.set(appt.id, appt.status);
+      }
+    });
+  }, [appointments]);
 
   useEffect(() => {
     audioService.init("/sounds/ding.mp3", 0.6);
@@ -120,11 +145,13 @@ export default function CompletedHistoryDashboard() {
         </h2>
         {waitingAppointments.length > 0 ? (
           <ul className={styles.cardGrid}>
-            {waitingAppointments.map((t) => (
+            {waitingAppointments.map((t, idx) => (
               <WaitingAppointmentCard
                 key={t.id}
                 appointment={t}
                 timeIcon="📝"
+                queuePosition={idx + 1}
+                total={waitingAppointments.length}
               />
             ))}
           </ul>
@@ -160,6 +187,12 @@ export default function CompletedHistoryDashboard() {
       </section>
 
       {showToast && <div className={styles.toast}>✅ Turno completado</div>}
+      {assignedAppointment && (
+        <AssignmentNotification
+          appointment={assignedAppointment}
+          onDismiss={() => setAssignedAppointment(null)}
+        />
+      )}
     </main>
   );
 }

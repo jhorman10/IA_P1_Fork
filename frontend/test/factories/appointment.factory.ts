@@ -15,6 +15,8 @@ export class AppointmentFactory {
       office: null,
       timestamp,
       completedAt: undefined,
+      doctorId: null,
+      doctorName: null,
       ...overrides,
     };
   }

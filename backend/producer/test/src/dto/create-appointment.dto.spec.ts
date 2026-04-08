@@ -7,6 +7,7 @@ describe("CreateAppointmentDto - Validation", () => {
     const validDto = {
       idCard: 123456789,
       fullName: "John Doe",
+      priority: "medium",
     };
 
     const dto = plainToClass(CreateAppointmentDto, validDto);
@@ -18,33 +19,50 @@ describe("CreateAppointmentDto - Validation", () => {
   it("should fail if idCard is missing", async () => {
     const invalidDto = {
       fullName: "John Doe",
+      priority: "medium",
     };
 
     const dto = plainToClass(CreateAppointmentDto, invalidDto);
     const errors = await validate(dto);
 
-    expect(errors).toHaveLength(1);
-    expect(errors[0].property).toBe("idCard");
-    expect(errors[0].constraints).toHaveProperty("isNotEmpty");
+    const idCardError = errors.find((e) => e.property === "idCard");
+    expect(idCardError).toBeDefined();
+    expect(idCardError?.constraints).toHaveProperty("isNotEmpty");
   });
 
   it("should fail if fullName is missing", async () => {
     const invalidDto = {
       idCard: 123456789,
+      priority: "medium",
     };
 
     const dto = plainToClass(CreateAppointmentDto, invalidDto);
     const errors = await validate(dto);
 
-    expect(errors).toHaveLength(1);
-    expect(errors[0].property).toBe("fullName");
-    expect(errors[0].constraints).toHaveProperty("isNotEmpty");
+    const fullNameError = errors.find((e) => e.property === "fullName");
+    expect(fullNameError).toBeDefined();
+    expect(fullNameError?.constraints).toHaveProperty("isNotEmpty");
+  });
+
+  it("should fail if priority is missing", async () => {
+    const invalidDto = {
+      idCard: 123456789,
+      fullName: "John Doe",
+    };
+
+    const dto = plainToClass(CreateAppointmentDto, invalidDto);
+    const errors = await validate(dto);
+
+    const priorityError = errors.find((e) => e.property === "priority");
+    expect(priorityError).toBeDefined();
+    expect(priorityError?.constraints).toHaveProperty("isNotEmpty");
   });
 
   it("should fail if idCard is not a number", async () => {
     const invalidDto = {
       idCard: "invalid-text",
       fullName: "John Doe",
+      priority: "medium",
     };
 
     const dto = plainToClass(CreateAppointmentDto, invalidDto);
@@ -58,6 +76,7 @@ describe("CreateAppointmentDto - Validation", () => {
     const invalidDto = {
       idCard: 123456789,
       fullName: 12345,
+      priority: "medium",
     };
 
     const dto = plainToClass(CreateAppointmentDto, invalidDto);
@@ -71,6 +90,7 @@ describe("CreateAppointmentDto - Validation", () => {
     const dto = plainToClass(CreateAppointmentDto, {
       idCard: -123456789,
       fullName: "John Doe",
+      priority: "medium",
     });
 
     const errors = await validate(dto);
@@ -82,10 +102,25 @@ describe("CreateAppointmentDto - Validation", () => {
     const dto = plainToClass(CreateAppointmentDto, {
       idCard: Number.MAX_SAFE_INTEGER + 1,
       fullName: "John Doe",
+      priority: "medium",
     });
 
     const errors = await validate(dto);
     expect(errors).toHaveLength(1);
     expect(errors[0].property).toBe("idCard");
+  });
+
+  it("should reject invalid priority values", async () => {
+    const dto = plainToClass(CreateAppointmentDto, {
+      idCard: 123456789,
+      fullName: "John Doe",
+      priority: "critical",
+    });
+
+    const errors = await validate(dto);
+    const priorityError = errors.find((e) => e.property === "priority");
+
+    expect(priorityError).toBeDefined();
+    expect(priorityError?.constraints).toHaveProperty("isIn");
   });
 });

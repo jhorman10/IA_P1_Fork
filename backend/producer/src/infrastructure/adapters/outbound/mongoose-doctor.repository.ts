@@ -9,7 +9,7 @@ import { Doctor, DoctorDocument } from "../../../schemas/doctor.schema";
 
 /**
  * Adapter: Infrastructure — Mongoose implementation of DoctorRepository (Producer).
- * SPEC-003: Gestiona persistencia de la colección de médicos.
+ * SPEC-003: Gestiona CRUD de médicos y consultas por estado/consultorio.
  * SRP: Solo responsable del acceso a datos de médicos. Mapeo en línea.
  */
 @Injectable()
@@ -37,8 +37,8 @@ export class MongooseDoctorRepository implements DoctorRepository {
   }
 
   async findAll(status?: DoctorStatus): Promise<DoctorView[]> {
-    const query = status ? { status } : {};
-    const docs = await this.model.find(query).exec();
+    const filter = status ? { status } : {};
+    const docs = await this.model.find(filter).exec();
     return docs.map((doc) => this.toView(doc));
   }
 
