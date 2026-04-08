@@ -4,7 +4,6 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { Request } from "express";
@@ -24,8 +23,7 @@ import { AuthenticatedUser } from "../types/authenticated-user";
  * Sets request.user = { uid, role, status, doctor_id } for downstream guards/controllers.
  *
  * HTTP 401 → missing/invalid/expired token.
- * HTTP 404 → token valid but Profile not found (never configured by admin).
- * HTTP 403 → Profile found but inactive.
+ * HTTP 403 → token valid but Profile not found (never configured by admin) OR Profile found but inactive.
  */
 @Injectable()
 export class FirebaseAuthGuard implements CanActivate {
@@ -52,7 +50,7 @@ export class FirebaseAuthGuard implements CanActivate {
 
     const profile = await this.profileRepo.findByUid(decoded.uid);
     if (!profile) {
-      throw new NotFoundException("Perfil operativo no configurado");
+      throw new ForbiddenException("Perfil operativo no configurado");
     }
     if (profile.status !== "active") {
       throw new ForbiddenException("Perfil inactivo");

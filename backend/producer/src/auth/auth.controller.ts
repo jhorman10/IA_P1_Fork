@@ -63,11 +63,10 @@ export class AuthController {
     status: 401,
     description: "Token ausente, expirado o inválido",
   })
-  @ApiResponse({ status: 403, description: "Perfil inactivo" })
   @ApiResponse({
-    status: 404,
+    status: 403,
     description:
-      "Perfil operativo no configurado — el administrador debe crear el perfil",
+      "Perfil no encontrado o inactivo — el administrador debe crear/activar el perfil",
   })
   async resolveSession(
     @CurrentUser() user: AuthenticatedUser,

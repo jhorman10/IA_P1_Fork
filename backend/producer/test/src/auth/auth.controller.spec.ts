@@ -168,13 +168,13 @@ describe("AuthController (Integration Tests)", () => {
     expect(profileService.resolveSession).not.toHaveBeenCalled();
   });
 
-  it("should return 404 when token is valid but profile is missing", async () => {
+  it("should return 403 when token is valid but profile is missing", async () => {
     // WHEN
     await request(app.getHttpServer())
       .post("/auth/session")
       .set("Authorization", "Bearer missing-profile-token")
       .send({})
-      .expect(404);
+      .expect(403);
 
     // THEN
     expect(profileService.resolveSession).not.toHaveBeenCalled();

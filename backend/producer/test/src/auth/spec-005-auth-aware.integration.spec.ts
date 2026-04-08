@@ -288,12 +288,12 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
     });
   });
 
-  it("should return 404 when session is requested with valid token but missing profile", async () => {
+  it("should return 403 when session is requested with valid token but missing profile", async () => {
     await request(app.getHttpServer())
       .post("/auth/session")
       .set("Authorization", "Bearer missing-profile-token")
       .send({})
-      .expect(404);
+      .expect(403);
 
     expect(profileService.resolveSession).not.toHaveBeenCalled();
   });
