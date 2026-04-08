@@ -3,7 +3,7 @@ id: SPEC-016
 status: IMPLEMENTED
 feature: admin-office-catalog-management
 created: 2026-04-06
-updated: 2026-04-06
+updated: 2026-04-07
 author: spec-generator
 version: "1.0"
 related-specs: [SPEC-003, SPEC-004, SPEC-008, SPEC-012, SPEC-015]
@@ -12,6 +12,7 @@ related-specs: [SPEC-003, SPEC-004, SPEC-008, SPEC-012, SPEC-015]
 # Spec: Catálogo Administrable de Consultorios
 
 > **Estado:** `IMPLEMENTED`.
+> **Nota de despliegue:** si el entorno ya tiene el índice legado `office_1` en `doctors`, validar y eliminar ese índice antes de aplicar el nuevo índice `unique+sparse` de `office`.
 > **Ciclo de vida:** DRAFT → APPROVED → IN_PROGRESS → IMPLEMENTED → DEPRECATED
 
 ---

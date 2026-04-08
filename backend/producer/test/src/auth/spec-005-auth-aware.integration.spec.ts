@@ -45,6 +45,7 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
     findById: jest.Mock;
     checkIn: jest.Mock;
     checkOut: jest.Mock;
+    getAvailableOffices: jest.Mock;
   };
 
   const profilesByUid: Record<string, ProfileView> = {
@@ -118,6 +119,7 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
       findById: jest.fn(),
       checkIn: jest.fn(),
       checkOut: jest.fn(),
+      getAvailableOffices: jest.fn().mockResolvedValue(["1", "2", "3"]),
     };
 
     const mockFirebaseAuth = {
@@ -157,15 +159,17 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
     mockCreateAppointmentUseCase.execute.mockResolvedValue(undefined);
     mockQueryAppointmentsUseCase.findAll.mockResolvedValue(publicQueueSnapshot);
 
-    mockDoctorService.checkIn.mockImplementation(async (id: string) => {
-      return {
-        id,
-        name: "Dr. Ana Pérez",
-        specialty: "Medicina General",
-        office: "3",
-        status: "available",
-      };
-    });
+    mockDoctorService.checkIn.mockImplementation(
+      async (id: string, office: string) => {
+        return {
+          id,
+          name: "Dr. Ana Pérez",
+          specialty: "Medicina General",
+          office: office ?? "3",
+          status: "available",
+        };
+      },
+    );
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [
@@ -346,6 +350,7 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
     const response = await request(app.getHttpServer())
       .patch("/doctors/doc-001/check-in")
       .set("Authorization", "Bearer doctor-token")
+      .send({ office: "3" })
       .expect(200);
 
     expect(response.body).toMatchObject({
@@ -353,7 +358,60 @@ describe("SPEC-005 Auth-aware Journey (Integration)", () => {
       status: "available",
       message: "Médico registrado como disponible",
     });
-    expect(doctorService.checkIn).toHaveBeenCalledWith("doc-001");
+    expect(doctorService.checkIn).toHaveBeenCalledWith("doc-001", "3");
+  });
+
+  it("should allow doctor check-out in own context and release office", async () => {
+    doctorService.checkOut.mockResolvedValueOnce({
+      id: "doc-001",
+      name: "Dr. Ana Pérez",
+      specialty: "Medicina General",
+      office: null,
+      status: "offline",
+    });
+
+    const response = await request(app.getHttpServer())
+      .patch("/doctors/doc-001/check-out")
+      .set("Authorization", "Bearer doctor-token")
+      .expect(200);
+
+    expect(response.body).toMatchObject({
+      id: "doc-001",
+      status: "offline",
+      office: null,
+      message: "Médico registrado como no disponible",
+    });
+    expect(doctorService.checkOut).toHaveBeenCalledWith("doc-001");
+  });
+
+  it("should list available offices for authorized users", async () => {
+    doctorService.getAvailableOffices.mockResolvedValueOnce(["1", "4", "5"]);
+
+    const response = await request(app.getHttpServer())
+      .get("/doctors/available-offices")
+      .set("Authorization", "Bearer admin-token")
+      .expect(200);
+
+    expect(response.body).toEqual(["1", "4", "5"]);
+    expect(doctorService.getAvailableOffices).toHaveBeenCalledTimes(1);
+    expect(doctorService.findById).not.toHaveBeenCalled();
+  });
+
+  it("should return 401 for available offices when token is missing", async () => {
+    await request(app.getHttpServer())
+      .get("/doctors/available-offices")
+      .expect(401);
+
+    expect(doctorService.getAvailableOffices).not.toHaveBeenCalled();
+  });
+
+  it("should return 403 for available offices when role is not allowed", async () => {
+    await request(app.getHttpServer())
+      .get("/doctors/available-offices")
+      .set("Authorization", "Bearer recep-token")
+      .expect(403);
+
+    expect(doctorService.getAvailableOffices).not.toHaveBeenCalled();
   });
 
   it("should return 403 when doctor tries to check in another doctor context", async () => {

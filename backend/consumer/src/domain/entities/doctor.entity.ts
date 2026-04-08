@@ -5,7 +5,7 @@ export class Doctor {
     public id: string,
     public name: string,
     public specialty: string,
-    public office: string,
+    public office: string | null,
     public status: DoctorStatus,
   ) {}
 

@@ -60,7 +60,8 @@ export class AutoAssignOnRegisterHandler implements DomainEventHandler<Appointme
       appointment.assignDoctor(
         doctor.id,
         doctor.name,
-        doctor.office,
+        // doctor.office is guaranteed non-null for status "available" (SPEC-015 invariant)
+        doctor.office!,
         durationSeconds,
         now,
       );
