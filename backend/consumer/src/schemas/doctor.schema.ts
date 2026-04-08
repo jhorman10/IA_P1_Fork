@@ -19,8 +19,9 @@ export class Doctor {
   @Prop({ required: true, maxlength: 100 })
   specialty!: string;
 
-  @Prop({ required: true })
-  office!: string;
+  // SPEC-015/016: office es nullable — null cuando offline, asignado dinámicamente en check-in
+  @Prop({ required: false, default: null, type: String })
+  office!: string | null;
 
   @Prop({
     required: true,
@@ -33,5 +34,5 @@ export class Doctor {
 
 export const DoctorSchema = SchemaFactory.createForClass(Doctor);
 
-// SPEC-003: Índice por consultorio para búsqueda directa
-DoctorSchema.index({ office: 1 });
+// SPEC-003/015: Índice sparse por consultorio — excluye doctores offline (office null)
+DoctorSchema.index({ office: 1 }, { sparse: true });
