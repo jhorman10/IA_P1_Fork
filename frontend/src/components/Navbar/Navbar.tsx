@@ -43,8 +43,8 @@ export default function Navbar() {
   const { profile, logout, loading } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
-  // Hide navbar entirely when not logged in
-  if (loading || !profile) return null;
+  // Hide navbar on public screen and when not logged in
+  if (pathname === "/" || loading || !profile) return null;
 
   const visibleItems = NAV_ITEMS.filter((item) => {
     return item.roles.includes(profile.role);
