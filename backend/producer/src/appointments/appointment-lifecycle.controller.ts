@@ -30,7 +30,7 @@ import {
   AppointmentLifecyclePublisherPort,
   LIFECYCLE_PUBLISHER_TOKEN,
 } from "../domain/ports/outbound/appointment-lifecycle-publisher.port";
-import { AppointmentReadRepository as _AppointmentReadRepository as _AppointmentReadRepository } from "../domain/ports/outbound/appointment-read.repository";
+import { AppointmentReadRepository as _AppointmentReadRepository } from "../domain/ports/outbound/appointment-read.repository";
 import { CreateAppointmentResponseDto } from "../dto/create-appointment-response.dto";
 
 // ⚕️ HUMAN CHECK - SPEC-012: Lifecycle controller handles explicit complete/cancel flows.

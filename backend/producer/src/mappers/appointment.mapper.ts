@@ -3,7 +3,7 @@ import { AppointmentEventPayload } from "../types/appointment-event";
 
 export class AppointmentMapper {
   static toResponseDto(event: AppointmentEventPayload): AppointmentResponseDto {
-    const dto: Partial<AppointmentResponseDto> & { doctorId?: string | null }tial<AppointmentResponseDto> & { doctorId?: string | null } = {
+    const dto: Partial<AppointmentResponseDto> & { doctorId?: string | null } = {
       id: event.id,
       fullName: event.fullName,
       idCard: event.idCard,
