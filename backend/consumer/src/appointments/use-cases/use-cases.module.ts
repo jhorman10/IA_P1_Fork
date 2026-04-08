@@ -103,15 +103,25 @@ import { RepositoriesModule } from "../repositories/repositories.module";
     // SPEC-012: Individual appointment lifecycle use cases
     {
       provide: "CancelAppointmentUseCase",
-      inject: ["AppointmentRepository", "LoggerPort"],
-      useFactory: (repo, logger) =>
-        new CancelAppointmentUseCaseImpl(repo, logger),
+      inject: ["AppointmentRepository", "LoggerPort", "NotificationPort"],
+      useFactory: (repo, logger, notification) =>
+        new CancelAppointmentUseCaseImpl(repo, logger, notification),
     },
     {
       provide: "CompleteAppointmentUseCase",
-      inject: ["AppointmentRepository", "DoctorRepository", "LoggerPort"],
-      useFactory: (repo, doctorRepo, logger) =>
-        new CompleteAppointmentUseCaseImpl(repo, doctorRepo, logger),
+      inject: [
+        "AppointmentRepository",
+        "DoctorRepository",
+        "LoggerPort",
+        "NotificationPort",
+      ],
+      useFactory: (repo, doctorRepo, logger, notification) =>
+        new CompleteAppointmentUseCaseImpl(
+          repo,
+          doctorRepo,
+          logger,
+          notification,
+        ),
     },
     {
       provide: "MaintenanceOrchestratorUseCase",

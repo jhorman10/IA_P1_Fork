@@ -6,6 +6,7 @@ import { ClockPort } from "../../domain/ports/outbound/clock.port";
 import { DoctorRepository } from "../../domain/ports/outbound/doctor.repository";
 import { DomainEventHandler } from "../../domain/ports/outbound/domain-event-handler.port";
 import { LoggerPort } from "../../domain/ports/outbound/logger.port";
+import { NotificationPort } from "../../domain/ports/outbound/notification.port";
 
 /**
  * Handler: When an appointment is registered, attempt a minimal doctor assignment.
@@ -21,6 +22,7 @@ export class AutoAssignOnRegisterHandler implements DomainEventHandler<Appointme
     private readonly logger: LoggerPort,
     private readonly clock: ClockPort,
     private readonly consultationPolicy: ConsultationPolicy,
+    private readonly notificationPort: NotificationPort,
   ) {}
 
   async handle(_: AppointmentRegisteredEvent): Promise<void> {
@@ -67,6 +69,8 @@ export class AutoAssignOnRegisterHandler implements DomainEventHandler<Appointme
       );
       appointment.recordEvent(new AppointmentAssignedEvent(appointment));
       await this.appointmentRepository.save(appointment);
+
+      await this.notificationPort.notifyAppointmentUpdated(appointment);
 
       // Persist doctor status change
       doctor.markBusy();
