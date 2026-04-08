@@ -16,7 +16,7 @@ services:
       target: development
     # ⚕️ HUMAN CHECK - Comando de desarrollo
     # En producción, eliminar este comando para usar el CMD del Dockerfile
-    command: npm run start
+    command: npm run start:dev
     # ⚕️ HUMAN CHECK - Puertos expuestos
     # Verificar que el puerto mapeado no entre en conflicto con otros servicios del host
     ports:

@@ -20,11 +20,10 @@ export class Doctor {
   @Prop({ required: true, maxlength: 100 })
   specialty!: string;
 
-  // SPEC-015/016: Consultorio asignado dinámicamente — null cuando offline
+  // SPEC-015/016: Consultorio asignado dinámicamente — ausente cuando offline
   @Prop({
     type: String,
     required: false,
-    default: null,
   })
   office!: string | null;
 
@@ -39,5 +38,9 @@ export class Doctor {
 
 export const DoctorSchema = SchemaFactory.createForClass(Doctor);
 
-// SPEC-015/016: Unique sparse index — null excluido; blinda race condition de check-in concurrente
-DoctorSchema.index({ office: 1 }, { unique: true, sparse: true });
+// SPEC-015/016: Unique partial index — only indexes docs where office is a string;
+// allows multiple doctors with no office assigned (offline). Blinds check-in race conditions.
+DoctorSchema.index(
+  { office: 1 },
+  { unique: true, partialFilterExpression: { office: { $type: "string" } } },
+);
