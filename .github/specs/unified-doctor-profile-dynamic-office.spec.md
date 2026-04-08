@@ -3,7 +3,7 @@ id: SPEC-015
 status: IMPLEMENTED
 feature: unified-doctor-profile-dynamic-office
 created: 2026-04-06
-updated: 2026-04-06
+updated: 2026-04-07
 author: spec-generator
 version: "1.0"
 related-specs: [SPEC-003, SPEC-004, SPEC-008, SPEC-014]
