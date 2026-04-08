@@ -76,9 +76,9 @@ describe("AppointmentsScreen (Home Page)", () => {
     it("should render appointment list", () => {
       render(<AppointmentsScreen />);
 
-      expect(screen.getByText("John Waiting")).toBeInTheDocument();
-      expect(screen.getByText("Jane Waiting")).toBeInTheDocument();
-      expect(screen.getByText("Active Patient")).toBeInTheDocument();
+      expect(screen.getByText("John W.")).toBeInTheDocument();
+      expect(screen.getByText("Jane W.")).toBeInTheDocument();
+      expect(screen.getByText("Active P.")).toBeInTheDocument();
     });
   });
 
@@ -87,7 +87,7 @@ describe("AppointmentsScreen (Home Page)", () => {
       render(<AppointmentsScreen />);
 
       const waitingAppointments = screen.getAllByText(
-        /John Waiting|Jane Waiting/,
+        /John W\.|Jane W\./,
       );
       expect(waitingAppointments.length).toBeGreaterThan(0);
     });
@@ -95,7 +95,7 @@ describe("AppointmentsScreen (Home Page)", () => {
     it("should display called appointments section", () => {
       render(<AppointmentsScreen />);
 
-      const calledAppointment = screen.getByText(/Active Patient/);
+      const calledAppointment = screen.getByText(/Active P\./);
       expect(calledAppointment).toBeInTheDocument();
     });
 
@@ -115,7 +115,7 @@ describe("AppointmentsScreen (Home Page)", () => {
     it("should sort waiting appointments by priority", () => {
       render(<AppointmentsScreen />);
 
-      const items = screen.getAllByText(/John Waiting|Jane Waiting/);
+      const items = screen.getAllByText(/John W\.|Jane W\./);
       // High priority (John) should appear before medium priority (Jane)
       expect(items.length).toBeGreaterThan(0);
     });
@@ -124,7 +124,7 @@ describe("AppointmentsScreen (Home Page)", () => {
       render(<AppointmentsScreen />);
 
       // Called appointments should be visible
-      expect(screen.getByText("Active Patient")).toBeInTheDocument();
+      expect(screen.getByText("Active P.")).toBeInTheDocument();
     });
   });
 

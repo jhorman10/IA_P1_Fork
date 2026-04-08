@@ -61,8 +61,8 @@ describe("AppointmentsScreen coverage", () => {
     mockAudio.isEnabled.mockReturnValue(true);
     mockHookState = {
       appointments: [
-        { id: "1", status: "called", priority: "high", timestamp: 1 },
-        { id: "2", status: "waiting", priority: "low", timestamp: 2 },
+        { id: "1", fullName: "Called One", office: "1", idCard: 1, status: "called", priority: "high", timestamp: 1 },
+        { id: "2", fullName: "Waiting Two", office: null, idCard: 2, status: "waiting", priority: "low", timestamp: 2 },
       ],
       error: undefined,
       _connected: true,
