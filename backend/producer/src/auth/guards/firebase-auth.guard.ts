@@ -23,7 +23,7 @@ import { AuthenticatedUser } from "../types/authenticated-user";
  * Sets request.user = { uid, role, status, doctor_id } for downstream guards/controllers.
  *
  * HTTP 401 → missing/invalid/expired token.
- * HTTP 403 → token valid but Profile not found or inactive.
+ * HTTP 403 → token valid but Profile not found (never configured by admin) OR Profile found but inactive.
  */
 @Injectable()
 export class FirebaseAuthGuard implements CanActivate {

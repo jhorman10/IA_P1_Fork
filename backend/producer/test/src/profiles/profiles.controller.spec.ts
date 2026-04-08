@@ -144,7 +144,7 @@ describe("ProfilesController (Integration Tests)", () => {
       async (uid: string) => {
         const profile = profilesByUid[uid];
         if (!profile)
-          throw new ForbiddenException("Perfil operativo no configurado");
+          throw new NotFoundException("Perfil operativo no configurado");
         if (profile.status !== "active") {
           throw new ForbiddenException("Perfil inactivo");
         }

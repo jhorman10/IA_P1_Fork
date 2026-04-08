@@ -5,7 +5,6 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { HealthController } from "./health.controller";
 import { RetryPolicyAdapter } from "./infrastructure/messaging/retry-policy.adapter";
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({

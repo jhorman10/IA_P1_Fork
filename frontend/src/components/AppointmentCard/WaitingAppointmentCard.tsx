@@ -36,7 +36,7 @@ function getPriorityBadge(priority: string): string {
 
 export function WaitingAppointmentCard({
   appointment,
-   
+
   timeIcon: _timeIcon = "📝",
   queuePosition,
   total,

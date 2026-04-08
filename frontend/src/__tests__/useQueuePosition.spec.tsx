@@ -22,7 +22,7 @@ describe("useQueuePosition hook", () => {
     const mockResponse = { position: 3, appointmentId: "apt-1" };
 
     // Mock global.fetch
-    // @ts-expect-error - mocking global.fetch for test
+    // @ts-expect-error -- jest mock
     global.fetch = jest.fn(() =>
       Promise.resolve({ ok: true, json: () => Promise.resolve(mockResponse) }),
     );

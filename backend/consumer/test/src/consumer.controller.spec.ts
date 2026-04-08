@@ -66,7 +66,10 @@ describe("ConsumerController", () => {
           provide: "AssignAvailableOfficesUseCase",
           useValue: mockAssignUseCase,
         },
-        { provide: "CompleteAppointmentUseCase", useValue: mockCompleteUseCase },
+        {
+          provide: "CompleteAppointmentUseCase",
+          useValue: mockCompleteUseCase,
+        },
         { provide: "CancelAppointmentUseCase", useValue: mockCancelUseCase },
         {
           provide: "MaintenanceOrchestratorUseCase",

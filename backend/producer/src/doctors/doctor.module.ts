@@ -12,10 +12,11 @@ import { Doctor, DoctorSchema } from "../schemas/doctor.schema";
 import { DoctorController } from "./doctor.controller";
 
 /**
- * SPEC-003: DoctorModule — gestiona CRUD y disponibilidad de médicos.
- * Importa ProfilesModule via forwardRef para proveer FirebaseAuthGuard, RoleGuard
- * y DoctorContextGuard a DoctorController (ciclo: DoctorModule↔ProfilesModule).
- * Exporta "DoctorService" y "DoctorRepository" para uso en ProfilesModule y MetricsModule.
+ * SPEC-003/015/016: DoctorModule — gestiona CRUD y disponibilidad de médicos.
+ * Doctor schema is imported here for:
+ *   - MongooseDoctorRepository (CRUD)
+ *   - DoctorServiceImpl (inline office occupancy query for check-in / getAvailableOffices)
+ * Exports "DoctorService" and "DoctorRepository" for use in ProfilesModule and MetricsModule.
  */
 @Module({
   imports: [

@@ -62,9 +62,34 @@ describe("CompletedHistoryDashboard coverage", () => {
   it("renders called, waiting, and completed lists", () => {
     mockHookState = {
       appointments: [
-        { id: "1", fullName: "Test Called", status: "called", priority: "high", timestamp: 2 },
-        { id: "2", fullName: "Test Waiting", status: "waiting", priority: "low", timestamp: 3 },
-        { id: "3", fullName: "Test Completed", status: "completed", priority: "medium", timestamp: 4 },
+        {
+          id: "1",
+          fullName: "Called One",
+          office: "1",
+          idCard: 1,
+          status: "called",
+          priority: "high",
+          timestamp: 2,
+        },
+        {
+          id: "2",
+          fullName: "Waiting Two",
+          office: null,
+          idCard: 2,
+          status: "waiting",
+          priority: "low",
+          timestamp: 3,
+        },
+        {
+          id: "3",
+          fullName: "Completed Three",
+          office: "2",
+          idCard: 3,
+          status: "completed",
+          priority: "medium",
+          timestamp: 4,
+          completedAt: 5,
+        },
       ],
       error: undefined,
       _connected: true,

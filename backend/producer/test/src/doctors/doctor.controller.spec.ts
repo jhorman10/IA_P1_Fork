@@ -81,7 +81,6 @@ describe("DoctorController (Integration Tests)", () => {
       .send({
         name: "Dr. Ana Perez",
         specialty: "Medicina General",
-        office: "3",
       })
       .expect(201);
 
@@ -89,46 +88,24 @@ describe("DoctorController (Integration Tests)", () => {
       id: "doc-001",
       name: "Dr. Ana Perez",
       specialty: "Medicina General",
-      office: "3",
       status: "offline",
     });
     expect(doctorService.createDoctor).toHaveBeenCalledWith({
       name: "Dr. Ana Perez",
       specialty: "Medicina General",
-      office: "3",
+      office: null,
     });
   });
 
-  it("should return 409 when office is duplicated", async () => {
-    doctorService.createDoctor.mockRejectedValue(
-      new ConflictException("El consultorio 3 ya tiene un médico asignado"),
-    );
-
+  it("should return 400 when name is missing", async () => {
     const response = await request(app.getHttpServer())
       .post("/doctors")
       .send({
-        name: "Dr. Ana Perez",
         specialty: "Medicina General",
-        office: "3",
-      })
-      .expect(409);
-
-    expect(response.body.message).toContain("consultorio 3");
-  });
-
-  it("should return 400 when office is outside the supported range", async () => {
-    const response = await request(app.getHttpServer())
-      .post("/doctors")
-      .send({
-        name: "Dr. Ana Perez",
-        specialty: "Medicina General",
-        office: "6",
       })
       .expect(400);
 
-    expect(response.body.message).toContain(
-      "El consultorio debe estar entre 1 y 5",
-    );
+    expect(response.body.message).toContain("El nombre es obligatorio");
     expect(doctorService.createDoctor).not.toHaveBeenCalled();
   });
 
@@ -140,6 +117,7 @@ describe("DoctorController (Integration Tests)", () => {
 
     const response = await request(app.getHttpServer())
       .patch("/doctors/doc-001/check-in")
+      .send({ office: "3" })
       .expect(200);
 
     expect(response.body).toMatchObject({
@@ -149,7 +127,7 @@ describe("DoctorController (Integration Tests)", () => {
       status: "available",
       message: "Médico registrado como disponible",
     });
-    expect(doctorService.checkIn).toHaveBeenCalledWith("doc-001");
+    expect(doctorService.checkIn).toHaveBeenCalledWith("doc-001", "3");
   });
 
   it("should return 409 if doctor is already available on check-in", async () => {
@@ -159,6 +137,7 @@ describe("DoctorController (Integration Tests)", () => {
 
     const response = await request(app.getHttpServer())
       .patch("/doctors/doc-001/check-in")
+      .send({ office: "3" })
       .expect(409);
 
     expect(response.body.message).toBe("El médico ya está disponible");

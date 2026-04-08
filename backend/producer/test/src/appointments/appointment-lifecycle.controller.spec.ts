@@ -105,11 +105,7 @@ describe("AppointmentLifecycleController (Integration Tests)", () => {
         },
         {
           provide: "QueryAppointmentsUseCase",
-          useValue: {
-            findById: appointmentReadRepository.findById,
-            findAll: jest.fn(),
-            findByIdCard: jest.fn(),
-          },
+          useValue: appointmentReadRepository,
         },
         {
           provide: LIFECYCLE_PUBLISHER_TOKEN,

@@ -12,7 +12,7 @@ export class Doctor {
     public readonly id: string,
     public readonly name: string,
     public readonly specialty: string,
-    public readonly office: string,
+    public office: string | null,
     public status: DoctorStatus,
   ) {}
 

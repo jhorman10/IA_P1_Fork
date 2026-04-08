@@ -22,7 +22,7 @@ jest.mock("@/hooks/useAppointmentsWebSocket", () => ({
       },
       {
         id: "apt-called-001",
-        fullName: "Test Called",
+        fullName: "Active Called",
         status: "called",
         office: 2,
         priority: "high",
@@ -96,8 +96,8 @@ describe("CompletedHistoryDashboard (Dashboard Page)", () => {
       render(<CompletedHistoryDashboard />);
 
       await waitFor(() => {
-        expect(screen.getAllByText("Test C.").length).toBeGreaterThan(0);
-        expect(screen.getAllByText("Another C.").length).toBeGreaterThan(0);
+        expect(screen.getByText("Test C.")).toBeInTheDocument();
+        expect(screen.getByText("Another C.")).toBeInTheDocument();
       });
 
       // Waiting and called appointments CAN be shown as separate sections
@@ -118,9 +118,7 @@ describe("CompletedHistoryDashboard (Dashboard Page)", () => {
       render(<CompletedHistoryDashboard />);
 
       await waitFor(() => {
-        const appointments = screen.getAllByText(
-          /Test C\.|Another C\./,
-        );
+        const appointments = screen.getAllByText(/Test C\.|Another C\./);
         expect(appointments.length).toBeGreaterThan(0);
       });
     });
