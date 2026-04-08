@@ -22,6 +22,9 @@ const baseProps = {
   totalPages: 2,
   total: 25,
   onPageChange: jest.fn(),
+  limit: 5,
+  limitOptions: [5, 10, 15],
+  onLimitChange: jest.fn(),
 };
 
 describe("AuditLogTable", () => {
