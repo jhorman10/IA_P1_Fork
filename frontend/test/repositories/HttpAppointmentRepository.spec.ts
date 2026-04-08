@@ -23,9 +23,11 @@ describe("HttpAppointmentRepository", () => {
     });
     (httpGet as jest.Mock).mockResolvedValue(mockAppointments);
 
-    const result = await repository.getAppointments();
+    const result = await repository.getAppointments("test-token");
 
-    expect(httpGet).toHaveBeenCalledWith(`${env.API_BASE_URL}/appointments`);
+    expect(httpGet).toHaveBeenCalledWith(`${env.API_BASE_URL}/appointments`, {
+      Authorization: "Bearer test-token",
+    });
     expect(result).toEqual(mockAppointments);
   });
 
@@ -37,11 +39,12 @@ describe("HttpAppointmentRepository", () => {
     const mockResponse = { id: "new-id", status: "waiting" };
     (httpPost as jest.Mock).mockResolvedValue(mockResponse);
 
-    const result = await repository.createAppointment(mockDTO);
+    const result = await repository.createAppointment(mockDTO, "test-token");
 
     expect(httpPost).toHaveBeenCalledWith(
       `${env.API_BASE_URL}/appointments`,
       mockDTO,
+      { Authorization: "Bearer test-token" },
     );
     expect(result).toEqual(mockResponse);
   });

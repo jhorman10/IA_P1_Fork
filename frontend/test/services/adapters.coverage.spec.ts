@@ -38,10 +38,12 @@ describe("HttpAppointmentAdapter", () => {
     });
 
     const adapter = new HttpAppointmentAdapter();
-    const data = await adapter.getAppointments();
+    const data = await adapter.getAppointments("test-token");
 
     expect(data).toEqual([{ id: "1" }]);
-    expect(fetch).toHaveBeenCalledWith("http://api.test/appointments");
+    expect(fetch).toHaveBeenCalledWith("http://api.test/appointments", {
+      headers: { Authorization: "Bearer test-token" },
+    });
   });
 
   it("returns appointment creation response on success", async () => {
@@ -55,11 +57,14 @@ describe("HttpAppointmentAdapter", () => {
     });
 
     const adapter = new HttpAppointmentAdapter();
-    const response = await adapter.createAppointment({
-      fullName: "Jane",
-      idCard: 99,
-      priority: "high",
-    });
+    const response = await adapter.createAppointment(
+      {
+        fullName: "Jane",
+        idCard: 99,
+        priority: "high",
+      },
+      "test-token",
+    );
 
     expect(response).toEqual({ id: "42" });
     expect(fetch).toHaveBeenCalledWith(
@@ -83,7 +88,10 @@ describe("HttpAppointmentAdapter", () => {
     const adapter = new HttpAppointmentAdapter();
 
     await expect(
-      adapter.createAppointment({ fullName: "X", idCard: 1, priority: "high" }),
+      adapter.createAppointment(
+        { fullName: "X", idCard: 1, priority: "high" },
+        "test-token",
+      ),
     ).rejects.toMatchObject({ message: "SERVER_ERROR", serverMessage: "boom" });
   });
 
@@ -100,7 +108,10 @@ describe("HttpAppointmentAdapter", () => {
     const adapter = new HttpAppointmentAdapter();
 
     await expect(
-      adapter.createAppointment({ fullName: "X", idCard: 1, priority: "high" }),
+      adapter.createAppointment(
+        { fullName: "X", idCard: 1, priority: "high" },
+        "test-token",
+      ),
     ).rejects.toMatchObject({ message: "RATE_LIMIT", serverMessage: "slow" });
     expect(fetch).toHaveBeenCalledTimes(1);
   });
@@ -116,7 +127,9 @@ describe("HttpAppointmentAdapter", () => {
     });
 
     const adapter = new HttpAppointmentAdapter();
-    await expect(adapter.getAppointments()).rejects.toThrow("HTTP_ERROR");
+    await expect(adapter.getAppointments("test-token")).rejects.toThrow(
+      "HTTP_ERROR",
+    );
   });
 });
 
