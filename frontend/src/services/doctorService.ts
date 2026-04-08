@@ -63,7 +63,7 @@ export async function checkOutDoctor(
 }
 
 export async function getAvailableOffices(token: string): Promise<string[]> {
-  const res = await fetch(`${env.API_BASE_URL}/doctors/offices/available`, {
+  const res = await fetch(`${env.API_BASE_URL}/doctors/available-offices`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) return throwWithMessage(res);
