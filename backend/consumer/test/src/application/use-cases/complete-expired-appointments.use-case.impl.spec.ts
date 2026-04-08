@@ -114,7 +114,9 @@ describe("CompleteExpiredAppointmentsUseCaseImpl", () => {
     await useCase.execute();
 
     expect(appointmentRepository.save).toHaveBeenCalledTimes(1);
-    expect(appointmentRepository.save.mock.calls[0][0].status).toBe("completed");
+    expect(appointmentRepository.save.mock.calls[0][0].status).toBe(
+      "completed",
+    );
     expect(notificationPort.notifyAppointmentUpdated).toHaveBeenCalledTimes(1);
     expect(doctorRepository.updateStatus).toHaveBeenCalledWith(
       "doc-1",
