@@ -1,0 +1,603 @@
+<mxfile host="65bd71144e">
+    <diagram id="overview-page" name="1. Vista General del Sistema">
+        <mxGraphModel dx="2032" dy="1230" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2300" pageHeight="1400" background="none" math="0" shadow="1">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="p1_title" value="ARQUITECTURA ACTUAL DEL PROYECTO&#xa;Sistema inteligente de gestion de turnos medicos&#xa;Vista completa de servicios, integraciones, capas funcionales y deltas por feature" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1f2937;strokeColor=#111827;fontColor=#ffffff;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="20" width="2260" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_layer_legend_bg" value="LEYENDA DE CAPAS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="110" width="360" height="210" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_layer_domain" value="DOMAIN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="150" width="140" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_layer_application" value="APPLICATION" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="150" width="160" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_layer_infra" value="INFRASTRUCTURE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="194" width="160" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_layer_ui" value="UI / PRESENTATION" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="220" y="194" width="140" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_layer_security" value="SECURITY / AUTH" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="238" width="160" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_layer_msg" value="MESSAGING" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="220" y="238" width="140" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_layer_data" value="DATA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3eaf2;strokeColor=#7d8ca3;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="130" y="282" width="120" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_state_legend_bg" value="LEYENDA DE ESTADO EN LOS TEXTOS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="340" width="360" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_state_existing" value="[ACTUAL] componente existente hoy en el repo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="380" width="320" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_state_s003" value="[NUEVO S003] incorporado por smart-appointment-management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cfe2f3;strokeColor=#6c8ebf;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="424" width="320" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_state_s004" value="[NUEVO S004] incorporado por operational-access-foundation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#b85450;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="468" width="320" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_state_mod" value="[MOD] comportamiento o contrato existente que fue extendido" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9ead3;strokeColor=#82b366;align=left;verticalAlign=middle;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="512" width="320" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_users_bg" value="USUARIOS Y MODULOS QUE ACTIVAN EL SISTEMA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="560" width="360" height="450" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_user_public" value="PUBLICO Y PACIENTES&#xa;Consulta pantalla publica&#xa;GET /appointments&#xa;GET /appointments/queue-position/:idCard [NUEVO S003]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="610" width="320" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_user_admin" value="ADMIN Y RECEPCIONISTA&#xa;Login via Firebase [NUEVO S004]&#xa;POST /appointments protegido&#xa;PATCH cancel&#xa;Admin: /profiles /metrics /audit /offices /specialties" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="730" width="320" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_user_doctor" value="DOCTOR&#xa;Login via Firebase [NUEVO S004]&#xa;PATCH /doctors/:id/check-in&#xa;PATCH /doctors/:id/check-out&#xa;PATCH /appointments/:id/complete" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="870" width="320" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_frontend_bg" value="FRONTEND - Next.js + React - PUERTO 3001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="420" y="110" width="420" height="1210" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_fe_public" value="UI PUBLICA Y REALTIME&#xa;/ pantalla publica&#xa;/dashboard&#xa;[NUEVO S003] queue position en espera&#xa;WebSocket publico /ws/appointments&#xa;[MOD] cards muestran doctorName y office" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="160" width="380" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_fe_protected" value="UI OPERATIVA PROTEGIDA&#xa;[NUEVO S004] /login&#xa;/registration&#xa;/doctor/dashboard&#xa;[NUEVO S004] /admin/profiles&#xa;/admin/dashboard&#xa;/admin/audit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="340" width="380" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_fe_state" value="STATE, HOOKS Y PROVIDERS&#xa;[NUEVO S004] AuthProvider, useAuth, useProfiles, useRoleGuard&#xa;useAppointmentsWebSocket&#xa;useOperationalAppointmentsWebSocket&#xa;[NUEVO S004] RoleGate&#xa;DependencyContext + ThemeProvider" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="530" width="380" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_fe_s003" value="DELTA SPEC-003 EN FRONTEND&#xa;[NUEVO S003] DoctorInfo&#xa;[NUEVO S003] QueuePositionBadge&#xa;[NUEVO S003] AssignmentNotification&#xa;[NUEVO S003] useQueuePosition&#xa;[NUEVO S003] doctorService y appointmentService queue-position" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9ead3;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="720" width="380" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_fe_infra" value="CAPA DE INFRAESTRUCTURA FE&#xa;domain/ + ports/&#xa;infrastructure/adapters/&#xa;services/ + repositories/HttpAppointmentRepository&#xa;lib/httpClient = circuit breaker + retry&#xa;security/sanitize&#xa;config/firebase" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="920" width="380" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_fe_note" value="El frontend mezcla UI publica y UI operativa.&#xa;La autenticacion llega por Firebase y el Bearer token viaja a Producer.&#xa;Las actualizaciones llegan por dos WS: publico y operativo autenticado." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="1130" width="380" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_firebase" value="FIREBASE AUTH&#xa;Frontend client signInWithEmailAndPassword&#xa;Producer verifica idToken con Admin SDK&#xa;[NUEVO S004] identidad institucional y sesion operativa" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;verticalAlign=middle;fontStyle=1;rounded=1;" parent="1" vertex="1">
+                    <mxGeometry x="930" y="110" width="260" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_producer_bg" value="PRODUCER - NestJS API Gateway - PUERTO 3000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="270" width="470" height="1050" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_prod_api" value="API PUBLICA Y PROTEGIDA&#xa;GET /appointments&#xa;GET /appointments/queue-position/:idCard [NUEVO S003]&#xa;POST /appointments protegido [MOD S004]&#xa;/doctors /profiles /metrics /audit-logs /offices /specialties" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="320" width="430" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_prod_auth" value="SECURITY Y CONTROL DE ACCESO [NUEVO S004]&#xa;POST /auth/session&#xa;FirebaseAuthGuard -&gt; RoleGuard -&gt; DoctorContextGuard&#xa;FirebaseTokenOnlyGuard&#xa;WsFirebaseAuthGuard para WS operativo&#xa;profiles/ module + CRUD admin-only" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="520" width="430" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_prod_realtime" value="REALTIME Y EVENTOS&#xa;events.controller consume turnos_notifications&#xa;appointments.gateway publico&#xa;operational-appointments.gateway autenticado&#xa;compound-broadcaster&#xa;WS publico y WS operativo salen desde Producer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="730" width="430" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_prod_domain" value="DOMAIN, READ SIDE Y CROSS-CUTTING&#xa;domain/commands models ports value-objects&#xa;mappers/appointment.mapper&#xa;schemas/ Mongoose&#xa;filters/domain-exception.filter&#xa;common/audit.interceptor&#xa;read models: appointment-view, doctor-view, profile-view" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="930" width="430" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_prod_delta" value="DELTA DE FEATURES EN PRODUCER&#xa;[NUEVO S003] DoctorModule, doctor.controller, doctor_checked_in publisher&#xa;[MOD S003] AppointmentResponseDto y payload con doctorId y doctorName&#xa;[NUEVO S004] auth/, guards/, /auth/session, profiles/&#xa;[MOD S004] endpoints operativos ahora requieren Bearer token y Profile activo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9ead3;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="1140" width="430" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_rabbit_bg" value="RABBITMQ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1410" y="360" width="260" height="420" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_rmq_cmd" value="turnos_queue&#xa;create_appointment&#xa;cancel_appointment&#xa;complete_appointment&#xa;doctor_checked_in [NUEVO S003]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1430" y="410" width="220" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_rmq_notif" value="turnos_notifications&#xa;appointment_created&#xa;appointment_updated" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1430" y="550" width="220" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_rmq_dlq" value="DLQ Y RETRY POLICY&#xa;appointment_dlx / appointment_dlq&#xa;Errores de dominio -&gt; DLQ&#xa;Errores transitorios -&gt; retry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1430" y="660" width="220" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_consumer_bg" value="CONSUMER - NestJS worker - WRITE SIDE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1710" y="270" width="540" height="830" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_cons_entry" value="ENTRADA ASINCRONA&#xa;consumer.controller&#xa;@EventPattern create_appointment&#xa;@EventPattern cancel_appointment&#xa;@EventPattern complete_appointment&#xa;@EventPattern doctor_checked_in [NUEVO S003]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1730" y="320" width="500" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_cons_app" value="APPLICATION LAYER&#xa;register-appointment.use-case.impl.ts&#xa;assign-doctor.use-case.impl.ts [MOD S003]&#xa;assign-available-offices.use-case.impl.ts legacy coexistente&#xa;complete / cancel / maintenance use cases" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1730" y="510" width="500" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_cons_domain" value="DOMAIN LAYER&#xa;Appointment entity [MOD S003 doctorId doctorName]&#xa;Doctor entity&#xa;Value Objects / Policies / Specifications&#xa;Domain Events / Ports / Error hierarchy / Factories" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1730" y="680" width="500" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_cons_infra" value="INFRASTRUCTURE LAYER&#xa;mongoose-appointment.repository.ts&#xa;mongoose-doctor.repository.ts&#xa;mongoose-audit.adapter.ts [NUEVO S003]&#xa;event-dispatching decorator&#xa;local-domain-event-bus / retry-policy / rabbitmq-notification / lock repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1730" y="850" width="500" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_db" value="MONGODB - appointments_db&#xa;appointments [core read/write]&#xa;doctors [NUEVO S003]&#xa;profiles [NUEVO S004]&#xa;offices / specialties&#xa;operational_audit_logs / audit_logs / profile_audit_logs" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e3eaf2;strokeColor=#7d8ca3;align=left;verticalAlign=top;spacing=8;rounded=1;" parent="1" vertex="1">
+                    <mxGeometry x="1710" y="1130" width="540" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_user_public_fe" value="consulta publica" style="endArrow=classic;html=1;rounded=1;strokeColor=#666666;" parent="1" source="p1_user_public" target="p1_fe_public" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_user_admin_fe" value="opera modulos" style="endArrow=classic;html=1;rounded=1;strokeColor=#666666;" parent="1" source="p1_user_admin" target="p1_fe_protected" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_user_doctor_fe" value="panel doctor" style="endArrow=classic;html=1;rounded=1;strokeColor=#666666;" parent="1" source="p1_user_doctor" target="p1_fe_protected" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_fe_auth_firebase" value="signIn y refresco de token" style="endArrow=classic;html=1;rounded=1;strokeColor=#b85450;" parent="1" source="p1_fe_state" target="p1_firebase" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_prod_auth_firebase" value="verifica idToken" style="endArrow=classic;html=1;rounded=1;strokeColor=#b85450;" parent="1" source="p1_prod_auth" target="p1_firebase" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_fe_public_prod" value="GET publicos" style="endArrow=classic;html=1;rounded=1;strokeColor=#6c8ebf;" parent="1" source="p1_fe_public" target="p1_prod_api" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_fe_protected_prod" value="POST y PATCH protegidos" style="endArrow=classic;html=1;rounded=1;strokeColor=#6c8ebf;" parent="1" source="p1_fe_protected" target="p1_prod_api" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_prod_queue" value="publica comandos" style="endArrow=classic;html=1;rounded=1;strokeColor=#9673a6;" parent="1" source="p1_prod_api" target="p1_rmq_cmd" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_queue_cons" value="consume" style="endArrow=classic;html=1;rounded=1;strokeColor=#9673a6;" parent="1" source="p1_rmq_cmd" target="p1_cons_entry" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_cons_db" value="write side" style="endArrow=classic;html=1;rounded=1;strokeColor=#7d8ca3;" parent="1" source="p1_cons_infra" target="p1_db" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_prod_db" value="read side" style="endArrow=classic;html=1;rounded=1;strokeColor=#7d8ca3;" parent="1" source="p1_prod_domain" target="p1_db" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_cons_notif" value="notifica cambios" style="endArrow=classic;html=1;rounded=1;strokeColor=#9673a6;" parent="1" source="p1_cons_infra" target="p1_rmq_notif" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_notif_prod" value="consume eventos" style="endArrow=classic;html=1;rounded=1;strokeColor=#9673a6;" parent="1" source="p1_rmq_notif" target="p1_prod_realtime" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_ws_public" value="WS publico" style="endArrow=classic;html=1;rounded=1;strokeColor=#9673a6;" parent="1" source="p1_prod_realtime" target="p1_fe_public" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p1_e_ws_oper" value="WS operativo" style="endArrow=classic;html=1;rounded=1;strokeColor=#9673a6;" parent="1" source="p1_prod_realtime" target="p1_fe_protected" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="layers-page" name="2. Capas y Modulos por Servicio">
+        <mxGraphModel dx="1219" dy="738" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2600" pageHeight="1800" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="p2_title" value="CAPAS Y MODULOS POR SERVICIO&#xa;El color principal representa la capa; los prefijos indican si el modulo es actual, nuevo o modificado por feature" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1f2937;strokeColor=#111827;fontColor=#ffffff;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="20" width="2560" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_legend" value="REFERENCIA RAPIDA&#xa;Azul = Domain&#xa;Verde = Application&#xa;Naranja = Infrastructure&#xa;Amarillo = UI / Entry / Scheduler&#xa;Rojo = Security / Auth&#xa;Lavanda = Messaging / Realtime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacing=8;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="2110" y="110" width="450" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_fe_bg" value="FRONTEND - Next.js" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="110" width="760" height="1630" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_fe_present" value="PRESENTATION / APP ROUTER&#xa;/, /dashboard, /registration, /doctor/dashboard, /admin/dashboard, /admin/audit&#xa;[NUEVO S004] /login y /admin/profiles&#xa;Componentes: Navbar, AppointmentForm, AppointmentRegistrationForm, AppointmentCard, DoctorStatusCard, MetricsGrid, AuditLogTable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="160" width="700" height="250" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_fe_hooks" value="HOOKS Y PROVIDERS&#xa;[NUEVO S004] AuthProvider, useAuth, useProfiles, useRoleGuard&#xa;ThemeProvider, DependencyContext&#xa;useAppointmentRegistration, useAppointmentsWebSocket, useOperationalAppointmentsWebSocket, useDoctorDashboard, useAuditLogs, useOperationalMetrics&#xa;[NUEVO S003] useQueuePosition" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="430" width="700" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_fe_domain" value="DOMAIN Y PORTS&#xa;Appointment [MOD S003 doctorId doctorName]&#xa;[NUEVO S003] Doctor, QueuePosition&#xa;[NUEVO S004] Profile como identidad operativa consumida por la UI&#xa;Ports: AppointmentRepository, RealTimePort, OperationalRealTimePort" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="750" width="700" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_fe_infra" value="INFRASTRUCTURE, DATOS Y SEGURIDAD FE&#xa;infrastructure/adapters/ -&gt; HttpAppointmentAdapter, SocketIoAdapter, AuthenticatedSocketIoAdapter&#xa;repositories/HttpAppointmentRepository&#xa;services/ -&gt; auth, profile, doctor, appointment, metrics, audit, offices, specialties&#xa;lib/httpClient -&gt; circuit breaker + retry + backoff&#xa;security/sanitize -&gt; input sanitization&#xa;config/firebase -&gt; SDK cliente" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="990" width="700" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_fe_delta" value="DELTA EXPLICITO EN FE&#xa;[NUEVO S003] AssignmentNotification, QueuePositionBadge, DoctorInfo, QueuePosition domain, queue-position service&#xa;[MOD S003] WaitingAppointmentCard y CalledAppointmentCard muestran posicion, doctor y office&#xa;[NUEVO S004] LoginForm, RoleGate, ProfileFormModal, AuthProvider, pages protegidas de acceso operativo&#xa;[MOD S004] el token Bearer pasa a llamadas protegidas y al operational websocket" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9ead3;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1330" width="700" height="360" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_prod_bg" value="PRODUCER - NestJS API / READ SIDE / WS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="840" y="110" width="820" height="1630" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_prod_entry" value="ENTRY MODULES Y CONTROLLERS&#xa;appointments/, doctors/, profiles/, offices/, specialties/, metrics/, audit/&#xa;health.controller.ts y producer.controller.ts&#xa;GET publicos permanecen en Producer; los comandos protegidos se validan antes de enviar a RabbitMQ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="160" width="760" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_prod_security" value="SECURITY / AUTH [EJE PRINCIPAL DE SPEC-004]&#xa;auth.controller.ts&#xa;[NUEVO S004] FirebaseAuthGuard, FirebaseTokenOnlyGuard, RoleGuard, DoctorContextGuard, WsFirebaseAuthGuard&#xa;common/ -&gt; auditable.decorator.ts, ws-auth.guard.ts, audit.interceptor.ts&#xa;[MOD S004] endpoints operativos exigen token valido y Profile activo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="400" width="760" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_prod_domain" value="DOMAIN, READ MODELS Y PORTS&#xa;domain/commands -&gt; cancel-appointment.command.ts, complete-appointment.command.ts&#xa;domain/models -&gt; appointment-view, doctor-view, profile-view&#xa;domain/ports -&gt; inbound + outbound contracts&#xa;domain/value-objects -&gt; id-card.vo.ts, patient-name.vo.ts&#xa;CQRS: Producer sirve lecturas y valida precondiciones antes de publicar comandos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="700" width="760" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_prod_msg" value="MESSAGING Y REALTIME&#xa;events/ -&gt; events.controller.ts, events.module.ts, appointments.gateway.ts, operational-appointments.gateway.ts, compound-broadcaster.ts&#xa;[MOD S003] payload de appointment actualizado con doctorId y doctorName&#xa;[NUEVO S004] gateway operativo autenticado y cadena de seguridad WS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="980" width="760" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_prod_infra" value="INFRASTRUCTURE Y CROSS-CUTTING&#xa;infrastructure/adapters/outbound -&gt; Mongo read repositories, FirebaseAuthAdapter y demas adaptadores&#xa;infrastructure/filters/domain-exception.filter.ts&#xa;mappers/appointment.mapper.ts&#xa;schemas/ Mongoose&#xa;[NUEVO S003] doctors/ como modulo funcional nuevo&#xa;[NUEVO S004] profiles/ y auth/ como modulos funcionales nuevos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="1220" width="760" height="250" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_prod_delta" value="DELTA EXPLICITO EN PRODUCER&#xa;[NUEVO S003] DoctorModule, queue-position endpoint, doctor_checked_in publisher, doctor response enrichment&#xa;[MOD S003] AppointmentResponseDto, AppointmentEventPayload y vistas de citas con doctorId / doctorName&#xa;[NUEVO S004] /auth/session, profiles CRUD, guards y roles, Bearer token propagation, operacion basada en Profile activo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9ead3;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="1490" width="760" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_cons_bg" value="CONSUMER - NestJS Worker / WRITE SIDE / DOMINIO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1700" y="110" width="820" height="1630" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_cons_domain" value="DOMAIN LAYER&#xa;entities/ -&gt; appointment.entity.ts, doctor.entity.ts&#xa;value-objects/ -&gt; id-card, full-name, priority&#xa;events/ -&gt; appointment-registered.event.ts, appointment-assigned.event.ts&#xa;ports/ inbound + outbound&#xa;policies/consultation.policy.ts&#xa;specifications/appointment-query.specification.ts&#xa;errors/ -&gt; domain, validation, duplicate-active-appointment, infrastructure" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1730" y="160" width="760" height="340" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_cons_app" value="APPLICATION LAYER&#xa;use-cases/ -&gt; register, assign-doctor, assign-available-offices, cancel, complete, complete-expired, maintenance&#xa;event-handlers/ -&gt; appointment-events.handler.ts, auto-assign.handler.ts&#xa;[MOD S003] assign-doctor.use-case.impl.ts introduce asignacion por medico real y office asociado" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1730" y="520" width="760" height="250" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_cons_infra" value="INFRASTRUCTURE LAYER&#xa;persistence/ -&gt; mongoose-appointment.repository.ts, mongoose-doctor.repository.ts, mongoose-office.repository.ts, mongoose-lock.repository.ts, mongoose-audit.adapter.ts, appointment.mapper.ts, doctor.mapper.ts, event-dispatching-appointment-repository.decorator.ts, mongoose-query.builder.ts&#xa;messaging/ -&gt; local-domain-event-bus.adapter.ts, rabbitmq-notification.adapter.ts, retry-policy.adapter.ts&#xa;logging/ + adapters/ -&gt; nest-logger.adapter.ts, system-clock.adapter.ts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1730" y="790" width="760" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_cons_scheduler" value="ENTRY, SCHEDULER Y WIRING&#xa;scheduler/ -&gt; scheduler.module.ts, scheduler.service.ts&#xa;appointments/appointment.module.ts -&gt; composition root del Consumer&#xa;appointments/repositories/repositories.module.ts -&gt; wiring de repos y event bus&#xa;appointments/use-cases/use-cases.module.ts -&gt; wiring de casos de uso&#xa;consumer.controller.ts + health.controller.ts + app.module.ts + main.ts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1730" y="1130" width="760" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_cons_delta" value="DELTA EXPLICITO EN CONSUMER&#xa;[NUEVO S003] Doctor schema/read repository, AuditLog persistence, doctor_checked_in reactive trigger&#xa;[MOD S003] Appointment entity, ConsultationPolicy y assign-doctor use case para asignar medico disponible en vez de solo office abstracto&#xa;[ACTUAL] toda la logica de dominio y resiliencia sigue concentrada aqui; auth y roles no se mueven al Consumer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9ead3;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1730" y="1410" width="760" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_edge_fe_prod" value="REST + WS" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="p2_fe_infra" target="p2_prod_entry" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p2_edge_prod_cons" value="Command gateway -&gt; write side" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="p2_prod_msg" target="p2_cons_app" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="patterns-page" name="3. Patrones de Diseno y DDD SOLID">
+        <mxGraphModel dx="1219" dy="738" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2600" pageHeight="1800" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="p3_title" value="PATRONES DE DISENO, DDD TACTICAL Y SOLID&#xa;Mapa explicito de donde aparece cada patron dentro del repo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1f2937;strokeColor=#111827;fontColor=#ffffff;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="20" width="2560" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_arch_hex" value="ARQUITECTURA HEXAGONAL&#xa;Consumer completo&#xa;Producer parcial con ports/adapters&#xa;Frontend simplificado con ports + adapters + composition root" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="120" width="600" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_arch_event" value="EVENT-DRIVEN ARCHITECTURE&#xa;Producer publica en turnos_queue&#xa;Consumer procesa y notifica en turnos_notifications&#xa;RabbitMQ + DLQ + retry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="120" width="600" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_arch_cqrs" value="CQRS&#xa;Producer = read side + command gateway&#xa;Consumer = write side + dominio + side effects" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1300" y="120" width="600" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_arch_ddd" value="DDD TACTICAL&#xa;Entities, Value Objects, Domain Events, Error hierarchy, Read models, Branded types" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1930" y="120" width="610" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_l_title" value="PATRONES 1 A 9" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="310" width="1220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_r_title" value="PATRONES 10 A 18" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="310" width="1220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_1" value="1. Repository&#xa;Appointment / Doctor / Office / Lock repositories&#xa;Consumer persistence + frontend repository abstraction" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="380" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_2" value="2. Adapter&#xa;RabbitMQNotificationAdapter&#xa;FirebaseAuthAdapter&#xa;SocketIoAdapter / AuthenticatedSocketIoAdapter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="380" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_3" value="3. Decorator&#xa;event-dispatching-appointment-repository.decorator.ts&#xa;Publica Domain Events despues de save" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="380" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_4" value="4. Factory&#xa;appointment.factory.ts&#xa;Crea entidades en estado inicial valido" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="560" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_5" value="5. Observer / Domain Events&#xa;DomainEventBus + appointment-events.handler.ts + auto-assign.handler.ts&#xa;AppointmentRegisteredEvent / AppointmentAssignedEvent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="560" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_6" value="6. Policy&#xa;consultation.policy.ts&#xa;Encapsula disponibilidad y reglas de asignacion" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="560" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_7" value="7. Specification&#xa;appointment-query.specification.ts&#xa;ACTIVE_STATUSES y QUEUE_SORT_ORDER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="740" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_8" value="8. Command&#xa;register-appointment.command.ts&#xa;cancel-appointment.command.ts&#xa;complete-appointment.command.ts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="740" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_9" value="9. Data Mapper&#xa;appointment.mapper.ts / doctor.mapper.ts&#xa;domain to persistence / response DTO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="740" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_10" value="10. Builder&#xa;mongoose-query.builder.ts&#xa;Specification -&gt; Mongo filter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="380" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_11" value="11. Composite&#xa;compound-broadcaster.ts&#xa;AppointmentsGateway + OperationalAppointmentsGateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1740" y="380" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_12" value="12. Guard&#xa;FirebaseAuthGuard / RoleGuard / DoctorContextGuard / Ws guards&#xa;Bloquean entrada antes de la logica" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="2160" y="380" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_13" value="13. Circuit Breaker&#xa;frontend/lib/httpClient.ts&#xa;Estados CLOSED / OPEN / HALF_OPEN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="560" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_14" value="14. Retry + Exponential Backoff&#xa;frontend httpClient y consumer retry-policy.adapter.ts&#xa;Protege HTTP y mensajeria" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1740" y="560" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_15" value="15. Exception Filter&#xa;producer/infrastructure/filters/domain-exception.filter.ts&#xa;DomainError -&gt; HTTP 400" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="2160" y="560" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_16" value="16. Interceptor AOP&#xa;producer/common/interceptors/audit.interceptor.ts&#xa;Auditoria cross-cutting y fire-and-forget" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="740" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_17" value="17. Distributed Lock&#xa;lock.repository + mongoose-lock.repository.ts&#xa;Evita mantenimiento concurrente" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1740" y="740" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_18" value="18. Optimistic Locking / Atomic CAS&#xa;DoctorWriteRepository.markBusyAtomic&#xa;Evita doble asignacion de medico" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="2160" y="740" width="380" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_frontend_patterns" value="PATRONES FRONTEND&#xa;Composition Root -&gt; DependencyContext.tsx&#xa;Provider Pattern -&gt; AuthProvider, ThemeProvider, DependencyProvider&#xa;Custom Hook Pattern -&gt; useAuth, useProfiles, useQueuePosition, useOperationalMetrics y demas&#xa;Input Sanitization -&gt; security/sanitize.ts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="980" width="800" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_ddd" value="DDD TACTICAL PACK&#xa;Entities -&gt; Appointment, Doctor&#xa;Value Objects -&gt; IdCard, FullName, Priority&#xa;Branded Types -&gt; branded.types.ts&#xa;Domain Events -&gt; AppointmentRegisteredEvent, AppointmentAssignedEvent&#xa;Domain Error Hierarchy -&gt; validation, duplicate, infrastructure&#xa;Read Models -&gt; appointment-view, doctor-view, profile-view" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacing=8;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="980" width="800" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_solid" value="SOLID 5/5 APLICADO&#xa;SRP -&gt; cada use case y handler tiene una sola responsabilidad&#xa;OCP -&gt; event bus y handlers registrables, @Roles extensible&#xa;LSP -&gt; decorators y adapters respetan contratos&#xa;ISP -&gt; repositories read/write segregados y ports especializados&#xa;DIP -&gt; use cases dependen de puertos, no de concreciones" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacing=8;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1720" y="980" width="820" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="p3_note" value="NOTA DE LECTURA&#xa;La pagina mezcla patrones estructurales, tacticos y de resiliencia porque todos aparecen en el codigo actual.&#xa;SPEC-003 impacta sobre todo Command, Domain Events, Policy, Repository, Data Mapper y Atomic CAS.&#xa;SPEC-004 impacta sobre todo Guard, Interceptor, Adapter de Firebase y Provider / Hook patterns en frontend." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9ead3;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="1300" width="2500" height="180" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="delta-page" name="4. Delta por Feature SPEC-003 y SPEC-004">
+        <mxGraphModel dx="1219" dy="738" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2600" pageHeight="1800" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="p4_title" value="DELTA POR FEATURE&#xa;Que se agrego o modifico con SPEC-003 y SPEC-004 sobre la base arquitectonica original" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1f2937;strokeColor=#111827;fontColor=#ffffff;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="20" width="2560" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_t_base" value="BASE PREVIA&#xa;Frontend publico + Producer + Consumer + RabbitMQ + MongoDB&#xa;Cola de turnos, scheduler y realtime publico" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="110" width="560" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_t_s003" value="SPEC-003&#xa;smart-appointment-management&#xa;Motor con medicos reales, queue position, doctor info y auditoria" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cfe2f3;strokeColor=#6c8ebf;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="110" width="560" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_t_s004" value="SPEC-004&#xa;operational-access-foundation&#xa;Auth Firebase, profiles, roles y proteccion de modulos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#b85450;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="110" width="560" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_t_now" value="ESTADO ACTUAL DEL REPO&#xa;Se suman metricas, audit, offices, specialties, WS operativo y refinamientos posteriores" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9ead3;strokeColor=#82b366;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1960" y="110" width="580" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_e1" value="" style="endArrow=classic;html=1;strokeColor=#666666;" parent="1" source="p4_t_base" target="p4_t_s003" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_e2" value="" style="endArrow=classic;html=1;strokeColor=#666666;" parent="1" source="p4_t_s003" target="p4_t_s004" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_e3" value="" style="endArrow=classic;html=1;strokeColor=#666666;" parent="1" source="p4_t_s004" target="p4_t_now" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_spec003_bg" value="SPEC-003 - SMART APPOINTMENT MANAGEMENT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="260" width="1220" height="1300" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_s003_prod" value="PRODUCER / API DELTA&#xa;[NUEVO] doctors/doctor.module.ts y doctor.controller.ts&#xa;[NUEVO] GET /appointments/queue-position/:idCard&#xa;[NUEVO] publicacion de doctor_checked_in a turnos_queue&#xa;[MOD] AppointmentResponseDto y AppointmentEventPayload exponen doctorId y doctorName&#xa;[MOD] /appointments sigue siendo la puerta de entrada pero ahora el llamado puede resolver medico real" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="320" width="1160" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_s003_cons" value="CONSUMER / DOMINIO Y WRITE SIDE&#xa;[NUEVO] Doctor schema + DoctorReadRepository&#xa;[NUEVO] AuditLog schema + adapter de auditoria&#xa;[MOD] assign-doctor.use-case.impl.ts reemplaza la asignacion limitada a offices abstractos&#xa;[MOD] Appointment entity guarda doctorId y doctorName&#xa;[MOD] ConsultationPolicy evoluciona para disponibilidad de medico y office asociado" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="560" width="1160" height="250" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_s003_front" value="FRONTEND / UX Y MODELOS NUEVOS&#xa;[NUEVO] domain/Doctor.ts y domain/QueuePosition.ts&#xa;[NUEVO] AssignmentNotification, QueuePositionBadge, DoctorInfo&#xa;[NUEVO] useQueuePosition&#xa;[NUEVO] doctorService y extension de appointmentService para queue-position&#xa;[MOD] CalledAppointmentCard y WaitingAppointmentCard muestran doctor, office y posicion" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="830" width="1160" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_s003_data" value="DATA Y MENSAJERIA&#xa;[NUEVO] doctors collection como entidad operativa consultada por el motor&#xa;[NUEVO] audit_logs para registrar decisiones de asignacion&#xa;[MOD] appointments documenta doctorId, doctorName y office derivado del medico&#xa;[NUEVO] doctor_checked_in activa asignacion reactiva sin esperar al scheduler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1090" width="1160" height="210" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_s003_business" value="IMPACTO FUNCIONAL DE SPEC-003&#xa;La cola deja de ser solo offices numericos y pasa a medicos reales disponibles.&#xa;El paciente conoce posicion en cola y medico asignado.&#xa;Las decisiones de asignacion quedan auditables y pueden emitirse por realtime." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9ead3;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1320" width="1160" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_spec004_bg" value="SPEC-004 - OPERATIONAL ACCESS FOUNDATION" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1340" y="260" width="1220" height="1300" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_s004_prod" value="PRODUCER / AUTH Y PERFILES&#xa;[NUEVO] auth.controller.ts y POST /auth/session&#xa;[NUEVO] profiles.controller.ts + profiles.module.ts + CRUD admin-only&#xa;[NUEVO] FirebaseAuthGuard, FirebaseTokenOnlyGuard, RoleGuard, DoctorContextGuard, WsFirebaseAuthGuard&#xa;[MOD] POST /appointments, /metrics, /audit-logs, /offices, /specialties y doctor endpoints se protegen por rol y contexto" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1370" y="320" width="1160" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_s004_front" value="FRONTEND / ACCESO OPERATIVO&#xa;[NUEVO] LoginForm, RoleGate, ProfileFormModal&#xa;[NUEVO] AuthProvider, useAuth, useProfiles, useRoleGuard&#xa;[NUEVO] paginas /login y /admin/profiles&#xa;[MOD] navegacion y visibilidad de modulos segun rol&#xa;[MOD] servicios protegidos envian Bearer token y consumen Profile operativo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1370" y="600" width="1160" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_s004_identity" value="IDENTIDAD Y DATOS&#xa;[NUEVO] profiles collection / Profile model&#xa;[NUEVO] integracion Firebase Auth en frontend y verificacion por Admin SDK en backend&#xa;[MOD] el sistema deja de ser anonimo para el personal interno&#xa;[MOD] el doctor solo puede operar su propio doctor_id" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1370" y="860" width="1160" height="210" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_s004_flows" value="FLUJOS HABILITADOS POR SPEC-004&#xa;Solo admin y recepcionista pueden registrar y cancelar turnos.&#xa;Solo admin puede gestionar perfiles, metrics, audit, offices y specialties.&#xa;Doctor puede check-in/check-out y completar citas solo en su contexto.&#xa;La pantalla publica y dashboard publico se mantienen abiertos para no romper la demo ni la operacion publica." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1370" y="1090" width="1160" height="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_s004_business" value="IMPACTO FUNCIONAL DE SPEC-004&#xa;Introduce trazabilidad, identidad operativa y control de acceso por rol.&#xa;Convierte el sistema en producto utilizable por personal interno, no solo demo tecnica.&#xa;El frontend y el Producer quedan alineados alrededor de Profile activo + permisos." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9ead3;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1370" y="1340" width="1160" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="p4_current_modules" value="MODULOS ACTUALES COMPLEMENTARIOS EN EL ESTADO DEL REPO&#xa;[ACTUAL] metrics/, audit/, offices/, specialties/, operational-appointments.gateway, doctor dashboard UI, office catalog UI, specialties UI, authenticated websocket channel y refinamientos de privacidad / navegacion.&#xa;Estos modulos son parte de la arquitectura actual, pero no se marcan aqui como delta principal porque no pertenecen al nucleo original de SPEC-003 o SPEC-004." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="1590" width="2520" height="150" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="security-flows-page" name="5. Seguridad y Flujos Criticos">
+        <mxGraphModel dx="4063" dy="2460" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2600" pageHeight="1800" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="p5_title" value="SEGURIDAD Y FLUJOS CRITICOS&#xa;Secuencias de autenticacion, encolado de turnos y reaccion por check-in de doctor" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1f2937;strokeColor=#111827;fontColor=#ffffff;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="20" width="2560" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_bg" value="CADENA DE AUTENTICACION Y AUTORIZACION" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="110" width="1720" height="420" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_route_matrix" value="MATRIZ PUBLICO VS PROTEGIDO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="1790" y="110" width="770" height="420" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_1" value="Usuario interno" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="250" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_2" value="Frontend&#xa;LoginForm + AuthProvider" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="250" y="250" width="170" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_3" value="Firebase JS SDK&#xa;signIn + idToken" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="250" width="170" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_4" value="Producer&#xa;POST /auth/session" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="250" width="170" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_5" value="FirebaseAuthGuard&#xa;verifica token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="250" width="170" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_6" value="Profile resolution&#xa;Profile activo requerido" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1120" y="250" width="170" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_7" value="RoleGuard&#xa;DoctorContextGuard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1340" y="250" width="170" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_8" value="RoleGate / useRoleGuard&#xa;modulo habilitado" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1560" y="250" width="170" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_e1" value="credenciales" style="endArrow=classic;html=1;strokeColor=#666666;" parent="1" source="p5_auth_1" target="p5_auth_2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_e2" value="login" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="1" source="p5_auth_2" target="p5_auth_3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_e3" value="Bearer idToken" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="p5_auth_3" target="p5_auth_4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_e4" value="guard" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="1" source="p5_auth_4" target="p5_auth_5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_e5" value="uid valido" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="p5_auth_5" target="p5_auth_6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_e6" value="rol y contexto" style="endArrow=classic;html=1;strokeColor=#b85450;" parent="1" source="p5_auth_6" target="p5_auth_7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_auth_e7" value="habilita UI" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="1" source="p5_auth_7" target="p5_auth_8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_pub_box" value="PUBLICO&#xa;GET /appointments&#xa;GET /appointments/queue-position/:idCard&#xa;GET /health&#xa;WS /ws/appointments" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1820" y="160" width="220" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_protected_box" value="PROTEGIDO OPERATIVO&#xa;POST /appointments&#xa;PATCH cancel / complete&#xa;/doctors/:id check-in check-out&#xa;WS /ws/operational-appointments" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#b85450;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="2060" y="160" width="220" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_admin_box" value="ADMIN ONLY&#xa;/profiles&#xa;/metrics&#xa;/audit-logs&#xa;/offices&#xa;/specialties" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#b85450;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="2300" y="160" width="220" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_doctor_ctx_box" value="DOCTOR CONTEXT&#xa;Doctor solo opera su propio doctor_id&#xa;Check-in, check-out y complete respetan contexto" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d9ead3;strokeColor=#82b366;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="1940" y="350" width="460" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_lifecycle_bg" value="FLUJO CRITICO - REGISTRO DE TURNO HASTA UPDATE REALTIME" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="560" width="2520" height="470" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_l1" value="1. Frontend /registration&#xa;admin o recepcionista" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="720" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_l2" value="2. Producer valida&#xa;guards + DTO + precondiciones" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="720" width="190" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_l3" value="3. turnos_queue&#xa;create_appointment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="720" width="170" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_l4" value="4. consumer.controller&#xa;@EventPattern" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="760" y="720" width="170" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_l5" value="5. RegisterAppointmentUseCase&#xa;crea Appointment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="980" y="720" width="190" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_l6" value="6. Domain Events + AutoAssign&#xa;AssignDoctorUseCaseImpl" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1220" y="720" width="200" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_l7" value="7. MongoDB&#xa;appointments + doctors + audit_logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3eaf2;strokeColor=#7d8ca3;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1470" y="720" width="210" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_l8" value="8. turnos_notifications&#xa;appointment_updated" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1730" y="720" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_l9" value="9. Producer events.controller&#xa;CompoundBroadcaster" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1960" y="720" width="200" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_l10" value="10. Frontend hooks y cards&#xa;useAppointmentsWebSocket / useOperationalAppointmentsWebSocket&#xa;AssignmentNotification / QueuePositionBadge / DoctorInfo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="2210" y="700" width="320" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_le1" value="submit" style="endArrow=classic;html=1;strokeColor=#666666;" parent="1" source="p5_l1" target="p5_l2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_le2" value="publish" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="p5_l2" target="p5_l3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_le3" value="consume" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="p5_l3" target="p5_l4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_le4" value="delegates" style="endArrow=classic;html=1;strokeColor=#82b366;" parent="1" source="p5_l4" target="p5_l5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_le5" value="records event" style="endArrow=classic;html=1;strokeColor=#6c8ebf;" parent="1" source="p5_l5" target="p5_l6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_le6" value="persist + audit" style="endArrow=classic;html=1;strokeColor=#7d8ca3;" parent="1" source="p5_l6" target="p5_l7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_le7" value="notify" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="p5_l7" target="p5_l8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_le8" value="consume" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="p5_l8" target="p5_l9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_le9" value="WS update" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="p5_l9" target="p5_l10" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_checkin_bg" value="FLUJO REACTIVO - CHECK-IN DEL DOCTOR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;align=center;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="1060" width="2520" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_c1" value="Doctor dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="1170" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_c2" value="PATCH /doctors/:id/check-in&#xa;Producer guarded" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f4cccc;strokeColor=#b85450;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="1170" width="210" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_c3" value="turnos_queue&#xa;doctor_checked_in" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="620" y="1170" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_c4" value="Consumer trigger&#xa;assign-doctor inmediato" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="1170" width="220" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_c5" value="MongoDB&#xa;doctor available -&gt; busy&#xa;appointment waiting -&gt; called" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3eaf2;strokeColor=#7d8ca3;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="1170" width="250" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_c6" value="turnos_notifications -&gt; Producer WS -&gt; Frontend realtime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1490" y="1170" width="360" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_c7" value="Paciente ve doctorName, office y notification&#xa;Doctor ve paciente actual en su panel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1930" y="1170" width="500" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_ce1" value="" style="endArrow=classic;html=1;strokeColor=#666666;" parent="1" source="p5_c1" target="p5_c2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_ce2" value="publish" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="p5_c2" target="p5_c3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_ce3" value="consume" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="p5_c3" target="p5_c4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_ce4" value="actualiza" style="endArrow=classic;html=1;strokeColor=#7d8ca3;" parent="1" source="p5_c4" target="p5_c5" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_ce5" value="notify" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="p5_c5" target="p5_c6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_ce6" value="broadcast" style="endArrow=classic;html=1;strokeColor=#9673a6;" parent="1" source="p5_c6" target="p5_c7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="p5_side_reads" value="LECTURAS CLAVE EN EL ESTADO ACTUAL&#xa;Publico: GET /appointments y GET /appointments/queue-position/:idCard van al read side del Producer.&#xa;Admin: GET /metrics y GET /audit-logs tambien pasan por Producer, pero protegidos por auth y rol.&#xa;Realtime: ambos mundos reciben los cambios desde Producer, que es el fan-out central de WebSocket." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;verticalAlign=top;spacing=8;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="1380" width="2520" height="240" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
