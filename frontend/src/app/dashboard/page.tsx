@@ -12,6 +12,7 @@ import { AssignmentNotification } from "@/components/AssignmentNotification/Assi
 import WebSocketStatus from "@/components/WebSocketStatus";
 import { Appointment } from "@/domain/Appointment";
 import { useAppointmentsWebSocket } from "@/hooks/useAppointmentsWebSocket";
+import { useRoleGuard } from "@/hooks/useRoleGuard";
 import { audioService } from "@/services/AudioService";
 import styles from "@/styles/page.module.css";
 
@@ -19,6 +20,7 @@ import styles from "@/styles/page.module.css";
  * Dashboard for completed appointments history.
  */
 export default function CompletedHistoryDashboard() {
+  const { allowed } = useRoleGuard(["admin", "recepcionista", "doctor"]);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [assignedAppointment, setAssignedAppointment] =
@@ -99,6 +101,8 @@ export default function CompletedHistoryDashboard() {
   const completedAppointments = appointments
     .filter((t) => t.status === "completed")
     .sort((a, b) => b.timestamp - a.timestamp);
+
+  if (!allowed) return null;
 
   return (
     <main className={styles.dashboardContainer}>

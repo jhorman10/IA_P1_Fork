@@ -3,8 +3,8 @@
   margin: 0 auto;
   padding: 40px 24px;
   transition:
-    background 0.3s ease,
-    color 0.3s ease;
+    background var(--duration-standard) var(--ease-standard),
+    color var(--duration-standard) var(--ease-standard);
 }
 
 .header {
@@ -18,9 +18,10 @@
 
 .heading {
   font-size: 26px;
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   margin: 0 0 4px 0;
+  letter-spacing: -0.3px;
 }
 
 .subheading {
@@ -37,43 +38,58 @@
 
 .btnPrimary {
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: none;
-  background: linear-gradient(135deg, var(--gold), #b89652);
+  background: var(--color-primary);
   color: var(--color-text-inverted);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition:
+    filter var(--duration-short) var(--ease-standard),
+    transform var(--duration-short) var(--ease-standard);
 }
 
 .btnPrimary:hover:not(:disabled) {
+  filter: brightness(1.08);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(198, 169, 107, 0.3);
+}
+
+.btnPrimary:active:not(:disabled) {
+  filter: brightness(0.95);
+  transform: translateY(0);
 }
 
 .btnPrimary:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .btnSecondary {
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-text-primary);
   font-size: 14px;
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition:
+    background var(--duration-short) var(--ease-standard),
+    transform var(--duration-short) var(--ease-standard);
 }
 
 .btnSecondary:hover:not(:disabled) {
   background: var(--color-surface-alt);
+  transform: translateY(-1px);
+}
+
+.btnSecondary:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btnSecondary:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -82,7 +98,7 @@
   color: var(--color-red-600);
   background: var(--color-red-50);
   border: 1px solid var(--color-red-100);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 12px 16px;
   margin-bottom: 16px;
 }
@@ -106,13 +122,12 @@
 
 .tableWrapper {
   overflow-x: auto;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease;
+    background var(--duration-standard) var(--ease-standard),
+    border-color var(--duration-standard) var(--ease-standard);
 }
 
 .table {
@@ -125,8 +140,11 @@
   background: var(--color-surface-alt);
   padding: 12px 16px;
   text-align: left;
-  font-weight: 600;
-  color: var(--color-slate-700);
+  font-weight: var(--font-weight-semibold);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
   border-bottom: 1px solid var(--color-border);
   white-space: nowrap;
 }
@@ -153,9 +171,9 @@
 .role_doctor {
   display: inline-block;
   padding: 3px 10px;
-  border-radius: 12px;
+  border-radius: 9999px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .role_admin {
@@ -176,9 +194,9 @@
 .statusActive {
   display: inline-block;
   padding: 3px 10px;
-  border-radius: 12px;
+  border-radius: 9999px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   background: var(--color-green-50);
   color: var(--color-green-600);
 }
@@ -186,28 +204,31 @@
 .statusInactive {
   display: inline-block;
   padding: 3px 10px;
-  border-radius: 12px;
+  border-radius: 9999px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   background: var(--color-surface-alt);
   color: var(--color-text-secondary);
 }
 
 .editBtn {
   padding: 6px 14px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-text-primary);
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition:
+    background var(--duration-short) var(--ease-standard),
+    border-color var(--duration-short) var(--ease-standard),
+    color var(--duration-short) var(--ease-standard);
 }
 
 .editBtn:hover:not(:disabled) {
   background: var(--color-surface-alt);
-  border-color: var(--gold);
-  color: var(--gold);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .editBtn:disabled {
@@ -231,15 +252,17 @@
 
 .modeBtn {
   padding: 10px 20px;
-  border-radius: 8px 8px 0 0;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   border: 1px solid transparent;
   border-bottom: none;
   background: transparent;
   color: var(--color-text-secondary);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition:
+    color var(--duration-short) var(--ease-standard),
+    background var(--duration-short) var(--ease-standard);
   margin-bottom: -2px;
 }
 
@@ -250,13 +273,13 @@
 
 .modeBtnActive {
   padding: 10px 20px;
-  border-radius: 8px 8px 0 0;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   border: 1px solid var(--color-border);
   border-bottom: 2px solid var(--color-surface);
   background: var(--color-surface);
-  color: var(--gold);
+  color: var(--color-primary);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   margin-bottom: -2px;
 }

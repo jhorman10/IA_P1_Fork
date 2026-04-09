@@ -7,6 +7,10 @@ import { render, screen } from "@testing-library/react";
 import { QueuePositionBadge } from "@/components/QueuePositionBadge/QueuePositionBadge";
 
 describe("QueuePositionBadge", () => {
+  afterEach(() => {
+    document.documentElement.removeAttribute("data-theme");
+  });
+
   it("should render position and total", () => {
     render(<QueuePositionBadge position={3} total={7} />);
     const badge = screen.getByLabelText("Posición 3 de 7");
@@ -24,5 +28,15 @@ describe("QueuePositionBadge", () => {
     expect(screen.getByLabelText("Posición 1 de 1")).toHaveTextContent(
       "Pos. 1 / 1",
     );
+  });
+
+  it("should keep badge semantics in dark mode", () => {
+    document.documentElement.setAttribute("data-theme", "dark");
+
+    render(<QueuePositionBadge position={2} total={8} />);
+
+    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    expect(screen.getByTestId("queue-position-badge")).toBeInTheDocument();
+    expect(screen.getByLabelText("Posición 2 de 8")).toBeInTheDocument();
   });
 });

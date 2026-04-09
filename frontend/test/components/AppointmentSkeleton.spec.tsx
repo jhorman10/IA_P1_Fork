@@ -9,6 +9,10 @@ import { render } from "@testing-library/react";
 import AppointmentSkeleton from "@/components/AppointmentSkeleton";
 
 describe("AppointmentSkeleton", () => {
+  afterEach(() => {
+    document.documentElement.removeAttribute("data-theme");
+  });
+
   describe("Default Rendering", () => {
     it("should render 5 skeleton cards by default", () => {
       const { container } = render(<AppointmentSkeleton />);
@@ -179,6 +183,19 @@ describe("AppointmentSkeleton", () => {
 
       const listItems = container.querySelectorAll("li");
       expect(listItems).toHaveLength(100);
+    });
+  });
+
+  describe("Dark Mode", () => {
+    it("should render skeleton cards normally when dark mode is active", () => {
+      document.documentElement.setAttribute("data-theme", "dark");
+
+      const { container } = render(<AppointmentSkeleton count={2} />);
+
+      expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+      expect(container.querySelectorAll('[class*="skeletonCard"]')).toHaveLength(
+        2,
+      );
     });
   });
 });

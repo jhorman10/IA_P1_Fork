@@ -9,6 +9,30 @@ import { render, screen } from "@testing-library/react";
 import WebSocketStatus from "@/components/WebSocketStatus";
 
 describe("WebSocketStatus", () => {
+  afterEach(() => {
+    document.documentElement.removeAttribute("data-theme");
+  });
+
+  describe("Dark Mode", () => {
+    it.each([
+      ["connected", "Conectado", "websocket-status-connected"],
+      ["connecting", "Conectando...", "websocket-status-connecting"],
+      ["disconnected", "Desconectado", "websocket-status-disconnected"],
+    ] as const)(
+      "should keep semantic status for %s when dark theme is active",
+      (status, label, testId) => {
+        document.documentElement.setAttribute("data-theme", "dark");
+
+        render(<WebSocketStatus status={status} />);
+
+        expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+        expect(screen.getByTestId(testId)).toBeInTheDocument();
+        expect(screen.getByText(label)).toBeInTheDocument();
+        expect(screen.getByRole("status")).toBeInTheDocument();
+      },
+    );
+  });
+
   describe("Connected Status", () => {
     it("should render green indicator with 'Conectado' text when status=connected", () => {
       render(<WebSocketStatus status="connected" />);

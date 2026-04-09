@@ -5,19 +5,19 @@
 .section {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 14px;
+  border-radius: var(--radius-lg);
   padding: 24px;
   margin-top: 32px;
   box-shadow: var(--shadow-sm);
   transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease;
+    background var(--duration-short) var(--ease-standard),
+    color var(--duration-short) var(--ease-standard),
+    border-color var(--duration-short) var(--ease-standard);
 }
 
 .title {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
   margin: 0 0 18px;
 }
@@ -27,7 +27,7 @@
   color: var(--color-red-600);
   background: var(--color-red-50);
   border: 1px solid var(--color-red-100);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 14px;
   margin: 0 0 14px;
 }
@@ -44,17 +44,19 @@
   min-width: 200px;
   padding: 10px 14px;
   font-size: 14px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-input-border);
   background: var(--color-input-bg);
   color: var(--color-input-text);
-  transition: all 0.15s ease;
+  transition:
+    border-color var(--duration-short) var(--ease-standard),
+    box-shadow var(--duration-short) var(--ease-standard);
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 2px rgba(198, 169, 107, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-dashboard-focus-ring);
 }
 
 .input:disabled {
@@ -64,20 +66,22 @@
 
 .btnAdd {
   padding: 10px 18px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: none;
-  background: linear-gradient(135deg, var(--gold), #b89652);
+  background: var(--color-primary);
   color: var(--color-text-inverted);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.15s ease;
+  transition:
+    filter var(--duration-short) var(--ease-standard),
+    transform var(--duration-short) var(--ease-standard);
 }
 
 .btnAdd:hover:not(:disabled) {
+  filter: brightness(1.08);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(198, 169, 107, 0.3);
 }
 
 .btnAdd:disabled {
@@ -104,7 +108,7 @@
 .item {
   background: var(--color-surface-alt, var(--color-surface));
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 12px 14px;
 }
 
@@ -126,7 +130,7 @@
 .name {
   font-size: 14px;
   color: var(--color-text-primary);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .rowActions {
@@ -137,45 +141,51 @@
 .btnEdit,
 .btnSave {
   padding: 7px 14px;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-text-primary);
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition:
+    filter var(--duration-short) var(--ease-standard),
+    background var(--duration-short) var(--ease-standard),
+    transform var(--duration-short) var(--ease-standard);
 }
 
 .btnEdit:hover:not(:disabled),
 .btnSave:hover:not(:disabled) {
-  background: var(--color-surface-tertiary);
+  background: var(--color-surface-alt);
+  transform: translateY(-1px);
 }
 
 .btnSave {
-  background: var(--color-blue-600);
-  color: #fff;
-  border-color: var(--color-blue-600);
+  background: var(--color-primary);
+  color: var(--color-text-inverted);
+  border-color: var(--color-primary);
 }
 
 .btnSave:hover:not(:disabled) {
-  background: var(--color-blue-700);
+  filter: brightness(1.08);
 }
 
 .btnDelete,
 .btnCancel {
   padding: 7px 14px;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-red-100);
   background: var(--color-red-50);
   color: var(--color-red-600);
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition:
+    background var(--duration-short) var(--ease-standard),
+    transform var(--duration-short) var(--ease-standard);
 }
 
 .btnDelete:hover:not(:disabled),
 .btnCancel:hover:not(:disabled) {
-  background: var(--color-red-100, #fee2e2);
+  background: var(--color-red-100);
 }
 
 .btnEdit:disabled,

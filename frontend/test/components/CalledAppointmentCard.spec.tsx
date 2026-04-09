@@ -22,6 +22,10 @@ describe("CalledAppointmentCard", () => {
     doctorName: null,
   };
 
+  afterEach(() => {
+    document.documentElement.removeAttribute("data-theme");
+  });
+
   describe("Rendering", () => {
     it("should render patient name", () => {
       render(<CalledAppointmentCard appointment={mockAppointment} anonymize={false} />);
@@ -62,6 +66,26 @@ describe("CalledAppointmentCard", () => {
       render(<CalledAppointmentCard appointment={mockAppointment} />);
 
       expect(screen.getByText("🟡 Media")).toBeInTheDocument();
+    });
+  });
+
+  describe("Dark Mode", () => {
+    it("should preserve called card semantics when dark theme is active", () => {
+      document.documentElement.setAttribute("data-theme", "dark");
+      const withDoctor: Appointment = {
+        ...mockAppointment,
+        doctorId: "doc-900",
+        doctorName: "Dr. Dark Mode",
+      };
+
+      const { container } = render(
+        <CalledAppointmentCard appointment={withDoctor} anonymize={false} />,
+      );
+
+      expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+      expect(container.querySelector("li.called")).toBeInTheDocument();
+      expect(screen.getByTestId("doctor-info")).toBeInTheDocument();
+      expect(screen.getByText("Dr. Dark Mode")).toBeInTheDocument();
     });
   });
 

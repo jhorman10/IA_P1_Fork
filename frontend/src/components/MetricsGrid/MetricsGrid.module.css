@@ -2,12 +2,12 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 24px;
-  margin-bottom: 20px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
   transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease;
+    background var(--duration-short) var(--ease-standard),
+    color var(--duration-short) var(--ease-standard),
+    border-color var(--duration-short) var(--ease-standard);
 }
 
 .section:last-child {
@@ -16,7 +16,7 @@
 
 .sectionTitle {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.9px;
   color: var(--color-text-tertiary);

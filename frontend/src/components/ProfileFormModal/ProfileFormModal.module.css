@@ -1,7 +1,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: var(--color-overlay);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,16 +10,18 @@
 }
 
 .modal {
-  background: var(--color-surface);
-  border-radius: 16px;
+  background: var(--glass-bg-heavy);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
   width: 100%;
   max-width: 480px;
   box-shadow: var(--shadow-xl);
   overflow: hidden;
   transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease;
+    background var(--duration-short) var(--ease-standard),
+    color var(--duration-short) var(--ease-standard);
 }
 
 .header {
@@ -31,7 +33,7 @@
 
 .title {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
   margin: 0;
 }
@@ -43,12 +45,14 @@
   color: var(--color-text-secondary);
   cursor: pointer;
   padding: 4px 8px;
-  border-radius: 6px;
-  transition: all 0.15s ease;
+  border-radius: var(--radius-sm);
+  transition:
+    background var(--duration-short) var(--ease-standard),
+    color var(--duration-short) var(--ease-standard);
 }
 
 .closeBtn:hover {
-  background: var(--color-surface-tertiary);
+  background: var(--color-surface-alt);
   color: var(--color-text-primary);
 }
 
@@ -61,26 +65,28 @@
 
 .label {
   font-size: 13px;
-  font-weight: 500;
-  color: var(--color-slate-700);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
   margin-bottom: -6px;
 }
 
 .input {
   padding: 12px 14px;
   font-size: 14px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-input-border);
   background: var(--color-input-bg);
   color: var(--color-input-text);
-  transition: all 0.15s ease;
+  transition:
+    border-color var(--duration-short) var(--ease-standard),
+    box-shadow var(--duration-short) var(--ease-standard);
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--gold);
+  border-color: var(--color-primary);
   background: var(--color-surface);
-  box-shadow: 0 0 0 2px rgba(198, 169, 107, 0.15);
+  box-shadow: 0 0 0 3px var(--color-dashboard-focus-ring);
 }
 
 .input:disabled {
@@ -93,7 +99,7 @@
   color: var(--color-red-600);
   background: var(--color-red-50);
   border: 1px solid var(--color-red-100);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 14px;
   margin: 0;
 }
@@ -108,10 +114,10 @@
 
 .doctorEmpty {
   font-size: 13px;
-  color: var(--color-slate-700);
-  background: var(--color-surface-tertiary, #f5f5f5);
+  color: var(--color-text-secondary);
+  background: var(--color-surface-alt);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 14px;
   margin: 0;
 }
@@ -121,7 +127,7 @@
   color: var(--color-red-600);
   background: var(--color-red-50);
   border: 1px solid var(--color-red-100);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 14px;
   margin: 0;
 }
@@ -135,13 +141,15 @@
 
 .cancelBtn {
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
-  color: var(--color-slate-700);
+  color: var(--color-text-primary);
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition:
+    background var(--duration-short) var(--ease-standard),
+    filter var(--duration-short) var(--ease-standard);
 }
 
 .cancelBtn:hover:not(:disabled) {
@@ -155,19 +163,21 @@
 
 .submitBtn {
   padding: 10px 24px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: none;
-  background: linear-gradient(135deg, var(--gold), #b89652);
+  background: var(--color-primary);
   color: var(--color-text-inverted);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition:
+    filter var(--duration-short) var(--ease-standard),
+    transform var(--duration-short) var(--ease-standard);
 }
 
 .submitBtn:hover:not(:disabled) {
+  filter: brightness(1.08);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(198, 169, 107, 0.3);
 }
 
 .submitBtn:disabled {
@@ -178,8 +188,8 @@
 .hint {
   font-size: 13px;
   color: var(--color-text-secondary);
-  background: var(--color-surface-tertiary);
-  border-radius: 8px;
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-sm);
   padding: 10px 14px;
   margin: 0;
 }

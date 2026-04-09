@@ -3,6 +3,11 @@ import React from "react";
 
 import CompletedHistoryDashboard from "@/app/dashboard/page";
 
+// Mock useRoleGuard to allow access
+jest.mock("@/hooks/useRoleGuard", () => ({
+  useRoleGuard: jest.fn(() => ({ allowed: true, redirectTo: "/login" })),
+}));
+
 function createMockAudio() {
   return {
     init: jest.fn(),
@@ -45,7 +50,9 @@ describe("CompletedHistoryDashboard coverage", () => {
     storedCallback = null;
   });
 
-  afterEach(() => {});
+  afterEach(() => {
+    document.documentElement.removeAttribute("data-theme");
+  });
 
   it("renders empty states when no appointments", () => {
     render(<CompletedHistoryDashboard />);
@@ -249,5 +256,62 @@ describe("CompletedHistoryDashboard coverage", () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/Dr\. Luis Gomez/)).toBeInTheDocument();
     expect(screen.getByText(/Consultorio 4/)).toBeInTheDocument();
+  });
+
+  it("keeps notification and toast flow working in dark mode", async () => {
+    document.documentElement.setAttribute("data-theme", "dark");
+    mockAudio.isEnabled.mockReturnValue(true);
+    mockHookState = {
+      appointments: [],
+      error: undefined,
+      _connected: true,
+      isConnecting: false,
+      connectionStatus: "connected",
+    };
+
+    render(<CompletedHistoryDashboard />);
+
+    act(() => {
+      storedCallback?.({
+        id: "apt-300",
+        fullName: "Dark Mode Patient",
+        idCard: 98765,
+        office: null,
+        timestamp: 1,
+        status: "waiting",
+        priority: "medium",
+        doctorId: null,
+        doctorName: null,
+      });
+    });
+
+    act(() => {
+      storedCallback?.({
+        id: "apt-300",
+        fullName: "Dark Mode Patient",
+        idCard: 98765,
+        office: "2",
+        timestamp: 2,
+        status: "called",
+        priority: "medium",
+        doctorId: "doc-002",
+        doctorName: "Dr. Dark",
+      });
+    });
+
+    expect(
+      await screen.findByTestId("assignment-notification"),
+    ).toBeInTheDocument();
+
+    act(() => {
+      storedCallback?.({
+        id: "apt-301",
+        status: "completed",
+        priority: "low",
+        timestamp: 3,
+      });
+    });
+
+    expect(screen.getByText(/Turno completado/)).toBeInTheDocument();
   });
 });

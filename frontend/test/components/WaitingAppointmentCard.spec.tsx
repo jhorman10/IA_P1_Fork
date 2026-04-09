@@ -22,6 +22,10 @@ describe("WaitingAppointmentCard", () => {
     doctorName: null,
   };
 
+  afterEach(() => {
+    document.documentElement.removeAttribute("data-theme");
+  });
+
   describe("Rendering", () => {
     it("should render patient name", () => {
       render(<WaitingAppointmentCard appointment={mockAppointment} anonymize={false} />);
@@ -51,6 +55,26 @@ describe("WaitingAppointmentCard", () => {
       render(<WaitingAppointmentCard appointment={mockAppointment} />);
 
       expect(screen.getByText("🔴 Alta")).toBeInTheDocument();
+    });
+  });
+
+  describe("Dark Mode", () => {
+    it("should render waiting card and queue badge when dark theme is active", () => {
+      document.documentElement.setAttribute("data-theme", "dark");
+
+      const { container } = render(
+        <WaitingAppointmentCard
+          appointment={mockAppointment}
+          queuePosition={1}
+          total={4}
+          anonymize={false}
+        />,
+      );
+
+      expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+      expect(container.querySelector("li.waiting")).toBeInTheDocument();
+      expect(screen.getByLabelText("Posición 1 de 4")).toBeInTheDocument();
+      expect(screen.getByText("John Doe")).toBeInTheDocument();
     });
   });
 

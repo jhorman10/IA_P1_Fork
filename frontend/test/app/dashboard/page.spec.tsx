@@ -8,6 +8,11 @@ import { render, screen, waitFor } from "@testing-library/react";
 
 import CompletedHistoryDashboard from "@/app/dashboard/page";
 
+// Mock useRoleGuard to allow access
+jest.mock("@/hooks/useRoleGuard", () => ({
+  useRoleGuard: jest.fn(() => ({ allowed: true, redirectTo: "/login" })),
+}));
+
 // Mock del hook personalizado
 jest.mock("@/hooks/useAppointmentsWebSocket", () => ({
   useAppointmentsWebSocket: jest.fn(() => ({
@@ -68,6 +73,10 @@ describe("CompletedHistoryDashboard (Dashboard Page)", () => {
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    document.documentElement.removeAttribute("data-theme");
+  });
+
   describe("Rendering", () => {
     it("should render the dashboard title", () => {
       render(<CompletedHistoryDashboard />);
@@ -120,6 +129,38 @@ describe("CompletedHistoryDashboard (Dashboard Page)", () => {
       await waitFor(() => {
         const appointments = screen.getAllByText(/Test C\.|Another C\./);
         expect(appointments.length).toBeGreaterThan(0);
+      });
+    });
+  });
+
+  describe("Dark Mode", () => {
+    it("should render dashboard sections correctly when dark mode is active", async () => {
+      document.documentElement.setAttribute("data-theme", "dark");
+
+      render(<CompletedHistoryDashboard />);
+
+      expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+      expect(
+        screen.getByText(/Panel de Turnos en Tiempo Real/i),
+      ).toBeInTheDocument();
+      expect(screen.getByText(/En consultorio/i)).toBeInTheDocument();
+      expect(screen.getByText(/En espera/i)).toBeInTheDocument();
+      expect(screen.getByText(/Completados/i)).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(screen.getByText("Test C.")).toBeInTheDocument();
+      });
+    });
+
+    it("should keep appointment semantic classes in dark mode", async () => {
+      document.documentElement.setAttribute("data-theme", "dark");
+
+      const { container } = render(<CompletedHistoryDashboard />);
+
+      await waitFor(() => {
+        expect(container.querySelector("li.called")).toBeInTheDocument();
+        expect(container.querySelector("li.waiting")).toBeInTheDocument();
+        expect(container.querySelector("li.completed")).toBeInTheDocument();
       });
     });
   });

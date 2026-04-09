@@ -26,6 +26,10 @@ describe("CompletedAppointmentCard", () => {
     doctorName: null,
   };
 
+  afterEach(() => {
+    document.documentElement.removeAttribute("data-theme");
+  });
+
   describe("Rendering", () => {
     it("should render patient name", () => {
       render(<CompletedAppointmentCard appointment={mockAppointment} anonymize={false} />);
@@ -80,6 +84,24 @@ describe("CompletedAppointmentCard", () => {
       render(<CompletedAppointmentCard appointment={mockAppointment} />);
 
       expect(screen.getByText("🟢 Baja")).toBeInTheDocument();
+    });
+  });
+
+  describe("Dark Mode", () => {
+    it("should preserve completed card semantics in dark mode", () => {
+      document.documentElement.setAttribute("data-theme", "dark");
+
+      const { container } = render(
+        <CompletedAppointmentCard
+          appointment={mockAppointment}
+          anonymize={false}
+        />,
+      );
+
+      expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+      expect(container.querySelector("li.completed")).toBeInTheDocument();
+      expect(screen.getByText("Alice Johnson")).toBeInTheDocument();
+      expect(screen.getByText("5m 0s")).toBeInTheDocument();
     });
   });
 

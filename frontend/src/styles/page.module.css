@@ -70,14 +70,14 @@
 }
 
 .error {
-  color: var(--color-red-600);
+  color: var(--color-dashboard-danger-text);
   margin-bottom: 14px;
   font-size: 14px;
   font-weight: var(--font-weight-semibold);
   padding: 12px 16px;
-  background: var(--color-red-50);
+  background: var(--color-dashboard-danger-surface);
   border-radius: var(--radius-md);
-  border-left: 4px solid var(--color-red-600);
+  border-left: 4px solid var(--color-dashboard-danger-border);
 }
 
 /* ========================================
@@ -96,11 +96,11 @@
 }
 
 .countBadge {
-  background: var(--color-blue-50);
-  color: var(--color-blue-600);
+  background: var(--color-dashboard-info-surface);
+  color: var(--color-dashboard-info-text);
   font-size: 13px;
   font-weight: var(--font-weight-semibold);
-  border-radius: var(--radius-sm);
+  border-radius: 9999px;
   padding: 4px 10px;
   margin-left: 6px;
   font-variant-numeric: tabular-nums;
@@ -135,13 +135,12 @@
   gap: 6px;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--color-border);
-  border-left: 4px solid var(--color-blue-600);
+  border-left: 4px solid var(--color-primary);
   transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease,
-    transform 0.2s ease;
+    box-shadow var(--duration-standard) var(--ease-standard),
+    transform var(--duration-short) var(--ease-standard),
+    background var(--duration-standard) var(--ease-standard),
+    border-color var(--duration-standard) var(--ease-standard);
   position: relative;
   overflow: hidden;
 }
@@ -151,19 +150,15 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.4) 0%,
-    transparent 50%
-  );
+  background: var(--color-dashboard-hover-overlay);
   opacity: 0;
-  transition: opacity var(--duration-short) ease;
+  transition: opacity var(--duration-short) var(--ease-standard);
   pointer-events: none;
 }
 
 .appointmentCard:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .appointmentCard:hover::before {
@@ -176,26 +171,18 @@
 
 /* Estados por tipo de turno */
 .appointmentCard.waiting {
-  border-left-color: var(--color-amber-500);
-  background: linear-gradient(
-    135deg,
-    var(--color-amber-50) 0%,
-    var(--color-surface) 100%
-  );
+  border-left-color: var(--color-dashboard-warning-border);
+  background: var(--color-surface);
 }
 
 .appointmentCard.called {
-  border-left-color: var(--color-blue-600);
-  background: linear-gradient(
-    135deg,
-    var(--color-blue-50) 0%,
-    var(--color-surface) 100%
-  );
+  border-left-color: var(--color-dashboard-info-border);
+  background: var(--color-surface);
 }
 
-.appointmentCard.atendido {
-  border-left-color: var(--color-slate-400);
-  background: var(--color-surface-tertiary);
+.appointmentCard.completed {
+  border-left-color: var(--color-dashboard-success-border);
+  background: var(--color-surface);
   opacity: 0.85;
 }
 
@@ -277,7 +264,7 @@
 .badge {
   font-size: 13px;
   padding: 6px 12px;
-  border-radius: var(--radius-sm);
+  border-radius: 9999px;
   font-weight: var(--font-weight-semibold);
   display: inline-flex;
   align-items: center;
@@ -289,7 +276,7 @@
 .statusBadge {
   font-size: 13px;
   padding: 6px 12px;
-  border-radius: var(--radius-sm);
+  border-radius: 9999px;
   font-weight: var(--font-weight-bold);
   display: inline-flex;
   align-items: center;
@@ -300,66 +287,64 @@
 }
 
 .statusBadge[data-status="high"] {
-  background: var(--color-red-50);
-  color: var(--color-red-600);
+  background: var(--color-dashboard-danger-surface);
+  color: var(--color-dashboard-danger-text);
 }
 
 .statusBadge[data-status="medium"] {
-  background: var(--color-amber-50);
-  color: var(--color-amber-800);
+  background: var(--color-dashboard-warning-surface);
+  color: var(--color-dashboard-warning-text);
 }
 
 .statusBadge[data-status="low"] {
-  background: var(--color-green-100);
-  color: var(--color-green-800);
+  background: var(--color-dashboard-success-surface);
+  color: var(--color-dashboard-success-text);
 }
 
 .highlight .statusBadge[data-status="high"] {
-  background: var(--color-red-50) !important;
-  color: var(--color-red-600) !important;
-  border-color: var(--color-red-100) !important;
+  background: var(--color-dashboard-danger-surface) !important;
+  color: var(--color-dashboard-danger-text) !important;
+  border-color: var(--color-dashboard-danger-border) !important;
 }
 .highlight .statusBadge[data-status="medium"] {
-  background: var(--color-amber-50) !important;
-  color: var(--color-amber-700) !important;
-  border-color: var(--color-amber-200) !important;
+  background: var(--color-dashboard-warning-surface) !important;
+  color: var(--color-dashboard-warning-text) !important;
+  border-color: var(--color-dashboard-warning-border) !important;
 }
 .highlight .statusBadge[data-status="low"] {
-  background: var(--color-green-100) !important;
-  color: var(--color-green-800) !important;
-  border-color: var(--color-green-200) !important;
+  background: var(--color-dashboard-success-surface) !important;
+  color: var(--color-dashboard-success-text) !important;
+  border-color: var(--color-dashboard-success-border) !important;
 }
 
 .officeBadge {
   font-size: 13px;
-  background: var(--color-blue-50);
-  color: var(--color-blue-600);
-  border-radius: var(--radius-sm);
+  background: var(--color-dashboard-info-surface);
+  color: var(--color-dashboard-info-text);
+  border-radius: 9999px;
   padding: 6px 12px;
   font-weight: var(--font-weight-bold);
   display: inline-block;
   font-variant-numeric: tabular-nums;
-  border: 1px solid var(--color-blue-200);
+  border: 1px solid var(--color-dashboard-info-border);
   letter-spacing: 0.3px;
 }
 
 .hora {
   font-size: 12px;
-  color: var(--color-text-secondary);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   font-variant-numeric: tabular-nums;
-  font-family: "Monaco", "Courier New", monospace;
-  background: var(--color-surface-tertiary);
+  font-family: "SF Mono", "Monaco", "Menlo", monospace;
+  background: var(--color-dashboard-info-surface);
+  color: var(--color-dashboard-info-text);
   padding: 4px 8px;
-  border-radius: var(--radius-sm);
+  border-radius: 9999px;
   letter-spacing: 0.5px;
-  font-weight: 600;
-  color: var(--color-blue-600);
 }
 
 .horaLabel {
   font-size: 16px;
-  color: var(--color-amber-500);
+  color: var(--color-primary);
   display: inline-block;
 }
 
@@ -368,7 +353,7 @@
   background: var(--color-surface-tertiary);
   color: var(--color-text-secondary);
   padding: 4px 10px;
-  border-radius: var(--radius-sm);
+  border-radius: 9999px;
   font-weight: var(--font-weight-medium);
   font-variant-numeric: tabular-nums;
 }
@@ -430,11 +415,7 @@
   display: flex;
   flex-direction: row;
   min-height: 100vh;
-  background: linear-gradient(
-    180deg,
-    var(--color-surface-alt) 0%,
-    var(--color-surface-tertiary) 100%
-  );
+  background: var(--color-surface-alt);
 }
 
 .leftPanel {
@@ -443,20 +424,19 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  border-right: 2px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
   background: transparent;
 }
 
 .rightPanel {
   flex: 1 1 320px;
   padding: 48px 2vw 32px 2vw;
-  background: var(--color-surface-tertiary);
+  background: var(--color-surface-alt);
   display: flex;
   flex-direction: column;
   gap: 24px;
   min-width: 320px;
   max-width: 420px;
-  box-shadow: -2px 0 8px var(--shadow-sm);
 }
 
 .waitingQueue {
@@ -471,18 +451,21 @@
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   padding: 18px 24px 16px 24px;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border-left: 6px solid var(--color-amber-500);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-amber-500);
   margin-bottom: 8px;
-  transition: all var(--duration-short) var(--ease-standard);
+  transition:
+    box-shadow var(--duration-short) var(--ease-standard),
+    transform var(--duration-short) var(--ease-standard);
 }
 
 .queueCard:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px) scale(1.01);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .queueCard .statusBadge {
@@ -499,11 +482,7 @@
    ======================================== */
 
 .highlight {
-  border-left: 6px solid var(--color-blue-600) !important;
-  background: linear-gradient(
-    100deg,
-    var(--color-blue-50) 80%,
-    var(--color-surface-alt) 100%
-  ) !important;
+  border-left: 4px solid var(--color-dashboard-info-border) !important;
+  background: var(--color-dashboard-info-surface) !important;
   color: var(--color-text-primary) !important;
 }

@@ -2,22 +2,22 @@
   max-width: 420px;
   margin: 120px auto;
   padding: 40px;
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   background: var(--color-surface);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-xl);
   display: flex;
   flex-direction: column;
   gap: 18px;
   transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease;
+    background var(--duration-short) var(--ease-standard),
+    color var(--duration-short) var(--ease-standard),
+    border-color var(--duration-short) var(--ease-standard);
 }
 
 .form h2 {
-  font-weight: 500;
+  font-weight: var(--font-weight-semibold);
   font-size: 22px;
-  letter-spacing: 0.5px;
+  letter-spacing: -0.2px;
   color: var(--color-text-primary);
   margin-bottom: 10px;
 }
@@ -25,37 +25,46 @@
 .input {
   padding: 14px 16px;
   font-size: 15px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-input-border);
   background: var(--color-input-bg);
   color: var(--color-input-text);
-  transition: all 0.2s ease;
+  transition:
+    border-color var(--duration-short) var(--ease-standard),
+    box-shadow var(--duration-short) var(--ease-standard);
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--gold);
+  border-color: var(--color-primary);
   background: var(--color-surface);
-  box-shadow: 0 0 0 2px rgba(198, 169, 107, 0.15);
+  box-shadow: 0 0 0 3px var(--color-dashboard-focus-ring);
 }
 
 .button {
   margin-top: 8px;
   padding: 14px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   border: none;
-  background: linear-gradient(135deg, var(--gold), #b89652);
+  background: var(--color-primary);
   color: var(--color-text-inverted);
   font-size: 15px;
-  font-weight: 500;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.3px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    filter var(--duration-short) var(--ease-standard),
+    transform var(--duration-short) var(--ease-standard);
 }
 
 .button:hover {
+  filter: brightness(1.08);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(198, 169, 107, 0.25);
+}
+
+.button:active {
+  filter: brightness(0.95);
+  transform: translateY(0);
 }
 
 .button:disabled {
@@ -73,7 +82,7 @@
   color: var(--color-red-600);
   background: var(--color-red-50);
   border: 1px solid var(--color-red-100);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 10px 14px;
   margin: 0;
 }

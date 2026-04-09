@@ -8,6 +8,11 @@ import { render, screen } from "@testing-library/react";
 
 import RegistrationPage from "@/app/registration/page";
 
+// Mock useRoleGuard to allow access
+jest.mock("@/hooks/useRoleGuard", () => ({
+  useRoleGuard: jest.fn(() => ({ allowed: true, redirectTo: "/login" })),
+}));
+
 // Mock the AppointmentRegistrationForm component
 jest.mock(
   "@/components/AppointmentRegistrationForm/AppointmentRegistrationForm",

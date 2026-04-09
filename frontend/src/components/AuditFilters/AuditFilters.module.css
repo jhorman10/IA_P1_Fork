@@ -3,14 +3,13 @@
   flex-wrap: wrap;
   gap: 16px;
   padding: 16px;
-  background: var(--color-surface-alt);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   margin-bottom: 24px;
   transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease;
+    background var(--duration-standard) var(--ease-standard),
+    border-color var(--duration-standard) var(--ease-standard);
 }
 
 .field {
@@ -23,8 +22,8 @@
 
 .label {
   font-size: 12px;
-  font-weight: 600;
-  color: var(--color-slate-700);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -32,12 +31,14 @@
 .select,
 .input {
   padding: 8px 12px;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-input-border);
   background: var(--color-input-bg);
   font-size: 14px;
   color: var(--color-input-text);
-  transition: border-color 0.15s ease;
+  transition:
+    border-color var(--duration-short) var(--ease-standard),
+    box-shadow var(--duration-short) var(--ease-standard);
   width: 100%;
   box-sizing: border-box;
 }
@@ -45,7 +46,8 @@
 .select:focus,
 .input:focus {
   outline: none;
-  border-color: var(--gold);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-dashboard-focus-ring);
 }
 
 .input::placeholder {

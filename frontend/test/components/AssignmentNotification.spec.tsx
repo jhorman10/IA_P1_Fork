@@ -22,6 +22,10 @@ const mockAppointment: Appointment = {
 };
 
 describe("AssignmentNotification", () => {
+  afterEach(() => {
+    document.documentElement.removeAttribute("data-theme");
+  });
+
   describe("Rendering", () => {
     it("should render the notification", () => {
       render(
@@ -110,6 +114,21 @@ describe("AssignmentNotification", () => {
       expect(screen.getByText(/Consultorio 3/)).toBeInTheDocument();
       expect(screen.getByTestId("estimated-time")).toBeInTheDocument();
     });
+
+    it("should render stable in dark mode", () => {
+      document.documentElement.setAttribute("data-theme", "dark");
+
+      render(
+        <AssignmentNotification
+          appointment={mockAppointment}
+          onDismiss={jest.fn()}
+        />,
+      );
+
+      expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+      expect(screen.getByTestId("assignment-notification")).toBeInTheDocument();
+      expect(screen.getByText(/Consultorio 3/)).toBeInTheDocument();
+    });
   });
 
   describe("Dismiss", () => {
@@ -171,6 +190,24 @@ describe("AssignmentNotification", () => {
         />,
       );
       expect(screen.getByRole("alert")).toBeInTheDocument();
+    });
+
+    it("should keep dismiss button focusable in dark mode", async () => {
+      document.documentElement.setAttribute("data-theme", "dark");
+      const user = userEvent.setup();
+
+      render(
+        <AssignmentNotification
+          appointment={mockAppointment}
+          onDismiss={jest.fn()}
+        />,
+      );
+
+      await user.tab();
+
+      expect(
+        screen.getByRole("button", { name: /cerrar notificación/i }),
+      ).toHaveFocus();
     });
   });
 });

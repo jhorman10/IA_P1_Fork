@@ -3,10 +3,11 @@
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  background: var(--color-border);
-  border-radius: 99px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-dashboard-warning-text);
+  background: var(--color-dashboard-warning-surface);
+  border: 1px solid var(--color-dashboard-warning-border);
+  border-radius: 9999px;
   padding: 3px 10px;
   white-space: nowrap;
 }
