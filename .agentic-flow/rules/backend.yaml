@@ -1,0 +1,21 @@
+scope: backend
+files: backend/**/*.py
+stack: FastAPI + Motor + Pydantic v2
+arch:
+  layers: [routes, services, repositories, models]
+  async: true
+naming:
+  files: snake_case
+  classes: PascalCase
+  functions: snake_case
+  timestamps: [created_at, updated_at]
+  ids: uid (from Firebase Auth)
+patterns:
+- DI via FastAPI Depends
+- repositories return Pydantic models
+- raise HTTPException only in routes layer
+- no business logic in routes
+forbidden:
+- sync DB calls
+- bare except
+- print() (use logging)

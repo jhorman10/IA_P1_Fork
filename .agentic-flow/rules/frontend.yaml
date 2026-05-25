@@ -1,0 +1,21 @@
+scope: frontend
+files: frontend/src/**/*.{js,jsx}
+stack: React 19 + Vite + CSS Modules
+structure:
+  components: frontend/src/components
+  hooks: frontend/src/hooks
+  services: frontend/src/services
+  pages: frontend/src/pages
+naming:
+  components: PascalCase.jsx
+  hooks: useCamelCase.js
+  modules: kebab-case.module.css
+patterns:
+- functional components
+- custom hooks for shared logic
+- services isolate fetch/axios
+- dark mode via CSS vars
+forbidden:
+- class components
+- inline styles for non-dynamic values
+- global CSS

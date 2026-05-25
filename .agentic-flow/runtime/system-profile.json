@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-05-22T22:05:59.119576Z",
+  "execution_mode": "cpu-standard",
+  "hardware": {
+    "ram_total_mb": 15378,
+    "cpu_count": 8,
+    "gpu_vram_mb": 0
+  },
+  "conditions": {
+    "max_concurrent_models": 1,
+    "recommended_timeout_s": 300,
+    "max_context_chars_local": 3000,
+    "ram_pressure_threshold_pct": 85,
+    "cpu_pressure_multiplier": 2
+  },
+  "model_conditions": {
+    "starcoder2:3b": {
+      "max_prompt_chars": 6000,
+      "timeout_s": 150,
+      "suitable": true,
+      "notes": "Lightweight, works on any hardware"
+    },
+    "qwen2.5-coder:7b": {
+      "max_prompt_chars": 3000,
+      "timeout_s": 300,
+      "suitable": true,
+      "notes": "Needs 8GB+ RAM or 4GB+ VRAM"
+    },
+    "phi4-mini": {
+      "max_prompt_chars": 3000,
+      "timeout_s": 300,
+      "suitable": true,
+      "notes": "Reasoning model, slower on CPU"
+    },
+    "llama3": {
+      "max_prompt_chars": 3000,
+      "timeout_s": 300,
+      "suitable": true,
+      "notes": "General fallback"
+    },
+    "nomic-embed-text": {
+      "max_prompt_chars": 8192,
+      "timeout_s": 30,
+      "suitable": true,
+      "notes": "Embeddings only, minimal resources"
+    }
+  }
+}

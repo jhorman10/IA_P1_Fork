@@ -1,0 +1,33 @@
+# Presupuesto y límites de gasto
+limits:
+  daily_usd: 5.00
+  monthly_usd: 80.00
+  per_task_max_tokens: 8000
+  per_feature_max_tokens: 60000
+
+alerts:
+  warn_at_pct: 75
+  hard_stop_at_pct: 100
+
+# Cuando se exceda el budget cloud, forzar local
+on_budget_exceeded:
+  action: force_local
+  notify: true
+
+cost_table_usd_per_1m_tokens:
+  starcoder2:3b:           { input: 0, output: 0 }
+  qwen2.5-coder:7b:        { input: 0, output: 0 }
+  deepseek-coder-v2:16b:   { input: 0, output: 0 }
+  phi4-mini:latest:        { input: 0, output: 0 }
+  llama3:latest:           { input: 0, output: 0 }
+  nomic-embed-text:        { input: 0, output: 0 }
+  gemini-2.0-flash:        { input: 0.10,  output: 0.40 }
+  gpt-4o-mini:             { input: 0.15,  output: 0.60 }
+  claude-haiku-4-5:        { input: 1.00,  output: 5.00 }
+  claude-sonnet-4-5:       { input: 3.00,  output: 15.00 }
+  claude-opus-4-5:         { input: 15.0,  output: 75.0 }
+  gemini-2.5-pro:          { input: 1.25,  output: 5.00 }
+# Prompt-caching multipliers (Anthropic): cache_creation = 1.25x input, cache_read = 0.10x input
+prompt_cache:
+  cache_creation_multiplier: 1.25
+  cache_read_multiplier: 0.10

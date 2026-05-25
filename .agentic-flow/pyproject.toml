@@ -1,0 +1,13 @@
+[project]
+name = "agentic-flow"
+version = "0.1.0"
+description = "Hybrid local/cloud agentic pipeline with incremental memory and budget guard"
+requires-python = ">=3.10"
+dependencies = ["pyyaml>=6.0"]
+
+[project.scripts]
+af = "core.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["core*"]

@@ -1,0 +1,9 @@
+scope: specs
+location: .agentic-flow/specs/
+naming: <feature>.spec.md
+status: [DRAFT, REVIEW, APPROVED, IMPLEMENTED]
+required_sections: [id, status, goal, scope, api, data_model, ui, acceptance, risks_summary]
+format: yaml-front-matter + bullet sections; no prose paragraphs
+rules:
+- domain terms must match .agentic-flow/memory/domain.md
+- changes increment status; never edit APPROVED without explicit user approval

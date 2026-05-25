@@ -1,0 +1,71 @@
+# Router de modelos: task -> tier -> model
+# Tiers: local | cloud-mid | cloud-high
+# El router elige el primero disponible y escala a fallback si falla la quality gate.
+
+defaults:
+  temperature: 0
+  seed: 42
+  max_retries: 2
+  quality_gate: true   # valida output antes de aceptar (tests/lint cuando aplique)
+
+tiers:
+  local:
+    provider: ollama
+    base_url: http://localhost:11434
+    models:
+      coder-fast: starcoder2:3b          # lint, docstrings, boilerplate (<1k tokens)
+      coder: qwen2.5-coder:7b            # tests, CRUD, patterns
+      coder-heavy: deepseek-coder-v2:16b # complex refactors (si disponible)
+      reason: phi4-mini                  # specs simples, code-review, gherkin
+      general: llama3:latest             # fallback genérico
+      embed: nomic-embed-text            # embeddings semánticos
+    timeout_s: 300
+  cloud-mid:
+    models:
+      - claude-haiku-4-5
+      - gemini-2.0-flash
+      - gpt-4o-mini
+    timeout_s: 60
+  cloud-high:
+    models:
+      - claude-opus-4-5
+      - claude-sonnet-4-5
+      - gemini-2.5-pro
+    timeout_s: 180
+    prompt_cache: true
+
+# task -> tier preferido (con fallback chain)
+tasks:
+  # Ultra-rápidas: starcoder2:3b (coder-fast)
+  lint-fix:            { tier: local, model: coder-fast, fallback: [cloud-mid] }
+  format:              { tier: local, model: coder-fast, fallback: [] }
+  generate-docstring:  { tier: local, model: coder-fast, fallback: [cloud-mid] }
+  # Código estándar: qwen2.5-coder
+  generate-crud:       { tier: local, model: coder,      fallback: [cloud-mid] }
+  unit-test:           { tier: local, model: coder,      fallback: [cloud-mid] }
+  refactor-mechanical: { tier: local, model: coder,      fallback: [cloud-mid] }
+  implement-pattern:   { tier: local, model: coder,      fallback: [cloud-mid] }
+  # Razonamiento local: phi4-mini
+  generate-spec:       { tier: local, model: reason,    fallback: [cloud-mid] }
+  code-review:         { tier: local, model: reason,    fallback: [cloud-mid] }
+  gherkin:             { tier: local, model: reason,    fallback: [cloud-mid] }
+  documentation:       { tier: local, model: reason,    fallback: [cloud-mid] }
+  # Alto razonamiento: cloud obligatorio
+  orchestrate:         { tier: cloud-high, fallback: [cloud-mid] }
+  architect:           { tier: cloud-high, fallback: [cloud-mid] }
+  debug-complex:       { tier: cloud-high, fallback: [cloud-mid] }
+  risk-analysis:       { tier: cloud-high, fallback: [cloud-mid, local] }
+
+# Patrón draft & refine: local genera borrador, cloud-high valida
+draft_and_refine:
+  enabled: true
+  applies_to: [generate-spec, implement-pattern, architect]
+  draft_tier: local
+  refine_tier: cloud-high
+
+# Mapa de especialidades para el detector
+specialty_keywords:
+  code: [coder, code, starcoder, deepseek-coder]
+  embedding: [embed, nomic]
+  reason: [phi, gemma, mistral, reason]
+  general: [llama, general, chat, instruct]

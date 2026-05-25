@@ -1,0 +1,13 @@
+scope: tests
+backend:
+  framework: pytest + pytest-asyncio + httpx.AsyncClient
+  location: backend/tests/
+frontend:
+  framework: Vitest + RTL
+  location: frontend/src/__tests__/
+principles:
+- AAA
+- one assertion focus per test
+- mock at boundary only
+- deterministic; no sleeps; no network
+coverage_target: 80 (critical paths)

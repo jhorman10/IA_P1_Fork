@@ -1,0 +1,69 @@
+# Registro central de agentes. Cada agente declara context_needs mínimos.
+# El orchestrator inyecta SOLO lo declarado (ahorro de tokens).
+
+agents:
+  orchestrator:
+    task: orchestrate
+    context_needs: [project-context, domain, conventions]
+    max_tokens_response: 2000
+    verbose: false
+
+  spec-generator:
+    task: generate-spec
+    context_needs: [project-context, domain, conventions, architecture]
+    max_tokens_response: 4000
+    verbose: false
+    output_format: yaml-dense
+
+  backend-dev:
+    task: generate-crud
+    context_needs: [conventions, architecture, "files:backend/**/*.ts"]
+    max_tokens_response: 6000
+    verbose: false
+    output_format: unified-diff
+
+  frontend-dev:
+    task: generate-crud
+    context_needs: [conventions, "files:frontend/cotizador/src/**/*.{ts,tsx,js,jsx}"]
+    max_tokens_response: 6000
+    verbose: false
+    output_format: unified-diff
+
+  database:
+    task: implement-pattern
+    context_needs: [domain, "files:backend/**/domain/**"]
+    max_tokens_response: 3000
+    verbose: false
+
+  test-backend:
+    task: unit-test
+    context_needs: ["files:backend/**/*.ts", conventions]
+    max_tokens_response: 5000
+    verbose: false
+    batch: true   # agrupa varios tests en un solo prompt
+
+  test-frontend:
+    task: unit-test
+    context_needs: ["files:frontend/cotizador/src/**/*.{ts,tsx,js,jsx}", conventions]
+    max_tokens_response: 5000
+    verbose: false
+    batch: true
+
+  qa:
+    task: risk-analysis
+    context_needs: [project-context, domain]
+    max_tokens_response: 3000
+    verbose: false
+
+  doc:
+    task: documentation
+    context_needs: [project-context]
+    max_tokens_response: 2000
+    verbose: false
+
+  linter:
+    task: lint-fix
+    context_needs: [conventions, "files:backend/**/*.ts", "files:frontend/cotizador/src/**/*.{ts,tsx,js,jsx}"]
+    max_tokens_response: 4000
+    verbose: false
+    batch: true

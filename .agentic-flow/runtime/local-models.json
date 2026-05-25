@@ -1,0 +1,63 @@
+{
+  "detected_at": "2026-05-22T22:05:59.105360Z",
+  "count": 5,
+  "models": [
+    {
+      "provider": "ollama",
+      "name": "phi4-mini:latest",
+      "endpoint": "http://localhost:11434",
+      "size_bytes": 2491876774,
+      "family": "phi3",
+      "param_size": "3.8B",
+      "quant": "Q4_K_M",
+      "specialty": "reason",
+      "context_window": 16384
+    },
+    {
+      "provider": "ollama",
+      "name": "starcoder2:3b",
+      "endpoint": "http://localhost:11434",
+      "size_bytes": 1709901728,
+      "family": "starcoder2",
+      "param_size": "3B",
+      "quant": "Q4_0",
+      "specialty": "code",
+      "context_window": 16384
+    },
+    {
+      "provider": "ollama",
+      "name": "nomic-embed-text:latest",
+      "endpoint": "http://localhost:11434",
+      "size_bytes": 274302450,
+      "family": "nomic-bert",
+      "param_size": "137M",
+      "quant": "F16",
+      "specialty": "embedding",
+      "context_window": 8192
+    },
+    {
+      "provider": "ollama",
+      "name": "qwen2.5-coder:7b",
+      "endpoint": "http://localhost:11434",
+      "size_bytes": 4683087561,
+      "family": "qwen2",
+      "param_size": "7.6B",
+      "quant": "Q4_K_M",
+      "specialty": "code",
+      "context_window": 32768
+    },
+    {
+      "provider": "ollama",
+      "name": "llama3:latest",
+      "endpoint": "http://localhost:11434",
+      "size_bytes": 4661224676,
+      "family": "llama",
+      "param_size": "8.0B",
+      "quant": "Q4_0",
+      "specialty": "general",
+      "context_window": 8192
+    }
+  ],
+  "has_code_model": true,
+  "has_embed_model": true
+}

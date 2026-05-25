@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# agentic-flow CLI launcher
+set -e
+HERE="$(cd "$(dirname "$0")" && pwd)"
+export PYTHONPATH="$HERE:${PYTHONPATH:-}"
+python3 -m core.cli "$@"
